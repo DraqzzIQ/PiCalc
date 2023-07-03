@@ -6,13 +6,19 @@
 ConsoleRenderer *renderer;
 bool (*arr)[96];
 
+void launch_main_menu();
+
 int main()
 {
 	renderer = new ConsoleRenderer();
 	arr = new bool[32][96];
-	
 
-	renderer->render(arr);
+	launch_main_menu();
 
     return 0;
+}
+
+void launch_main_menu()
+{
+
 }
