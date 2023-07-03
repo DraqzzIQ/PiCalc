@@ -17,7 +17,7 @@ class MainMenu : public IRenderItem
 		void add_option(const MenuOption& option, const int index);
 		MenuOption* get_option(const std::string name);
 		
-		void update();
+		void update(bool (&pixels)[32][96]);
 
 	private:
 		std::vector<MenuOption> options;

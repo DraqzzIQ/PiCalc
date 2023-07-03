@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IRenderItem.h"
 #include "IRenderer.h"
 
 #include <vector>
@@ -7,11 +8,16 @@
 class WindowManager
 {
 	public:
-		WindowManager();
+		WindowManager(IRenderer& renderer);
 
-		void add_window(const IRenderer& window);
+		void add_window(const IRenderItem& window);
+		void remove_window();
 
 	private:
-		std::vector<IRenderer> windows;
+		IRenderer* renderer;
+		std::vector<IRenderItem> windows;
+		bool pixels[32][96];
+
+		void update();
 };
 

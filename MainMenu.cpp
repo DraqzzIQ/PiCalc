@@ -46,7 +46,7 @@ MenuOption* MainMenu::get_option(const std::string name)
 	return nullptr;
 }
 
-void MainMenu::update()
+void MainMenu::update(bool (&pixels)[32][96])
 {
 
 }
