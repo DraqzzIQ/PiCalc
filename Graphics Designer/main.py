@@ -20,10 +20,10 @@ def save():
 
 fields = []
 draw = True
-# width = int(input("width"))
-# height = int(input("height"))
-width = 10
-height = 10
+width = int(input("width"))
+height = int(input("height"))
+# width = 10
+# height = 10
 root = tk.Tk()
 root.geometry(f"{width*50}x{height*50}")
 w = tk.Canvas(root, width=width*50, height=height*50, bg="grey")
