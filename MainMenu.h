@@ -1,11 +1,11 @@
 #pragma once
 
-#include "IWindow.h"
+#include "Window.h"
 #include "MenuOption.h"
 
 #include <vector>
 
-class MainMenu : public IWindow
+class MainMenu : public Window
 {
 	public:
 		MainMenu();

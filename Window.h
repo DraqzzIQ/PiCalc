@@ -3,10 +3,10 @@
 #include <vector>
 #include "Constants.h"
 
-class IWindow
+class Window
 {
 	public:
-		virtual ~IWindow() {};
+		virtual ~Window() {};
 		virtual void update(bool (&pixels)[SCREEN_HEIGHT][SCREEN_WIDTH]) = 0;
 
 	private:

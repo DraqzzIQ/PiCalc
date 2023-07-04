@@ -1,13 +1,13 @@
-#include "IWindow.h"
+#include "Window.h"
 
-IWindow::IWindow()
+Window::Window()
 {
 	corner_x = 0;
 	corner_y = 0;
 	pixels = std::vector<std::vector<bool>>(SCREEN_HEIGHT, std::vector<bool>(SCREEN_WIDTH, false));
 }
 
-std::vector<std::vector<bool>> IWindow::get_render_window()
+std::vector<std::vector<bool>> Window::get_render_window()
 {
 	std::vector<std::vector<bool>> render_window;
 
@@ -17,7 +17,7 @@ std::vector<std::vector<bool>> IWindow::get_render_window()
 
 		for (int j = 0; j < SCREEN_WIDTH; j++)
 		{
-			row.push_back(pixels[corner_x +i][corner_y + j]);
+			row.push_back(pixels[corner_y +i][corner_x + j]);
 		}
 
 		render_window.push_back(row);

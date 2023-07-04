@@ -133,7 +133,7 @@
     <ClCompile Include="ConsoleRenderer.cpp" />
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="IRenderer.cpp" />
-    <ClCompile Include="IWindow.cpp" />
+    <ClCompile Include="Window.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MenuOption.cpp" />
     <ClCompile Include="WindowManager.cpp" />
@@ -142,7 +142,7 @@
     <ClInclude Include="ConsoleRenderer.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="IRenderer.h" />
-    <ClInclude Include="IWindow.h" />
+    <ClInclude Include="Window.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MenuOption.h" />
     <ClInclude Include="WindowManager.h" />

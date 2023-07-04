@@ -5,7 +5,7 @@ WindowManager::WindowManager(IRenderer& renderer)
 	this->renderer = &renderer;
 }
 
-void WindowManager::add_window(const IWindow& window)
+void WindowManager::add_window(const Window& window)
 {
 	this->windows.push_back(window);
 }
