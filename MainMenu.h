@@ -1,11 +1,11 @@
 #pragma once
 
-#include "IRenderItem.h"
+#include "IWindow.h"
 #include "MenuOption.h"
 
 #include <vector>
 
-class MainMenu : public IRenderItem
+class MainMenu : public IWindow
 {
 	public:
 		MainMenu();
@@ -16,8 +16,9 @@ class MainMenu : public IRenderItem
 		bool delete_option(const std::string name);
 		void add_option(const MenuOption& option, const int index);
 		MenuOption* get_option(const std::string name);
-		
-		void update(bool (&pixels)[32][96]);
+
+		void update(bool (&pixels)[SCREEN_HEIGHT][SCREEN_WIDTH]);
+
 
 	private:
 		std::vector<MenuOption> options;

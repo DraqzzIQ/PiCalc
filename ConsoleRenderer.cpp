@@ -9,15 +9,15 @@ ConsoleRenderer::~ConsoleRenderer()
 {
 }
 
-void ConsoleRenderer::render(const bool pixels[32][96])
+void ConsoleRenderer::render(const bool pixels[SCREEN_HEIGHT][SCREEN_WIDTH])
 {
 	clear_screen();
 
 	std::string out = "";
 
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < SCREEN_HEIGHT; i++)
 	{
-		for (int j = 0; j < 96; j++)
+		for (int j = 0; j < SCREEN_WIDTH; j++)
 		{
 			if (!pixels[i][j]) out  += '\xFE';
 			out +=  " ";

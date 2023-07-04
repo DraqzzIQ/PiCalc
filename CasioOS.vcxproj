@@ -131,16 +131,18 @@
   <ItemGroup>
     <ClCompile Include="CasioOS.cpp" />
     <ClCompile Include="ConsoleRenderer.cpp" />
+    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="IRenderer.cpp" />
-    <ClCompile Include="IRenderItem.cpp" />
+    <ClCompile Include="IWindow.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MenuOption.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleRenderer.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="IRenderer.h" />
-    <ClInclude Include="IRenderItem.h" />
+    <ClInclude Include="IWindow.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MenuOption.h" />
     <ClInclude Include="WindowManager.h" />

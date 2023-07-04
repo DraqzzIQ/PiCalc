@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRenderItem.h"
+#include "IWindow.h"
 #include "IRenderer.h"
 
 #include <vector>
@@ -10,13 +10,13 @@ class WindowManager
 	public:
 		WindowManager(IRenderer& renderer);
 
-		void add_window(const IRenderItem& window);
-		void remove_window();
+		void add_window(const IWindow& window);
+		void pop_window();
 
 	private:
 		IRenderer* renderer;
-		std::vector<IRenderItem> windows;
-		bool pixels[32][96];
+		std::vector<IWindow> windows;
+		bool pixels[SCREEN_HEIGHT][SCREEN_WIDTH];
 
 		void update();
 };

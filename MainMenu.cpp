@@ -6,7 +6,7 @@ MainMenu::MainMenu()
 {
 }
 
-MainMenu::MainMenu(const std::vector < MenuOption > & options)
+MainMenu::MainMenu(const std::vector<MenuOption>& options)
 {
 	this->options = options;
 }
@@ -46,7 +46,7 @@ MenuOption* MainMenu::get_option(const std::string name)
 	return nullptr;
 }
 
-void MainMenu::update(bool (&pixels)[32][96])
+void MainMenu::update(bool (&pixels)[SCREEN_HEIGHT][SCREEN_WIDTH])
 {
 
 }

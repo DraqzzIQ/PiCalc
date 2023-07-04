@@ -1,5 +1,6 @@
 #pragma once
 #include "IRenderer.h"
+#include "Constants.h"
 
 class ConsoleRenderer : public IRenderer
 {
@@ -7,7 +8,7 @@ class ConsoleRenderer : public IRenderer
 		ConsoleRenderer();
 		virtual ~ConsoleRenderer();
 
-		virtual void render(const bool pixels[32][96]);
+		virtual void render(const bool pixels[SCREEN_HEIGHT][SCREEN_WIDTH]);
 
 	private:
 		void clear_screen();

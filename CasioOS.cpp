@@ -4,14 +4,14 @@
 #include <iostream>
 
 ConsoleRenderer *renderer;
-bool (*arr)[96];
+bool (*arr)[SCREEN_WIDTH];
 
 void launch_main_menu();
 
 int main()
 {
 	renderer = new ConsoleRenderer();
-	arr = new bool[32][96];
+	arr = new bool[SCREEN_HEIGHT][SCREEN_WIDTH];
 
 	launch_main_menu();
 

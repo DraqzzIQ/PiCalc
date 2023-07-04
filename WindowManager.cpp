@@ -3,15 +3,14 @@
 WindowManager::WindowManager(IRenderer& renderer)
 {
 	this->renderer = &renderer;
-	this->windows = std::vector<IRenderItem>();
 }
 
-void WindowManager::add_window(const IRenderItem& window)
+void WindowManager::add_window(const IWindow& window)
 {
 	this->windows.push_back(window);
 }
 
-void WindowManager::remove_window()
+void WindowManager::pop_window()
 {
 	this->windows.pop_back();
 }
