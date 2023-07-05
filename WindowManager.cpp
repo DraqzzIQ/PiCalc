@@ -7,18 +7,21 @@ WindowManager::WindowManager(IRenderer& renderer)
 
 void WindowManager::add_window(const Window& window)
 {
-	this->windows.push_back(window);
+	windows.push_back(window);
 }
 
 void WindowManager::pop_window()
 {
-	this->windows.pop_back();
+	windows.pop_back();
 }
 
 void WindowManager::update()
 {
-	if (this->windows.size() > 0)
-		this->windows.back().update(this->pixels);
+	if (windows.size() > 0)
+	{
+		renderer->render(windows.back().update_window());
+	}
+		windows.back().update_window(this->pixels);
 
-	this->renderer->render(this->pixels);
+	renderer->render(pixels);
 }

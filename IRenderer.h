@@ -4,6 +4,6 @@ class IRenderer
 {
 	public:
 		virtual ~IRenderer() {};
-		virtual void render(const bool pixels[SCREEN_HEIGHT][SCREEN_WIDTH]) = 0;
+		virtual void render(const render_plane pixels) = 0;
 };
 

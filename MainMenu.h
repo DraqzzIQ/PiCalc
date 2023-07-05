@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include "MenuOption.h"
+#include "Constants.h"
 
 #include <vector>
 
@@ -17,9 +18,9 @@ class MainMenu : public Window
 		void add_option(const MenuOption& option, const int index);
 		MenuOption* get_option(const std::string name);
 
-		void update(bool (&pixels)[SCREEN_HEIGHT][SCREEN_WIDTH]);
+		render_plane update();
 
 
 	private:
-		std::vector<MenuOption> options;
+		std::vector<MenuOption> _options;
 };

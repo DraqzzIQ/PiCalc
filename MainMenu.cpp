@@ -8,21 +8,21 @@ MainMenu::MainMenu()
 
 MainMenu::MainMenu(const std::vector<MenuOption>& options)
 {
-	this->options = options;
+	this->_options = options;
 }
 
 int MainMenu::options_count()
 {
-	return this->options.size();
+	return this->_options.size();
 }
 
 bool MainMenu::delete_option(const std::string name)
 {
-	for (int i = 0; i < this->options.size(); i++)
+	for (int i = 0; i < this->_options.size(); i++)
 	{
-		if (options[i].display_name == name)
+		if (_options[i].display_name == name)
 		{
-			options.erase(options.begin() + i);
+			_options.erase(_options.begin() + i);
 			return true;
 		}
 	}
@@ -32,21 +32,21 @@ bool MainMenu::delete_option(const std::string name)
 
 void MainMenu::add_option(const MenuOption& option, const int index)
 {
-	options.insert(options.begin() + index, option);
+	_options.insert(_options.begin() + index, option);
 }
 
 MenuOption* MainMenu::get_option(const std::string name)
 {
-	for (int i = 0; i < this->options.size(); i++)
+	for (int i = 0; i < this->_options.size(); i++)
 	{
-		if (options[i].display_name == name)
-			return &options[i];
+		if (_options[i].display_name == name)
+			return &_options[i];
 	}
 
 	return nullptr;
 }
 
-void MainMenu::update(bool (&pixels)[SCREEN_HEIGHT][SCREEN_WIDTH])
+void update(bool(&pixels)[SCREEN_HEIGHT][SCREEN_WIDTH])
 {
 
 }

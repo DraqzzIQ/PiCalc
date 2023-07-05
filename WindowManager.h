@@ -16,7 +16,6 @@ class WindowManager
 	private:
 		IRenderer* renderer;
 		std::vector<Window> windows;
-		bool pixels[SCREEN_HEIGHT][SCREEN_WIDTH];
 
 		void update();
 };

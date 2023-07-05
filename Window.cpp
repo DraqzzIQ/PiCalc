@@ -4,12 +4,12 @@ Window::Window()
 {
 	corner_x = 0;
 	corner_y = 0;
-	pixels = std::vector<std::vector<bool>>(SCREEN_HEIGHT, std::vector<bool>(SCREEN_WIDTH, false));
+	pixels = render_plane(SCREEN_HEIGHT, std::vector<bool>(SCREEN_WIDTH, false));
 }
 
-std::vector<std::vector<bool>> Window::get_render_window()
+render_plane Window::get_render_window()
 {
-	std::vector<std::vector<bool>> render_window;
+	render_plane render_plane;
 
 	for (int i = 0; i < SCREEN_HEIGHT; i++)
 	{
@@ -20,8 +20,8 @@ std::vector<std::vector<bool>> Window::get_render_window()
 			row.push_back(pixels[corner_y +i][corner_x + j]);
 		}
 
-		render_window.push_back(row);
+		render_plane.push_back(row);
 	}
 
-	return render_window;
+	return render_plane;
 }

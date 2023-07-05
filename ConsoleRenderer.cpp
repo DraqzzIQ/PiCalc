@@ -9,7 +9,7 @@ ConsoleRenderer::~ConsoleRenderer()
 {
 }
 
-void ConsoleRenderer::render(const bool pixels[SCREEN_HEIGHT][SCREEN_WIDTH])
+void ConsoleRenderer::render(const render_plane pixels)
 {
 	clear_screen();
 

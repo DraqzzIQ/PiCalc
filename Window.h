@@ -6,14 +6,14 @@
 class Window
 {
 	public:
+		Window();
 		virtual ~Window() {};
-		virtual void update(bool (&pixels)[SCREEN_HEIGHT][SCREEN_WIDTH]) = 0;
+		virtual render_plane update_window() = 0;
 
-	private:
-		std::vector<std::vector<bool>> pixels;
+		render_plane pixels;
 		int corner_x;
 		int corner_y;
 
-		std::vector<std::vector<bool>> get_render_window();
+		render_plane get_render_window();
 };
 

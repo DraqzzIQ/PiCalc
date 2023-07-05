@@ -8,7 +8,7 @@ class ConsoleRenderer : public IRenderer
 		ConsoleRenderer();
 		virtual ~ConsoleRenderer();
 
-		virtual void render(const bool pixels[SCREEN_HEIGHT][SCREEN_WIDTH]);
+		void render(const render_plane pixels);
 
 	private:
 		void clear_screen();
