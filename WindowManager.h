@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include "IRenderer.h"
+#include "Graphics.h"
 
 #include <vector>
 

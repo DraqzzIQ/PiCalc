@@ -18,10 +18,7 @@ void WindowManager::pop_window()
 void WindowManager::update()
 {
 	if (windows.size() > 0)
-	{
 		renderer->render(windows.back().update_window());
-	}
-		windows.back().update_window(this->pixels);
-
-	renderer->render(pixels);
+	else
+		renderer->render(Graphics::EMPTY_SCREEN);
 }

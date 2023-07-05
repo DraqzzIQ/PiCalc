@@ -132,6 +132,7 @@
     <ClCompile Include="CasioOS.cpp" />
     <ClCompile Include="ConsoleRenderer.cpp" />
     <ClCompile Include="Constants.cpp" />
+    <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="IRenderer.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="MainMenu.cpp" />
@@ -141,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="ConsoleRenderer.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Graphics.h" />
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="MainMenu.h" />
