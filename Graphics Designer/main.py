@@ -63,23 +63,35 @@ def removeRow(event):
         updateSize(0)
         print(fields, height)
 
-draw = True
-width = int(input("width: "))
-height = int(input("height: "))
-fields = []
 
 root = tk.Tk()
+root.withdraw()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 root.geometry(f"{screen_width//2}x{screen_height//2}")
-
-
 w = tk.Canvas(root, width=0, height=0, bg="grey")
 
-for x in range(width):
-    fields.append([])
-    for y in range(height):
-        fields[x].append(w.create_rectangle(0, 0, 0, 0, fill="white"))
+
+draw = True
+fields = []
+imp = input("width / import: ")
+try:
+    width = int(imp)
+    height = int(input("height: "))
+    for x in range(width):
+        fields.append([])
+        for y in range(height):
+            fields[x].append(w.create_rectangle(0, 0, 0, 0, fill="white"))
+except ValueError:
+    implist = [["black" if b == "1" else "white" for b in l.split(", ")] for l in imp[2:-2].split("}, {")]
+    width = len(implist)
+    height = len(implist[0])
+
+    for x in range(width):
+        fields.append([])
+        for y in range(height):
+            fields[x].append(w.create_rectangle(0, 0, 0, 0, fill=implist[x][y]))
+
 
 w.bind("<ButtonPress-1>", motion)
 w.bind("<B1-Motion>", motion)
@@ -92,4 +104,5 @@ root.bind("<Down>", addRow)
 root.bind("<Up>", removeRow)
 root.protocol("WM_DELETE_WINDOW", close)
 w.pack()
+root.wm_deiconify()
 root.mainloop()
