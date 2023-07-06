@@ -1,8 +1,10 @@
 #pragma once
-
 #include "Constants.h"
 #include <vector>
 
+/// <summary>
+/// provides static graphics to render and related functions
+/// </summary>
 class Graphics
 {
 	public:

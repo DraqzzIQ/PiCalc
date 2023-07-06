@@ -1,5 +1,4 @@
 #include "ConsoleRenderer.h"
-#include <iostream>
 
 ConsoleRenderer::ConsoleRenderer()
 {

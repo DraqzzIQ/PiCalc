@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vector>
 
 inline const int SCREEN_WIDTH = 96;

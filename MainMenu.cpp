@@ -1,9 +1,5 @@
 #include "MainMenu.h"
 
-#include <vector>
-
-#include "Graphics.h"
-
 MainMenu::MainMenu()
 {
 }
@@ -13,16 +9,11 @@ MainMenu::MainMenu(const std::vector<MenuOption*>& options)
 	this->_options = options;
 }
 
-int MainMenu::options_count()
-{
-	return this->_options.size();
-}
-
 bool MainMenu::delete_option(const std::string name)
 {
 	for (size_t i = 0; i < this->_options.size(); i++)
 	{
-		if (_options[i]->display_name == name)
+		if (_options[i]->get_display_name() == name)
 		{
 			_options.erase(_options.begin() + i);
 			return true;
@@ -41,7 +32,7 @@ MenuOption* MainMenu::get_option(const std::string name)
 {
 	for (size_t i = 0; i < this->_options.size(); i++)
 	{
-		if (_options[i]->display_name == name)
+		if (_options[i]->get_display_name() == name)
 			return _options[i];
 	}
 
