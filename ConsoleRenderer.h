@@ -6,7 +6,6 @@ class ConsoleRenderer : public IRenderer
 {
 	public:
 		ConsoleRenderer();
-		virtual ~ConsoleRenderer();
 
 		void render(const render_plane pixels);
 

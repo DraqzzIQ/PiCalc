@@ -1,24 +1,24 @@
 #include "WindowManager.h"
 
-WindowManager::WindowManager(IRenderer& renderer)
+WindowManager::WindowManager(IRenderer* renderer)
 {
-	this->renderer = &renderer;
+	this->renderer = renderer;
 }
 
-void WindowManager::add_window(const Window& window)
+void WindowManager::add_window(Window* window)
 {
-	windows.push_back(window);
+	windows.push(window);
 }
 
 void WindowManager::pop_window()
 {
-	windows.pop_back();
+	windows.pop();
 }
 
 void WindowManager::update()
 {
 	if (windows.size() > 0)
-		renderer->render(windows.back().update_window());
+		renderer->render(windows.top()->update_window());
 	else
-		renderer->render(Graphics::EMPTY_SCREEN);
+		renderer->render(Graphics::LOGO_SCREEN);
 }

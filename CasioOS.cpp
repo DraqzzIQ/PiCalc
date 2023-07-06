@@ -1,24 +1,33 @@
 // CasioOS.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
 #include "ConsoleRenderer.h"
+#include "WindowManager.h"
+
 #include <iostream>
+#include <chrono>
+#include <thread>
 
-ConsoleRenderer *renderer;
-bool (*arr)[SCREEN_WIDTH];
+ConsoleRenderer* renderer;
+WindowManager* windowManager;
 
-void launch_main_menu();
+void render_thread()
+{
+	while (1) {
+		windowManager->update();
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+	}
+}
+
 
 int main()
 {
 	renderer = new ConsoleRenderer();
-	arr = new bool[SCREEN_HEIGHT][SCREEN_WIDTH];
+	windowManager = new WindowManager(renderer);
 
-	launch_main_menu();
+	windowManager->update();
+
+	//std::thread renderThread(render_thread);
+	//renderThread.join();
 
     return 0;
-}
-
-void launch_main_menu()
-{
-
 }

@@ -5,22 +5,21 @@ ConsoleRenderer::ConsoleRenderer()
 {
 }
 
-ConsoleRenderer::~ConsoleRenderer()
-{
-}
-
 void ConsoleRenderer::render(const render_plane pixels)
 {
 	clear_screen();
 
 	std::string out = "";
 
-	for (int i = 0; i < SCREEN_HEIGHT; i++)
+	for (size_t i = 0; i < SCREEN_HEIGHT; i++)
 	{
-		for (int j = 0; j < SCREEN_WIDTH; j++)
+		for (size_t j = 0; j < SCREEN_WIDTH; j++)
 		{
-			if (!pixels[i][j]) out  += '\xFE';
-			out +=  " ";
+			if (!pixels[j][i])
+				out  += '\xFE';
+			else
+				out +=  " ";
+			out += " ";
 		}
 		out += '\n';
 	}

@@ -7,7 +7,7 @@ class Window
 {
 	public:
 		Window();
-		virtual ~Window() {};
+		~Window();
 		virtual render_plane update_window() = 0;
 
 		render_plane pixels;
@@ -16,4 +16,3 @@ class Window
 
 		render_plane get_render_window();
 };
-
