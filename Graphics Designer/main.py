@@ -21,7 +21,7 @@ def tool(event):
 def save(event):
     saveString = str([[1 if w.itemcget(fields[x][y], "fill") == "black" else 0 for y in range(height)] for x in range(width)]).replace("[", "{").replace("]", "}")
     print(saveString + "\n")
-    pyperclip.copy(saveString)
+    pyperclip.copy(f"static inline const render_plane LETTER_BIG_{name} {saveString};")
 
 
 def close():
@@ -100,6 +100,7 @@ w = tk.Canvas(root, width=0, height=0, bg="grey")
 draw = True
 size = 1
 fields = []
+name = input("name: ")
 width = input("width / import: ")
 try:
     width = int(width)
