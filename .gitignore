@@ -364,3 +364,12 @@ FodyWeavers.xsd
 
 #JetBrains
 .idea/
+
+#Build
+build/
+
+#???
+CppProperties.json
+
+#vscode
+.vscode/
