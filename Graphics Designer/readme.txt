@@ -5,4 +5,4 @@ A simple Drawing Script
 -arrow keys to change canvas size
 -plus / minus to change pen size
 -either type 2 numbers for width and height or put a previous design output instead of the width into the console at the beginning
--esc or close to save
+-esc or close to save and copy to clipboard
