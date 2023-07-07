@@ -33,4 +33,6 @@ class Window
 		/// </summary>
 		/// <returns>pixels to render</returns>
 		render_plane get_render_window();
+		void addToPixels(render_plane renderplane, int c_x, int c_y);
+		void clearPixels();
 };

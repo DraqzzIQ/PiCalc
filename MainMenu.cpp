@@ -41,5 +41,6 @@ MenuOption* MainMenu::get_option(const std::string name)
 
 render_plane MainMenu::update_window()
 {
-	return Graphics::EMPTY_SCREEN;
+	addToPixels(Graphics::createText("HELLO WORLD"), 10, 10);
+	return get_render_window();
 }
