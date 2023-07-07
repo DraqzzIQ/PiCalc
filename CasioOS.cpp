@@ -1,6 +1,7 @@
 // CasioOS.cpp : This file contains the 'main' function. Program execution begins and ends there.
 #include "ConsoleRenderer.h"
 #include "WindowManager.h"
+#include "MainMenu.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -29,11 +30,12 @@ int main()
 {
 	renderer = new ConsoleRenderer();
 	windowManager = new WindowManager(renderer);
+	windowManager->add_window(new MainMenu());
 
 	windowManager->update();
 
-	/*std::thread render_thread(start_render_thread);
-	render_thread.join();*/
+	std::thread render_thread(start_render_thread);
+	render_thread.join();
 
     return 0;
 }

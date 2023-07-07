@@ -41,5 +41,5 @@ MenuOption* MainMenu::get_option(const std::string name)
 
 render_plane MainMenu::update_window()
 {
-	return Graphics::LOGO_SCREEN;
+	return Graphics::EMPTY_SCREEN;
 }
