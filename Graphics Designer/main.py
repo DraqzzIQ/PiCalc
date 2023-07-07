@@ -21,7 +21,7 @@ def tool(event):
 def save(event):
     saveString = str([[1 if w.itemcget(fields[x][y], "fill") == "black" else 0 for y in range(height)] for x in range(width)]).replace("[", "{").replace("]", "}")
     print(saveString + "\n")
-    pyperclip.copy(f"static inline const render_plane LETTER_BIG_{name} {saveString};")
+    pyperclip.copy("{'" + name + "', " + saveString + "},")
 
 
 def close():
@@ -104,7 +104,8 @@ name = input("name: ")
 width = input("width / import: ")
 try:
     width = int(width)
-    height = int(input("height: "))
+    # height = int(input("height: "))
+    height = 9
     for x in range(width):
         fields.append([])
         for y in range(height):
