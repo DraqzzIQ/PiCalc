@@ -1,5 +1,6 @@
 import tkinter as tk
 import math
+import pyperclip
 
 
 def motion(event):
@@ -18,9 +19,9 @@ def tool(event):
 
 
 def save(event):
-    print(str([[1 if w.itemcget(fields[x][y], "fill") == "black" else 0 for y in range(height)] for x in range(width)]).
-          replace("[", "{").replace("]", "}"))
-    print()
+    saveString = str([[1 if w.itemcget(fields[x][y], "fill") == "black" else 0 for y in range(height)] for x in range(width)]).replace("[", "{").replace("]", "}")
+    print(saveString + "\n")
+    pyperclip.copy(saveString)
 
 
 def close():
@@ -78,12 +79,12 @@ def removeRow(event):
         print(fields, height)
 
 
-def increaseSize(event):
+def increasePenSize(event):
     global size
     size += 1
 
 
-def decreaseSize(event):
+def decreasePenSize(event):
     global size
     size -= 1
 
@@ -127,8 +128,8 @@ root.bind("<Right>", addColumn)
 root.bind("<Left>", removeColumn)
 root.bind("<Down>", addRow)
 root.bind("<Up>", removeRow)
-root.bind("<plus>", increaseSize)
-root.bind("<minus>", decreaseSize)
+root.bind("<plus>", increasePenSize)
+root.bind("<minus>", decreasePenSize)
 root.protocol("WM_DELETE_WINDOW", close)
 w.pack()
 root.wm_deiconify()
