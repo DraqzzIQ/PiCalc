@@ -8,12 +8,7 @@ Graphics::~Graphics()
 {
 }
 
-/// <summary>
-/// creates a big Text (height: 9px) with a spacing of one
-/// </summary>
-/// <param name="text">text Input</param>
-/// <returns></returns>
-render_plane Graphics::createText(std::string text) {
+render_plane Graphics::create_text(std::string text) {
 	render_plane Text = SYMBOLS_BIG[text.at(0)];
 	std::vector<bool> empty = std::vector<bool>(9, false);
 	for (int i = 1; i < text.length(); i++) {

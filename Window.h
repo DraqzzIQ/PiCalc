@@ -16,9 +16,9 @@ class Window
 		/// <returns>pixels to render</returns>
 		virtual render_plane update_window() = 0;
 		/// <summary>
-		/// canvas describing the window
+		/// render_plane describing the window
 		/// </summary>
-		render_plane pixels;
+		render_plane window;
 		/// <summary>
 		/// x coordinate of the upper left corner of the part of the canvas that is rendered
 		/// </summary>
@@ -29,10 +29,19 @@ class Window
 		int corner_y;
 
 		/// <summary>
-		/// extracts the part of the canvas that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
+		/// extracts the part of the window that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 		/// </summary>
-		/// <returns>pixels to render</returns>
-		render_plane get_render_window();
-		void addToPixels(render_plane renderplane, int c_x, int c_y);
-		void clearPixels();
+		/// <returns>canvas to render</returns>
+		render_plane get_render_canvas();
+		/// <summary>
+		/// adds a graphic in form of a render_plane (like text) at given coordinates to the screen
+		/// </summary>
+		/// <param name="renderplane"></param>
+		/// <param name="c_x"></param>
+		/// <param name="c_y"></param>
+		void add_to_window(render_plane graphic, int c_x, int c_y);
+		/// <summary>
+		/// clears the window
+		/// </summary>
+		void clear_window();
 };
