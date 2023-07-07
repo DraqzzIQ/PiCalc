@@ -104,8 +104,8 @@ name = input("name: ")
 width = input("width / import: ")
 try:
     width = int(width)
-    # height = int(input("height: "))
-    height = 9
+    height = int(input("height: "))
+    # height = 9
     for x in range(width):
         fields.append([])
         for y in range(height):

@@ -21,7 +21,7 @@ render_plane Window::get_render_canvas()
 
 		for (size_t j = 0; j < SCREEN_HEIGHT; j++)
 		{
-			row.push_back(canvas[corner_y +i][corner_x + j]);
+			row.push_back(window[corner_y +i][corner_x + j]);
 		}
 
 		canvas.push_back(row);
