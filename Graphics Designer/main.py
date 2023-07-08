@@ -106,7 +106,7 @@ width = 5
 try:
     width = int(width)
     # height = int(input("height: "))
-    height = 7
+    height = 6
     for x in range(width):
         fields.append([])
         for y in range(height):
