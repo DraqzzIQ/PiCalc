@@ -1,5 +1,6 @@
 #pragma once
 #include "Constants.h"
+#include "SpecialChars.h"
 #include <vector>
 #include <map>
 #include <string>
@@ -14,11 +15,20 @@ class Graphics
 		~Graphics();
 
         /// <summary>
-        /// creates a big text (height: 9px) with a spacing of one
+        /// creates a render_plane text from string
         /// </summary>
-        /// <param name="text">text input</param>
-        /// <returns></returns>
+        /// <param name="text">text to be transformed</param>
+        /// <param name="table">charset to be used</param>
+        /// <param name="spacing">spacing between each char</param>
+        /// <returns>converted text</returns>
         static render_plane create_text(const std::string text, std::map<wchar_t, render_plane> table = SYMBOLS_9_HIGH, int spacing = 1);
+        /// <summary>
+        /// creates a render_plane text from string
+        /// </summary>
+        /// <param name="text">text to be transformed</param>
+        /// <param name="table">charset to be used</param>
+        /// <param name="spacing">spacing between each char</param>
+        /// <returns>converted text</returns>
         static render_plane create_text(const std::wstring text, std::map<wchar_t, render_plane> table = SYMBOLS_9_HIGH, int spacing = 1);
 
 		static inline const render_plane EMPTY_SCREEN = render_plane(SCREEN_WIDTH, std::vector<bool>(SCREEN_HEIGHT, false));
@@ -77,7 +87,6 @@ class Graphics
             {'y', {{0, 0, 1, 1, 1, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 1}, {0, 0, 0, 0, 0, 1, 0, 0, 1}, {0, 0, 0, 0, 1, 0, 0, 0, 1}, {0, 0, 1, 1, 1, 1, 1, 1, 0}}},
             {'z', {{0, 0, 0, 1, 0, 0, 0, 0, 1}, {0, 0, 0, 1, 0, 0, 0, 1, 1}, {0, 0, 0, 1, 0, 0, 1, 0, 1}, {0, 0, 0, 1, 0, 1, 0, 0, 1}, {0, 0, 0, 1, 1, 0, 0, 0, 1}}},
             {' ', {{0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}}},
-            {L'\u221A', {{0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 0, 0, 0, 0, 0, 0}}},
             {'.', {{0, 0, 0, 0, 0, 0, 0, 1, 1}, {0, 0, 0, 0, 0, 0, 0, 1, 1}}},
             {',', {{0, 0, 0, 0, 0, 1, 1, 0, 1}, {0, 0, 0, 0, 0, 1, 1, 1, 0}}},
             {'(', {{0, 0, 1, 1, 1, 1, 1, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 1, 0}, {1, 0, 0, 0, 0, 0, 0, 0, 1}}},
@@ -106,9 +115,10 @@ class Graphics
             {'%', {{0, 0, 1, 1, 0, 0, 0, 1, 0}, {0, 0, 1, 1, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 1, 1}, {0, 0, 0, 1, 0, 0, 0, 1, 1}}},
             {';', {{0, 1, 1, 0, 0, 1, 1, 0, 1}, {0, 1, 1, 0, 0, 1, 1, 1, 0}}},
             {':', {{0, 1, 1, 0, 0, 1, 1, 0, 0}, {0, 1, 1, 0, 0, 1, 1, 0, 0}}},
-            {L'\u03C0', {{0, 0, 0, 1, 0, 0, 0, 0, 1}, {0, 0, 0, 1, 1, 1, 1, 1, 0}, {0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 1}, {0, 0, 0, 1, 0, 0, 0, 0, 1}}},
-            {L'\u212F', {{0, 0, 0, 0, 1, 1, 1, 1, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 1}, {0, 0, 1, 0, 0, 1, 0, 0, 1}, {0, 0, 1, 0, 1, 0, 0, 0, 1}, {0, 0, 0, 1, 0, 0, 0, 1, 0}}},
-		};
+            {PI, {{0, 0, 1, 0, 0, 0, 0, 0, 1}, {0, 0, 1, 1, 1, 1, 1, 1, 0}, {0, 0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 1, 1, 1, 1, 1, 1}, {0, 0, 1, 0, 0, 0, 0, 1, 0}}},
+            {SCRIPT_SMALL_E, {{0, 0, 0, 0, 1, 1, 1, 1, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 1}, {0, 0, 1, 0, 0, 1, 0, 0, 1}, {0, 0, 1, 0, 1, 0, 0, 0, 1}, {0, 0, 0, 1, 0, 0, 0, 1, 0}}},
+            {SQUARE_ROOT, {{0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 0, 0, 0, 0, 0, 0}}},
+        };
 
 		static inline const std::map<wchar_t, render_plane> SYMBOLS_7_HIGH{
             {'A', {{0, 0, 1, 1, 1, 1, 1}, {0, 1, 0, 0, 1, 0, 0}, {1, 0, 0, 0, 1, 0, 0}, {0, 1, 0, 0, 1, 0, 0}, {0, 0, 1, 1, 1, 1, 1}}},

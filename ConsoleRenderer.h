@@ -22,5 +22,10 @@ class ConsoleRenderer : public IRenderer
 		/// clears the console and sets the cursor to the top left
 		/// </summary>
 		void clear_screen();
+		/// <summary>
+		/// creates a border for display width
+		/// </summary>
+		/// <returns>string containing #</returns>
+		std::string get_display_border();
 };
 

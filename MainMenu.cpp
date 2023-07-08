@@ -41,6 +41,6 @@ MenuOption* MainMenu::get_option(const std::string name)
 
 render_plane MainMenu::update_window()
 {
-	add_to_window(Graphics::create_text(L"ABC", 2, Graphics::SYMBOLS_6_HIGH), 10, 10);
+	add_to_window(Graphics::create_text(std::format(L"ABC{}", PI), Graphics::SYMBOLS_9_HIGH), 10, 10);
 	return get_render_canvas();
 }
