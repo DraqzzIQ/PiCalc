@@ -93,7 +93,7 @@ root = tk.Tk()
 root.withdraw()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
-root.geometry(f"{screen_width//2}x{screen_height//2}")
+root.geometry(f"{screen_width//2}x{screen_height//2}+{500}+{20}")
 w = tk.Canvas(root, width=0, height=0, bg="grey")
 
 
@@ -101,11 +101,12 @@ draw = True
 size = 1
 fields = []
 name = input("name: ")
-width = input("width / import: ")
+# width = input("width / import: ")
+width = 5
 try:
     width = int(width)
     # height = int(input("height: "))
-    height = 9
+    height = 7
     for x in range(width):
         fields.append([])
         for y in range(height):
@@ -135,4 +136,5 @@ root.bind("<minus>", decreasePenSize)
 root.protocol("WM_DELETE_WINDOW", close)
 w.pack()
 root.wm_deiconify()
+root.lift()
 root.mainloop()
