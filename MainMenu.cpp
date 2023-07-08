@@ -1,4 +1,5 @@
 #include "MainMenu.h"
+#include "Equation.h"
 
 MainMenu::MainMenu()
 {
@@ -41,6 +42,9 @@ MenuOption* MainMenu::get_option(const std::string name)
 
 render_plane MainMenu::update_window()
 {
+	Equation e = Equation();
+	e.addValue('1');
+	e.addValue(FRACTION);
 	add_to_window(Graphics::create_text(std::format(L"ABC{}", PI), Graphics::SYMBOLS_6_HIGH), 10, 10);
 	return get_render_canvas();
 }
