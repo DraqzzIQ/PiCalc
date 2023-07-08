@@ -135,6 +135,7 @@
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="IRenderer.cpp" />
+    <ClCompile Include="SpecialChars.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MenuOption.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="IRenderer.h" />
+    <ClInclude Include="SpecialChars.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MenuOption.h" />
