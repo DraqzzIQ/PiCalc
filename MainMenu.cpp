@@ -41,6 +41,6 @@ MenuOption* MainMenu::get_option(const std::string name)
 
 render_plane MainMenu::update_window()
 {
-	add_to_window(Graphics::create_text("HELLO WORLD"), 10, 10);
+	add_to_window(Graphics::create_text("abcdefg=+-*/h"), 10, 10);
 	return get_render_canvas();
 }
