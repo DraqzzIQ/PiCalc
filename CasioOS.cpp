@@ -7,7 +7,7 @@
 #include <chrono>
 #include <thread>
 
-int fps = 10;
+int fps = 30;
 ConsoleRenderer* renderer;
 WindowManager* windowManager;
 Keyboard* keyboard;
