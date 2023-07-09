@@ -39,8 +39,61 @@ MenuOption* MainMenu::get_option(const std::string name)
 	return nullptr;
 }
 
+const size_t MainMenu::options_size()
+{
+	return _options.size();
+}
+
 render_plane MainMenu::update_window()
 {
-	add_to_window(Graphics::create_text(std::format(L"ABC{}", PI), Graphics::SYMBOLS_6_HIGH), 10, 10);
+	create_menu();
+
+	corner_y = _current_page * 4 * _line_height;
+
 	return get_render_canvas();
+}
+
+void MainMenu::create_menu()
+{
+	for (size_t i = 0; i < _options.size() && i < _max_options; i++)
+	{
+		add_to_window(Graphics::create_text(std::format("{}:{}", i, _options[i]->get_display_name()), Graphics::SYMBOLS_6_HIGH), 1, 1 + i * _line_height);
+	}
+}
+
+const int MainMenu::pages_count()
+{
+	return static_cast<int>(ceil(static_cast<double>(_options.size()) / 4));
+}
+
+void MainMenu::handle_keyboard_event(int key)
+{
+	switch (key)
+	{
+		case::SDL_SCANCODE_UP:
+			scroll_up();
+			return;
+		case::SDL_SCANCODE_DOWN:
+			scroll_down();
+			return;
+	}
+	if (Keyboard::scancode_is_number(key))
+	{
+		int number = Keyboard::scancode_to_number(key);
+		if (number < _options.size())
+			_options[number]->on_select();
+		return;
+	}
+}
+
+void MainMenu::scroll_up()
+{
+	if(_current_page > 0)
+		_current_page--;
+}
+
+void MainMenu::scroll_down()
+{
+	if(_current_page < pages_count() - 1)
+		_current_page++;
 }

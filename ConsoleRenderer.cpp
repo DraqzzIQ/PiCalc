@@ -28,7 +28,7 @@ void ConsoleRenderer::render(const render_plane pixels)
 	}
 	out += get_display_border();
 
-	std::cout << out;
+	std::cout << out << std::endl;
 }
 
 std::string ConsoleRenderer::get_display_border()
@@ -44,5 +44,5 @@ std::string ConsoleRenderer::get_display_border()
 
 void ConsoleRenderer::clear_screen()
 {
-	std::cout << "\x1B[2J\x1B[H";
+	std::cout << "\x1B[H";
 }

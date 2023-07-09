@@ -24,15 +24,19 @@ class WindowManager
 		/// rerenders the top window
 		/// </summary>
 		void update();
+		/// <summary>
+		/// handles keyboard events
+		/// </summary>
+		void handle_keyboard_event(int key);
 
 	private:
 		/// <summary>
 		/// the renderer used
 		/// </summary>
-		IRenderer* renderer;
+		IRenderer* _renderer;
 		/// <summary>
 		/// the window stack
 		/// </summary>
-		std::stack<Window*> windows;
+		std::stack<Window*> _windows;
 };
 

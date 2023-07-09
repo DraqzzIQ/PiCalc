@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <iostream>
 
 /// <summary>
 /// base class for all menu options
@@ -11,7 +12,7 @@ class MenuOption
 		/// <summary>
 		/// fired when option is selected
 		/// </summary>
-		virtual void on_select() = 0;
+		void on_select();
 		/// <summary>
 		/// gets the display name
 		/// </summary>
@@ -22,5 +23,5 @@ class MenuOption
 		/// <summary>
 		/// name to display in the menu
 		/// </summary>
-		std::string display_name;
+		std::string _display_name;
 };

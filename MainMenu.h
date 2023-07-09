@@ -3,6 +3,7 @@
 #include "MenuOption.h"
 #include "Constants.h"
 #include "Graphics.h"
+#include "Keyboard.h"
 #include <vector>
 #include <format>
 
@@ -34,14 +35,51 @@ class MainMenu : public Window
 		/// <returns>option</returns>
 		MenuOption* get_option(const std::string name);
 		/// <summary>
+		/// returns the number of options
+		/// </summary>
+		const size_t options_size();
+		/// <summary>
 		/// called when the window gets rerendered
 		/// </summary>
 		/// <returns>pixels to render</returns>
 		render_plane update_window();
+		/// <summary>
+		/// handles keyboard events
+		/// </summary>
+		void handle_keyboard_event(int key);
 
 	private:
 		/// <summary>
 		/// container for all options
 		/// </summary>
 		std::vector<MenuOption*> _options;
+		const int _max_options = 10;
+		/// <summary>
+		/// max number of options per page
+		/// </summary>
+		const int _options_per_page = 4;
+		/// <summary>
+		/// index of currently selected page
+		/// </summary>
+		int _current_page = 0;
+		/// <summary>
+		/// height of an option line
+		/// </summary>
+		const int _line_height = 8;
+		/// <summary>
+		/// creates the menu out of the options
+		/// </summary>
+		void create_menu();
+		/// <summary>
+		/// number of pages
+		/// </summary>
+		const int pages_count();
+		/// <summary>
+		/// scrolls the menu up
+		/// </summary>
+		void scroll_up();
+		/// <summary>
+		/// scrolls the menu down
+		/// </summary>
+		void scroll_down();
 };
