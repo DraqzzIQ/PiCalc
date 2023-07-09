@@ -1,6 +1,8 @@
 #include "Equation.h"
 #include "SpecialChars.h"
 #include <iterator>
+#include "Graphics.h"
+#include <map>
 
 Equation::Equation() {
 	root = Node();
@@ -12,7 +14,37 @@ Equation::~Equation() {
 }
 
 render_plane Equation::renderEquation() {
+	return renderEquationPart(*root.children, Graphics::SYMBOLS_9_HIGH);
+}
 
+render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<wchar_t, render_plane> table) {
+	size_t height = table.at(' ').at(0).size();
+	size_t fractionHeight = (height == 9) ? 4 : 3;
+	size_t yStart = 0;
+	render_plane renderPlane;
+	renderPlane = std::vector<std::vector<bool>>(2, std::vector<bool>(height, false));
+	std::vector<bool> empty = std::vector<bool>(height, false);
+	for (size_t i = 0; i < equation.size(); i++) {
+		Node* container = equation.at(i);
+		if (container->operation == nullptr) {
+			if (Graphics::SYMBOLS_9_HIGH.count(*container->value) != 0) {
+				renderPlane.insert(renderPlane.end(), table.at(*container->value).begin(), table.at(*container->value).end());
+			}
+		}
+		else {
+			if (*container->operation == FRACTION) {
+				render_plane top = renderEquationPart(*container->children->at(0)->children, Graphics::SYMBOLS_6_HIGH);
+				render_plane bottom = renderEquationPart(*container->children->at(0)->children, Graphics::SYMBOLS_6_HIGH);
+
+				renderPlane.insert(renderPlane.end(), table.at('-').begin(), table.at('-').end());
+			}
+		}
+
+		if (i + 1 != equation.size()) {
+			renderPlane.push_back(empty);
+		}
+	}
+	return renderPlane;
 }
 
 void Equation::addValue(wchar_t value) {

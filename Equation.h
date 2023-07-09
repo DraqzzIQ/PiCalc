@@ -2,6 +2,7 @@
 #include <vector>
 #include "Window.h"
 #include <string>
+#include <map>
 
 
 class Equation
@@ -24,4 +25,5 @@ private:
 
 	//std::vector<int> moveCursorLeft(std::vector<int> cursorPosition);
 	std::vector<int> moveCursorRight(std::vector<int> cursorPosition);
+	render_plane renderEquationPart(std::vector<Node*> equation, std::map<wchar_t, render_plane> table);
 };

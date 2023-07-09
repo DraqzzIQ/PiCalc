@@ -59,6 +59,6 @@ render_plane MainMenu::update_window()
 	e.moveCursor('r');
 	e.moveCursor('r');
 	e.moveCursor('r');
-	add_to_window(Graphics::create_text(std::format(L"ABC{}", PI), Graphics::SYMBOLS_6_HIGH), 10, 10);
+	add_to_window(e.renderEquation(), 10, 10);
 	return get_render_canvas();
 }
