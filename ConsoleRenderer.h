@@ -19,9 +19,9 @@ class ConsoleRenderer : public IRenderer
 
 	private:
 		/// <summary>
-		/// clears the console and sets the cursor to the top left
+		/// sets the cursor to the top left of the console
 		/// </summary>
-		void clear_screen();
+		void set_cursor_top_left();
 		/// <summary>
 		/// creates a border for display width
 		/// </summary>

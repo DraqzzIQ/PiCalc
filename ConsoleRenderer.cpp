@@ -6,7 +6,7 @@ ConsoleRenderer::ConsoleRenderer()
 
 void ConsoleRenderer::render(const render_plane pixels)
 {
-	clear_screen();
+	set_cursor_top_left();
 
 	std::string out = "";
 
@@ -42,7 +42,7 @@ std::string ConsoleRenderer::get_display_border()
 	return border;
 }
 
-void ConsoleRenderer::clear_screen()
+void ConsoleRenderer::set_cursor_top_left()
 {
 	std::cout << "\x1B[H";
 }
