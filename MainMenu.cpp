@@ -43,8 +43,22 @@ MenuOption* MainMenu::get_option(const std::string name)
 render_plane MainMenu::update_window()
 {
 	Equation e = Equation();
-	e.addValue('1');
+	e.addValue(L'1');
+	e.addValue(L'2');
+	e.addValue(L'3');
 	e.addValue(FRACTION);
+	e.addValue(L'4');
+	e.addValue(L'2');
+	e.moveCursor('r');
+	e.addValue(L'4');
+	e.moveCursor('r');
+	e.addValue(L'7');
+	e.moveCursor('r');
+	e.addValue('A');
+	e.moveCursor('r');
+	e.moveCursor('r');
+	e.moveCursor('r');
+	e.moveCursor('r');
 	add_to_window(Graphics::create_text(std::format(L"ABC{}", PI), Graphics::SYMBOLS_6_HIGH), 10, 10);
 	return get_render_canvas();
 }
