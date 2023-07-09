@@ -70,6 +70,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -107,10 +111,12 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,6 +142,7 @@
     <ClCompile Include="Equation.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="IRenderer.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="SpecialChars.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="MainMenu.cpp" />
@@ -148,6 +155,7 @@
     <ClInclude Include="Equation.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="IRenderer.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="SpecialChars.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="MainMenu.h" />

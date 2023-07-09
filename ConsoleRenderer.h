@@ -2,6 +2,7 @@
 #include "IRenderer.h"
 #include "Constants.h"
 #include <iostream>
+#include <chrono>
 
 /// <summary>
 /// provides functionality to render the screen to the console
@@ -19,13 +20,22 @@ class ConsoleRenderer : public IRenderer
 
 	private:
 		/// <summary>
-		/// clears the console and sets the cursor to the top left
+		/// sets the cursor to the top left of the console
 		/// </summary>
-		void clear_screen();
+		void set_cursor_top_left();
 		/// <summary>
 		/// creates a border for display width
 		/// </summary>
 		/// <returns>string containing #</returns>
 		std::string get_display_border();
+		/// <summary>
+		/// calculates the fps
+		/// </summary>
+		/// <returns>fps</returns>
+		int calculate_fps();
+		/// <summary>
+		/// start time of the current frame
+		/// </summary>
+		std::chrono::steady_clock::time_point current_ticks;
 };
 

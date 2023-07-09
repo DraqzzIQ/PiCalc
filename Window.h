@@ -16,6 +16,10 @@ class Window
 		/// <returns>pixels to render</returns>
 		virtual render_plane update_window() = 0;
 		/// <summary>
+		/// handles keyboard events
+		/// </summary>
+		virtual void handle_keyboard_event(int key) = 0;
+		/// <summary>
 		/// render_plane describing the window
 		/// </summary>
 		render_plane window;

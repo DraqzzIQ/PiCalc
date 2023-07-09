@@ -2,23 +2,29 @@
 
 WindowManager::WindowManager(IRenderer* renderer)
 {
-	this->renderer = renderer;
+	_renderer = renderer;
 }
 
 void WindowManager::add_window(Window* window)
 {
-	windows.push(window);
+	_windows.push(window);
 }
 
 void WindowManager::pop_window()
 {
-	windows.pop();
+	_windows.pop();
 }
 
 void WindowManager::update()
 {
-	if (windows.size() > 0)
-		renderer->render(windows.top()->update_window());
+	if (_windows.size() > 0)
+		_renderer->render(_windows.top()->update_window());
 	else
-		renderer->render(Graphics::LOGO_SCREEN);
+		_renderer->render(Graphics::LOGO_SCREEN);
+}
+
+void WindowManager::handle_keyboard_event(int key)
+{
+	if (_windows.size() > 0)
+		_windows.top()->handle_keyboard_event(key);
 }

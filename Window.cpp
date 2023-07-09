@@ -17,16 +17,15 @@ render_plane Window::get_render_canvas()
 
 	for (size_t i = 0; i < SCREEN_WIDTH; i++)
 	{
-		std::vector<bool> row;
+		std::vector<bool> row = std::vector<bool>(SCREEN_HEIGHT,false);
 
 		for (size_t j = 0; j < SCREEN_HEIGHT; j++)
 		{
-			row.push_back(window[corner_y +i][corner_x + j]);
+			if(corner_x + i < window.size() && corner_y + j < window[corner_x + i].size())
+				row[j] = (window[corner_x + i][corner_y + j]);
 		}
-
 		canvas.push_back(row);
 	}
-
 	return canvas;
 }
 

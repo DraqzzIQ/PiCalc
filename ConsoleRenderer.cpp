@@ -6,7 +6,7 @@ ConsoleRenderer::ConsoleRenderer()
 
 void ConsoleRenderer::render(const render_plane pixels)
 {
-	clear_screen();
+	set_cursor_top_left();
 
 	std::string out = "";
 
@@ -28,7 +28,9 @@ void ConsoleRenderer::render(const render_plane pixels)
 	}
 	out += get_display_border();
 
-	std::cout << out;
+	int fps = calculate_fps();
+
+	std::cout << out << std::endl << "fps: " << fps << "     " << std::endl;
 }
 
 std::string ConsoleRenderer::get_display_border()
@@ -42,7 +44,16 @@ std::string ConsoleRenderer::get_display_border()
 	return border;
 }
 
-void ConsoleRenderer::clear_screen()
+int ConsoleRenderer::calculate_fps()
 {
-	std::cout << "\x1B[2J\x1B[H";
+	std::chrono::duration<double> delta_ticks = std::chrono::high_resolution_clock::now() - current_ticks;
+	int rounded_fps = static_cast<int>(std::round(1.0 / delta_ticks.count()));
+	current_ticks = std::chrono::high_resolution_clock::now();
+
+	return rounded_fps;
+}
+
+void ConsoleRenderer::set_cursor_top_left()
+{
+	std::cout << "\x1B[H";
 }
