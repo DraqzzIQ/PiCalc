@@ -10,9 +10,9 @@
 
 int fps = 30;
 ConsoleRenderer* renderer;
-WindowManager* windowManager;
+WindowManager* window_manager;
 Keyboard* keyboard;
-MainMenu* mainMenu;
+MainMenu* main_menu;
 
 /// <summary>
 /// starts a thread that will update and render the window manager at set fps
@@ -22,7 +22,7 @@ void start_render_thread()
 	int frame_time = 1000 / fps;
 
 	while (1) {
-		windowManager->update();
+		window_manager->update();
 		std::this_thread::sleep_for(std::chrono::milliseconds(frame_time));
 	}
 }
@@ -33,15 +33,15 @@ void start_render_thread()
 std::vector<MenuOption*> create_main_menu_options()
 {
 	std::vector<MenuOption*> options;
-	options.push_back(new MenuOption("Calculator", windowManager));
-	options.push_back(new MenuOption("Notepad", windowManager));
-	options.push_back(new MenuOption("Settings", windowManager));
-	options.push_back(new MenuOption("ChadGPT", windowManager));
-	options.push_back(new MenuOption("DOOM", windowManager));
-	options.push_back(new MenuOption("Another option with a really long name", windowManager));
-	options.push_back(new MenuOption("Option x", windowManager));
-	options.push_back(new MenuOption("Option X", windowManager));
-	options.push_back(new MenuOption("Option XyZ", windowManager));
+	options.push_back(new MenuOption("Calculator", window_manager));
+	options.push_back(new MenuOption("Notepad", window_manager));
+	options.push_back(new MenuOption("Settings", window_manager));
+	options.push_back(new MenuOption("ChadGPT", window_manager));
+	options.push_back(new MenuOption("DOOM", window_manager));
+	options.push_back(new MenuOption("Another option with a really long name", window_manager));
+	options.push_back(new MenuOption("Option x", window_manager));
+	options.push_back(new MenuOption("Option X", window_manager));
+	options.push_back(new MenuOption("Option XyZ", window_manager));
 
 	options[0]->add_window<Calculator>();
 	return options;
@@ -49,7 +49,7 @@ std::vector<MenuOption*> create_main_menu_options()
 
 void start_kb_thread()
 {
-	keyboard = new Keyboard(windowManager);
+	keyboard = new Keyboard(window_manager);
 }
 
 /// <summary>
@@ -58,11 +58,11 @@ void start_kb_thread()
 int main(int argc, char* argv[])
 {
 	renderer = new ConsoleRenderer();
-	windowManager = new WindowManager(renderer);
-	mainMenu = new MainMenu(create_main_menu_options());
+	window_manager = new WindowManager(renderer);
+	main_menu = new MainMenu(create_main_menu_options());
 
-	windowManager->add_window(mainMenu);
-	windowManager->update();
+	window_manager->add_window(main_menu);
+	window_manager->update();
 
 	// start keyboard thread
 	std::thread kb_thread(start_kb_thread);

@@ -1,7 +1,4 @@
 #include "Calculator.h"
-#include "Graphics.h"
-#include "Keyboard.h"
-#include "Equation.h"
 
 Calculator::Calculator() {
 	equation = Equation();

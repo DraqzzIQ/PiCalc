@@ -1,6 +1,8 @@
 #pragma once
 #include "Window.h"
 #include "Equation.h"
+#include "Graphics.h"
+#include "Keyboard.h"
 
 class Calculator : public Window {
 	public:

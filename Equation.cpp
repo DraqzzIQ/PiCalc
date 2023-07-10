@@ -1,8 +1,4 @@
 #include "Equation.h"
-#include "SpecialChars.h"
-#include <iterator>
-#include "Graphics.h"
-#include <map>
 
 Equation::Equation() {
 	root = Node();

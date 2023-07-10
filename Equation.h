@@ -1,6 +1,7 @@
 #pragma once
-#include <vector>
 #include "Window.h"
+#include "Graphics.h"
+#include <vector>
 #include <string>
 #include <map>
 
