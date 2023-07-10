@@ -33,7 +33,7 @@ void start_render_thread()
 std::vector<MenuOption*> create_main_menu_options()
 {
 	std::vector<MenuOption*> options;
-	options.push_back(new MenuOption("Calculator", windowManager, new Calculator()));
+	options.push_back(new MenuOption("Calculator", windowManager));
 	options.push_back(new MenuOption("Notepad", windowManager));
 	options.push_back(new MenuOption("Settings", windowManager));
 	options.push_back(new MenuOption("ChadGPT", windowManager));
@@ -43,7 +43,7 @@ std::vector<MenuOption*> create_main_menu_options()
 	options.push_back(new MenuOption("Option X", windowManager));
 	options.push_back(new MenuOption("Option XyZ", windowManager));
 
-
+	options[0]->add_window<Calculator>();
 	return options;
 }
 
