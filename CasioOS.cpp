@@ -3,6 +3,7 @@
 #include "WindowManager.h"
 #include "MainMenu.h"
 #include "Keyboard.h"
+#include "Calculator.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -32,15 +33,15 @@ void start_render_thread()
 std::vector<MenuOption*> create_main_menu_options()
 {
 	std::vector<MenuOption*> options;
-	options.push_back(new MenuOption("Calculator"));
-	options.push_back(new MenuOption("Notepad"));
-	options.push_back(new MenuOption("Settings"));
-	options.push_back(new MenuOption("ChadGPT"));
-	options.push_back(new MenuOption("DOOM"));
-	options.push_back(new MenuOption("Another option with a really long name"));
-	options.push_back(new MenuOption("Option x"));
-	options.push_back(new MenuOption("Option X"));
-	options.push_back(new MenuOption("Option XyZ"));
+	options.push_back(new MenuOption("Calculator", windowManager, new Calculator()));
+	options.push_back(new MenuOption("Notepad", windowManager));
+	options.push_back(new MenuOption("Settings", windowManager));
+	options.push_back(new MenuOption("ChadGPT", windowManager));
+	options.push_back(new MenuOption("DOOM", windowManager));
+	options.push_back(new MenuOption("Another option with a really long name", windowManager));
+	options.push_back(new MenuOption("Option x", windowManager));
+	options.push_back(new MenuOption("Option X", windowManager));
+	options.push_back(new MenuOption("Option XyZ", windowManager));
 
 
 	return options;

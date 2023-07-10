@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Calculator.cpp" />
     <ClCompile Include="CasioOS.cpp" />
     <ClCompile Include="ConsoleRenderer.cpp" />
     <ClCompile Include="Constants.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Calculator.h" />
     <ClInclude Include="ConsoleRenderer.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Equation.h" />

@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "Graphics.h"
 #include "Keyboard.h"
+#include "WindowManager.h"
 #include <vector>
 #include <format>
 

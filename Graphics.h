@@ -24,7 +24,7 @@ class Graphics
         /// <returns>converted text</returns>
         static render_plane create_text(const std::string text, std::map<wchar_t, render_plane> table = SYMBOLS_9_HIGH, int spacing = 1);
         /// <summary>
-        /// creates a render_plane text from string
+        /// creates a render_plane text from wstring
         /// </summary>
         /// <param name="text">text to be transformed</param>
         /// <param name="table">charset to be used</param>
