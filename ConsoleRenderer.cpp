@@ -46,9 +46,9 @@ std::string ConsoleRenderer::get_display_border()
 
 int ConsoleRenderer::calculate_fps()
 {
-	std::chrono::duration<double> delta_ticks = std::chrono::high_resolution_clock::now() - current_ticks;
-	int rounded_fps = static_cast<int>(std::round(1.0 / delta_ticks.count()));
-	current_ticks = std::chrono::high_resolution_clock::now();
+	clock_t delta_ticks = clock() - current_ticks;
+	int rounded_fps = static_cast<int>(std::round((CLOCKS_PER_SEC / (double)delta_ticks)));
+	current_ticks = clock();
 
 	return rounded_fps;
 }

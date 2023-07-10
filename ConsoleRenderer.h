@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include <iostream>
 #include <chrono>
+#include <cmath>
 
 /// <summary>
 /// provides functionality to render the screen to the console
@@ -36,6 +37,6 @@ class ConsoleRenderer : public IRenderer
 		/// <summary>
 		/// start time of the current frame
 		/// </summary>
-		std::chrono::steady_clock::time_point current_ticks;
+		clock_t current_ticks;
 };
 

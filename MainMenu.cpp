@@ -58,7 +58,7 @@ void MainMenu::create_menu()
 {
 	for (size_t i = 0; i < _options.size() && i < _max_options; i++)
 	{
-		add_to_window(Graphics::create_text(std::format("{}:{}", i, _options[i]->get_display_name()), Graphics::SYMBOLS_6_HIGH), 1, 1 + i * _line_height);
+		add_to_window(Graphics::create_text(std::to_string(i) + ":" + _options[i]->get_display_name(), Graphics::SYMBOLS_6_HIGH), 1, 1 + i * _line_height);
 	}
 }
 
