@@ -10,21 +10,26 @@ render_plane Calculator::update_window() {
 }
 
 void Calculator::handle_keyboard_event(int key) {
-	//std::cout << key;
+	std::cout << key << "       ";
 	switch (key) {
 		case::SDL_SCANCODE_RIGHT:
 			equation.moveCursor('r');
-		case::SDL_SCANCODE_BACKSLASH:
+			return;
+		case 48:
+			equation.addValue('+');
+			return;
+		case 56:
+			equation.addValue('-');
+			return;
+		case 85:
+			equation.addValue('*');
+			return;
+		case 84:
 			equation.addValue(FRACTION);
-		case::SDL_SCANCODE_0:
-			equation.addValue('0');
-		case::SDL_SCANCODE_1:
-			equation.addValue('1');
+			return;
 	}
-	/*if (Keyboard::scancode_is_number(key))
+	if (Keyboard::scancode_is_number(key))
 	{
-		int number = Keyboard::scancode_to_number(key);
-		std::cout << static_cast<char>(number);
-		equation.addValue(static_cast<char>(number));
-	}*/
+		equation.addValue('0' + Keyboard::scancode_to_number(key));
+	}
 }

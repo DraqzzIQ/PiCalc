@@ -23,8 +23,13 @@ private:
 		std::vector<Node*>* children;
 	};
 	Node root;
+	render_plane renderedEquation;
+	bool equationChanged;
 
 	//std::vector<int> moveCursorLeft(std::vector<int> cursorPosition);
 	std::vector<int> moveCursorRight(std::vector<int> cursorPosition);
 	render_plane renderEquationPart(std::vector<Node*> equation, std::map<wchar_t, render_plane> table);
+	render_plane renderFraction(render_plane top, render_plane bottom);
+	render_plane resize_center_x(render_plane renderPlaneInput, int length);
+	void add_resized_symbol(render_plane &renderPlane, render_plane symbol, int y_position);
 };
