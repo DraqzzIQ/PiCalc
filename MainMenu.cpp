@@ -67,7 +67,7 @@ const int MainMenu::pages_count()
 	return static_cast<int>(ceil(static_cast<double>(_options.size()) / 4));
 }
 
-void MainMenu::handle_keyboard_event(int key)
+void MainMenu::handle_keyboard_event(int key, bool shift)
 {
 	switch (key)
 	{

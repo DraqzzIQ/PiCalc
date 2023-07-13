@@ -44,5 +44,7 @@ class Keyboard
 		/// avoid unnecessary cpu usage
 		/// </summary>
 		int _sleep_time = 10;
+
+		bool _shift;
 };
 

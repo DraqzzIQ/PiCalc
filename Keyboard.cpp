@@ -3,6 +3,7 @@
 Keyboard::Keyboard(WindowManager* window_manager)
 {
 	_window_manager = window_manager;
+	_shift = false;
 
 	sdl_init();
 
@@ -60,7 +61,14 @@ void Keyboard::check_for_keyboard_events()
 				break;
 			}
 			if (_event.type == SDL_KEYDOWN) {
-				_window_manager->handle_keyboard_event(_event.key.keysym.scancode);
+				if (_event.key.keysym.sym == SDLK_LSHIFT || _event.key.keysym.sym == SDLK_RSHIFT)
+					_shift = true;
+
+				_window_manager->handle_keyboard_event(_event.key.keysym.scancode, _shift);
+			}
+			if (_event.type == SDL_KEYUP) {
+				if (_event.key.keysym.sym == SDLK_LSHIFT || _event.key.keysym.sym == SDLK_RSHIFT)
+					_shift = false;
 			}
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(_sleep_time));

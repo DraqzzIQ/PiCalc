@@ -27,7 +27,7 @@ class WindowManager
 		/// <summary>
 		/// handles keyboard events
 		/// </summary>
-		void handle_keyboard_event(int key);
+		void handle_keyboard_event(int key, bool shift);
 
 	private:
 		/// <summary>

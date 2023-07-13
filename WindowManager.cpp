@@ -23,8 +23,8 @@ void WindowManager::update()
 		_renderer->render(Graphics::LOGO_SCREEN, std::vector<bool>(Graphics::ScreenSymbols.size(), false));
 }
 
-void WindowManager::handle_keyboard_event(int key)
+void WindowManager::handle_keyboard_event(int key, bool shift)
 {
 	if (_windows.size() > 0)
-		_windows.top()->handle_keyboard_event(key);
+		_windows.top()->handle_keyboard_event(key, shift);
 }

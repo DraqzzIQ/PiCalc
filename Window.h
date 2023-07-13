@@ -19,7 +19,7 @@ class Window
 		/// <summary>
 		/// handles keyboard events
 		/// </summary>
-		virtual void handle_keyboard_event(int key) = 0;
+		virtual void handle_keyboard_event(int key, bool shift) = 0;
 		/// <summary>
 		/// render_plane describing the window
 		/// </summary>
