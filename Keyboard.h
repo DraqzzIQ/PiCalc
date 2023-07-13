@@ -14,16 +14,10 @@ class Keyboard
 		Keyboard(WindowManager* window_manager);
 
 		/// <summary>
-		/// checks if scancode is a number
+		/// converts a scancode to a number, returns -1 if scancode is no number
 		/// </summary>
 		/// <param name="scancode">scancode to check</param>
 		/// <returns>true if number</returns>
-		static bool scancode_is_number(int scancode);
-		/// <summary>
-		/// converts scancode to number
-		/// </summary>
-		/// <param name="scancode">scancode to convert</param>
-		/// <returns>the number</returns>
 		static int scancode_to_number(int scancode);
 	private:
 		/// <summary>

@@ -13,20 +13,22 @@ Keyboard::Keyboard(WindowManager* window_manager)
 #endif // _WIN32 || defined __linux__
 }
 
-bool Keyboard::scancode_is_number(int scancode)
-{
-	if(scancode >= SDL_SCANCODE_1 && scancode <= SDL_SCANCODE_0)
-		return true;
-	else
-		return false;
-}
-
 int Keyboard::scancode_to_number(int scancode)
 {
-	if (scancode == SDL_SCANCODE_0)
-		return 0;
+	if (scancode >= SDL_SCANCODE_1 && scancode <= SDL_SCANCODE_0) {
+		if (scancode == SDL_SCANCODE_0)
+			return 0;
+		else
+			return scancode - SDL_SCANCODE_1 + 1;
+	}
+	else if (scancode >= SDL_SCANCODE_KP_1 && scancode <= SDL_SCANCODE_KP_0) {
+		if (scancode == SDL_SCANCODE_KP_0)
+			return 0;
+		else
+			return scancode - SDL_SCANCODE_KP_1 + 1;
+	}
 	else
-		return scancode - SDL_SCANCODE_1 + 1;
+		return -1;
 }
 
 void Keyboard::sdl_init()

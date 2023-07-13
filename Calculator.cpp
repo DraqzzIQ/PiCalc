@@ -27,9 +27,14 @@ void Calculator::handle_keyboard_event(int key) {
 		case 84:
 			equation.addValue(FRACTION);
 			return;
+		case::SDLK_KP_0:
+			equation.addValue('0');
+			return;
 	}
-	if (Keyboard::scancode_is_number(key))
+	int number = Keyboard::scancode_to_number(key);
+	if (number != -1)
 	{
 		equation.addValue('0' + Keyboard::scancode_to_number(key));
+		return;
 	}
 }

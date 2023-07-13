@@ -78,9 +78,9 @@ void MainMenu::handle_keyboard_event(int key)
 			scroll_down();
 			return;
 	}
-	if (Keyboard::scancode_is_number(key))
+	int number = Keyboard::scancode_to_number(key);
+	if (number != -1)
 	{
-		int number = Keyboard::scancode_to_number(key);
 		if (number < _options.size())
 			_options[number]->on_select();
 		return;

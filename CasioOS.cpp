@@ -20,6 +20,8 @@ MainMenu* main_menu;
 void start_render_thread()
 {
 	int frame_time = 1000 / fps;
+
+	window_manager->update();
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	window_manager->add_window(main_menu);
 
@@ -62,8 +64,6 @@ int main(int argc, char* argv[])
 	renderer = new ConsoleRenderer();
 	window_manager = new WindowManager(renderer);
 	main_menu = new MainMenu(create_main_menu_options());
-
-	window_manager->update();
 
 	// start keyboard thread
 	std::thread kb_thread(start_kb_thread);

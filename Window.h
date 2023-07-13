@@ -54,5 +54,5 @@ class Window
 		void clear_window();
 		void clear_symbols();
 
-		void change_Symbol(std::string symbol, bool state);
+		void change_symbol(std::string symbol, bool state);
 };

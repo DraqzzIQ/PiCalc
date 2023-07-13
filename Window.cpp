@@ -8,7 +8,6 @@ Window::Window()
 	corner_y = 0;
 	clear_window();
 	clear_symbols();
-	change_Symbol("Math", true);
 }
 
 Window::~Window()
@@ -60,6 +59,6 @@ void Window::clear_symbols() {
 	screen_symbols = std::vector<bool>(Graphics::ScreenSymbols.size(), false);
 }
 
-void Window::change_Symbol(std::string symbol, bool state) {
+void Window::change_symbol(std::string symbol, bool state) {
 	screen_symbols[std::find(Graphics::ScreenSymbols.begin(), Graphics::ScreenSymbols.end(), symbol) - Graphics::ScreenSymbols.begin()] = state;
 }

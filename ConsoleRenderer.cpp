@@ -3,6 +3,7 @@
 
 ConsoleRenderer::ConsoleRenderer()
 {
+	current_ticks = clock();
 }
 
 void ConsoleRenderer::render(const render_plane pixels, const std::vector<bool> screenSymbols)
