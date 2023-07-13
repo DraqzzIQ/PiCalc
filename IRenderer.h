@@ -12,6 +12,6 @@ class IRenderer
 		/// renders the given pixels
 		/// </summary>
 		/// <param name="pixels">pixels to render</param>
-		virtual void render(const render_plane pixels) = 0;
+		virtual void render(const render_plane pixels, const std::vector<bool> screenSymbols) = 0;
 };
 

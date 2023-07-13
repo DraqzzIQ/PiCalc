@@ -1,17 +1,27 @@
 #include "ConsoleRenderer.h"
+#include "Graphics.h"
 
 ConsoleRenderer::ConsoleRenderer()
 {
 }
 
-void ConsoleRenderer::render(const render_plane pixels)
+void ConsoleRenderer::render(const render_plane pixels, const std::vector<bool> screenSymbols)
 {
 	set_cursor_top_left();
 
 	std::string out = "";
 
 	out += get_display_border();
-	out += '\n';
+	out += "\n# ";
+
+	for (int i = 0; i < screenSymbols.size(); i++) {
+		if (screenSymbols[i]) { out += Graphics::ScreenSymbols[i]; }
+		else { out += std::string(Graphics::ScreenSymbols[i].length(), ' '); }
+		out += "  ";
+	}
+
+	out += std::string(113, ' ');
+	out += "#\n";
 
 	for (size_t i = 0; i < SCREEN_HEIGHT; i++)
 	{

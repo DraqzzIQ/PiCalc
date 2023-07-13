@@ -18,9 +18,9 @@ void WindowManager::pop_window()
 void WindowManager::update()
 {
 	if (_windows.size() > 0)
-		_renderer->render(_windows.top()->update_window());
+		_renderer->render(_windows.top()->update_window(), _windows.top()->screen_symbols);
 	else
-		_renderer->render(Graphics::LOGO_SCREEN);
+		_renderer->render(Graphics::LOGO_SCREEN, std::vector<bool>(Graphics::ScreenSymbols.size(), false));
 }
 
 void WindowManager::handle_keyboard_event(int key)

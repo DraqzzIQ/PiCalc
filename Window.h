@@ -1,6 +1,7 @@
 #pragma once
 #include "Constants.h"
 #include <vector>
+#include <string>
 
 /// <summary>
 /// base class for all windows
@@ -32,6 +33,9 @@ class Window
 		/// </summary>
 		int corner_y;
 
+
+		std::vector<bool> screen_symbols;
+
 		/// <summary>
 		/// extracts the part of the window that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 		/// </summary>
@@ -48,4 +52,7 @@ class Window
 		/// clears the window
 		/// </summary>
 		void clear_window();
+		void clear_symbols();
+
+		void change_Symbol(std::string symbol, bool state);
 };

@@ -1,10 +1,14 @@
 #include "Window.h"
+#include "Graphics.h"
+#include <algorithm>
 
 Window::Window()
 {
 	corner_x = 0;
 	corner_y = 0;
 	clear_window();
+	clear_symbols();
+	change_Symbol("Math", true);
 }
 
 Window::~Window()
@@ -17,9 +21,9 @@ render_plane Window::get_render_canvas()
 
 	for (std::size_t i = 0; i < SCREEN_WIDTH; i++)
 	{
-		std::vector<bool> row = std::vector<bool>(SCREEN_HEIGHT,false);
+		std::vector<bool> row = std::vector<bool>(SCREEN_HEIGHT + 1,false);
 
-		for (std::size_t j = 0; j < SCREEN_HEIGHT; j++)
+		for (std::size_t j = 0; j < SCREEN_HEIGHT + 1; j++)
 		{
 			if(corner_x + i < window.size() && corner_y + j < window[corner_x + i].size())
 				row[j] = (window[corner_x + i][corner_y + j]);
@@ -50,4 +54,12 @@ void Window::add_to_window(render_plane graphic, int c_x, int c_y) {
 
 void Window::clear_window() {
 	window = render_plane(SCREEN_WIDTH, std::vector<bool>(SCREEN_HEIGHT, false));
+}
+
+void Window::clear_symbols() {
+	screen_symbols = std::vector<bool>(Graphics::ScreenSymbols.size(), false);
+}
+
+void Window::change_Symbol(std::string symbol, bool state) {
+	screen_symbols[std::find(Graphics::ScreenSymbols.begin(), Graphics::ScreenSymbols.end(), symbol) - Graphics::ScreenSymbols.begin()] = state;
 }
