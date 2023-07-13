@@ -22,6 +22,12 @@ void Calculator::handle_keyboard_event(int key, bool shift) {
 		case 48:
 			equation.addValue('*');
 			return;
+		case SDL_SCANCODE_8:
+			equation.addValue('(');
+			return;
+		case SDL_SCANCODE_9:
+			equation.addValue(')');
+			return;
 		}
 	}
 	else {

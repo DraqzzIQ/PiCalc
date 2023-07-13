@@ -25,9 +25,7 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 	render_plane renderPlane = render_plane(1, std::vector<bool>(font_height, false));;
 
 	if (equation.size() == 0) {
-		render_plane symbol = table.at(EMPTY);
-		symbol.push_back(std::vector<bool>(font_height, false));
-		return symbol;
+		return table.at(EMPTY);
 	}
 	for (size_t iSymbol = 0; iSymbol < equation.size(); iSymbol++) {
 		Node* currentSymbol = equation.at(iSymbol);
@@ -46,7 +44,7 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 			}
 
 			if (*currentSymbol->operation == FRACTION) {
-				int fraction_height = (font_height == 9) ? 4 : 3;
+				int fraction_height = (font_height == 9) ? 3 : 2;
 				int add_height = y_origin + fraction_height - subEquations[0][0].size();
 				if (add_height < 0) {
 					std::vector<bool> empty = std::vector<bool>(-add_height, false);
@@ -68,12 +66,11 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 				add_resized_symbol(renderPlane, renderedFraction, y_origin + fraction_height - subEquations[0][0].size());
 			}
 		}
-
-		std::vector<bool> empty = std::vector<bool>(renderPlane[0].size(), false);
 		if (iSymbol + 1 != equation.size()) {
-			renderPlane.push_back(empty);
+			renderPlane.push_back(std::vector<bool>(renderPlane[0].size(), false));
 		}
 	}
+	renderPlane.erase(renderPlane.begin());
 	return renderPlane;
 }
 
