@@ -9,9 +9,9 @@ render_plane Calculator::update_window() {
 	return get_render_canvas();
 }
 
-void Calculator::handle_keyboard_event(int key, bool shift) {
+void Calculator::handle_key_down(int key) {
 	std::cout << key << "       ";
-	if (shift) {
+	if (Keyboard::is_key_down(SDL_SCANCODE_RSHIFT) || Keyboard::is_key_down(SDL_SCANCODE_LSHIFT)) {
 		switch (key) {
 		case 84:
 			equation.addValue(FRACTION);
@@ -47,7 +47,6 @@ void Calculator::handle_keyboard_event(int key, bool shift) {
 		case 87:
 			equation.addValue('+');
 			return;
-
 		case 48:
 			equation.addValue('+');
 			return;

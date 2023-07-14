@@ -25,9 +25,15 @@ class WindowManager
 		/// </summary>
 		void update();
 		/// <summary>
-		/// handles keyboard events
+		/// handles keydown events
 		/// </summary>
-		void handle_keyboard_event(int key, bool shift);
+		/// <param name="key">key that got pressed</param>
+		void handle_key_down(int key);
+		/// <summary>
+		/// handles keyup events
+		/// </summary>
+		/// <param name="key">key that got released</param>
+		void handle_key_up(int key);
 
 	private:
 		/// <summary>

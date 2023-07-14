@@ -44,9 +44,10 @@ class MainMenu : public Window
 		/// <returns>pixels to render</returns>
 		render_plane update_window();
 		/// <summary>
-		/// handles keyboard events
+		/// handles keydown events
 		/// </summary>
-		void handle_keyboard_event(int key, bool shift);
+		/// <param name="key">key that got pressed</param>
+		void handle_key_down(int key);
 
 	private:
 		/// <summary>

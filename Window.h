@@ -17,9 +17,15 @@ class Window
 		/// <returns>pixels to render</returns>
 		virtual render_plane update_window() = 0;
 		/// <summary>
-		/// handles keyboard events
+		/// handles keydown events
 		/// </summary>
-		virtual void handle_keyboard_event(int key, bool shift) = 0;
+		/// <param name="key">key that got pressed</param>
+		virtual void handle_key_down(int key);
+		/// <summary>
+		/// handles keyup events
+		/// </summary>
+		/// <param name="key">key that got released</param>
+		virtual void handle_key_up(int key);
 		/// <summary>
 		/// render_plane describing the window
 		/// </summary>
@@ -32,10 +38,10 @@ class Window
 		/// y coordinate of the upper left corner of the part of the canvas that is rendered
 		/// </summary>
 		int corner_y;
-
-
+		/// <summary>
+		/// saves, which symbols on the lcd should be displayed
+		/// </summary>
 		std::vector<bool> screen_symbols;
-
 		/// <summary>
 		/// extracts the part of the window that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 		/// </summary>
@@ -52,7 +58,14 @@ class Window
 		/// clears the window
 		/// </summary>
 		void clear_window();
+		/// <summary>
+		/// clears all on-screen symbols from the lcd
+		/// </summary>
 		void clear_symbols();
-
+		/// <summary>
+		/// changes, whether a symbol shoud be displayed on the LCD
+		/// </summary>
+		/// <param name="symbol">symbol to change state</param>
+		/// <param name="state">state to change symbol to</param>
 		void change_symbol(std::string symbol, bool state);
 };

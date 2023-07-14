@@ -3,8 +3,6 @@
 Keyboard::Keyboard(WindowManager* window_manager)
 {
 	_window_manager = window_manager;
-	_shift = false;
-
 	sdl_init();
 
 #if defined(_WIN32) || defined(__linux__)
@@ -17,42 +15,30 @@ Keyboard::Keyboard(WindowManager* window_manager)
 int Keyboard::scancode_to_number(int scancode)
 {
 	if (scancode >= SDL_SCANCODE_1 && scancode <= SDL_SCANCODE_0) {
-		if (scancode == SDL_SCANCODE_0)
-			return 0;
-		else
-			return scancode - SDL_SCANCODE_1 + 1;
+		if (scancode == SDL_SCANCODE_0) return 0;
+		else return scancode - SDL_SCANCODE_1 + 1;
 	}
 	else if (scancode >= SDL_SCANCODE_KP_1 && scancode <= SDL_SCANCODE_KP_0) {
-		if (scancode == SDL_SCANCODE_KP_0)
-			return 0;
-		else
-			return scancode - SDL_SCANCODE_KP_1 + 1;
+		if (scancode == SDL_SCANCODE_KP_0) return 0;
+		else return scancode - SDL_SCANCODE_KP_1 + 1;
 	}
-	else
-		return -1;
+	else return -1;
 }
 
-void Keyboard::sdl_init()
-{
+void Keyboard::sdl_init(){
 #if defined(_WIN32) || defined(__linux__)
 	SDL_Init(SDL_INIT_EVERYTHING);
-
 	window = SDL_CreateWindow("keyboard input, NEEDS TO BE IN FOCUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 400, 200, SDL_WINDOW_ALLOW_HIGHDPI);
-
 	SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
 
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
-
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
 	SDL_RenderClear(renderer);
-
 	SDL_RenderPresent(renderer);
 #endif // _WIN32 || derfined __linux__
 }
 
-void Keyboard::check_for_keyboard_events()
-{
+void Keyboard::check_for_keyboard_events() {
 #if defined(_WIN32) || defined(__linux__)
 	SDL_Event _event;
 	while (1) {
@@ -61,14 +47,10 @@ void Keyboard::check_for_keyboard_events()
 				break;
 			}
 			if (_event.type == SDL_KEYDOWN) {
-				if (_event.key.keysym.sym == SDLK_LSHIFT || _event.key.keysym.sym == SDLK_RSHIFT)
-					_shift = true;
-
-				_window_manager->handle_keyboard_event(_event.key.keysym.scancode, _shift);
+				_window_manager->handle_key_down(_event.key.keysym.scancode);
 			}
 			if (_event.type == SDL_KEYUP) {
-				if (_event.key.keysym.sym == SDLK_LSHIFT || _event.key.keysym.sym == SDLK_RSHIFT)
-					_shift = false;
+				_window_manager->handle_key_up(_event.key.keysym.scancode);
 			}
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(_sleep_time));
@@ -88,4 +70,12 @@ void Keyboard::check_for_calc_button_presses()
 	//Pico button mapping to SDL keycodes
 
 #endif // not _WIN32 && not defined __linux__
+}
+
+bool Keyboard::is_key_down(int scancode) {
+#if defined(_WIN32) || defined(__linux__)
+	return SDL_GetKeyboardState(NULL)[scancode];
+#else
+	return false;
+#endif // _WIN32 || defined __linux__
 }

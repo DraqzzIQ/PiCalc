@@ -14,6 +14,7 @@ public:
 	render_plane renderEquation();
 	void moveCursor(char direction);
 	void addValue(wchar_t Value);
+	void calculate();
 	//void del();
 private:
 	std::vector<int> cursor_position = std::vector<int>(1, 0);

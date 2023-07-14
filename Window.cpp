@@ -62,3 +62,11 @@ void Window::clear_symbols() {
 void Window::change_symbol(std::string symbol, bool state) {
 	screen_symbols[std::find(Graphics::ScreenSymbols.begin(), Graphics::ScreenSymbols.end(), symbol) - Graphics::ScreenSymbols.begin()] = state;
 }
+
+void Window::handle_key_down(int key) {
+
+}
+
+void Window::handle_key_up(int key) {
+
+}

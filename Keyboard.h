@@ -11,14 +11,19 @@
 class Keyboard
 {
 	public:
+		/// <summary>
+		/// constructs a new keyboard-listener
+		/// </summary>
+		/// <param name="window_manager">windowmanager do send keyevents to</param>
 		Keyboard(WindowManager* window_manager);
-
 		/// <summary>
 		/// converts a scancode to a number, returns -1 if scancode is no number
 		/// </summary>
 		/// <param name="scancode">scancode to check</param>
 		/// <returns>true if number</returns>
 		static int scancode_to_number(int scancode);
+
+		static bool is_key_down(int scancode);
 	private:
 		/// <summary>
 		/// window manager handles the inputs
@@ -44,7 +49,5 @@ class Keyboard
 		/// avoid unnecessary cpu usage
 		/// </summary>
 		int _sleep_time = 10;
-
-		bool _shift;
 };
 

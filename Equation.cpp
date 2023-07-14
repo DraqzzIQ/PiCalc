@@ -66,9 +66,8 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 				add_resized_symbol(renderPlane, renderedFraction, y_origin + fraction_height - subEquations[0][0].size());
 			}
 		}
-		if (iSymbol + 1 != equation.size()) {
+		if (iSymbol + 1 != equation.size())
 			renderPlane.push_back(std::vector<bool>(renderPlane[0].size(), false));
-		}
 	}
 	renderPlane.erase(renderPlane.begin());
 	return renderPlane;
@@ -112,6 +111,10 @@ void Equation::add_resized_symbol(render_plane& renderPlane, render_plane symbol
 		column.insert(column.end(), emptyBottom.begin(), emptyBottom.end());
 		renderPlane.push_back(column);
 	}
+}
+
+void Equation::calculate() {
+
 }
 
 
