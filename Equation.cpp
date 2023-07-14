@@ -5,6 +5,7 @@ Equation::Equation() {
 	root = Node();
 	root.children = new std::vector<Node*>(0);
 	equationChanged = true;
+	renderedEquation = render_plane();
 }
 
 Equation::~Equation() {
@@ -119,7 +120,6 @@ void Equation::calculate() {
 
 
 void Equation::addValue(wchar_t value) {
-	equationChanged = true;
 	Node* modify;
 	modify = &root;
 	for (size_t i = 0; i < cursor_position.size() - 1; i++) {
@@ -154,51 +154,95 @@ void Equation::addValue(wchar_t value) {
 		modify->children->insert(ptr, container);
 		cursor_position.back() += 1;
 	}
+	equationChanged = true;
 }
 
 void Equation::moveCursor(char direction) {
 	if (direction == 'r') {
-		cursor_position = moveCursorRight(cursor_position);
+		moveCursorRight();
+	}
+	else if (direction == 'l') {
+		moveCursorLeft();
 	}
 }
 
-//std::vector<int> Equation::moveCursorLeft(std::vector<int> cursorPosition) {
-//	return
-//}
-
-std::vector<int> Equation::moveCursorRight(std::vector<int> cursorPosition) {
+void Equation::moveCursorLeft() {
 	Node* modify;
 	Node* modify_parent;
 	modify_parent = modify = &root;
 	size_t i = 0;
-	for (; i+1 < cursorPosition.size(); i++) {
+	for (; i + 1 < cursor_position.size(); i++) {
 		modify_parent = modify;
-		modify = modify->children->at(cursorPosition[i]);
+		modify = modify->children->at(cursor_position[i]);
 	}
-	if (modify->children->size() > cursorPosition.back()) {
-		if (modify->children->at(cursorPosition.back())->operation != nullptr) {
-			cursorPosition.push_back(0);
-			cursorPosition.push_back(0);
-			return cursorPosition;
+	if (cursor_position.back() != 0) {
+		if (modify->children->at(cursor_position.back() - 1)->operation != nullptr) {
+			cursor_position.back() -= 1;
+			std::vector<Node*>* modifyChild = modify->children->at(cursor_position.back())->children;
+			cursor_position.push_back(modifyChild->size() - 1);
+			cursor_position.push_back(modifyChild->at(cursor_position.back())->children->size());
 		}
 		else {
-			cursorPosition.back() += 1;
-			return cursorPosition;
+			cursor_position.back() -= 1;
 		}
 	}
-	else if (cursorPosition.size() == 1) {
-		cursorPosition.back() = 0;
-		return cursorPosition;
+	else if (cursor_position.size() == 1) {
+		cursor_position.back() = modify->children->size();
 	}
-	else if (modify_parent->children->size() > cursorPosition[i-1] + 1) {
-		cursorPosition[i-1] += 1;
-		cursorPosition[i] = 0;
-		return cursorPosition;
+	else if (cursor_position[i - 1] != 0) {
+		cursor_position[i - 1] -= 1;
+		cursor_position[i] = modify_parent->children->at(cursor_position[i - 1])->children->size();
 	}
 	else {
-		cursorPosition.pop_back();
-		cursorPosition.pop_back();
-		cursorPosition.back() += 1;
-		return cursorPosition;
+		cursor_position.pop_back();
+		cursor_position.pop_back();
 	}
+}
+
+void Equation::moveCursorRight() {
+	Node* modify;
+	Node* modify_parent;
+	modify_parent = modify = &root;
+	size_t i = 0;
+	for (; i+1 < cursor_position.size(); i++) {
+		modify_parent = modify;
+		modify = modify->children->at(cursor_position[i]);
+	}
+	if (modify->children->size() > cursor_position.back()) {
+		if (modify->children->at(cursor_position.back())->operation != nullptr) {
+			cursor_position.push_back(0);
+			cursor_position.push_back(0);
+		}
+		else {
+			cursor_position.back() += 1;
+		}
+	}
+	else if (cursor_position.size() == 1) {
+		cursor_position.back() = 0;
+	}
+	else if (modify_parent->children->size() > cursor_position[i-1] + 1) {
+		cursor_position[i-1] += 1;
+		cursor_position[i] = 0;
+	}
+	else {
+		cursor_position.pop_back();
+		cursor_position.pop_back();
+		cursor_position.back() += 1;
+	}
+}
+
+void Equation::del() {
+	Node* modify = &root;
+	for (size_t i = 0; i + 1 < cursor_position.size(); i++) {
+		modify = modify->children->at(cursor_position[i]);
+	}
+	if (cursor_position.back() != 0 && modify->children->at(cursor_position.back() - 1)->operation == nullptr) {
+		modify->children->erase(modify->children->begin() + cursor_position.back() - 1);
+		cursor_position.back() -= 1;
+	}
+	else {
+		moveCursorLeft();
+		del();
+	}
+	equationChanged = true;
 }

@@ -15,7 +15,7 @@ public:
 	void moveCursor(char direction);
 	void addValue(wchar_t Value);
 	void calculate();
-	//void del();
+	void del();
 private:
 	std::vector<int> cursor_position = std::vector<int>(1, 0);
 	struct Node {
@@ -27,8 +27,8 @@ private:
 	render_plane renderedEquation;
 	bool equationChanged;
 
-	//std::vector<int> moveCursorLeft(std::vector<int> cursorPosition);
-	std::vector<int> moveCursorRight(std::vector<int> cursorPosition);
+	void moveCursorLeft();
+	void moveCursorRight();
 	render_plane renderEquationPart(std::vector<Node*> equation, std::map<wchar_t, render_plane> table);
 	render_plane renderFraction(render_plane top, render_plane bottom);
 	render_plane resize_center_x(render_plane renderPlaneInput, int length);

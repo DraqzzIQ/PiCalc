@@ -22,7 +22,11 @@ class Keyboard
 		/// <param name="scancode">scancode to check</param>
 		/// <returns>true if number</returns>
 		static int scancode_to_number(int scancode);
-
+		/// <summary>
+		/// checks wether a key is pressed
+		/// </summary>
+		/// <param name="scancode">key to check</param>
+		/// <returns>true if pressed else false</returns>
 		static bool is_key_down(int scancode);
 	private:
 		/// <summary>

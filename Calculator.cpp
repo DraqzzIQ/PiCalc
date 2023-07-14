@@ -5,6 +5,7 @@ Calculator::Calculator() {
 }
 
 render_plane Calculator::update_window() {
+	clear_window();
 	add_to_window(equation.renderEquation(), 5, 5);
 	return get_render_canvas();
 }
@@ -34,6 +35,12 @@ void Calculator::handle_key_down(int key) {
 		switch (key) {
 		case SDL_SCANCODE_RIGHT:
 			equation.moveCursor('r');
+			return;
+		case SDL_SCANCODE_LEFT:
+			equation.moveCursor('l');
+			return;
+		case SDL_SCANCODE_BACKSPACE:
+			equation.del();
 			return;
 		case 84:
 			equation.addValue('/');
