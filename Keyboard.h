@@ -50,6 +50,12 @@ class Keyboard
 		/// </summary>
 		void check_for_calc_button_presses();
 		/// <summary>
+		/// converts sdl Scancode to calculator keycode
+		/// </summary>
+		/// <param name="key">scancode</param>
+		/// <returns>keycode</returns>
+		uint8_t scancode_to_keycode(SDL_Event _event);
+		/// <summary>
 		/// avoid unnecessary cpu usage
 		/// </summary>
 		int _sleep_time = 10;

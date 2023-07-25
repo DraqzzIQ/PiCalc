@@ -20,12 +20,12 @@ class Window
 		/// handles keydown events
 		/// </summary>
 		/// <param name="key">key that got pressed</param>
-		virtual void handle_key_down(int key);
+		virtual void handle_key_down(uint8_t key);
 		/// <summary>
 		/// handles keyup events
 		/// </summary>
 		/// <param name="key">key that got released</param>
-		virtual void handle_key_up(int key);
+		virtual void handle_key_up(uint8_t key);
 		/// <summary>
 		/// render_plane describing the window
 		/// </summary>

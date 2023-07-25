@@ -20,13 +20,13 @@ render_plane Equation::renderEquation() {
 	return renderedEquation;
 }
 
-render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<wchar_t, render_plane> table) {
+render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<uint8_t, render_plane> table) {
 	int font_height = table.at(' ').at(0).size();
 	int y_origin = 0;
 	render_plane renderPlane = render_plane(1, std::vector<bool>(font_height, false));;
 
 	if (equation.size() == 0) {
-		return table.at(EMPTY);
+		return table.at(keyMap.at("empty"));
 	}
 	for (size_t iSymbol = 0; iSymbol < equation.size(); iSymbol++) {
 		Node* currentSymbol = equation.at(iSymbol);
@@ -34,7 +34,7 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 		if (currentSymbol->operation == nullptr) {
 			render_plane symbolMatrix;
 			if (table.count(*currentSymbol->value) != 0) symbolMatrix = table.at(*currentSymbol->value);
-			else symbolMatrix = table.at('?');
+			else symbolMatrix = table.at(keyMap.at("?"));
 			add_resized_symbol(renderPlane, symbolMatrix, y_origin);
 		}
 
@@ -44,7 +44,7 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 				subEquations.push_back(renderEquationPart(*node->children, Graphics::SYMBOLS_6_HIGH));
 			}
 
-			if (*currentSymbol->operation == FRACTION) {
+			if (*currentSymbol->operation == Operation::FRACTION) {
 				int fraction_height = (font_height == 9) ? 3 : 2;
 				int add_height = y_origin + fraction_height - subEquations[0][0].size();
 				if (add_height < 0) {
@@ -119,7 +119,7 @@ void Equation::calculate() {
 }
 
 
-void Equation::addValue(wchar_t value) {
+void Equation::addValue(uint8_t value) {
 	Node* modify;
 	modify = &root;
 	for (size_t i = 0; i < cursor_position.size() - 1; i++) {
@@ -128,9 +128,9 @@ void Equation::addValue(wchar_t value) {
 
 	// todo: unite all multi-Input symbols into one function
 	// if value before multi-Input symbol: transfer Value to 1st child of multi-input symbol
-	if (value == FRACTION) {
+	if (value == keyMap.at("fraction")) {
 		Node* container = new Node();
-		container->operation = new wchar_t(FRACTION);
+		container->operation = new Operation(Operation::FRACTION);
 		container->children = new std::vector<Node*>(2);
 		container->children->at(0) = new Node();
 		container->children->at(1) = new Node();
@@ -142,28 +142,19 @@ void Equation::addValue(wchar_t value) {
 		cursor_position.push_back(0);
 		cursor_position.push_back(0);
 	}
-	else if (value == SQUARE_ROOT)
+	else if (value == keyMap.at("root2"))
 	{
 		;
 	}
 	else {
 		Node* container = new Node();
-		container->value = new wchar_t(value);
+		container->value = new uint8_t(value);
 		std::vector<Node*>::iterator ptr = modify->children->begin();
 		advance(ptr, cursor_position.back());
 		modify->children->insert(ptr, container);
 		cursor_position.back() += 1;
 	}
 	equationChanged = true;
-}
-
-void Equation::moveCursor(char direction) {
-	if (direction == 'r') {
-		moveCursorRight();
-	}
-	else if (direction == 'l') {
-		moveCursorLeft();
-	}
 }
 
 void Equation::moveCursorLeft() {

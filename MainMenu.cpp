@@ -1,5 +1,6 @@
 #include "MainMenu.h"
 #include "Equation.h"
+#include "Chars.h"
 
 MainMenu::MainMenu()
 {
@@ -67,24 +68,11 @@ const int MainMenu::pages_count()
 	return static_cast<int>(ceil(static_cast<double>(_options.size()) / 4));
 }
 
-void MainMenu::handle_key_down(int key)
+void MainMenu::handle_key_down(uint8_t key)
 {
-	switch (key)
-	{
-		case::SDL_SCANCODE_UP:
-			scroll_up();
-			return;
-		case::SDL_SCANCODE_DOWN:
-			scroll_down();
-			return;
-	}
-	int number = Keyboard::scancode_to_number(key);
-	if (number != -1)
-	{
-		if (number < _options.size())
-			_options[number]->on_select();
-		return;
-	}
+	if (key == keyMap.at("up")) scroll_up();
+	else if (key == keyMap.at("down")) scroll_down();
+	else if (key < 10) if (key < _options.size()) _options[key]->on_select();
 }
 
 void MainMenu::scroll_up()

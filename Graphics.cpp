@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "Chars.h"
 #include <map>
 
 Graphics::Graphics()
@@ -9,26 +10,16 @@ Graphics::~Graphics()
 {
 }
 
-render_plane Graphics::create_text(const std::string text, std::map<wchar_t, render_plane> table, int spacing) {
-	render_plane Text = table.at(text.at(0));
+render_plane Graphics::create_text(const std::string text, std::map<uint8_t, render_plane> table, int spacing) {
+	std::string letter(1, text.at(0));
+	render_plane Text = table.at(keyMap.at(letter));
 	std::vector<bool> empty = std::vector<bool>(Text.at(0).size(), false);
 	for (size_t i = 1; i < text.length(); i++) {
 		for (size_t i = 0; i < spacing; i++) {
 			Text.push_back(empty);
 		}
-		Text.insert(Text.end(), table.at(text.at(i)).begin(), table.at(text.at(i)).end());
-	}
-	return Text;
-}
-
-render_plane Graphics::create_text(const std::wstring text, std::map<wchar_t, render_plane> table, int spacing) {
-	render_plane Text = table.at(text.at(0));
-	std::vector<bool> empty = std::vector<bool>(Text.at(0).size(), false);
-	for (size_t i = 1; i < text.length(); i++) {
-		for (size_t i = 0; i < spacing; i++) {
-			Text.push_back(empty);
-		}
-		Text.insert(Text.end(), table.at(text.at(i)).begin(), table.at(text.at(i)).end());
+		letter = std::string(1, text.at(i));
+		Text.insert(Text.end(), table.at(keyMap.at(letter)).begin(), table.at(keyMap.at(letter)).end());
 	}
 	return Text;
 }

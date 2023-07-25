@@ -23,12 +23,12 @@ void WindowManager::update()
 		_renderer->render(Graphics::LOGO_SCREEN, std::vector<bool>(Graphics::ScreenSymbols.size(), false));
 }
 
-void WindowManager::handle_key_down(int key) {
+void WindowManager::handle_key_down(uint8_t key) {
 	if (_windows.size() > 0)
 		_windows.top()->handle_key_down(key);
 }
 
-void WindowManager::handle_key_up(int key) {
+void WindowManager::handle_key_up(uint8_t key) {
 	if (_windows.size() > 0)
 		_windows.top()->handle_key_up(key);
 }

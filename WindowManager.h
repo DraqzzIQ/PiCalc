@@ -28,12 +28,12 @@ class WindowManager
 		/// handles keydown events
 		/// </summary>
 		/// <param name="key">key that got pressed</param>
-		void handle_key_down(int key);
+		void handle_key_down(uint8_t key);
 		/// <summary>
 		/// handles keyup events
 		/// </summary>
 		/// <param name="key">key that got released</param>
-		void handle_key_up(int key);
+		void handle_key_up(uint8_t key);
 
 	private:
 		/// <summary>

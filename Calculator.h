@@ -9,7 +9,7 @@ class Calculator : public Window {
 		Calculator();
 
 		render_plane update_window();
-		void handle_key_down(int key);
+		void handle_key_down(uint8_t key);
 	private:
 		Equation equation;
 };

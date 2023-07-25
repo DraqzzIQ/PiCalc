@@ -12,24 +12,31 @@ public:
 	Equation();
 	~Equation();
 	render_plane renderEquation();
-	void moveCursor(char direction);
-	void addValue(wchar_t Value);
+	void addValue(uint8_t value);
 	void calculate();
 	void del();
+	void moveCursorLeft();
+	void moveCursorRight();
 private:
 	std::vector<int> cursor_position = std::vector<int>(1, 0);
+	enum class Operation {
+		FRACTION,
+		MIXED_FRACTION,
+		ROOT,
+		LOG,
+		POWER
+	};
+
 	struct Node {
-		wchar_t* value;
-		wchar_t* operation;
+		uint8_t* value;
+		Operation* operation;
 		std::vector<Node*>* children;
 	};
 	Node root;
 	render_plane renderedEquation;
 	bool equationChanged;
 
-	void moveCursorLeft();
-	void moveCursorRight();
-	render_plane renderEquationPart(std::vector<Node*> equation, std::map<wchar_t, render_plane> table);
+	render_plane renderEquationPart(std::vector<Node*> equation, std::map<uint8_t, render_plane> table);
 	render_plane renderFraction(render_plane top, render_plane bottom);
 	render_plane resize_center_x(render_plane renderPlaneInput, int length);
 	void add_resized_symbol(render_plane &renderPlane, render_plane symbol, int y_position);

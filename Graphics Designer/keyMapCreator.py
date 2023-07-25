@@ -9,6 +9,8 @@ while True:
 
 out = ""
 for i, c in enumerate(chars):
-    out += "\t{ \"" + c + "\", " + str(i+69) + " },\n"
+    out += "#define KEY_" + c + " " + str(i) + "\n"
+    # out += "\t{ \"" + c + "\", " + str(i+129) + " },\n"
 
 print(out)
+print(chars)

@@ -47,7 +47,7 @@ class MainMenu : public Window
 		/// handles keydown events
 		/// </summary>
 		/// <param name="key">key that got pressed</param>
-		void handle_key_down(int key);
+		void handle_key_down(uint8_t key);
 
 	private:
 		/// <summary>
