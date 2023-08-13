@@ -17,11 +17,4 @@ void Calculator::handle_key_down(uint8_t key) {
 	else if (key == keyMap.at("left")) equation.moveCursorLeft();
 	else if (key == keyMap.at("del")) equation.del();
 	else equation.addValue(key);
-
-	int number = Keyboard::scancode_to_number(key);
-	if (number != -1)
-	{
-		equation.addValue('0' + Keyboard::scancode_to_number(key));
-		return;
-	}
 }
