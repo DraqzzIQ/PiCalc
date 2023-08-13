@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "Chars.h"
+#include <stdint.h>
 
 /// <summary>
 /// provides static graphics to render and related functions
@@ -252,7 +252,7 @@ class Graphics
         };
 
         //TODO: enum
-        const static inline std::vector<std::string> ScreenSymbols {
+        static inline const std::vector<std::string> SCREEN_SYMBOLS {
             "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT",
             "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp"
         };

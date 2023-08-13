@@ -1,9 +1,9 @@
 #pragma once
+#ifndef PICO
 #include "IRenderer.h"
 #include "Constants.h"
+#include "Graphics.h"
 #include <iostream>
-#include <chrono>
-#include <cmath>
 
 /// <summary>
 /// provides functionality to render the screen to the console
@@ -17,7 +17,7 @@ class ConsoleRenderer : public IRenderer
 		/// renders the given pixels to the console
 		/// </summary>
 		/// <param name="pixels">pixels to render</param>
-		void render(const render_plane pixels, std::vector<bool> screenSymbols);
+		void render(const render_plane pixels, std::vector<bool> screen_symbols);
 
 	private:
 		/// <summary>
@@ -29,14 +29,5 @@ class ConsoleRenderer : public IRenderer
 		/// </summary>
 		/// <returns>string containing #</returns>
 		std::string get_display_border();
-		/// <summary>
-		/// calculates the fps
-		/// </summary>
-		/// <returns>fps</returns>
-		int calculate_fps();
-		/// <summary>
-		/// start time of the current frame
-		/// </summary>
-		clock_t current_ticks;
 };
-
+#endif

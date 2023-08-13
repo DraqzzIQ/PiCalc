@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "IRenderer.h"
 #include "Graphics.h"
+#include "KeyPress.h"
 #include <stack>
 
 /// <summary>
@@ -28,12 +29,12 @@ class WindowManager
 		/// handles keydown events
 		/// </summary>
 		/// <param name="key">key that got pressed</param>
-		void handle_key_down(uint8_t key);
+		void handle_key_down(KeyPress keypress);
 		/// <summary>
 		/// handles keyup events
 		/// </summary>
 		/// <param name="key">key that got released</param>
-		void handle_key_up(uint8_t key);
+		void handle_key_up(KeyPress keypress);
 
 	private:
 		/// <summary>

@@ -1,8 +1,10 @@
 #pragma once
 #include <map>
 #include <string>
+#include <stdint.h>
 
-static inline const std::map<std::string, uint8_t> keyMap {
+
+static inline const std::map<std::string, uint8_t> KEY_MAP {
 	{ "0", 0 },
 	{ "1", 1 },
 	{ "2", 2 },
@@ -39,10 +41,10 @@ static inline const std::map<std::string, uint8_t> keyMap {
 	{ "X", 33 },
 	{ "Y", 34 },
 	{ "Z", 35 },
-	{ "Ä", 36 },
-	{ "Ü", 37 },
-	{ "Ö", 38 },
-	{ "ß", 39 },
+	{ "ï¿½", 36 },
+	{ "ï¿½", 37 },
+	{ "ï¿½", 38 },
+	{ "ï¿½", 39 },
 	{ "a", 40 },
 	{ "b", 41 },
 	{ "c", 42 },
@@ -69,9 +71,9 @@ static inline const std::map<std::string, uint8_t> keyMap {
 	{ "x", 63 },
 	{ "y", 64 },
 	{ "z", 65 },
-	{ "ä", 66 },
-	{ "ü", 67 },
-	{ "ö", 68 },
+	{ "ï¿½", 66 },
+	{ "ï¿½", 67 },
+	{ "ï¿½", 68 },
 	{ "+", 69 },
 	{ "-", 70 },
 	{ "*", 71 },
@@ -98,14 +100,14 @@ static inline const std::map<std::string, uint8_t> keyMap {
 	{ "'", 92 },
 	{ "\"", 93 },
 	{ "^", 94 },
-	{ "°", 95 },
-	{ "§", 96 },
+	{ "ï¿½", 95 },
+	{ "ï¿½", 96 },
 	{ "$", 97 },
 	{ "%", 98 },
 	{ "&", 99 },
 	{ "\\", 100 },
 	{ "@", 101 },
-	{ "€", 102 },
+	{ "ï¿½", 102 },
 	{ "shift", 103 },
 	{ "alpha", 104 },
 	{ "mode", 105 },

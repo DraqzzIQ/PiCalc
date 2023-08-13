@@ -1,7 +1,9 @@
 #pragma once
 #include "Constants.h"
+#include "KeyPress.h"
 #include <vector>
 #include <string>
+#include <stdint.h>
 
 /// <summary>
 /// base class for all windows
@@ -20,12 +22,12 @@ class Window
 		/// handles keydown events
 		/// </summary>
 		/// <param name="key">key that got pressed</param>
-		virtual void handle_key_down(uint8_t key);
+		virtual void handle_key_down(KeyPress keypress);
 		/// <summary>
 		/// handles keyup events
 		/// </summary>
 		/// <param name="key">key that got released</param>
-		virtual void handle_key_up(uint8_t key);
+		virtual void handle_key_up(KeyPress keypress);
 		/// <summary>
 		/// render_plane describing the window
 		/// </summary>
@@ -51,9 +53,9 @@ class Window
 		/// adds a graphic in form of a render_plane (like text) at given coordinates to the screen
 		/// </summary>
 		/// <param name="renderplane"></param>
-		/// <param name="c_x"></param>
-		/// <param name="c_y"></param>
-		void add_to_window(render_plane graphic, int c_x, int c_y);
+		/// <param name="corner_x"></param>
+		/// <param name="corner_y"></param>
+		void add_to_window(render_plane graphic, int corner_x, int corner_y);
 		/// <summary>
 		/// clears the window
 		/// </summary>

@@ -1,35 +1,27 @@
 // CasioOS.cpp : This file contains the 'main' function. Program execution begins and ends there.
-#include "ConsoleRenderer.h"
+#include "IRenderer.h"
 #include "WindowManager.h"
 #include "MainMenu.h"
-#include "Keyboard.h"
+#include "IKeyboard.h"
 #include "Calculator.h"
+#include "Utils.h"
 #include <iostream>
-#include <chrono>
-#include <thread>
 
-int fps = 30;
-ConsoleRenderer* renderer;
+#ifdef PICO
+#include "PicoKeyboard.h"
+#include "DisplayRenderer.h"
+#include "pico/stdlib.h"
+#else
+#include "SDLKeyboard.h"
+#include "ConsoleRenderer.h"
+#endif
+
+IRenderer* renderer;
+IKeyboard* keyboard;
 WindowManager* window_manager;
-Keyboard* keyboard;
 MainMenu* main_menu;
 
-/// <summary>
-/// starts a thread that will update and render the window manager at set fps
-/// </summary>
-void start_render_thread()
-{
-	int frame_time = 1000 / fps;
 
-	window_manager->update();
-	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-	window_manager->add_window(main_menu);
-
-	while (1) {
-		window_manager->update();
-		std::this_thread::sleep_for(std::chrono::milliseconds(frame_time));
-	}
-}
 /// <summary>
 /// creates the main menu options
 /// </summary>
@@ -51,9 +43,15 @@ std::vector<MenuOption*> create_main_menu_options()
 	return options;
 }
 
-void start_kb_thread()
+/// <summary>
+/// starts a thread that will update and render the window manager at set fps
+/// </summary>
+void start_main_thread()
 {
-	keyboard = new Keyboard(window_manager);
+	while (1) {
+		keyboard->check_for_keyboard_presses();
+		window_manager->update();
+	}
 }
 
 /// <summary>
@@ -61,17 +59,30 @@ void start_kb_thread()
 /// </summary>
 int main(int argc, char* argv[])
 {
+#ifdef PICO
+	// Enable UART so we can print status output
+    stdio_init_all();
+	renderer = new DisplayRenderer();
+#else
 	renderer = new ConsoleRenderer();
+#endif
+
+	Utils::sleep_for_ms(1000);
+
 	window_manager = new WindowManager(renderer);
 	main_menu = new MainMenu(create_main_menu_options());
+	window_manager->update();
 
-	// start keyboard thread
-	std::thread kb_thread(start_kb_thread);
-	kb_thread.detach();
+#ifdef PICO
+	keyboard = new PicoKeyboard(window_manager);
+#else
+	keyboard = new SDLKeyboard(window_manager);
+#endif
 
-	// start render thread
-	std::thread render_thread(start_render_thread);
-	render_thread.join();
+	window_manager->add_window(main_menu);
+
+	// start main thread
+	start_main_thread();
 
     return 0;
 }

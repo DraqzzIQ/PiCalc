@@ -1,11 +1,10 @@
 #include "Equation.h"
-#include <iostream>
 
 Equation::Equation() {
-	root = Node();
-	root.children = new std::vector<Node*>(0);
-	equationChanged = true;
-	renderedEquation = render_plane();
+	root = new Node();
+	root->children = new std::vector<Node*>(0);
+	equation_changed = true;
+	rendered_equation = render_plane();
 }
 
 Equation::~Equation() {
@@ -13,20 +12,20 @@ Equation::~Equation() {
 }
 
 render_plane Equation::renderEquation() {
-	if (equationChanged) {
-		renderedEquation = renderEquationPart(*root.children, Graphics::SYMBOLS_9_HIGH);
-		equationChanged = false;
+	if (equation_changed) {
+		rendered_equation = render_equation_part(*root->children, Graphics::SYMBOLS_9_HIGH);
+		equation_changed = false;
 	}
-	return renderedEquation;
+	return rendered_equation;
 }
 
-render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<uint8_t, render_plane> table) {
+render_plane Equation::render_equation_part(std::vector<Node*> equation, std::map<uint8_t, render_plane> table) {
 	int font_height = table.at(' ').at(0).size();
 	int y_origin = 0;
 	render_plane renderPlane = render_plane(1, std::vector<bool>(font_height, false));;
 
 	if (equation.size() == 0) {
-		return table.at(keyMap.at("empty"));
+		return table.at(KEY_MAP.at("empty"));
 	}
 	for (size_t iSymbol = 0; iSymbol < equation.size(); iSymbol++) {
 		Node* currentSymbol = equation.at(iSymbol);
@@ -34,14 +33,14 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 		if (currentSymbol->operation == nullptr) {
 			render_plane symbolMatrix;
 			if (table.count(*currentSymbol->value) != 0) symbolMatrix = table.at(*currentSymbol->value);
-			else symbolMatrix = table.at(keyMap.at("?"));
+			else symbolMatrix = table.at(KEY_MAP.at("?"));
 			add_resized_symbol(renderPlane, symbolMatrix, y_origin);
 		}
 
 		else {
 			std::vector<render_plane> subEquations;
 			for (Node* node : *currentSymbol->children) {
-				subEquations.push_back(renderEquationPart(*node->children, Graphics::SYMBOLS_6_HIGH));
+				subEquations.push_back(render_equation_part(*node->children, Graphics::SYMBOLS_6_HIGH));
 			}
 
 			if (*currentSymbol->operation == Operation::FRACTION) {
@@ -63,7 +62,7 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 					}
 				}
 
-				render_plane renderedFraction = renderFraction(subEquations[0], subEquations[1]);
+				render_plane renderedFraction = render_fraction(subEquations[0], subEquations[1]);
 				add_resized_symbol(renderPlane, renderedFraction, y_origin + fraction_height - subEquations[0][0].size());
 			}
 		}
@@ -74,7 +73,7 @@ render_plane Equation::renderEquationPart(std::vector<Node*> equation, std::map<
 	return renderPlane;
 }
 
-render_plane Equation::renderFraction(render_plane top, render_plane bottom) {
+render_plane Equation::render_fraction(render_plane top, render_plane bottom) {
 	int length = std::max(top.size(), bottom.size()) + 2;
 	render_plane topResized = resize_center_x(top, length);
 	render_plane bottomResized = resize_center_x(bottom, length);
@@ -119,16 +118,16 @@ void Equation::calculate() {
 }
 
 
-void Equation::addValue(uint8_t value) {
+void Equation::add_value(uint8_t value) {
 	Node* modify;
-	modify = &root;
+	modify = root;
 	for (size_t i = 0; i < cursor_position.size() - 1; i++) {
 		modify = modify->children->at(cursor_position[i]);
 	}
 
 	// todo: unite all multi-Input symbols into one function
 	// if value before multi-Input symbol: transfer Value to 1st child of multi-input symbol
-	if (value == keyMap.at("fraction")) {
+	if (value == KEY_MAP.at("fraction")) {
 		Node* container = new Node();
 		container->operation = new Operation(Operation::FRACTION);
 		container->children = new std::vector<Node*>(2);
@@ -142,7 +141,7 @@ void Equation::addValue(uint8_t value) {
 		cursor_position.push_back(0);
 		cursor_position.push_back(0);
 	}
-	else if (value == keyMap.at("root2"))
+	else if (value == KEY_MAP.at("root2"))
 	{
 		;
 	}
@@ -154,13 +153,13 @@ void Equation::addValue(uint8_t value) {
 		modify->children->insert(ptr, container);
 		cursor_position.back() += 1;
 	}
-	equationChanged = true;
+	equation_changed = true;
 }
 
-void Equation::moveCursorLeft() {
+void Equation::move_cursor_left() {
 	Node* modify;
 	Node* modify_parent;
-	modify_parent = modify = &root;
+	modify_parent = modify = root;
 	size_t i = 0;
 	for (; i + 1 < cursor_position.size(); i++) {
 		modify_parent = modify;
@@ -190,10 +189,10 @@ void Equation::moveCursorLeft() {
 	}
 }
 
-void Equation::moveCursorRight() {
+void Equation::move_cursor_right() {
 	Node* modify;
 	Node* modify_parent;
-	modify_parent = modify = &root;
+	modify_parent = modify = root;
 	size_t i = 0;
 	for (; i+1 < cursor_position.size(); i++) {
 		modify_parent = modify;
@@ -223,7 +222,7 @@ void Equation::moveCursorRight() {
 }
 
 void Equation::del() {
-	Node* modify = &root;
+	Node* modify = root;
 	for (size_t i = 0; i + 1 < cursor_position.size(); i++) {
 		modify = modify->children->at(cursor_position[i]);
 	}
@@ -232,8 +231,8 @@ void Equation::del() {
 		cursor_position.back() -= 1;
 	}
 	else {
-		moveCursorLeft();
+		move_cursor_left();
 		del();
 	}
-	equationChanged = true;
+	equation_changed = true;
 }

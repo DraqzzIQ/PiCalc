@@ -3,7 +3,6 @@
 #include "MenuOption.h"
 #include "Constants.h"
 #include "Graphics.h"
-#include "Keyboard.h"
 #include "WindowManager.h"
 #include <vector>
 
@@ -47,7 +46,7 @@ class MainMenu : public Window
 		/// handles keydown events
 		/// </summary>
 		/// <param name="key">key that got pressed</param>
-		void handle_key_down(uint8_t key);
+		void handle_key_down(KeyPress keypress);
 
 	private:
 		/// <summary>

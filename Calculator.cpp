@@ -1,27 +1,20 @@
 #include "Calculator.h"
 
 Calculator::Calculator() {
-	equation = Equation();
+	equation = new Equation();
 }
 
 render_plane Calculator::update_window() {
 	clear_window();
-	add_to_window(equation.renderEquation(), 5, 5);
+	add_to_window(equation->renderEquation(), 5, 5);
 	return get_render_canvas();
 }
 
-void Calculator::handle_key_down(uint8_t key) {
-	std::cout << key << "       ";
+void Calculator::handle_key_down(KeyPress keypress) {
+	std::cout << keypress.key << "       ";
 	
-	if (key == keyMap.at("right")) equation.moveCursorRight();
-	else if (key == keyMap.at("left")) equation.moveCursorLeft();
-	else if (key == keyMap.at("del")) equation.del();
-	else equation.addValue(key);
-
-	int number = Keyboard::scancode_to_number(key);
-	if (number != -1)
-	{
-		equation.addValue('0' + Keyboard::scancode_to_number(key));
-		return;
-	}
+	if (keypress.key == KEY_MAP.at("right")) equation->move_cursor_right();
+	else if (keypress.key == KEY_MAP.at("left")) equation->move_cursor_left();
+	else if (keypress.key == KEY_MAP.at("del")) equation->del();
+	else equation->add_value(keypress.key);
 }

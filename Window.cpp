@@ -32,22 +32,24 @@ render_plane Window::get_render_canvas()
 	return canvas;
 }
 
-void Window::add_to_window(render_plane graphic, int c_x, int c_y) {
-	if (graphic.size() + c_x > window.size()) {
+void Window::add_to_window(render_plane graphic, int corner_x, int corner_y) {
+	//make sure the graphic fits x-wise
+	if (graphic.size() + corner_x > window.size()) {
 		std::vector<bool> empty = std::vector<bool>(window[0].size(), false);
-		while (graphic.size() + c_x > window.size()) {
+		while (graphic.size() + corner_x > window.size()) {
 			window.push_back(empty);
 		}
 	}
-	if (graphic[0].size() + c_y > window[0].size()) {
-		std::vector<bool> empty = std::vector<bool>(graphic[0].size() + c_y - window[0].size(), false);
+	//make sure the graphic fits y-wise
+	if (graphic[0].size() + corner_y > window[0].size()) {
+		std::vector<bool> empty = std::vector<bool>(graphic[0].size() + corner_y - window[0].size(), false);
 		for (std::size_t i = 0; i < window.size(); i++) {
 			window[i].insert(window[i].end(), empty.begin(), empty.end());
 		}
 	}
 
 	for (std::size_t i = 0; i < graphic.size(); i++) {
-		std::copy(std::begin(graphic[i]), std::end(graphic[i]), std::begin(window[i + c_x]) + c_y);
+		std::copy(std::begin(graphic[i]), std::end(graphic[i]), std::begin(window[i + corner_x]) + corner_y);
 	}
 }
 
@@ -56,17 +58,16 @@ void Window::clear_window() {
 }
 
 void Window::clear_symbols() {
-	screen_symbols = std::vector<bool>(Graphics::ScreenSymbols.size(), false);
+	screen_symbols = std::vector<bool>(Graphics::SCREEN_SYMBOLS.size(), false);
 }
 
 void Window::change_symbol(std::string symbol, bool state) {
-	screen_symbols[std::find(Graphics::ScreenSymbols.begin(), Graphics::ScreenSymbols.end(), symbol) - Graphics::ScreenSymbols.begin()] = state;
+	screen_symbols[std::find(Graphics::SCREEN_SYMBOLS.begin(), Graphics::SCREEN_SYMBOLS.end(), symbol) - Graphics::SCREEN_SYMBOLS.begin()] = state;
 }
 
-void Window::handle_key_down(uint8_t key) {
+void Window::handle_key_down(KeyPress keypress) {
 
 }
-
-void Window::handle_key_up(uint8_t key) {
+void Window::handle_key_up(KeyPress keypress) {
 
 }
