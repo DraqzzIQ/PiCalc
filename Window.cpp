@@ -70,3 +70,11 @@ void Window::handle_key_down(uint8_t key) {
 void Window::handle_key_up(uint8_t key) {
 
 }
+
+void Window::got_focus() {
+
+}
+
+void Window::lost_focus() {
+
+}

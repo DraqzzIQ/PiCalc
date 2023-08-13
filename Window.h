@@ -27,6 +27,14 @@ class Window
 		/// <param name="key">key that got released</param>
 		virtual void handle_key_up(uint8_t key);
 		/// <summary>
+		/// calles when window is displayed
+		/// </summary>
+		virtual void got_focus();
+		/// <summary>
+		/// called when window is not displayed anymore
+		/// </summary>
+		virtual void lost_focus();
+		/// <summary>
 		/// render_plane describing the window
 		/// </summary>
 		render_plane window;
