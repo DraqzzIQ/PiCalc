@@ -186,6 +186,7 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 
 		//}
 	}
+	return nullptr;
 }
 
 
