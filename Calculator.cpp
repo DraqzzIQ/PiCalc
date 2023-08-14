@@ -6,7 +6,7 @@ Calculator::Calculator() {
 
 render_plane Calculator::update_window() {
 	clear_window();
-	add_to_window(equation->renderEquation(), 5, 5);
+	add_to_window(equation->render_equation(), 5, 5);
 	return get_render_canvas();
 }
 

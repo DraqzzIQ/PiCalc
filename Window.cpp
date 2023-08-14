@@ -71,3 +71,11 @@ void Window::handle_key_down(KeyPress keypress) {
 void Window::handle_key_up(KeyPress keypress) {
 
 }
+
+void Window::got_focus() {
+
+}
+
+void Window::lost_focus() {
+
+}
