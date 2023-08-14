@@ -47,14 +47,15 @@ void SDLKeyboard::check_for_keyboard_presses() {
 KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event){
     KeyPress keypress = KeyPress();
     keypress.key = scancode_to_keycode(_event);
+	keypress.raw_key = scancode_to_keycode(_event, true);
     keypress.alpha = is_alpha_active();
     keypress.shift = is_shift_active();
 
     return keypress;
 }
 
-uint8_t SDLKeyboard::scancode_to_keycode(SDL_Event* _event) {
-	if (is_shift_active()) {
+uint8_t SDLKeyboard::scancode_to_keycode(SDL_Event* _event, bool raw = false) {
+	if (is_shift_active() && !raw) {
 		switch (_event->key.keysym.scancode) {
 			//letters
 		case SDL_SCANCODE_A: return KEY_MAP.at("A");

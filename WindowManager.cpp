@@ -26,7 +26,7 @@ void WindowManager::update()
 }
 
 void WindowManager::handle_key_down(KeyPress keypress) {
-	if(keypress.alpha && keypress.key == KEY_MAP.at("ac")){
+	if(keypress.alpha && keypress.raw_key == KEY_MAP.at("ac")){
 		pop_window();
 	}
 	if (_windows.size() > 0)
