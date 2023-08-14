@@ -5,7 +5,7 @@ ConsoleRenderer::ConsoleRenderer()
 {
 }
 
-void ConsoleRenderer::render(const render_plane pixels, const std::vector<bool> screen_symbols)
+void ConsoleRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols)
 {
 	if(check_rendered(pixels, screen_symbols))
 		return;
