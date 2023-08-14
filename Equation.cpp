@@ -170,7 +170,8 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 				}
 			}
 			switch (*equation[i]->operation) {
-			case SymbolOperation::FRACTION:
+				case SymbolOperation::FRACTION:
+					;
 				
 			}
 			//calculate_equation_part(*equation[i]->children, val, exp);
