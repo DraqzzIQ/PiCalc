@@ -43,6 +43,6 @@ class PicoKeyboard : public IKeyboard
 		std::vector<bool> getPins();
 
 		KeyPress coords_to_keypress(uint8_t x, uint8_t y);
-		uint8_t coords_to_keycode(uint8_t x, uint8_t y, bool raw = false);
+		uint8_t coords_to_keycode(uint8_t x, uint8_t y, bool raw);
 };
 #endif

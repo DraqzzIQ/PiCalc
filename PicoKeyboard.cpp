@@ -30,12 +30,12 @@ void PicoKeyboard::check_for_keyboard_presses() {
 		setPin(px);
 		std::vector<bool> high_pins = getPins();
 		for (uint8_t py = 0; py < high_pins.size(); py++){
-			if (pressedButtons[py][px] && !high_pins[py]){
-				pressedButtons[py][px] = false;
+			if (pressedButtons[px][py] && !high_pins[py]){
+				pressedButtons[px][py] = false;
 				_window_manager->handle_key_up(coords_to_keypress(px, py));
 			}
-			else if (!pressedButtons[py][px] && high_pins[py]){
-				pressedButtons[py][px] = true;
+			else if (!pressedButtons[px][py] && high_pins[py]){
+				pressedButtons[px][py] = true;
 				_window_manager->handle_key_down(coords_to_keypress(px, py));
 			}
 		}
