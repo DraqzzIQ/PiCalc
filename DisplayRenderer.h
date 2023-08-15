@@ -5,6 +5,8 @@
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
 #include "Utils.h"
+#include <algorithm>
+#include <iostream>
 #include <cmath>
 
 /// <summary>

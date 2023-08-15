@@ -49,7 +49,17 @@ void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen
         }
     }
 
-    i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command, sizeof(command), false);
+    //split into 3 commands, also temporary
+    uint8_t command1[3 + 4 * 40]; 
+    std::copy(command, command+ 3 + 4 * 40, command1);
+    uint8_t command2[3 + 4 * 40]; 
+    std::copy(command + 3 + 4 * 40, command+ 2 * (3 + 4 * 40), command2);
+    uint8_t command3[3 + 4 * 16]; 
+    std::copy(command + 2 * (3 + 4 * 40), command+ 3 + 4 * 16 + 2 * (3 + 4 * 40), command3);
+
+    i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command1, sizeof(command1), true);
+    i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command2, sizeof(command2), true);
+    i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command3, sizeof(command3), false);
 }
 
 
@@ -64,10 +74,10 @@ void DisplayRenderer::init_i2c()
 
 void DisplayRenderer::clear()
 {
-    for (size_t sub_address : sub_devices) {
-        uint8_t command[2] = {select_device(sub_address, true), set_mode(T_ROW_MODE, E_BLANK_STATUS, M_1_32_MULTIPLEX, false) };
-        i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command, sizeof(command), false);
-    }
+    uint8_t command[1] = { set_mode(T_ROW_MODE, E_NORMAL_STATUS, M_1_32_MULTIPLEX, false) };
+    i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command, sizeof(command), false);
+
+    printf("Hello");
 }
 
 uint8_t DisplayRenderer::set_mode(uint8_t mode, uint8_t status, uint8_t mux_mode, bool command_following = false)

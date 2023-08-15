@@ -67,9 +67,10 @@ int main(int argc, char* argv[])
 	renderer = new ConsoleRenderer();
 #endif
 
+	window_manager = new WindowManager(renderer);
+	
 	Utils::sleep_for_ms(1000);
 
-	window_manager = new WindowManager(renderer);
 	main_menu = new MainMenu(create_main_menu_options());
 	window_manager->update();
 
