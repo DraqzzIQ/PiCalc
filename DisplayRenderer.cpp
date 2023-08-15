@@ -10,8 +10,8 @@ DisplayRenderer::DisplayRenderer()
 
 void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols)
 {
-    // if(check_rendered(pixels, screen_symbols))
-    //     return;
+    if(check_rendered(pixels, screen_symbols))
+        return;
 
     //DONT FORGET::: only 3 commands when sub device addressess are properly implemented
     //3  * 3 commands + 4 bytes per column
@@ -95,8 +95,6 @@ void DisplayRenderer::init_i2c()
     i2c_init(i2c_default, 100000);
     gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    // gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-    // gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
 }
 
 void DisplayRenderer::clear()
