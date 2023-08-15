@@ -52,6 +52,6 @@ class SDLKeyboard : public IKeyboard
 		/// </summary>
 		/// <param name="key">scancode</param>
 		/// <returns>keycode</returns>
-		uint8_t scancode_to_keycode(SDL_Event* _event);    
+		uint8_t scancode_to_keycode(SDL_Event* _event, bool raw);    
 };
 #endif

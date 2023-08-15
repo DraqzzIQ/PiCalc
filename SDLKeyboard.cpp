@@ -46,7 +46,7 @@ void SDLKeyboard::check_for_keyboard_presses() {
 
 KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event){
     KeyPress keypress = KeyPress();
-    keypress.key = scancode_to_keycode(_event);
+    keypress.key = scancode_to_keycode(_event, false);
 	keypress.raw_key = scancode_to_keycode(_event, true);
     keypress.alpha = is_alpha_active();
     keypress.shift = is_shift_active();
