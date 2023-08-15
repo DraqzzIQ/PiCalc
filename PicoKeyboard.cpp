@@ -45,20 +45,20 @@ void PicoKeyboard::check_for_keyboard_presses() {
 uint8_t PicoKeyboard::coords_to_keycode(uint8_t x, uint8_t y, bool raw = false){
 	if (is_shift_active() && !raw) {
 		switch(10*x + y){
-		case 00: return KEY_MAP.at("shift");
-		case 10: return KEY_MAP.at("alpha");
+		case 00: return Chars::KEY_MAP.at("shift");
+		case 10: return Chars::KEY_MAP.at("alpha");
 		}
 	}
 	else if(is_alpha_active() && !raw) {
 		switch(10*x + y){
-		case 00: return KEY_MAP.at("shift");
-		case 10: return KEY_MAP.at("alpha");
+		case 00: return Chars::KEY_MAP.at("shift");
+		case 10: return Chars::KEY_MAP.at("alpha");
 		}
 	}
 	else {
 		switch(10*x + y){
-		case 00: return KEY_MAP.at("shift");
-		case 10: return KEY_MAP.at("alpha");
+		case 00: return Chars::KEY_MAP.at("shift");
+		case 10: return Chars::KEY_MAP.at("alpha");
 		}
 	}
 }
@@ -72,10 +72,10 @@ KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y){
 
 	is_shift = false;
 	is_alpha = false;
-	if (keypress.raw_key = KEY_MAP.at("shift")) {
+	if (keypress.raw_key = Chars::KEY_MAP.at("shift")) {
 		is_shift = true;
 	}
-	if (keypress.raw_key = KEY_MAP.at("alpha")) {
+	if (keypress.raw_key = Chars::KEY_MAP.at("alpha")) {
 		is_alpha = true;
 	}
     return keypress;

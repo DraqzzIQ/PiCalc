@@ -334,7 +334,7 @@ const std::vector<std::string> Graphics::SCREEN_SYMBOLS = {
 render_plane Graphics::create_text(const std::string text, std::map<uint8_t, render_plane> table, int spacing)
 {
 	std::string letter(1, text.at(0));
-	render_plane Text = table.at(KEY_MAP.at(letter));
+	render_plane Text = table.at(Chars::KEY_MAP.at(letter));
 	std::vector<bool> empty = std::vector<bool>(Text.at(0).size(), false);
 	for (size_t i = 1; i < text.length(); i++)
 	{
@@ -343,7 +343,7 @@ render_plane Graphics::create_text(const std::string text, std::map<uint8_t, ren
 			Text.push_back(empty);
 		}
 		letter = std::string(1, text.at(i));
-		Text.insert(Text.end(), table.at(KEY_MAP.at(letter)).begin(), table.at(KEY_MAP.at(letter)).end());
+		Text.insert(Text.end(), table.at(Chars::KEY_MAP.at(letter)).begin(), table.at(Chars::KEY_MAP.at(letter)).end());
 	}
 	return Text;
 }
