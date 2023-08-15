@@ -38,18 +38,18 @@ class DisplayRenderer : public IRenderer
         /// <summary>
         /// sets the mode of the display
         /// </summary>
-        uint8_t set_mode(uint8_t mode, uint8_t status, uint8_t mux_mode, bool command_following);
+        uint8_t set_mode(uint8_t mode, uint8_t status, uint8_t mux_mode, uint8_t command_following);
         /// <summary>
         /// selects the device at the given address
         /// </summary>
-        uint8_t select_device(uint8_t addr, bool command_following);
+        uint8_t select_device(uint8_t addr, uint8_t command_following);
         /// <summary>
         /// accesses the ram at the given address
         /// </summary>
-        uint8_t ram_access(uint8_t access_mode, uint8_t row_address, bool command_following);
+        uint8_t ram_access(uint8_t access_mode, uint8_t row_address, uint8_t command_following);
         /// <summary>
         /// loads the x (column) address
         /// </summary>
-        uint8_t load_x_address(uint8_t column_address, bool command_following );
+        uint8_t load_x_address(uint8_t column_address, uint8_t command_following );
 };
 #endif
