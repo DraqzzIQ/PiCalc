@@ -103,7 +103,7 @@ uint8_t SDLKeyboard::scancode_to_key_calculator(SDL_Event* _event) {
 		case SDL_SCANCODE_KP_8: return Chars::KEY_MAP.at("Conv");
 		case SDL_SCANCODE_COMMA: return Chars::KEY_MAP.at("RanInt");
 		case SDL_SCANCODE_H: return Chars::KEY_MAP.at("C");
-		case SDL_SCANCODE_KP_COMMA: return Chars::KEY_MAP.at("e");
+		case SDL_SCANCODE_KP_COMMA: return Chars::KEY_MAP.at("euler");
 		case SDL_SCANCODE_S: return Chars::KEY_MAP.at("D");
 		case SDL_SCANCODE_9: return Chars::KEY_MAP.at("X");
 		case SDL_SCANCODE_KP_MULTIPLY: return Chars::KEY_MAP.at("GCD");
@@ -133,7 +133,7 @@ uint8_t SDLKeyboard::scancode_to_key_calculator(SDL_Event* _event) {
 		case SDL_SCANCODE_LALT: return Chars::KEY_MAP.at("ALPHA");
 		case SDL_SCANCODE_3: return Chars::KEY_MAP.at("x^3");
 		case SDL_SCANCODE_F2: return Chars::KEY_MAP.at("root2");
-		case SDL_SCANCODE_D: return Chars::KEY_MAP.at("degree");
+		case SDL_SCANCODE_D: return Chars::KEY_MAP.at("time");
 		case SDL_SCANCODE_E: return Chars::KEY_MAP.at("ENG");
 		case SDL_SCANCODE_KP_8: return Chars::KEY_MAP.at("8");
 		case SDL_SCANCODE_KP_5: return Chars::KEY_MAP.at("5");
@@ -303,7 +303,7 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event) {
 	case SDL_SCANCODE_LALT: return Chars::KEY_MAP.at("ALPHA");
 	case SDL_SCANCODE_3: return Chars::KEY_MAP.at("x^3");
 	case SDL_SCANCODE_F2: return Chars::KEY_MAP.at("root2");
-	case SDL_SCANCODE_D: return Chars::KEY_MAP.at("degree");
+	case SDL_SCANCODE_D: return Chars::KEY_MAP.at("time");
 	case SDL_SCANCODE_E: return Chars::KEY_MAP.at("ENG");
 	case SDL_SCANCODE_KP_8: return Chars::KEY_MAP.at("8");
 	case SDL_SCANCODE_KP_5: return Chars::KEY_MAP.at("5");

@@ -51,6 +51,7 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             case 2: return Chars::KEY_MAP.at("mixedfraction");
             case 4: return Chars::KEY_MAP.at("STO");
             case 5: return Chars::KEY_MAP.at("CONST");
+            case 7: return Chars::KEY_MAP.at("STAT/DIST");
             case 8: return Chars::KEY_MAP.at("Rnd");
             case 12: return Chars::KEY_MAP.at("root3");
             case 13: return Chars::KEY_MAP.at("FACT");
@@ -60,6 +61,8 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             case 22: return Chars::KEY_MAP.at("periodic");
             case 24: return Chars::KEY_MAP.at("%");
             case 25: return Chars::KEY_MAP.at("CLR");
+            case 26: return Chars::KEY_MAP.at("VERIFY");
+            case 27: return Chars::KEY_MAP.at("BASE");
             case 28: return Chars::KEY_MAP.at("pi");
             case 31: return Chars::KEY_MAP.at("!");
             case 32: return Chars::KEY_MAP.at("rootn");
@@ -91,7 +94,7 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             case 15: return Chars::KEY_MAP.at("Conv");
             case 18: return Chars::KEY_MAP.at("RanInt");
             case 23: return Chars::KEY_MAP.at("C");
-            case 28: return Chars::KEY_MAP.at("e");
+            case 28: return Chars::KEY_MAP.at("euler");
             case 33: return Chars::KEY_MAP.at("D");
             case 34: return Chars::KEY_MAP.at("X");
             case 36: return Chars::KEY_MAP.at("GCD");
@@ -119,7 +122,7 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             case 10: return Chars::KEY_MAP.at("ALPHA");
             case 11: return Chars::KEY_MAP.at("x^3");
             case 12: return Chars::KEY_MAP.at("root2");
-            case 13: return Chars::KEY_MAP.at("degree");
+            case 13: return Chars::KEY_MAP.at("time");
             case 14: return Chars::KEY_MAP.at("ENG");
             case 15: return Chars::KEY_MAP.at("8");
             case 16: return Chars::KEY_MAP.at("5");
@@ -190,7 +193,7 @@ uint8_t PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y) {
         case 10: return Chars::KEY_MAP.at("ALPHA");
         case 11: return Chars::KEY_MAP.at("x^3");
         case 12: return Chars::KEY_MAP.at("root2");
-        case 13: return Chars::KEY_MAP.at("degree");
+        case 13: return Chars::KEY_MAP.at("time");
         case 14: return Chars::KEY_MAP.at("ENG");
         case 15: return Chars::KEY_MAP.at("8");
         case 16: return Chars::KEY_MAP.at("5");

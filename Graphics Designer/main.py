@@ -21,7 +21,7 @@ def tool(event):
 def save(event):
     saveString = str([[1 if w.itemcget(fields[x][y], "fill") == "black" else 0 for y in range(height)] for x in range(width)]).replace("[", "{").replace("]", "}")
     print(saveString + "\n")
-    pyperclip.copy("{ Chars::KEY_MAP.at('" + name + "'), " + saveString + "},")
+    pyperclip.copy("{ Chars::KEY_MAP.at(\"" + name + "\"), " + saveString + "},")
 
 
 def close():
