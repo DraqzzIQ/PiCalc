@@ -11,10 +11,10 @@ render_plane Calculator::update_window() {
 }
 
 void Calculator::handle_key_down(KeyPress keypress) {
-	std::cout << keypress.key << "       ";
+	std::cout << keypress.key_calculator << "       ";
 	
-	if (keypress.key == Chars::KEY_MAP.at("right")) equation->move_cursor_right();
-	else if (keypress.key == Chars::KEY_MAP.at("left")) equation->move_cursor_left();
-	else if (keypress.key == Chars::KEY_MAP.at("del")) equation->del();
-	else equation->add_value(keypress.key);
+	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) equation->move_cursor_right();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) equation->move_cursor_left();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) equation->del();
+	else equation->add_value(keypress.key_calculator);
 }

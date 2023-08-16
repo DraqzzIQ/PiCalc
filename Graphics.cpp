@@ -326,9 +326,9 @@ const std::map<uint8_t, render_plane> Graphics::SYMBOLS_6_HIGH = {
             { 166, {{1, 1, 1, 1, 1, 1}, {1, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 1}, {1, 1, 1, 1, 1, 1}}}};
 
 const std::vector<std::string> Graphics::SCREEN_SYMBOLS = {
-            "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT",
-            "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp"
-        };
+    "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT",
+    "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp"
+};
 
 
 render_plane Graphics::create_text(const std::string text, std::map<uint8_t, render_plane> table, int spacing)

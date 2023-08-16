@@ -3,6 +3,7 @@
 #include "WindowManager.h"
 #include "SDL.h"
 #include "IKeyboard.h"
+#include "Chars.h"
 #include <iostream>
 
 /// <summary>
@@ -52,6 +53,8 @@ class SDLKeyboard : public IKeyboard
 		/// </summary>
 		/// <param name="key">scancode</param>
 		/// <returns>keycode</returns>
-		uint8_t scancode_to_keycode(SDL_Event* _event, bool raw);    
+		uint8_t scancode_to_key_calculator(SDL_Event* _event);
+		uint8_t scancode_to_key_keyboard(SDL_Event* _event);
+		uint8_t scancode_to_key_raw(SDL_Event* _event);
 };
 #endif

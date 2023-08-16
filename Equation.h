@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <cmath>
+#include "KeyPress.h"
 
 
 class Equation
@@ -13,7 +14,7 @@ public:
 	Equation();
 	~Equation();
 	render_plane render_equation();
-	void add_value(uint8_t value);
+	void add_value(uint8_t keypress);
 	void calculate_equation(int8_t& exponent, int64_t& value);
 	void del();
 	void move_cursor_left();

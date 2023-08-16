@@ -59,7 +59,7 @@ void MainMenu::create_menu()
 {
 	for (size_t i = 0; i < _options.size() && i < _max_options; i++)
 	{
-		add_to_window(Graphics::create_text(std::to_string(i) + ":" + _options[i]->get_display_name(), Graphics::SYMBOLS_6_HIGH, 0), 1, 1 + i * _line_height);
+		add_to_window(Graphics::create_text(std::to_string(i) + ":" + _options[i]->get_display_name(), Graphics::SYMBOLS_6_HIGH, 1), 1, 1 + i * _line_height);
 	}
 }
 
@@ -70,9 +70,9 @@ const int MainMenu::pages_count()
 
 void MainMenu::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key == Chars::KEY_MAP.at("up")) scroll_up();
-	else if (keypress.key == Chars::KEY_MAP.at("down")) scroll_down();
-	else if (keypress.key < 10) if (keypress.key < _options.size()) _options[keypress.key]->on_select();
+	if (keypress.key_raw == Chars::KEY_MAP.at("up")) scroll_up();
+	else if (keypress.key_raw == Chars::KEY_MAP.at("down")) scroll_down();
+	else if (keypress.key_raw < 10) if (keypress.key_raw < _options.size()) _options[keypress.key_raw]->on_select();
 }
 
 void MainMenu::scroll_up()

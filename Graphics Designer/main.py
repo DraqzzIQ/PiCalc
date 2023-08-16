@@ -21,7 +21,7 @@ def tool(event):
 def save(event):
     saveString = str([[1 if w.itemcget(fields[x][y], "fill") == "black" else 0 for y in range(height)] for x in range(width)]).replace("[", "{").replace("]", "}")
     print(saveString + "\n")
-    pyperclip.copy("{'" + name + "', " + saveString + "},")
+    pyperclip.copy("{ Chars::KEY_MAP.at('" + name + "'), " + saveString + "},")
 
 
 def close():
@@ -106,7 +106,7 @@ width = 5
 try:
     width = int(width)
     # height = int(input("height: "))
-    height = 6
+    height = 9
     for x in range(width):
         fields.append([])
         for y in range(height):

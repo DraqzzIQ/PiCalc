@@ -21,7 +21,6 @@ void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen
     command[2] = ram_access(G_RAM_FULL_GRAPHIC_MODE, BANK_ZERO_ADDRESS, C_LAST_COMMAND);
 
     uint16_t index = 3;
-    printf("Hallo2\n");
 
     for(size_t j  = 0; j < 40; j++)
     {
@@ -109,7 +108,6 @@ uint8_t DisplayRenderer::set_mode(uint8_t mode, uint8_t status, uint8_t mux_mode
 }
 uint8_t DisplayRenderer::select_device(uint8_t addr, uint8_t command_following)
 {
-    printf("device select: %d\n", command_following + DEVICE_SELECT + addr);
     return command_following + DEVICE_SELECT + addr;
 }
 uint8_t DisplayRenderer::ram_access(uint8_t access_mode, uint8_t row_address, uint8_t command_following)

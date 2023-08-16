@@ -7,4 +7,5 @@ class Chars
 {
 	public:
 		static const std::map<std::string, uint8_t> KEY_MAP;
+		static const std::map<std::string, uint8_t> CHAR_MAP;
 };

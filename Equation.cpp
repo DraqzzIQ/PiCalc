@@ -190,7 +190,7 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 }
 
 
-void Equation::add_value(uint8_t value) {
+void Equation::add_value(uint8_t keypress) {
 	RenderNode* modify;
 	modify = root;
 	for (size_t i = 0; i < cursor_position.size() - 1; i++) {
@@ -199,7 +199,7 @@ void Equation::add_value(uint8_t value) {
 
 	// todo: unite all multi-Input symbols into one function
 	// if value before multi-Input symbol: transfer Value to 1st child of multi-input symbol
-	if (value == Chars::KEY_MAP.at("fraction")) {
+	if (keypress == Chars::KEY_MAP.at("fraction")) {
 		RenderNode* container = new RenderNode();
 		container->operation = new SymbolOperation(SymbolOperation::FRACTION);
 		container->children = new std::vector<RenderNode*>(2);
@@ -213,13 +213,13 @@ void Equation::add_value(uint8_t value) {
 		cursor_position.push_back(0);
 		cursor_position.push_back(0);
 	}
-	else if (value == Chars::KEY_MAP.at("root2"))
+	else if (keypress == Chars::KEY_MAP.at("root2"))
 	{
 		;
 	}
 	else {
 		RenderNode* container = new RenderNode();
-		container->value = new uint8_t(value);
+		container->value = new uint8_t(keypress);
 		std::vector<RenderNode*>::iterator ptr = modify->children->begin();
 		advance(ptr, cursor_position.back());
 		modify->children->insert(ptr, container);
