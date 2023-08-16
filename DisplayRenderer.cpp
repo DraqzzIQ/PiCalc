@@ -10,6 +10,17 @@ DisplayRenderer::DisplayRenderer()
 
 void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols)
 {
+    bool reversed = true;
+    if(reversed)
+    {
+        std::reverse(pixels.begin(), pixels.end());
+
+        render_plane half;
+        std::copy(pixels.begin(), pixels.begin()+16, half.begin());
+        std::copy(pixels.begin()+16, pixels.begin()+32, pixels.begin());
+        std::copy(half.begin(), half.end(), pixels.begin() + 16);
+    }
+
     // if(check_rendered(pixels, screen_symbols))
     //     return;
 

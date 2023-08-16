@@ -68,6 +68,7 @@ int main(int argc, char* argv[])
 #endif
 
 	window_manager = new WindowManager(renderer);
+	window_manager->update();
 	
 	Utils::sleep_for_ms(1000);
 

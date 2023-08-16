@@ -3,6 +3,7 @@
 #include "IRenderer.h"
 #include "Constants.h"
 #include "Graphics.h"
+#include <algorithm>
 #include <iostream>
 
 /// <summary>
