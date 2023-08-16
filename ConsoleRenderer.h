@@ -5,7 +5,9 @@
 #include "Graphics.h"
 #include <algorithm>
 #include <iostream>
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 
 /// <summary>
 /// provides functionality to render the screen to the console
