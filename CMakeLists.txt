@@ -49,3 +49,5 @@ if(true)
     # preprocessor macro
     target_compile_definitions(${PROJECT_NAME} PRIVATE PICO)
 endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE -s)

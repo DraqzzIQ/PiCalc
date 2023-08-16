@@ -26,7 +26,7 @@ render_plane Equation::render_equation_part(std::vector<RenderNode*> equation, s
 	render_plane equation_part = render_plane(1, std::vector<bool>(font_height, false));
 
 	if (equation.size() == 0) {
-		return table.at(KEY_MAP.at("empty"));
+		return table.at(Chars::KEY_MAP.at("empty"));
 	}
 	for (size_t i = 0; i < equation.size(); i++) {
 		RenderNode* current_symbol = equation.at(i);
@@ -34,7 +34,7 @@ render_plane Equation::render_equation_part(std::vector<RenderNode*> equation, s
 		if (current_symbol->operation == nullptr) {
 			render_plane symbol_matrix;
 			if (table.count(*current_symbol->value) != 0) symbol_matrix = table.at(*current_symbol->value);
-			else symbol_matrix = table.at(KEY_MAP.at("?"));
+			else symbol_matrix = table.at(Chars::KEY_MAP.at("?"));
 			add_resized_symbol(equation_part, symbol_matrix, y_origin);
 		}
 
@@ -199,7 +199,7 @@ void Equation::add_value(uint8_t value) {
 
 	// todo: unite all multi-Input symbols into one function
 	// if value before multi-Input symbol: transfer Value to 1st child of multi-input symbol
-	if (value == KEY_MAP.at("fraction")) {
+	if (value == Chars::KEY_MAP.at("fraction")) {
 		RenderNode* container = new RenderNode();
 		container->operation = new SymbolOperation(SymbolOperation::FRACTION);
 		container->children = new std::vector<RenderNode*>(2);
@@ -213,7 +213,7 @@ void Equation::add_value(uint8_t value) {
 		cursor_position.push_back(0);
 		cursor_position.push_back(0);
 	}
-	else if (value == KEY_MAP.at("root2"))
+	else if (value == Chars::KEY_MAP.at("root2"))
 	{
 		;
 	}

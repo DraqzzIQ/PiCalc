@@ -70,8 +70,8 @@ const int MainMenu::pages_count()
 
 void MainMenu::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key == KEY_MAP.at("up")) scroll_up();
-	else if (keypress.key == KEY_MAP.at("down")) scroll_down();
+	if (keypress.key == Chars::KEY_MAP.at("up")) scroll_up();
+	else if (keypress.key == Chars::KEY_MAP.at("down")) scroll_down();
 	else if (keypress.key < 10) if (keypress.key < _options.size()) _options[keypress.key]->on_select();
 }
 
