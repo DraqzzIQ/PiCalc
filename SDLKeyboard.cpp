@@ -112,7 +112,7 @@ uint8_t SDLKeyboard::scancode_to_key_calculator(SDL_Event* _event) {
 		case SDL_SCANCODE_TAB: return Chars::KEY_MAP.at("Y");
 		case SDL_SCANCODE_KP_DIVIDE: return Chars::KEY_MAP.at("LCM");
 		case SDL_SCANCODE_KP_MINUS: return Chars::KEY_MAP.at("Intg");
-		case SDL_SCANCODE_T: return Chars::KEY_MAP.at("E");
+		case SDL_SCANCODE_T: return Chars::KEY_MAP.at("F");
 		case SDL_SCANCODE_M: return Chars::KEY_MAP.at("M");
 		default: return 0;
 		}
@@ -154,7 +154,7 @@ uint8_t SDLKeyboard::scancode_to_key_calculator(SDL_Event* _event) {
 		case SDL_SCANCODE_S: return Chars::KEY_MAP.at("sin");
 		case SDL_SCANCODE_9: return Chars::KEY_MAP.at(")");
 		case SDL_SCANCODE_BACKSPACE: return Chars::KEY_MAP.at("DEL");
-		case SDL_SCANCODE_KP_MULTIPLY: return Chars::KEY_MAP.at("*");
+		case SDL_SCANCODE_KP_MULTIPLY: return Chars::KEY_MAP.at("multiply");
 		case SDL_SCANCODE_KP_PLUS: return Chars::KEY_MAP.at("+");
 		case SDL_SCANCODE_INSERT: return Chars::KEY_MAP.at("Ans");
 		case SDL_SCANCODE_UP: return Chars::KEY_MAP.at("up");
@@ -163,7 +163,7 @@ uint8_t SDLKeyboard::scancode_to_key_calculator(SDL_Event* _event) {
 		case SDL_SCANCODE_C: return Chars::KEY_MAP.at("cos");
 		case SDL_SCANCODE_TAB: return Chars::KEY_MAP.at("S<>D");
 		case SDL_SCANCODE_DELETE: return Chars::KEY_MAP.at("AC");
-		case SDL_SCANCODE_KP_DIVIDE: return Chars::KEY_MAP.at("/");
+		case SDL_SCANCODE_KP_DIVIDE: return Chars::KEY_MAP.at("divide");
 		case SDL_SCANCODE_KP_MINUS: return Chars::KEY_MAP.at("-");
 		case SDL_SCANCODE_KP_EQUALS: return Chars::KEY_MAP.at("=");
 		case SDL_SCANCODE_LCTRL: return Chars::KEY_MAP.at("MODE");
@@ -324,7 +324,7 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event) {
 	case SDL_SCANCODE_S: return Chars::KEY_MAP.at("sin");
 	case SDL_SCANCODE_9: return Chars::KEY_MAP.at(")");
 	case SDL_SCANCODE_BACKSPACE: return Chars::KEY_MAP.at("DEL");
-	case SDL_SCANCODE_KP_MULTIPLY: return Chars::KEY_MAP.at("*");
+	case SDL_SCANCODE_KP_MULTIPLY: return Chars::KEY_MAP.at("multiply");
 	case SDL_SCANCODE_KP_PLUS: return Chars::KEY_MAP.at("+");
 	case SDL_SCANCODE_INSERT: return Chars::KEY_MAP.at("Ans");
 	case SDL_SCANCODE_UP: return Chars::KEY_MAP.at("up");
@@ -333,7 +333,7 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event) {
 	case SDL_SCANCODE_C: return Chars::KEY_MAP.at("cos");
 	case SDL_SCANCODE_TAB: return Chars::KEY_MAP.at("S<>D");
 	case SDL_SCANCODE_DELETE: return Chars::KEY_MAP.at("AC");
-	case SDL_SCANCODE_KP_DIVIDE: return Chars::KEY_MAP.at("/");
+	case SDL_SCANCODE_KP_DIVIDE: return Chars::KEY_MAP.at("divide");
 	case SDL_SCANCODE_KP_MINUS: return Chars::KEY_MAP.at("-");
 	case SDL_SCANCODE_KP_EQUALS: return Chars::KEY_MAP.at("=");
 	case SDL_SCANCODE_LCTRL: return Chars::KEY_MAP.at("MODE");

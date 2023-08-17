@@ -189,4 +189,5 @@ const std::map<std::string, uint8_t> Chars::KEY_MAP = {
 	{ "gradian", 186 },
 	{ "degree", 187 },
 	{ "radian", 188 },
+	{ "unknown", 189},
 };

@@ -49,12 +49,22 @@ class SDLKeyboard : public IKeyboard
 		/// </summary>
         KeyPress sdl_event_to_keypress(SDL_Event* _event);
 		/// <summary>
-		/// converts SDL scancodes to calculator keycodes
+		/// converts SDL scancodes to calculator keycodes using the calculator key-layout
 		/// </summary>
 		/// <param name="key">scancode</param>
 		/// <returns>keycode</returns>
 		uint8_t scancode_to_key_calculator(SDL_Event* _event);
+		/// <summary>
+		/// converts SDL scancodes to calculator keycodes using the normal keyboard key-layout
+		/// </summary>
+		/// <param name="key">scancode</param>
+		/// <returns>keycode</returns>
 		uint8_t scancode_to_key_keyboard(SDL_Event* _event);
+		/// <summary>
+		/// converts SDL scancodes to calculator keycodes using the calculator key-layout, but ignores shift + alpha
+		/// </summary>
+		/// <param name="key">scancode</param>
+		/// <returns>keycode</returns>
 		uint8_t scancode_to_key_raw(SDL_Event* _event);
 };
 #endif

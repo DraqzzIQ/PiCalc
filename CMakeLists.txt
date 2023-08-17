@@ -7,7 +7,7 @@ set(PICO_BOARD pico_w)
 set(PROJECT_NAME "CasioOS")
 
 # Pico
-if(RPI_PICO)
+if(true)
     include(pico_sdk_import.cmake) # must be included before project()
 endif()
 
@@ -19,7 +19,7 @@ file(GLOB SOURCES "*.c" "*.cpp" "*.h")
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Linux, (Windows)
-if(NOT RPI_PICO)
+if(NOT true)
     find_package(Threads REQUIRED)
     
     find_package(SDL2 REQUIRED) # sudo apt install libsdl2-dev to install
@@ -31,7 +31,7 @@ endif()
 
 # Pico
 # cmake -Dtrue=ON to compile
-if(RPI_PICO)
+if(true)
     # initialize the Raspberry Pi Pico SDK
     pico_sdk_init()
 
