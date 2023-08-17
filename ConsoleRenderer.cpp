@@ -3,12 +3,13 @@
 
 ConsoleRenderer::ConsoleRenderer()
 {
+	#ifdef _WIN32
 	HWND console = GetConsoleWindow();
 	RECT r;
 	GetWindowRect(console, &r); //stores the console's current dimensions
 
 	MoveWindow(console, r.left, r.top, 1600, 600, TRUE); // 800 width, 100 height
-
+	#endif
 }
 
 void ConsoleRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols)
