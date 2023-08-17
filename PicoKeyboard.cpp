@@ -19,12 +19,12 @@ PicoKeyboard::PicoKeyboard(WindowManager *window_manager) : IKeyboard(window_man
 
 bool PicoKeyboard::is_shift_active()
 {
-	return is_shift;
+	return functionKeysState == KeyState::SHIFT_ON;
 }
 
 bool PicoKeyboard::is_alpha_active()
 {
-	return is_alpha;
+	return functionKeysState == KeyState::ALPHA_ON;
 }
 
 void PicoKeyboard::check_for_keyboard_presses() {
@@ -32,20 +32,27 @@ void PicoKeyboard::check_for_keyboard_presses() {
 		setPin(px);
 		std::vector<bool> high_pins = getPins();
 		for (uint8_t py = 0; py < high_pins.size(); py++){
-			if (pressedButtons[px][py] && !high_pins[py]){
-				pressedButtons[px][py] = false;
-				_window_manager->handle_key_up(coords_to_keypress(px, py));
+            if (pressedButtons[px][py] == KeyState::OFF && high_pins[py]){
+                KeyPress press = coords_to_keypress(px, py, functionKeysState);
+                printf("Key pressed:  %d\n", press.key_calculator);
+				_window_manager->handle_key_down(press);
+                pressedButtons[px][py] = functionKeysState;
+
+                if (press.key_raw == Chars::KEY_MAP.at("SHIFT")) functionKeysState = KeyState::SHIFT_ON;
+	            else if (press.key_raw == Chars::KEY_MAP.at("ALPHA")) functionKeysState = KeyState::ALPHA_ON;
+                else functionKeysState = KeyState::ON;
 			}
-			else if (!pressedButtons[px][py] && high_pins[py]){
-				pressedButtons[px][py] = true;
-				_window_manager->handle_key_down(coords_to_keypress(px, py));
+			else if (pressedButtons[px][py] != KeyState::OFF && !high_pins[py]){
+                printf("Key released: %d\n", coords_to_keypress(px, py, pressedButtons[px][py]).key_calculator);
+				_window_manager->handle_key_up(coords_to_keypress(px, py, pressedButtons[px][py]));
+                pressedButtons[px][py] = KeyState::OFF;
 			}
 		}
 	}
 }
 
-uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
-    if (is_shift_active()) {
+uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y, KeyState state) {
+    if (state == KeyState::SHIFT_ON) {
         switch (10 * x + y) {
             case 1: return Chars::KEY_MAP.at("/R");
             case 2: return Chars::KEY_MAP.at("mixedfraction");
@@ -86,7 +93,7 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             default: return 0;
         }
     }
-    else if (is_alpha_active()) {
+    else if (state == KeyState::ALPHA_ON) {
         switch (10 * x + y) {
             case 3: return Chars::KEY_MAP.at("A");
             case 11: return Chars::KEY_MAP.at(":");
@@ -164,12 +171,12 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
     }
 }
 
-uint8_t PicoKeyboard::coords_to_key_keyboard(uint8_t x, uint8_t y) {
-    if (is_shift_active()) {
+uint8_t PicoKeyboard::coords_to_key_keyboard(uint8_t x, uint8_t y, KeyState state) {
+    if (state == KeyState::SHIFT_ON) {
         switch (10 * x + y) {
         }
     }
-    else if (is_alpha_active()) {
+    else if (state == KeyState::ALPHA_ON) {
         switch (10 * x + y) {
         }
     }
@@ -177,6 +184,7 @@ uint8_t PicoKeyboard::coords_to_key_keyboard(uint8_t x, uint8_t y) {
         switch (10 * x + y) {
         }
     }
+    return 0;
 }
 
 uint8_t PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y) {
@@ -235,19 +243,13 @@ uint8_t PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y) {
 }
 
 
-KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y){
+KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state){
 	KeyPress keypress = KeyPress();
-	keypress.key_calculator = coords_to_key_calculator(x, y);
-    keypress.key_keyboard = coords_to_key_keyboard(x, y);
+	keypress.key_calculator = coords_to_key_calculator(x, y, state);
+    keypress.key_keyboard = coords_to_key_keyboard(x, y, state);
 	keypress.key_raw = coords_to_key_raw(x, y);
 	keypress.alpha = is_alpha_active();
-	keypress.shift = is_shift_active();
-	
-	is_shift = false;
-	is_alpha = false;
-	if (keypress.key_raw = Chars::KEY_MAP.at("SHIFT")) is_shift = true;
-	if (keypress.key_raw = Chars::KEY_MAP.at("ALPHA")) is_alpha = true;
-	
+	keypress.shift = is_shift_active();	
 	return keypress;
 }
 

@@ -66,7 +66,6 @@ int main(int argc, char* argv[])
 #else
 	renderer = new ConsoleRenderer();
 #endif
-
 	window_manager = new WindowManager(renderer);
 	window_manager->update();
 	
