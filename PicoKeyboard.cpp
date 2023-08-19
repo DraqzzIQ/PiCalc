@@ -268,8 +268,9 @@ KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state){
 
 void PicoKeyboard::setPin(uint8_t pin){
 	for (uint8_t i = 0; i < outputs.size(); i++){
-		if (i == pin) gpio_put(outputs[i], 1);
-		else gpio_put(outputs[i], 0);
+		if (i == pin) gpio_set_dir(outputs[i], GPIO_OUT);
+        else gpio_set_dir(outputs[i], GPIO_IN);
+        gpio_put(outputs[pin], 1);
 	}
 }
 
