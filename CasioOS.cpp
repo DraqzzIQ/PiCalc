@@ -79,7 +79,6 @@ int main(int argc, char* argv[])
 #else
 	renderers->push_back(new ConsoleRenderer());
 #endif
-
 	window_manager = new WindowManager(renderers);
 	window_manager->update();
 	

@@ -11,8 +11,12 @@
 class MenuOption
 {
 	public:
+		/// <summary>
+		/// creates a new menuOption
+		/// </summary>
+		/// <param name="display_name">name of that option</param>
+		/// <param name="window_manager">window_manager to add windows to</param>
 		MenuOption(const std::string display_name, WindowManager* window_manager);
-
 		/// <summary>
 		/// can be passed a derived class of Window. On selection of this MenuOption a
 		/// new instance of that class will be added to window manager

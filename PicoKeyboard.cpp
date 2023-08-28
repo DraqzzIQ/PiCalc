@@ -19,33 +19,52 @@ PicoKeyboard::PicoKeyboard(WindowManager *window_manager) : IKeyboard(window_man
 
 bool PicoKeyboard::is_shift_active()
 {
-	return is_shift;
+	return functionKeysState == KeyState::SHIFT_ON;
 }
 
 bool PicoKeyboard::is_alpha_active()
 {
-	return is_alpha;
+	return functionKeysState == KeyState::ALPHA_ON;
 }
 
 void PicoKeyboard::check_for_keyboard_presses() {
 	for (uint8_t px = 0; px < outputs.size(); px++){
 		setPin(px);
+        sleep_ms(10);
 		std::vector<bool> high_pins = getPins();
 		for (uint8_t py = 0; py < high_pins.size(); py++){
-			if (pressedButtons[px][py] && !high_pins[py]){
-				pressedButtons[px][py] = false;
-				_window_manager->handle_key_up(coords_to_keypress(px, py));
+            if (pressedButtons[px][py] == KeyState::OFF && high_pins[py]){
+                KeyPress press = coords_to_keypress(px, py, functionKeysState);
+                // printf("\nKey pressed:  "); // uncomment to test keys via picoprobe / serial output
+                // print_key(press.key_calculator); // uncomment to test keys via picoprobe / serial output
+				_window_manager->handle_key_down(press); // comment to test keys via picoprobe / serial output
+                pressedButtons[px][py] = functionKeysState;
+
+                if (press.key_raw == Chars::KEY_MAP.at("SHIFT")) functionKeysState = KeyState::SHIFT_ON;
+	            else if (press.key_raw == Chars::KEY_MAP.at("ALPHA")) functionKeysState = KeyState::ALPHA_ON;
+                else functionKeysState = KeyState::ON;
 			}
-			else if (!pressedButtons[px][py] && high_pins[py]){
-				pressedButtons[px][py] = true;
-				_window_manager->handle_key_down(coords_to_keypress(px, py));
+			else if (pressedButtons[px][py] != KeyState::OFF && !high_pins[py]){
+                KeyPress release = coords_to_keypress(px, py, pressedButtons[px][py]);
+                // printf("\nKey released: "); // uncomment to test keys via picoprobe / serial output
+                // print_key(release.key_calculator); // uncomment to test keys via picoprobe / serial output
+				_window_manager->handle_key_up(release); // comment to test keys via picoprobe / serial output
+                pressedButtons[px][py] = KeyState::OFF;
 			}
 		}
 	}
 }
 
-uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
-    if (is_shift_active()) {
+void PicoKeyboard::print_key(uint8_t key){
+    for(auto i = Chars::KEY_MAP.begin(); i != Chars::KEY_MAP.end(); i++) {
+        if (i->second == key){
+            printf(i->first.c_str());
+        }
+    }
+}
+
+uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y, KeyState state) {
+    if (state == KeyState::SHIFT_ON) {
         switch (10 * x + y) {
             case 1: return Chars::KEY_MAP.at("/R");
             case 2: return Chars::KEY_MAP.at("mixedfraction");
@@ -83,10 +102,10 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             case 52: return Chars::KEY_MAP.at("e^n");
             case 53: return Chars::KEY_MAP.at("tan^-1");
             case 54: return Chars::KEY_MAP.at("M-");
-            default: return 0;
+            default: return Chars::KEY_MAP.at("unknown");;
         }
     }
-    else if (is_alpha_active()) {
+    else if (state == KeyState::ALPHA_ON) {
         switch (10 * x + y) {
             case 3: return Chars::KEY_MAP.at("A");
             case 11: return Chars::KEY_MAP.at(":");
@@ -103,9 +122,9 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             case 44: return Chars::KEY_MAP.at("Y");
             case 46: return Chars::KEY_MAP.at("LCM");
             case 47: return Chars::KEY_MAP.at("Intg");
-            case 53: return Chars::KEY_MAP.at("E");
+            case 53: return Chars::KEY_MAP.at("F");
             case 54: return Chars::KEY_MAP.at("M");
-            default: return 0;
+            default: return Chars::KEY_MAP.at("unknown");
         }
     }
     else {
@@ -143,7 +162,7 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             case 33: return Chars::KEY_MAP.at("sin");
             case 34: return Chars::KEY_MAP.at(")");
             case 35: return Chars::KEY_MAP.at("DEL");
-            case 36: return Chars::KEY_MAP.at("*");
+            case 36: return Chars::KEY_MAP.at("multiply");
             case 37: return Chars::KEY_MAP.at("+");
             case 38: return Chars::KEY_MAP.at("Ans");
             case 40: return Chars::KEY_MAP.at("up");
@@ -152,24 +171,24 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y) {
             case 43: return Chars::KEY_MAP.at("cos");
             case 44: return Chars::KEY_MAP.at("S<>D");
             case 45: return Chars::KEY_MAP.at("AC");
-            case 46: return Chars::KEY_MAP.at("/");
+            case 46: return Chars::KEY_MAP.at("divide");
             case 47: return Chars::KEY_MAP.at("-");
             case 48: return Chars::KEY_MAP.at("=");
             case 50: return Chars::KEY_MAP.at("MODE");
             case 52: return Chars::KEY_MAP.at("ln");
             case 53: return Chars::KEY_MAP.at("tan");
             case 54: return Chars::KEY_MAP.at("M+");
-            default: return 0;
+            default: return Chars::KEY_MAP.at("unknown");
         }
     }
 }
 
-uint8_t PicoKeyboard::coords_to_key_keyboard(uint8_t x, uint8_t y) {
-    if (is_shift_active()) {
+uint8_t PicoKeyboard::coords_to_key_keyboard(uint8_t x, uint8_t y, KeyState state) {
+    if (state == KeyState::SHIFT_ON) {
         switch (10 * x + y) {
         }
     }
-    else if (is_alpha_active()) {
+    else if (state == KeyState::ALPHA_ON) {
         switch (10 * x + y) {
         }
     }
@@ -177,6 +196,7 @@ uint8_t PicoKeyboard::coords_to_key_keyboard(uint8_t x, uint8_t y) {
         switch (10 * x + y) {
         }
     }
+    return 0;
 }
 
 uint8_t PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y) {
@@ -214,7 +234,7 @@ uint8_t PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y) {
         case 33: return Chars::KEY_MAP.at("sin");
         case 34: return Chars::KEY_MAP.at(")");
         case 35: return Chars::KEY_MAP.at("DEL");
-        case 36: return Chars::KEY_MAP.at("*");
+        case 36: return Chars::KEY_MAP.at("multiply");
         case 37: return Chars::KEY_MAP.at("+");
         case 38: return Chars::KEY_MAP.at("Ans");
         case 40: return Chars::KEY_MAP.at("up");
@@ -223,39 +243,34 @@ uint8_t PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y) {
         case 43: return Chars::KEY_MAP.at("cos");
         case 44: return Chars::KEY_MAP.at("S<>D");
         case 45: return Chars::KEY_MAP.at("AC");
-        case 46: return Chars::KEY_MAP.at("/");
+        case 46: return Chars::KEY_MAP.at("divide");
         case 47: return Chars::KEY_MAP.at("-");
         case 48: return Chars::KEY_MAP.at("=");
         case 50: return Chars::KEY_MAP.at("MODE");
         case 52: return Chars::KEY_MAP.at("ln");
         case 53: return Chars::KEY_MAP.at("tan");
         case 54: return Chars::KEY_MAP.at("M+");
-        default: return 0;
+        default: return Chars::KEY_MAP.at("unknown");
     }
 }
 
 
-KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y){
+KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state){
 	KeyPress keypress = KeyPress();
-	keypress.key_calculator = coords_to_key_calculator(x, y);
-    keypress.key_keyboard = coords_to_key_keyboard(x, y);
+	keypress.key_calculator = coords_to_key_calculator(x, y, state);
+    keypress.key_keyboard = coords_to_key_keyboard(x, y, state);
 	keypress.key_raw = coords_to_key_raw(x, y);
 	keypress.alpha = is_alpha_active();
-	keypress.shift = is_shift_active();
-	
-	is_shift = false;
-	is_alpha = false;
-	if (keypress.key_raw = Chars::KEY_MAP.at("SHIFT")) is_shift = true;
-	if (keypress.key_raw = Chars::KEY_MAP.at("ALPHA")) is_alpha = true;
-	
+	keypress.shift = is_shift_active();	
 	return keypress;
 }
 
 
 void PicoKeyboard::setPin(uint8_t pin){
 	for (uint8_t i = 0; i < outputs.size(); i++){
-		if (i == pin) gpio_put(outputs[i], 1);
-		else gpio_put(outputs[i], 0);
+		if (i == pin) gpio_set_dir(outputs[i], GPIO_OUT);
+        else gpio_set_dir(outputs[i], GPIO_IN);
+        gpio_put(outputs[pin], 1);
 	}
 }
 
