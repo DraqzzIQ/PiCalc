@@ -1,5 +1,4 @@
 #pragma once
-#ifndef PICO
 #include "IRenderer.h"
 #include "Constants.h"
 #include "Graphics.h"
@@ -21,7 +20,7 @@ class ConsoleRenderer : public IRenderer
 		/// renders the given pixels to the console
 		/// </summary>
 		/// <param name="pixels">pixels to render</param>
-		void render(render_plane pixels, std::vector<bool> screen_symbols);
+		void render(render_plane pixels, std::vector<bool> screen_symbols, bool force_rerender);
 
 	private:
 		/// <summary>
@@ -34,4 +33,3 @@ class ConsoleRenderer : public IRenderer
 		/// <returns>string containing #</returns>
 		std::string get_display_border();
 };
-#endif
