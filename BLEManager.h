@@ -17,6 +17,10 @@ class BLEManager
         /// and splits it into 
         /// </summary>
         void send_display_frame(std::vector<uint8_t> display_bytes, std::vector<uint8_t> symbol_bytes);
+        void get_mac(bd_addr_t mac);
+        char* get_mac_string();
+        void enable_bt();
+        void disable_bt();
 
     private:
         /// <summary>

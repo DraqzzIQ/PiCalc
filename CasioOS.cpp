@@ -25,7 +25,7 @@ IKeyboard* keyboard;
 WindowManager* window_manager;
 MainMenu* main_menu;
 #ifdef PICO
-BLEManager* ble_manager = new BLEManager();
+BLEManager* ble_manager;
 #endif
 
 
@@ -69,6 +69,8 @@ int main(int argc, char* argv[])
 #ifdef PICO
 	// Enable UART so we can print status output
     stdio_init_all();
+	ble_manager = new BLEManager();
+	ble_manager->enable_bt();
 	I2CUtils::init_i2c();
 	if(!I2CUtils::device_availible(DEVICE_ADDRESS))
 		std::cout << "Display not found" << std::endl;
@@ -81,7 +83,7 @@ int main(int argc, char* argv[])
 	window_manager = new WindowManager(renderers);
 	window_manager->update();
 	
-	Utils::sleep_for_ms(1000);
+	Utils::sleep_for_ms(500);
 
 	main_menu = new MainMenu(create_main_menu_options());
 

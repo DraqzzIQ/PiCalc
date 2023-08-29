@@ -55,8 +55,11 @@ void hci_packet_handler (uint8_t packet_type, uint16_t channel, uint8_t *packet,
         case BTSTACK_EVENT_STATE:
             // BTstack activated, get started
             if (btstack_event_state_get_state(packet) == HCI_STATE_WORKING) {
-                printf("To start the streaming, please run the le_streamer_client example on other device, or use some GATT Explorer, e.g. LightBlue, BLExplr.\n");
+                printf("BTstack initialized.\n");
             } 
+            else if(btstack_event_state_get_state(packet) == HCI_STATE_OFF){
+                printf("BTstack shutting down.\n");
+            }
             break;
         case HCI_EVENT_DISCONNECTION_COMPLETE:
             con_handle = hci_event_disconnection_complete_get_connection_handle(packet);
@@ -230,6 +233,29 @@ void send_frame_chunk()
         att_server_request_can_send_now_event(connection_handle);
 }
 
+void BLEManager::get_mac(bd_addr_t mac)
+{
+    cyw43_hal_get_mac(0, mac); // gets mac address of wifi
+    mac[5] = mac[5] + 1; // increment last byte by 1 for bluetooth mac
+}
+
+char* BLEManager::get_mac_string()
+{
+    bd_addr_t mac_bytes;
+    get_mac(mac_bytes);
+    return bd_addr_to_str(mac_bytes);
+}
+
+void BLEManager::enable_bt()
+{
+    hci_power_control(HCI_POWER_ON);
+}
+
+void BLEManager::disable_bt()
+{
+    hci_power_control(HCI_POWER_OFF);
+}
+
 void BLEManager::setup()
 {
     // initialize CYW43 driver architecture
@@ -263,9 +289,6 @@ void BLEManager::setup()
     gap_advertisements_set_params(adv_int_min, adv_int_max, adv_type, 0, null_addr, 0x07, 0x00);
     gap_advertisements_set_data(sizeof(adv_data), (uint8_t*) adv_data);
     gap_advertisements_enable(1);
-
-    // turn on!
-    hci_power_control(HCI_POWER_ON);
 }
 
 #endif
