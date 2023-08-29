@@ -17,21 +17,6 @@ void BTRenderer::render(render_plane pixels, std::vector<bool> screen_symbols, b
 
 
 std::vector<bool> BTRenderer::flatten_2d_bool_vector(const std::vector<std::vector<bool>>& bool_matrix) {
-
-    std::string out = "";
-
-    for (size_t i = 0; i < SCREEN_HEIGHT; i++) {
-        for (size_t j = 0; j < SCREEN_WIDTH; ++j) {
-            if(bool_matrix[j][i])
-                out += "# ";
-            else
-                out += "  ";
-        }
-        out += "\n";
-    }
-
-    std::cout << out << std::endl;
-
     std::vector<bool> flattened_vector;
     for (const std::vector<bool>& column : bool_matrix) {
         flattened_vector.insert(flattened_vector.end(), column.begin(), column.end());

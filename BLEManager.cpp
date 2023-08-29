@@ -6,28 +6,33 @@
 
 const uint8_t casioOS_service_id[16] = {0xca, 0xb5, 0x66, 0x9c, 0x3c, 0xcf, 0x41, 0x89, 0xad, 0xdb, 0xb4, 0x53, 0x89, 0x99, 0x97, 0x17};
 
-//max length 31 bytes
+//max length 31 bytes!
 uint8_t adv_data[] = {
     // Flags general discoverable
-    0x02, BLUETOOTH_DATA_TYPE_FLAGS, APP_AD_FLAGS,
+    //0x02, BLUETOOTH_DATA_TYPE_FLAGS, APP_AD_FLAGS,
     // Name
     0x08, BLUETOOTH_DATA_TYPE_COMPLETE_LOCAL_NAME, 'C', 'a', 's', 'i', 'o', 'O', 'S', 
-    //Incomplete List of 128-bit Service Class UUIDs -- FF10 - only valid for testing!
+    //Incomplete List of 128-bit Service Class UUIDs
     0x11, BLUETOOTH_DATA_TYPE_INCOMPLETE_LIST_OF_128_BIT_SERVICE_CLASS_UUIDS, casioOS_service_id[15], casioOS_service_id[14], casioOS_service_id[13], casioOS_service_id[12], casioOS_service_id[11], casioOS_service_id[10], casioOS_service_id[9], casioOS_service_id[8], casioOS_service_id[7], casioOS_service_id[6], casioOS_service_id[5], casioOS_service_id[4], casioOS_service_id[3], casioOS_service_id[2], casioOS_service_id[1], casioOS_service_id[0],
 };
 
+//hci_event callback
 btstack_packet_callback_registration_t hci_event_callback_registration;
 
-uint16_t le_display_notification_enabled;
+// display notification state
+uint16_t display_notification_enabled;
+// display attribute handle
 uint16_t display_attribute_handle;
+// connection handle
 hci_con_handle_t connection_handle;
+// max ATT MTU - 1 for 0x00 packet header
 uint16_t display_max_packet_len;
 
-std::vector<std::vector<uint8_t>> data_chunks;
+std::vector<std::vector<uint8_t>> frame_chunks;
 uint8_t display_data_chunk_index = 0;
 
 
-void send_display_chunk();
+void send_frame_chunk();
 
 
 /// <summary>
@@ -111,17 +116,17 @@ void att_packet_handler (uint8_t packet_type, uint16_t channel, uint8_t *packet,
                 case ATT_EVENT_CONNECTED:
                     // setup new 
                     connection_handle = att_event_connected_get_handle(packet);
-                    display_max_packet_len = att_server_get_mtu(connection_handle) - 3 - 1;
+                    display_max_packet_len = att_server_get_mtu(connection_handle) - 1;
                     printf("ATT connected, handle 0x%04x, data len %u\n", connection_handle, display_max_packet_len);
                     break;
                 case ATT_EVENT_MTU_EXCHANGE_COMPLETE:
                     mtu = att_event_mtu_exchange_complete_get_MTU(packet) - 3;
-                    display_max_packet_len = mtu - 3 - 1;
+                    display_max_packet_len = mtu - 1;
                     printf("ATT MTU = %u => use data of len %u\n", mtu, display_max_packet_len);
                     break;
                 case ATT_EVENT_CAN_SEND_NOW:
-                    if (le_display_notification_enabled)
-                        send_display_chunk();
+                    if (display_notification_enabled)
+                        send_frame_chunk();
                     break;
                 case ATT_EVENT_HANDLE_VALUE_INDICATION_COMPLETE:
                     printf("ATT Handle Value Indication complete\n");
@@ -129,7 +134,7 @@ void att_packet_handler (uint8_t packet_type, uint16_t channel, uint8_t *packet,
                 case ATT_EVENT_DISCONNECTED:
                     // free connection
                     printf("ATT disconnected, handle 0x%04x\n", connection_handle);                    
-                    le_display_notification_enabled = 0;
+                    display_notification_enabled = 0;
                     connection_handle = HCI_CON_HANDLE_INVALID;
                     break;
                 default:
@@ -154,9 +159,9 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
         case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_CLIENT_CONFIGURATION_HANDLE:
             break;
         case ATT_CHARACTERISTIC_018ea0e5_77a0_424f_bd71_73a2ac1792dd_01_CLIENT_CONFIGURATION_HANDLE:
-            le_display_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
-            printf("Notifications enabled %u\n", le_display_notification_enabled); 
-            if (le_display_notification_enabled){
+            display_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
+            printf("Notifications enabled %u\n", display_notification_enabled); 
+            if (display_notification_enabled){
                 switch (att_handle){
                     case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_CLIENT_CONFIGURATION_HANDLE:
                         display_attribute_handle = ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_VALUE_HANDLE;
@@ -189,41 +194,39 @@ BLEManager::BLEManager()
 
 void BLEManager::send_display_frame(std::vector<uint8_t> display_bytes, std::vector<uint8_t> symbol_bytes)
 {
-    if(!le_display_notification_enabled) return;
-    data_chunks.clear();
+    if(!display_notification_enabled) return;
+    frame_chunks.clear();
     display_data_chunk_index = 0;
 
     // split display bytes into chunks of display_max_packet_len bytes
     for (uint16_t i = 0; i < display_bytes.size(); i += display_max_packet_len) {
         uint16_t len = std::min(display_max_packet_len, static_cast<uint16_t>(display_bytes.size() - i));
         std::vector<uint8_t> data_chunk(display_bytes.data() + i, display_bytes.data() + i + len);
+        //packet header
         data_chunk.insert(data_chunk.begin(), 0x00);
-        data_chunks.push_back(data_chunk);
+        frame_chunks.push_back(data_chunk);
     }
-    symbol_bytes.insert(symbol_bytes.begin(), data_chunks.size());
-    data_chunks.insert(data_chunks.begin(), symbol_bytes);
+    //packet header containing number of following chunks
+    symbol_bytes.insert(symbol_bytes.begin(), frame_chunks.size());
+    frame_chunks.insert(frame_chunks.begin(), symbol_bytes);
 
-    std::cout << "Display bytes: " << display_bytes.size() << std::endl;
-    std::cout << "Symbol bytes: " << symbol_bytes.size() << std::endl;
-    std::cout << "Data chunks: " << data_chunks.size() << std::endl;
+    // std::cout << "Display bytes: " << display_bytes.size() << std::endl;
+    // std::cout << "Symbol bytes: " << symbol_bytes.size() << std::endl;
+    // std::cout << "Data chunks: " << frame_chunks.size() << std::endl;
 
     att_server_request_can_send_now_event(connection_handle);
 }
 
-void send_display_chunk()
+void send_frame_chunk()
 {
-    if(data_chunks.size() <=  display_data_chunk_index) return;
+    if(frame_chunks.size() <=  display_data_chunk_index) return;
 
-    std::vector<uint8_t> data_chunk = data_chunks[display_data_chunk_index];
+    std::vector<uint8_t> data_chunk = frame_chunks[display_data_chunk_index];
     display_data_chunk_index++;
 
     att_server_notify(connection_handle, display_attribute_handle, data_chunk.data(), data_chunk.size());
 
-    // prints content of data_chunk
-    printf_hexdump(data_chunk.data(), data_chunk.size());
-    std::cout << std::endl;
-
-    if (data_chunks.size() >  display_data_chunk_index)
+    if (frame_chunks.size() >  display_data_chunk_index)
         att_server_request_can_send_now_event(connection_handle);
 }
 

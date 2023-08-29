@@ -58,7 +58,6 @@ void start_main_thread()
 	while (1) {
 		keyboard->check_for_keyboard_presses();
 		window_manager->update(true);
-		Utils::sleep_for_ms(3000);
 	}
 }
 
