@@ -130,7 +130,7 @@ void Equation::calculate_equation(int8_t& exponent, int64_t& value) {
 		;
 	case Error::TIME_ERROR:
 		;
-	case Error::NO_ERROR:
+	case Error::FINE:
 		;
 	}
 }
@@ -165,7 +165,7 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 					;
 				case Error::TIME_ERROR:
 					;
-				case Error::NO_ERROR:
+				case Error::FINE:
 					;
 				}
 			}

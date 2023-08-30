@@ -35,7 +35,7 @@ private:
 		ARGUMENT_ERROR,
 		STORAGE_ERROR,
 		TIME_ERROR,
-		NO_ERROR
+		FINE,
 	};
 
 	struct RenderNode {
