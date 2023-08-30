@@ -1,39 +1,45 @@
 #include "WindowManager.h"
 
-WindowManager::WindowManager(IRenderer* renderer)
+WindowManager::WindowManager(std::vector<IRenderer*> *renderers)
 {
-	_renderer = renderer;
+	_renderers = renderers;
 }
 
-void WindowManager::add_window(Window* window)
+void WindowManager::add_window(Window *window)
 {
 	_windows.push(window);
 }
 
 void WindowManager::pop_window()
 {
-	if(!_windows.empty())
-	delete _windows.top();
+	if (!_windows.empty())
+		delete _windows.top();
 	_windows.pop();
 }
 
-void WindowManager::update()
+void WindowManager::update(bool force_rerender)
 {
-	if (_windows.size() > 0)
-		_renderer->render(_windows.top()->update_window(), _windows.top()->screen_symbols);
-	else
-		_renderer->render(Graphics::LOGO_SCREEN, std::vector<bool>(Graphics::SCREEN_SYMBOLS.size(), true));
+	for (size_t i = 0; i < _renderers->size(); i++)
+	{
+		if (!_windows.empty())
+			_renderers->at(i)->render(_windows.top()->update_window(), _windows.top()->screen_symbols, force_rerender);
+		else
+			_renderers->at(i)->render(Graphics::LOGO_SCREEN, std::vector<bool>(Graphics::SCREEN_SYMBOLS.size(), true), force_rerender);
+	}
 }
 
-void WindowManager::handle_key_down(KeyPress keypress) {
-	if(keypress.alpha && keypress.key_raw == Chars::KEY_MAP.at("AC")){
+void WindowManager::handle_key_down(KeyPress keypress)
+{
+	if (keypress.alpha && keypress.key_raw == Chars::KEY_MAP.at("AC"))
+	{
 		pop_window();
 	}
 	if (_windows.size() > 0)
 		_windows.top()->handle_key_down(keypress);
 }
 
-void WindowManager::handle_key_up(KeyPress keypress) {
+void WindowManager::handle_key_up(KeyPress keypress)
+{
 	if (_windows.size() > 0)
 		_windows.top()->handle_key_up(keypress);
 }

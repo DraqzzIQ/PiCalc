@@ -21,16 +21,12 @@ class DisplayRenderer : public IRenderer
         /// renders the given pixels to the console
         /// </summary>
         /// <param name="pixels">pixels to render</param>
-        void render(render_plane pixels, std::vector<bool> screen_symbols);
+        void render(render_plane pixels, std::vector<bool> screen_symbols, bool force_rerender);
     private:
         /// <summary>
         /// clears the display
         /// </summary>
         void clear();
-        /// <summary>
-        /// initializes the i2c connection
-        /// </summary>
-        void init_i2c();
         /// <summary>
         /// sub_addresses for the display chips
         /// </summary>

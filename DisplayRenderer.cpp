@@ -4,13 +4,12 @@
 DisplayRenderer::DisplayRenderer()
 {
     Utils::sleep_for_ms(1);
-    init_i2c();
     clear();
 }
 
-void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols)
+void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols, bool force_rerender)
 {
-    if(check_rendered(pixels, screen_symbols))
+    if(!force_rerender && check_rendered(pixels, screen_symbols))
         return;
 
     //DONT FORGET::: only 3 commands when sub device addressess are properly implemented
@@ -88,13 +87,6 @@ void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen
     i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command2, sizeof(command2), C_LAST_COMMAND);
 }
 
-
-void DisplayRenderer::init_i2c()
-{
-    i2c_init(i2c_default, 100000);
-    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-}
 
 void DisplayRenderer::clear()
 {

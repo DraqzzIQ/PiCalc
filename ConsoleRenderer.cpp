@@ -1,5 +1,4 @@
 #include "ConsoleRenderer.h"
-#ifndef PICO
 
 ConsoleRenderer::ConsoleRenderer()
 {
@@ -12,9 +11,9 @@ ConsoleRenderer::ConsoleRenderer()
 	#endif
 }
 
-void ConsoleRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols)
+void ConsoleRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols, bool force_rerender)
 {	
-	if(check_rendered(pixels, screen_symbols))
+	if(!force_rerender && check_rendered(pixels, screen_symbols))
 		return;
 		
 	set_cursor_top_left();
@@ -66,4 +65,3 @@ void ConsoleRenderer::set_cursor_top_left()
 {
 	std::cout << "\x1B[H";
 }
-#endif

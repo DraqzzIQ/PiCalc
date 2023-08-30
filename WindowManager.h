@@ -4,6 +4,7 @@
 #include "Graphics.h"
 #include "KeyPress.h"
 #include <stack>
+#include <vector>
 
 /// <summary>
 /// provides functionality for managing, rendering and keyboard events for windows
@@ -11,7 +12,7 @@
 class WindowManager
 {
 	public:
-		WindowManager(IRenderer* renderer);
+		WindowManager(std::vector<IRenderer*>* renderers);
 
 		/// <summary>
 		/// adds a window to the window stack
@@ -24,7 +25,7 @@ class WindowManager
 		/// <summary>
 		/// rerenders the top window
 		/// </summary>
-		void update();
+		void update(bool force_rerender = false);
 		/// <summary>
 		/// handles keydown events
 		/// </summary>
@@ -40,7 +41,7 @@ class WindowManager
 		/// <summary>
 		/// the renderer used
 		/// </summary>
-		IRenderer* _renderer;
+		std::vector<IRenderer*>* _renderers;
 		/// <summary>
 		/// the window stack
 		/// </summary>
