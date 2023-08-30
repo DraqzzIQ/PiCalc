@@ -102,7 +102,7 @@ uint8_t PicoKeyboard::coords_to_key_calculator(uint8_t x, uint8_t y, KeyState st
             case 52: return Chars::KEY_MAP.at("e^n");
             case 53: return Chars::KEY_MAP.at("tan^-1");
             case 54: return Chars::KEY_MAP.at("M-");
-            default: return Chars::KEY_MAP.at("unknown");;
+            default: return Chars::KEY_MAP.at("unknown");
         }
     }
     else if (state == KeyState::ALPHA_ON) {

@@ -15,7 +15,7 @@ public:
 	~Equation();
 	render_plane render_equation();
 	void add_value(uint8_t keypress);
-	void calculate_equation(int8_t& exponent, int64_t& value);
+	double calculate_equation();
 	void del();
 	void move_cursor_left();
 	void move_cursor_right();
@@ -45,22 +45,17 @@ private:
 	};
 	RenderNode* root;
 
-	enum class CalculateOperation {
-		PLUS,
-		MINUS,
-		MULTIPLY,
-		DIVIDE,
-		NEGATIVE_SIGN,
-		POSITIVE_SIGN,
-		BRACKET_OPEN,
-		BRACKET_CLOSE
+	std::vector<uint8_t> allowedCalculateOperations {
+		69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164
 	};
 
 	struct CalculateNode {
-		int64_t value;
-		int8_t exponent;
-		CalculateOperation operation;
+		double* value;
+		uint8_t* operation;
 	};
+
+	std::vector<double> letterVariables = std::vector<double>(9, 0.0);
+
 
 	render_plane rendered_equation;
 	bool equation_changed;
