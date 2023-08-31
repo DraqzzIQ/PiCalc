@@ -14,7 +14,7 @@
 #include "DisplayRenderer.h"
 #include "pico/stdlib.h"
 #include "I2CUtils.h"
-#include "BLEManager.h"
+#include "BTManager.h"
 #include "BTRenderer.h"
 #else
 #include "SDLKeyboard.h"
@@ -25,7 +25,7 @@ IKeyboard* keyboard;
 WindowManager* window_manager;
 MainMenu* main_menu;
 #ifdef PICO
-BLEManager* ble_manager;
+BTManager* bt_manager;
 #endif
 
 
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 		std::cout << "Display not found" << std::endl;
 	else
 		renderers->push_back(new DisplayRenderer());
-	renderers->push_back(new BTRenderer(ble_manager));
+	renderers->push_back(new BTRenderer(bt_manager));
 #else
 	renderers->push_back(new ConsoleRenderer());
 #endif
@@ -88,8 +88,8 @@ int main(int argc, char* argv[])
 
 #ifdef PICO
 	keyboard = new PicoKeyboard(window_manager);
-	ble_manager = new BLEManager(window_manager);
-	ble_manager->enable_bt();
+	bt_manager = new BTManager(window_manager);
+	bt_manager->enable_bt();
 #else
 	keyboard = new SDLKeyboard(window_manager);
 #endif

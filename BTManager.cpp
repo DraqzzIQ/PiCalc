@@ -1,4 +1,4 @@
-#include "BLEManager.h"
+#include "BTManager.h"
 #ifdef PICO
 
 // Flags general discoverable
@@ -194,13 +194,13 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
 }
 
 
-BLEManager::BLEManager(WindowManager *window_manager)
+BTManager::BTManager(WindowManager *window_manager)
 {
     _window_manager = window_manager;
     setup();
 }
 
-void BLEManager::send_display_frame(std::vector<uint8_t> display_bytes, std::vector<uint8_t> symbol_bytes)
+void BTManager::send_display_frame(std::vector<uint8_t> display_bytes, std::vector<uint8_t> symbol_bytes)
 {
     if(!display_notification_enabled) return;
     frame_chunks.clear();
@@ -234,30 +234,30 @@ void send_frame_chunk()
         att_server_request_can_send_now_event(connection_handle);
 }
 
-void BLEManager::get_mac(bd_addr_t mac)
+void BTManager::get_mac(bd_addr_t mac)
 {
     cyw43_hal_get_mac(0, mac); // gets mac address of wifi
     mac[5] = mac[5] + 1; // increment last byte by 1 for bluetooth mac
 }
 
-char* BLEManager::get_mac_string()
+char* BTManager::get_mac_string()
 {
     bd_addr_t mac_bytes;
     get_mac(mac_bytes);
     return bd_addr_to_str(mac_bytes);
 }
 
-void BLEManager::enable_bt()
+void BTManager::enable_bt()
 {
     hci_power_control(HCI_POWER_ON);
 }
 
-void BLEManager::disable_bt()
+void BTManager::disable_bt()
 {
     hci_power_control(HCI_POWER_OFF);
 }
 
-void BLEManager::setup()
+void BTManager::setup()
 {
     // initialize CYW43 driver architecture
     if (cyw43_arch_init()) {

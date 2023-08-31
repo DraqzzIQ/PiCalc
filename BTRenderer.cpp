@@ -2,9 +2,9 @@
 #ifdef PICO
 #include "Constants.h"
 
-BTRenderer::BTRenderer(BLEManager* ble_manager)
+BTRenderer::BTRenderer(BTManager* bt_manager)
 {
-    _ble_manager = ble_manager;
+    _bt_manager = bt_manager;
 }
 
 void BTRenderer::render(render_plane pixels, std::vector<bool> screen_symbols, bool force_rerender)
@@ -12,7 +12,7 @@ void BTRenderer::render(render_plane pixels, std::vector<bool> screen_symbols, b
     if(!force_rerender && already_rendered(pixels, screen_symbols))
         return;
 
-    _ble_manager->send_display_frame(convert_bools_to_bits(flatten_2d_bool_vector(pixels)), convert_bools_to_bits(screen_symbols));
+    _bt_manager->send_display_frame(convert_bools_to_bits(flatten_2d_bool_vector(pixels)), convert_bools_to_bits(screen_symbols));
 }
 
 

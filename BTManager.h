@@ -8,10 +8,10 @@
 #include "Utils.h"
 #include "WindowManager.h"
 
-class BLEManager
+class BTManager
 {
     public:
-        BLEManager(WindowManager *window_manager);
+        BTManager(WindowManager *window_manager);
         /// <summary>
         /// Sends the current display frame to the connected device
         /// and splits it into 
