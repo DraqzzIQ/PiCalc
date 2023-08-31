@@ -196,9 +196,9 @@ elif start_type == "3":
 
     # name = 16
     width = 5
-    height = 6
+    height = 7
 
-    start(int(width), 6)
+    start(width, height)
 
     file = open("result.txt", "w")
 

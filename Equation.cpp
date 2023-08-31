@@ -114,7 +114,7 @@ void Equation::add_resized_symbol(render_plane& resized_render_plane, render_pla
 	}
 }
 
-void Equation::calculate_equation(int8_t& exponent, int64_t& value) {
+double Equation::calculate_equation() {
 	Error error;
 	CalculateNode* calculation = calculate_equation_part(*root->children, error);
 	switch (error) {
@@ -130,9 +130,10 @@ void Equation::calculate_equation(int8_t& exponent, int64_t& value) {
 		;
 	case Error::TIME_ERROR:
 		;
-	case Error::NO_ERROR:
+	case Error::FINE:
 		;
 	}
+	return *calculation->value;
 }
 
 Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNode*> equation, Error& error) {
@@ -144,10 +145,10 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 	std::vector<CalculateNode> calculation(0);
 	bool negative = false;
 	bool numExpected = true;
+	bool insideFunction = false;
+	std::string num;
 	for (size_t i = 0; i < equation.size(); i++) {
 		if (equation[i]->operation != nullptr) {
-			int8_t exp;
-			int64_t val;
 			std::vector<CalculateNode*> subEquations;
 			Error err;
 			for (RenderNode* node : *equation[i]->children) {
@@ -165,27 +166,52 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 					;
 				case Error::TIME_ERROR:
 					;
-				case Error::NO_ERROR:
+				case Error::FINE:
 					;
 				}
 			}
 			switch (*equation[i]->operation) {
-				case SymbolOperation::FRACTION:
-					;
-				
+			case SymbolOperation::FRACTION: calculation.push_back(CalculateNode(new double(*subEquations[0]->value / *subEquations[1]->value), nullptr));
+			case SymbolOperation::MIXED_FRACTION:;
 			}
-			//calculate_equation_part(*equation[i]->children, val, exp);
-			//if () {
-
-			//}
 		}
-		//if (*equation[i]->value < 10) {
-		//	
-		//}
-		//if (calculation.size() == 0 || ) {
+		else {
+			uint8_t value = *equation[i]->value;
+			if (value < 10) {
+				num.push_back(value + 48);
+			}
+			else if (value == Chars::KEY_MAP.at(".")) {
+				num.push_back('.');
+			}
+			else if (value == Chars::KEY_MAP.at("*10^n")) {
+				num.push_back('e');
+			}
+			else {
+				if (num != "") {
+					calculation.push_back(CalculateNode(new double(std::stod(num)), nullptr));
+					num = "";
+				}
 
-		//}
+				if (std::count(allowedCalculateOperations.begin(), allowedCalculateOperations.end(), value) || (value > 189 && value < 236)) {
+					calculation.push_back(CalculateNode(nullptr, new uint8_t(value)));
+				}
+				else {
+					switch (value) {
+					case 10:;
+					}
+				}
+			}
+		}
 	}
+	if (num != "") {
+		calculation.push_back(CalculateNode(new double(std::stod(num)), nullptr));
+		num = "";
+	}
+
+	// TODO: calculate result from calculation
+
+
+
 	return nullptr;
 }
 
