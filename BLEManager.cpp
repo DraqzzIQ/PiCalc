@@ -175,8 +175,6 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
                     default:
                         break;
                 }
-                //why was this here?
-                //att_server_request_can_send_now_event(connection_handle);
             }
             break;
         case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_VALUE_HANDLE:
@@ -198,8 +196,6 @@ BLEManager::BLEManager()
 
 void BLEManager::send_display_frame(std::vector<uint8_t> display_bytes, std::vector<uint8_t> symbol_bytes)
 {
-    std::cout << "Length: " << display_bytes.size() << std::endl;
-
     if(!display_notification_enabled) return;
     frame_chunks.clear();
     display_data_chunk_index = 0;
@@ -216,30 +212,20 @@ void BLEManager::send_display_frame(std::vector<uint8_t> display_bytes, std::vec
     symbol_bytes.insert(symbol_bytes.begin(), frame_chunks.size());
     frame_chunks.insert(frame_chunks.begin(), symbol_bytes);
 
-    // std::cout << "Display bytes: " << display_bytes.size() << std::endl;
-    // std::cout << "Symbol bytes: " << symbol_bytes.size() << std::endl;
-    // std::cout << "Data chunks: " << frame_chunks.size() << std::endl;
-
     att_server_request_can_send_now_event(connection_handle);
 }
 
 void send_frame_chunk()
 {
-    std::cout << "Sending chunk " << display_data_chunk_index << std::endl;
-
     if(frame_chunks.size() <=  display_data_chunk_index) return;
-
 
     std::vector<uint8_t>* data_chunk = &frame_chunks[display_data_chunk_index];
     display_data_chunk_index++;
 
     att_server_notify(connection_handle, display_attribute_handle, data_chunk->data(), data_chunk->size());
 
-
     if (frame_chunks.size() >  display_data_chunk_index)
         att_server_request_can_send_now_event(connection_handle);
-
-    std::cout << "Sent chunk " << display_data_chunk_index << std::endl;
 }
 
 void BLEManager::get_mac(bd_addr_t mac)

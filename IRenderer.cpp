@@ -6,7 +6,7 @@ IRenderer::IRenderer()
     rendered_screen_symbols = std::vector<bool>(Graphics::SCREEN_SYMBOLS.size(), false);
 }
 
-bool IRenderer::already_rendered(const render_plane pixels, const std::vector<bool> screen_symbols)
+bool IRenderer::already_rendered(const render_plane& pixels, const std::vector<bool>& screen_symbols)
 {
     for (size_t i = 0; i < pixels.size(); i++)
     {

@@ -17,8 +17,6 @@ void BTRenderer::render(render_plane pixels, std::vector<bool> screen_symbols, b
 
 
 std::vector<bool> BTRenderer::flatten_2d_bool_vector(const std::vector<std::vector<bool>>& bool_matrix) {
-    std::cout << "Length x: " << bool_matrix.size() << std::endl;
-    std::cout << "Length y: " << bool_matrix[0].size() << std::endl;
     std::vector<bool> flattened_vector;
     for (const std::vector<bool>& column : bool_matrix) {
         flattened_vector.insert(flattened_vector.end(), column.begin(), column.end());

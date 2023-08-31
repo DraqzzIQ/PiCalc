@@ -21,7 +21,7 @@ class IRenderer
 		/// </summary>
 		/// <param name="pixels">pixels to render</param>
 		/// <returns>true if same else false</returns>
-		bool already_rendered(render_plane pixels, std::vector<bool> screen_symbols);
+		bool already_rendered(const render_plane& pixels, const std::vector<bool>& screen_symbols);
 	private:
 		/// <summary>
 		/// currently rendered pixels
