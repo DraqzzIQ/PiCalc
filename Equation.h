@@ -1,11 +1,12 @@
 #pragma once
 #include "Window.h"
 #include "Graphics.h"
+#include "KeyPress.h"
 #include <vector>
 #include <string>
 #include <map>
 #include <cmath>
-#include "KeyPress.h"
+#include <algorithm>
 
 
 class Equation
