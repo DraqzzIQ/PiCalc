@@ -23,6 +23,14 @@ class IKeyboard
 		/// </summary>
 		/// <returns>true if active else false</returns>
 		virtual bool is_alpha_active() = 0;
+		/// <summary>
+		/// converts raw keycodes to calculator keycodes using the calculator key-layout
+		/// </summary>
+		static uint8_t raw_key_to_calculator_key(uint8_t raw_key, bool shift, bool alpha);
+		/// <summary>
+		/// converts raw keycodes to calculator keycodes using the normal keyboard key-layout
+		/// </summary>
+		static uint8_t raw_key_to_keyboard_key(uint8_t raw_key, bool shift, bool alpha);
         /// <summary>
 		/// window manager handles the inputs
 		/// </summary>

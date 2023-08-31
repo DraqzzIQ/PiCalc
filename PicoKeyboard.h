@@ -79,22 +79,6 @@ class PicoKeyboard : public IKeyboard
 		/// <returns>instance of KeyPress class</returns>
 		KeyPress coords_to_keypress(uint8_t x, uint8_t y, KeyState state);
 		/// <summary>
-		/// converts the coordinates of a key action to its corresponding keycode using the calculator key-layout
-		/// </summary>
-		/// <param name="x">x coordinate (0-5) of the key action</param>
-		/// <param name="y">y coordinate (0-8) of the key action</param>
-		/// <param name="state">function key that should be used for converting</param>
-		/// <returns>keycode</returns>
-		uint8_t coords_to_key_calculator(uint8_t x, uint8_t y, KeyState state);
-		/// <summary>
-		/// converts the coordinates of a key action to its corresponding keycode using the keyboard key-layout
-		/// </summary>
-		/// <param name="x">x coordinate (0-5) of the key action</param>
-		/// <param name="y">y coordinate (0-8) of the key action</param>
-		/// <param name="state">function key that should be used for converting</param>
-		/// <returns>keycode</returns>
-		uint8_t coords_to_key_keyboard(uint8_t x, uint8_t y, KeyState state);
-		/// <summary>
 		/// converts the coordinates of a key action to its corresponding keycode ignoring function keys
 		/// </summary>
 		/// <param name="x">x coordinate (0-5) of the key action</param>
