@@ -9,7 +9,7 @@ BTRenderer::BTRenderer(BLEManager* ble_manager)
 
 void BTRenderer::render(render_plane pixels, std::vector<bool> screen_symbols, bool force_rerender)
 {
-    if(!force_rerender && check_rendered(pixels, screen_symbols))
+    if(!force_rerender && already_rendered(pixels, screen_symbols))
         return;
 
     _ble_manager->send_display_frame(convert_bools_to_bits(flatten_2d_bool_vector(pixels)), convert_bools_to_bits(screen_symbols));
@@ -17,6 +17,8 @@ void BTRenderer::render(render_plane pixels, std::vector<bool> screen_symbols, b
 
 
 std::vector<bool> BTRenderer::flatten_2d_bool_vector(const std::vector<std::vector<bool>>& bool_matrix) {
+    std::cout << "Length x: " << bool_matrix.size() << std::endl;
+    std::cout << "Length y: " << bool_matrix[0].size() << std::endl;
     std::vector<bool> flattened_vector;
     for (const std::vector<bool>& column : bool_matrix) {
         flattened_vector.insert(flattened_vector.end(), column.begin(), column.end());

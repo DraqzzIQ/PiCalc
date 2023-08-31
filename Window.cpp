@@ -20,9 +20,9 @@ render_plane Window::get_render_canvas()
 
 	for (std::size_t i = 0; i < SCREEN_WIDTH; i++)
 	{
-		std::vector<bool> row = std::vector<bool>(SCREEN_HEIGHT + 1,false);
+		std::vector<bool> row = std::vector<bool>(SCREEN_HEIGHT,false);
 
-		for (std::size_t j = 0; j < SCREEN_HEIGHT + 1; j++)
+		for (std::size_t j = 0; j < SCREEN_HEIGHT; j++)
 		{
 			if(corner_x + i < window.size() && corner_y + j < window[corner_x + i].size())
 				row[j] = (window[corner_x + i][corner_y + j]);

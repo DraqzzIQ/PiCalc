@@ -1,5 +1,4 @@
 #pragma once
-#define PICO
 #ifdef PICO
 #include <vector>
 #include <iostream>

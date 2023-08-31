@@ -9,7 +9,7 @@ DisplayRenderer::DisplayRenderer()
 
 void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols, bool force_rerender)
 {
-    if(!force_rerender && check_rendered(pixels, screen_symbols))
+    if(!force_rerender && already_rendered(pixels, screen_symbols))
         return;
 
     //DONT FORGET::: only 3 commands when sub device addressess are properly implemented

@@ -21,7 +21,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 # Linux, (Windows)
 if(NOT TRUE)
     find_package(Threads REQUIRED)
-    
+
     find_package(SDL2 REQUIRED) # sudo apt install libsdl2-dev to install
 
     include_directories(${SDL2_INCLUDE_DIRS})
@@ -35,7 +35,7 @@ if(TRUE)
     # initialize the Raspberry Pi Pico SDK
     pico_sdk_init()
 
-    # Add pico_stdlib library which aggregates commonly used features 
+    # Add pico_stdlib library which aggregates commonly used features
     # pico_cyw43_arch_none is nessessary for accessing the CYW4343W WiFi chip and it's LED
     target_link_libraries(${PROJECT_NAME} pico_stdlib pico_cyw43_arch_none hardware_i2c pico_btstack_ble pico_btstack_cyw43)
 

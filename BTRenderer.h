@@ -1,5 +1,4 @@
 #pragma once
-#define PICO
 #ifdef PICO
 #include "IRenderer.h"
 #include "WindowManager.h"

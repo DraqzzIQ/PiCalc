@@ -81,9 +81,9 @@ int main(int argc, char* argv[])
 	renderers->push_back(new ConsoleRenderer());
 #endif
 	window_manager = new WindowManager(renderers);
-	window_manager->update();
+	window_manager->update(true);
 	
-	Utils::sleep_for_ms(500);
+	Utils::sleep_for_ms(1000);
 
 	main_menu = new MainMenu(create_main_menu_options());
 
