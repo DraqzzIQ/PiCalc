@@ -57,7 +57,7 @@ void start_main_thread()
 {
 	while (1) {
 		keyboard->check_for_keyboard_presses();
-		window_manager->update(true);
+		window_manager->update();
 	}
 }
 
@@ -69,8 +69,7 @@ int main(int argc, char* argv[])
 #ifdef PICO
 	// Enable UART so we can print status output
     stdio_init_all();
-	ble_manager = new BLEManager();
-	ble_manager->enable_bt();
+
 	I2CUtils::init_i2c();
 	if(!I2CUtils::device_availible(DEVICE_ADDRESS))
 		std::cout << "Display not found" << std::endl;
@@ -81,7 +80,7 @@ int main(int argc, char* argv[])
 	renderers->push_back(new ConsoleRenderer());
 #endif
 	window_manager = new WindowManager(renderers);
-	window_manager->update(true);
+	window_manager->update();
 	
 	Utils::sleep_for_ms(1000);
 
@@ -89,6 +88,8 @@ int main(int argc, char* argv[])
 
 #ifdef PICO
 	keyboard = new PicoKeyboard(window_manager);
+	ble_manager = new BLEManager(window_manager);
+	ble_manager->enable_bt();
 #else
 	keyboard = new SDLKeyboard(window_manager);
 #endif

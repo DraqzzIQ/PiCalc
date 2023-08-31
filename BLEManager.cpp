@@ -28,8 +28,12 @@ hci_con_handle_t connection_handle;
 // max ATT MTU - 1 for 0x00 packet header
 uint16_t display_max_packet_len;
 
+// frame chunks for sending display frame
 std::vector<std::vector<uint8_t>> frame_chunks;
-uint8_t display_data_chunk_index = 0;
+uint8_t frame_chunk_index = 0;
+
+// window manager
+WindowManager *_window_manager;
 
 
 void send_frame_chunk();
@@ -163,8 +167,9 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
             break;
         case ATT_CHARACTERISTIC_018ea0e5_77a0_424f_bd71_73a2ac1792dd_01_CLIENT_CONFIGURATION_HANDLE:
             display_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
-            printf("Notifications enabled %u\n", display_notification_enabled); 
+            printf("display notification enabled: %u\n", display_notification_enabled); 
             if (display_notification_enabled){
+                _window_manager->update(true);
                 switch (att_handle){
                     case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_CLIENT_CONFIGURATION_HANDLE:
                         display_attribute_handle = ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_VALUE_HANDLE;
@@ -189,8 +194,9 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
 }
 
 
-BLEManager::BLEManager()
+BLEManager::BLEManager(WindowManager *window_manager)
 {
+    _window_manager = window_manager;
     setup();
 }
 
@@ -198,7 +204,7 @@ void BLEManager::send_display_frame(std::vector<uint8_t> display_bytes, std::vec
 {
     if(!display_notification_enabled) return;
     frame_chunks.clear();
-    display_data_chunk_index = 0;
+    frame_chunk_index = 0;
 
     // split display bytes into chunks of display_max_packet_len bytes
     for (uint16_t i = 0; i < display_bytes.size(); i += display_max_packet_len) {
@@ -217,14 +223,14 @@ void BLEManager::send_display_frame(std::vector<uint8_t> display_bytes, std::vec
 
 void send_frame_chunk()
 {
-    if(frame_chunks.size() <=  display_data_chunk_index) return;
+    if(frame_chunks.size() <=  frame_chunk_index) return;
 
-    std::vector<uint8_t>* data_chunk = &frame_chunks[display_data_chunk_index];
-    display_data_chunk_index++;
+    std::vector<uint8_t>* data_chunk = &frame_chunks[frame_chunk_index];
+    frame_chunk_index++;
 
     att_server_notify(connection_handle, display_attribute_handle, data_chunk->data(), data_chunk->size());
 
-    if (frame_chunks.size() >  display_data_chunk_index)
+    if (frame_chunks.size() >  frame_chunk_index)
         att_server_request_can_send_now_event(connection_handle);
 }
 

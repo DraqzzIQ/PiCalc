@@ -6,11 +6,12 @@
 #include "pico/cyw43_arch.h"
 #include "casio_os.h"
 #include "Utils.h"
+#include "WindowManager.h"
 
 class BLEManager
 {
     public:
-        BLEManager();
+        BLEManager(WindowManager *window_manager);
         /// <summary>
         /// Sends the current display frame to the connected device
         /// and splits it into 
