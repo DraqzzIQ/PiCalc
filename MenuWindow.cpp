@@ -1,17 +1,15 @@
-#include "MainMenu.h"
-#include "Equation.h"
-#include "Chars.h"
+#include "MenuWindow.h"
 
-MainMenu::MainMenu()
+MenuWindow::MenuWindow()
 {
 }
 
-MainMenu::MainMenu(const std::vector<MenuOption*>& options)
+MenuWindow::MenuWindow(const std::vector<MenuOption*>& options)
 {
 	this->_options = options;
 }
 
-bool MainMenu::delete_option(const std::string name)
+bool MenuWindow::delete_option(const std::string name)
 {
 	for (size_t i = 0; i < this->_options.size(); i++)
 	{
@@ -25,12 +23,12 @@ bool MainMenu::delete_option(const std::string name)
 	return false;
 }
 
-void MainMenu::add_option(MenuOption* option, const int index)
+void MenuWindow::add_option(MenuOption* option, const int index)
 {
 	_options.insert(_options.begin() + index, option);
 }
 
-MenuOption* MainMenu::get_option(const std::string name)
+MenuOption* MenuWindow::get_option(const std::string name)
 {
 	for (size_t i = 0; i < this->_options.size(); i++)
 	{
@@ -41,12 +39,12 @@ MenuOption* MainMenu::get_option(const std::string name)
 	return nullptr;
 }
 
-const size_t MainMenu::options_size()
+const size_t MenuWindow::options_size()
 {
 	return _options.size();
 }
 
-render_plane MainMenu::update_window()
+render_plane MenuWindow::update_window()
 {
 	create_menu();
 
@@ -55,7 +53,7 @@ render_plane MainMenu::update_window()
 	return get_render_canvas();
 }
 
-void MainMenu::create_menu()
+void MenuWindow::create_menu()
 {
 	for (size_t i = 0; i < _options.size() && i < _max_options; i++)
 	{
@@ -63,25 +61,25 @@ void MainMenu::create_menu()
 	}
 }
 
-const int MainMenu::pages_count()
+const int MenuWindow::pages_count()
 {
 	return static_cast<int>(ceil(static_cast<double>(_options.size()) / 4));
 }
 
-void MainMenu::handle_key_down(KeyPress keypress)
+void MenuWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_raw == Chars::KEY_MAP.at("up")) scroll_up();
 	else if (keypress.key_raw == Chars::KEY_MAP.at("down")) scroll_down();
-	else if (keypress.key_raw < 10) if (keypress.key_raw < _options.size()) _options[keypress.key_raw]->on_select();
+	else if (keypress.key_raw < 10 && keypress.key_raw < _options.size()) _options[keypress.key_raw]->on_select();
 }
 
-void MainMenu::scroll_up()
+void MenuWindow::scroll_up()
 {
 	if(_current_page > 0)
 		_current_page--;
 }
 
-void MainMenu::scroll_down()
+void MenuWindow::scroll_down()
 {
 	if(_current_page < pages_count() - 1)
 		_current_page++;

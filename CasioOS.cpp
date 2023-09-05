@@ -2,7 +2,7 @@
 #include "IRenderer.h"
 #include "ConsoleRenderer.h"
 #include "WindowManager.h"
-#include "MainMenu.h"
+#include "MenuWindow.h"
 #include "IKeyboard.h"
 #include "Calculator.h"
 #include "Utils.h"
@@ -23,7 +23,7 @@
 std::vector<IRenderer*>* renderers = new std::vector<IRenderer*>();
 IKeyboard* keyboard;
 WindowManager* window_manager;
-MainMenu* main_menu;
+MenuWindow* main_menu;
 #ifdef PICO
 BTManager* bt_manager;
 #endif
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 	
 	Utils::sleep_for_ms(1000);
 
-	main_menu = new MainMenu(create_main_menu_options());
+	main_menu = new MenuWindow(create_main_menu_options());
 
 #ifdef PICO
 	keyboard = new PicoKeyboard(window_manager);

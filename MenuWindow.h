@@ -9,11 +9,11 @@
 /// <summary>
 /// provides a menu for the user to select from
 /// </summary>
-class MainMenu : public Window
+class MenuWindow : public Window
 {
 	public:
-		MainMenu();
-		MainMenu(const std::vector<MenuOption*>& options);
+		MenuWindow();
+		MenuWindow(const std::vector<MenuOption*>& options);
 
 		/// <summary>
 		/// deletes an option
