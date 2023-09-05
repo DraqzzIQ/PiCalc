@@ -5,6 +5,11 @@ BTKeyboard::BTKeyboard(WindowManager* window_manager) : IKeyboard(window_manager
 {
 }
 
+void BTKeyboard::handle_keyboard_press(uint8_t bt_keycode)
+{
+    _window_manager->handle_key_down(get_key_press(bt_keycode));
+}
+
 KeyPress BTKeyboard::get_key_press(uint8_t bt_keycode)
 {
     KeyPress key_press;
@@ -87,6 +92,11 @@ bool BTKeyboard::is_shift_active()
 bool BTKeyboard::is_alpha_active()
 {
 	return functionKeysState == FunctionKeyState::ALPHA_ON;
+}
+
+void BTKeyboard::check_for_keyboard_presses()
+{
+    //Unused
 }
 
 #endif

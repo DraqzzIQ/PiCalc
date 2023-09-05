@@ -7,6 +7,7 @@
 #include "casio_os.h"
 #include "Utils.h"
 #include "WindowManager.h"
+#include "BTKeyboard.h"
 
 class BTManager
 {

@@ -21,6 +21,14 @@ class BTKeyboard : public IKeyboard
         /// checks wether alpha is active
         /// </summary>
         bool is_alpha_active();
+        /// <summary>
+        /// unused
+        /// </summary>
+        void check_for_keyboard_presses();
+        /// <summary>
+        /// handle keyboard press
+        /// </summary>
+        void handle_keyboard_press(uint8_t bt_keycode);
     private:
 		/// <summary>
 		/// converts BT keycodes to calculator keycodes using the calculator key-layout, but ignores shift + alpha

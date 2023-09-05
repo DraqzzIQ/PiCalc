@@ -35,6 +35,9 @@ uint8_t frame_chunk_index = 0;
 // window manager
 WindowManager *_window_manager;
 
+// keyboard instance
+BTKeyboard *_bt_keyboard;
+
 
 // workaround for first frame after connecting not being sent
 bool first = true;
@@ -158,7 +161,7 @@ void att_packet_handler (uint8_t packet_type, uint16_t channel, uint8_t *packet,
 }
 
 /// <summary>
-/// The only valid ATT write in this example is to the Client Characteristic Configuration, which configures notification
+/// The ATT write is the Client Characteristic Configuration, which configures notification
 /// and indication. If the ATT handle matches the client configuration handle, the new configuration value is stored.
 /// If notifications get enabled, an ATT_EVENT_CAN_SEND_NOW is requested.
 /// </summary>
@@ -167,29 +170,28 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
 
     if (transaction_mode != ATT_TRANSACTION_MODE_NONE) return 0;
     switch(att_handle){
+        // stdout characteristic notification
         case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_CLIENT_CONFIGURATION_HANDLE:
             break;
+        // display characteristic notification
         case ATT_CHARACTERISTIC_018ea0e5_77a0_424f_bd71_73a2ac1792dd_01_CLIENT_CONFIGURATION_HANDLE:
             display_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
             printf("display notification enabled: %u\n", display_notification_enabled); 
             if (display_notification_enabled){
-                switch (att_handle){
-                    case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_CLIENT_CONFIGURATION_HANDLE:
-                        display_attribute_handle = ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_VALUE_HANDLE;
-                        break;
-                    case ATT_CHARACTERISTIC_018ea0e5_77a0_424f_bd71_73a2ac1792dd_01_CLIENT_CONFIGURATION_HANDLE:
-                        display_attribute_handle = ATT_CHARACTERISTIC_018ea0e5_77a0_424f_bd71_73a2ac1792dd_01_VALUE_HANDLE;
-                        break;
-                    default:
-                        break;
-                }
+                display_attribute_handle = ATT_CHARACTERISTIC_018ea0e5_77a0_424f_bd71_73a2ac1792dd_01_VALUE_HANDLE;
                 first = true; // workaround for first frame after connecting not being sent
                 att_server_request_can_send_now_event(connection_handle);
             }
             break;
+            // stdout characteristic write
         case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_VALUE_HANDLE:
             break;
+            // display characteristic write
         case ATT_CHARACTERISTIC_018ea0e5_77a0_424f_bd71_73a2ac1792dd_01_VALUE_HANDLE:
+            break;
+            // keyboard characteristic write
+        case ATT_CHARACTERISTIC_a0252185_c27f_47aa_84c9_82dd3e219375_01_VALUE_HANDLE:
+            _bt_keyboard->handle_keyboard_press(buffer[0]);
             break;
         default:
             printf("Write to 0x%04x, len %u\n", att_handle, buffer_size);
@@ -202,6 +204,7 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
 BTManager::BTManager(WindowManager *window_manager)
 {
     _window_manager = window_manager;
+    _bt_keyboard = new BTKeyboard(_window_manager);
     setup();
 }
 
