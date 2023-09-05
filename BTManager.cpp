@@ -36,6 +36,10 @@ uint8_t frame_chunk_index = 0;
 WindowManager *_window_manager;
 
 
+// workaround for first frame after connecting not being sent
+bool first = true;
+
+
 void send_frame_chunk();
 
 
@@ -169,7 +173,6 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
             display_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
             printf("display notification enabled: %u\n", display_notification_enabled); 
             if (display_notification_enabled){
-                _window_manager->update(true);
                 switch (att_handle){
                     case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_CLIENT_CONFIGURATION_HANDLE:
                         display_attribute_handle = ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_VALUE_HANDLE;
@@ -180,6 +183,8 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
                     default:
                         break;
                 }
+                first = true; // workaround for first frame after connecting not being sent
+                att_server_request_can_send_now_event(connection_handle);
             }
             break;
         case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_VALUE_HANDLE:
@@ -223,6 +228,14 @@ void BTManager::send_display_frame(std::vector<uint8_t> display_bytes, std::vect
 
 void send_frame_chunk()
 {
+    // workaround for first frame after connecting not being sent
+    if(first){
+        first = false;
+        _window_manager->update(true);
+        return;
+    }
+    ////////////////////////////////////////////
+    
     if(frame_chunks.size() <=  frame_chunk_index) return;
 
     std::vector<uint8_t>* data_chunk = &frame_chunks[frame_chunk_index];
