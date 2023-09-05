@@ -70,6 +70,8 @@ void MenuWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_raw == Chars::KEY_MAP.at("up")) scroll_up();
 	else if (keypress.key_raw == Chars::KEY_MAP.at("down")) scroll_down();
+    else if(keypress.key_raw == Chars::KEY_MAP.at("left")) scroll_left();
+    else if(keypress.key_raw == Chars::KEY_MAP.at("right")) scroll_right();
 	else if (keypress.key_raw < 10 && keypress.key_raw < _options.size()) _options[keypress.key_raw]->on_select();
 }
 

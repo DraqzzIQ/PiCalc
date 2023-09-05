@@ -65,6 +65,18 @@ void Window::change_symbol(std::string symbol, bool state) {
 	screen_symbols[std::find(Graphics::SCREEN_SYMBOLS.begin(), Graphics::SCREEN_SYMBOLS.end(), symbol) - Graphics::SCREEN_SYMBOLS.begin()] = state;
 }
 
+void Window::scroll_left()
+{
+	if(corner_x > 0)
+		corner_x -= SCREEN_WIDTH;
+}
+
+void Window::scroll_right()
+{
+	if(corner_x + SCREEN_WIDTH < window.size())
+		corner_x += SCREEN_WIDTH;
+}
+
 void Window::handle_key_down(KeyPress keypress) {
 
 }
