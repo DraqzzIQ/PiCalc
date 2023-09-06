@@ -21,14 +21,6 @@ public:
 	void move_cursor_left();
 	void move_cursor_right();
 private:
-	enum class SymbolOperation {
-		FRACTION,
-		MIXED_FRACTION,
-		ROOT,
-		LOG,
-		POWER
-	};
-
 	enum class Error {
 		MATH_ERROR,
 		PUFFER_ERROR,
@@ -41,7 +33,6 @@ private:
 
 	struct RenderNode {
 		uint8_t* value;
-		SymbolOperation* operation;
 		std::vector<RenderNode*>* children;
 	};
 	RenderNode* root;
