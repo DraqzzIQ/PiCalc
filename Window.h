@@ -78,4 +78,12 @@ class Window
 		/// <param name="symbol">symbol to change state</param>
 		/// <param name="state">state to change symbol to</param>
 		void change_symbol(std::string symbol, bool state);
+		/// <summary>
+		/// scrolls the window to the left
+		/// </summary>
+		void scroll_left();
+		/// <summary>
+		/// scrolls the window to the right
+		/// </summary>
+		void scroll_right();
 };
