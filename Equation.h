@@ -37,7 +37,6 @@ private:
 
 		~RenderNode() {
 			delete value;
-			delete operation;
 			for (RenderNode* child : *children) {
 				delete child;
 			}
