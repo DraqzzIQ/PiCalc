@@ -31,7 +31,7 @@ render_plane Equation::render_equation_part(std::vector<RenderNode*> equation, s
 	for (size_t i = 0; i < equation.size(); i++) {
 		RenderNode* current_symbol = equation.at(i);
 
-		if (current_symbol->operation == nullptr) {
+		if (current_symbol->children == nullptr) {
 			render_plane symbol_matrix;
 			if (table.count(*current_symbol->value) != 0) symbol_matrix = table.at(*current_symbol->value);
 			else symbol_matrix = table.at(Chars::KEY_MAP.at("?"));
@@ -44,7 +44,7 @@ render_plane Equation::render_equation_part(std::vector<RenderNode*> equation, s
 				sub_equations.push_back(render_equation_part(*node->children, Graphics::SYMBOLS_6_HIGH));
 			}
 
-			if (*current_symbol->operation == SymbolOperation::FRACTION) {
+			if (*current_symbol->value == Chars::KEY_MAP.at("fraction")) {
 				int fraction_height = (font_height == 9) ? 3 : 2;
 				int add_height = y_origin + fraction_height - sub_equations[0][0].size();
 				if (add_height < 0) {
@@ -148,7 +148,7 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 	bool insideFunction = false;
 	std::string num;
 	for (size_t i = 0; i < equation.size(); i++) {
-		if (equation[i]->operation != nullptr) {
+		if (equation[i]->children != nullptr) {
 			std::vector<CalculateNode*> subEquations;
 			Error err;
 			for (RenderNode* node : *equation[i]->children) {
@@ -170,9 +170,9 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 					;
 				}
 			}
-			switch (*equation[i]->operation) {
-			case SymbolOperation::FRACTION: calculation.push_back(CalculateNode(new double(*subEquations[0]->value / *subEquations[1]->value), nullptr));
-			case SymbolOperation::MIXED_FRACTION:;
+			switch (*equation[i]->value) {
+			case 110: calculation.push_back(CalculateNode(new double(*subEquations[0]->value / *subEquations[1]->value), nullptr));
+			case 131:;
 			}
 		}
 		else {
@@ -223,25 +223,50 @@ void Equation::add_value(uint8_t keypress) {
 		modify = modify->children->at(cursor_position[i]);
 	}
 
-	// todo: unite all multi-Input symbols into one function
-	// if value before multi-Input symbol: transfer Value to 1st child of multi-input symbol
-	if (keypress == Chars::KEY_MAP.at("fraction")) {
-		RenderNode* container = new RenderNode();
-		container->operation = new SymbolOperation(SymbolOperation::FRACTION);
-		container->children = new std::vector<RenderNode*>(2);
-		container->children->at(0) = new RenderNode();
-		container->children->at(1) = new RenderNode();
-		container->children->at(0)->children = new std::vector<RenderNode*>(0);
-		container->children->at(1)->children = new std::vector<RenderNode*>(0);
-		std::vector<RenderNode*>::iterator ptr = modify->children->begin();
-		advance(ptr, cursor_position.back());
-		modify->children->insert(ptr, container);
-		cursor_position.push_back(0);
-		cursor_position.push_back(0);
+	uint8_t valueCnt;
+	bool addFirstValue = true;
+	switch (keypress) {
+	case 110: valueCnt = 2; break;
+	case 131: valueCnt = 3; break;
+	default: valueCnt = 0; break;
 	}
-	else if (keypress == Chars::KEY_MAP.at("root2"))
-	{
-		;
+
+	if (valueCnt != 0) {
+		RenderNode* container = new RenderNode();
+		container->value = new uint8_t(keypress);
+		container->children = new std::vector<RenderNode*>(valueCnt);
+		for (uint8_t i = 0; i < valueCnt; i++) {
+			container->children->at(i) = new RenderNode();
+			container->children->at(i)->children = new std::vector<RenderNode*>(0);
+		}
+
+		uint8_t end = cursor_position.back();
+		while (cursor_position.back() != 0) {
+			uint8_t val = *modify->children->at(cursor_position.back() - 1)->value;
+			if (!(val < 10 || val == 82 || val == 127 || modify->children->at(cursor_position.back() - 1)->children != nullptr)) break;
+			cursor_position.back()--;
+		}
+		if (end != cursor_position.back()) {
+			auto ptrBegin = modify->children->begin() + cursor_position.back();
+			auto ptrEnd = modify->children->begin() + end;
+			*container->children->at(0)->children = { ptrBegin, ptrEnd };
+			modify->children->erase(ptrBegin, ptrEnd);
+			auto ptr = modify->children->begin() + cursor_position.back();
+			modify->children->insert(ptr, container);
+			if (valueCnt > 1) {
+				cursor_position.push_back(1);
+				cursor_position.push_back(0);
+			}
+			else {
+				cursor_position.back()++;
+			}
+		}
+		else {
+			auto ptr = modify->children->begin() + cursor_position.back();
+			modify->children->insert(ptr, container);
+			cursor_position.push_back(0);
+			cursor_position.push_back(0);
+		}
 	}
 	else {
 		RenderNode* container = new RenderNode();
@@ -264,7 +289,7 @@ void Equation::move_cursor_left() {
 		modify = modify->children->at(cursor_position[i]);
 	}
 	if (cursor_position.back() != 0) {
-		if (modify->children->at(cursor_position.back() - 1)->operation != nullptr) {
+		if (modify->children->at(cursor_position.back() - 1)->children != nullptr) {
 			cursor_position.back() -= 1;
 			std::vector<RenderNode*>* modify_child = modify->children->at(cursor_position.back())->children;
 			cursor_position.push_back(modify_child->size() - 1);
@@ -297,7 +322,7 @@ void Equation::move_cursor_right() {
 		modify = modify->children->at(cursor_position[i]);
 	}
 	if (modify->children->size() > cursor_position.back()) {
-		if (modify->children->at(cursor_position.back())->operation != nullptr) {
+		if (modify->children->at(cursor_position.back())->children != nullptr) {
 			cursor_position.push_back(0);
 			cursor_position.push_back(0);
 		}
@@ -324,7 +349,7 @@ void Equation::del() {
 	for (size_t i = 0; i + 1 < cursor_position.size(); i++) {
 		modify = modify->children->at(cursor_position[i]);
 	}
-	if (cursor_position.back() != 0 && modify->children->at(cursor_position.back() - 1)->operation == nullptr) {
+	if (cursor_position.back() != 0 && modify->children->at(cursor_position.back() - 1)->children == nullptr) {
 		modify->children->erase(modify->children->begin() + cursor_position.back() - 1);
 		cursor_position.back() -= 1;
 	}
