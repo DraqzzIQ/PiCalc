@@ -43,6 +43,15 @@ private:
 		uint8_t* value;
 		SymbolOperation* operation;
 		std::vector<RenderNode*>* children;
+
+		~RenderNode() {
+			delete value;
+			delete operation;
+			for (RenderNode* child : *children) {
+				delete child;
+			}
+			delete children;
+		}
 	};
 	RenderNode* root;
 
@@ -53,6 +62,10 @@ private:
 	struct CalculateNode {
 		double* value;
 		uint8_t* operation;
+		~CalculateNode() {
+			delete value;
+			delete operation;
+		}
 	};
 
 	std::vector<double> letterVariables = std::vector<double>(9, 0.0);

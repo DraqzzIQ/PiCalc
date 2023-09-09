@@ -8,6 +8,8 @@ set(PROJECT_NAME "CasioOS")
 
 # Pico
 if(TRUE)
+    set(PICO_CXX_ENABLE_EXCEPTIONS 1)
+    set(PICO_CXX_ENABLE_RTTI 1)
     include(pico_sdk_import.cmake) # must be included before project()
 endif()
 

@@ -5,16 +5,27 @@ WindowManager::WindowManager(std::vector<IRenderer*> *renderers)
 	_renderers = renderers;
 }
 
-void WindowManager::add_window(Window *window)
+void WindowManager::add_window(Window* window)
 {
 	_windows.push(window);
 }
 
-void WindowManager::pop_window()
+void WindowManager::minimize_window()
 {
-	if (!_windows.empty())
-		delete _windows.top();
-	_windows.pop();
+	if (!_windows.empty()){
+		Window* top =  _windows.top();
+		_windows.pop();
+		_window_instances[&typeid(*top)].push_back(top);
+	}
+}
+
+void WindowManager::close_window()
+{
+	if (!_windows.empty()){
+		Window* top =  _windows.top();
+		_windows.pop();
+		delete top;
+	}
 }
 
 void WindowManager::update(bool force_rerender)
@@ -32,9 +43,15 @@ void WindowManager::handle_key_down(KeyPress keypress)
 {
 	if (keypress.alpha && keypress.key_raw == Chars::KEY_MAP.at("AC"))
 	{
-		pop_window();
+		if(_windows.size() > 1)
+			minimize_window();
 	}
-	if (_windows.size() > 0)
+	else if(keypress.alpha && keypress.key_raw == Chars::KEY_MAP.at("DEL"))
+	{
+		if(_windows.size() > 1)
+			close_window();
+	}
+	else if (_windows.size() > 0)
 		_windows.top()->handle_key_down(keypress);
 }
 

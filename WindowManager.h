@@ -5,6 +5,8 @@
 #include "KeyPress.h"
 #include <stack>
 #include <vector>
+#include <unordered_map>
+#include <typeinfo>
 
 /// <summary>
 /// provides functionality for managing, rendering and keyboard events for windows
@@ -13,15 +15,43 @@ class WindowManager
 {
 	public:
 		WindowManager(std::vector<IRenderer*>* renderers);
-
 		/// <summary>
 		/// adds a window to the window stack
 		/// </summary>
 		void add_window(Window* window);
 		/// <summary>
-		/// removes the top window from the window stack
+		/// if a window instance is already open
+		/// pushes it to the top of the window stack
+		/// otherwise creates a new instance and pushes it to the top of the window stack
 		/// </summary>
-		void pop_window();
+		template <typename T>
+		void open_window()
+		{
+			_windows.push(_window_instances[&typeid(T)].back());
+		}
+		/// <summary>
+		/// returns true if a window instance is already open
+		/// else false
+		/// </summary>
+		template <typename T>
+		bool has_window()
+		{
+			if (_window_instances.count(&typeid(T)) > 0  && _window_instances[&typeid(T)].size() > 0)
+			{
+				return true;
+			}
+			return false;
+		}
+		/// <summary>
+		/// removes the top window from the window stack
+		/// and saves it to the window instances
+		/// </summary>
+		void minimize_window();
+		/// <summary>
+		/// removes the top window from the window stack
+		/// and deletes it
+		/// </summary>
+		void close_window();
 		/// <summary>
 		/// rerenders the top window
 		/// </summary>
@@ -36,7 +66,6 @@ class WindowManager
 		/// </summary>
 		/// <param name="key">key that got released</param>
 		void handle_key_up(KeyPress keypress);
-
 	private:
 		/// <summary>
 		/// the renderer used
@@ -46,5 +75,9 @@ class WindowManager
 		/// the window stack
 		/// </summary>
 		std::stack<Window*> _windows;
+		/// <summary>
+		/// stores all window instances in background
+		/// </summary>
+		std::unordered_map<const std::type_info*, std::vector<Window*>> _window_instances;
 };
 

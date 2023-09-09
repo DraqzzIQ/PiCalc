@@ -1,17 +1,18 @@
 #include "Window.h"
-#include "Graphics.h"
-#include <algorithm>
 
 Window::Window()
 {
-	corner_x = 0;
-	corner_y = 0;
 	clear_window();
 	clear_symbols();
 }
 
 Window::~Window()
 {
+}
+
+render_plane Window::update_window()
+{
+    return get_render_canvas();
 }
 
 render_plane Window::get_render_canvas()
