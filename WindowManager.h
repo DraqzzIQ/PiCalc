@@ -20,14 +20,15 @@ class WindowManager
 		/// </summary>
 		void add_window(Window* window);
 		/// <summary>
-		/// if a window instance is already open
-		/// pushes it to the top of the window stack
-		/// otherwise creates a new instance and pushes it to the top of the window stack
+		/// if 1 window instance is already open
+		/// it's pushed to the top of the window stack
+		/// if > 1 window instances are already open
+		/// opens an instance selection window
 		/// </summary>
 		template <typename T>
-		void open_window()
+		std::vector<Window*> get_windows()
 		{
-			_windows.push(_window_instances[&typeid(T)].back());
+			return _window_instances[&typeid(T)];
 		}
 		/// <summary>
 		/// returns true if a window instance is already open
@@ -37,9 +38,7 @@ class WindowManager
 		bool has_window()
 		{
 			if (_window_instances.count(&typeid(T)) > 0  && _window_instances[&typeid(T)].size() > 0)
-			{
 				return true;
-			}
 			return false;
 		}
 		/// <summary>

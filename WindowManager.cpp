@@ -15,7 +15,10 @@ void WindowManager::minimize_window()
 	if (!_windows.empty()){
 		Window* top =  _windows.top();
 		_windows.pop();
-		_window_instances[&typeid(*top)].push_back(top);
+		if(_window_instances.count(&typeid(*top)) == 0)
+			_window_instances[&typeid(*top)] = std::vector<Window*>(1, top);
+		else if(std::find(_window_instances[&typeid(*top)].begin(), _window_instances[&typeid(*top)].end(), top) == _window_instances[&typeid(*top)].end()) // if instance not already in vector
+			_window_instances[&typeid(*top)].push_back(top);
 	}
 }
 

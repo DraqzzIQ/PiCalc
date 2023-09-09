@@ -2,9 +2,7 @@
 
 void SettingsOption::on_select()
 {
-    if(window_manager->has_window<SettingsWindow>())
-        window_manager->open_window<SettingsWindow>();
-    else
+    if(!open_window<SettingsWindow>())
         window_manager->add_window(new SettingsWindow(window_manager));
 }
 

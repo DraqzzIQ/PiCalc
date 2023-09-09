@@ -2,9 +2,7 @@
 
 void SysInfoOption::on_select()
 {
-    if(window_manager->has_window<SysInfoWindow>())
-        window_manager->open_window<SysInfoWindow>();
-    else
+    if(!open_window<SysInfoWindow>())
         window_manager->add_window(new SysInfoWindow());
 }
 

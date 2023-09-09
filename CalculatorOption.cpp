@@ -2,9 +2,7 @@
 
 void CalculatorOption::on_select()
 {
-    if(window_manager->has_window<CalculatorWindow>())
-        window_manager->open_window<CalculatorWindow>();
-    else
+    if(!open_window<CalculatorWindow>())
         window_manager->add_window(new CalculatorWindow());
 }
 
