@@ -53,7 +53,7 @@ class Window
 		/// <summary>
 		/// saves, which symbols on the lcd should be displayed
 		/// </summary>
-		std::vector<bool> screen_symbols;
+		dynamic_bitset screen_symbols;
 		/// <summary>
 		/// extracts the part of the window that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 		/// </summary>
