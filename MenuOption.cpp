@@ -1,19 +1,20 @@
 #include "MenuOption.h"
 
-MenuOption::MenuOption(const std::string display_name, WindowManager* window_manager){
-	_display_name = display_name;
-	_window_manager = window_manager;
+MenuOption::MenuOption(const std::string display_name, WindowManager *window_manager)
+{
+	this->display_name = display_name;
+	this->window_manager = window_manager;
 }
 
 void MenuOption::on_select()
 {
-	std::cout << "selected " << _display_name << std::endl;
-	if (_selected_window != nullptr) {
-		_window_manager->add_window(_selected_window);
-	}
+}
+
+void MenuOption::on_shift_select()
+{
 }
 
 std::string MenuOption::get_display_name()
 {
-	return _display_name;
+	return display_name;
 }

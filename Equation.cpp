@@ -20,10 +20,10 @@ render_plane Equation::render_equation() {
 	return rendered_equation;
 }
 
-render_plane Equation::render_equation_part(std::vector<RenderNode*> equation, std::map<uint8_t, render_plane> table) {
+render_plane Equation::render_equation_part(const std::vector<RenderNode*>& equation, const std::map<uint8_t, render_plane>& table) {
 	int font_height = table.at(' ').at(0).size();
 	int y_origin = 0;
-	render_plane equation_part = render_plane(1, std::vector<bool>(font_height, false));
+	render_plane equation_part = bitset_2d::create_plane(1, font_height, false);
 
 	if (equation.size() == 0) {
 		return table.at(Chars::KEY_MAP.at("empty"));
@@ -48,18 +48,18 @@ render_plane Equation::render_equation_part(std::vector<RenderNode*> equation, s
 				int fraction_height = (font_height == 9) ? 3 : 2;
 				int add_height = y_origin + fraction_height - sub_equations[0][0].size();
 				if (add_height < 0) {
-					std::vector<bool> empty = std::vector<bool>(-add_height, false);
+					dynamic_bitset empty = dynamic_bitset(-add_height, false);
 					for (int i = 0; i < equation_part.size(); i++) {
-						equation_part[i].insert(equation_part[i].begin(), empty.begin(), empty.end());
+						equation_part[i].insert(0, empty);
 					}
 					y_origin -= add_height;
 				}
 
 				add_height = sub_equations[0][0].size() + sub_equations[1][0].size() + 3 - equation_part[0].size();
 				if (add_height > 0) {
-					std::vector<bool> empty = std::vector<bool>(add_height, false);
+					dynamic_bitset empty = dynamic_bitset(add_height, false);
 					for (int i = 0; i < equation_part.size(); i++) {
-						equation_part[i].insert(equation_part[i].end(), empty.begin(), empty.end());
+						equation_part[i].insert(equation_part[i].size(), empty);
 					}
 				}
 
@@ -68,32 +68,32 @@ render_plane Equation::render_equation_part(std::vector<RenderNode*> equation, s
 			}
 		}
 		if (i + 1 != equation.size())
-			equation_part.push_back(std::vector<bool>(equation_part[0].size(), false));
+			equation_part.push_back(dynamic_bitset(equation_part[0].size(), false));
 	}
 	equation_part.erase(equation_part.begin());
 	return equation_part;
 }
 
-render_plane Equation::render_fraction(render_plane top, render_plane bottom) {
+render_plane Equation::render_fraction(const render_plane& top, const render_plane& bottom) {
 	int length = std::max(top.size(), bottom.size()) + 2;
 	render_plane top_resized = resize_center_x(top, length);
 	render_plane bottom_resized = resize_center_x(bottom, length);
 	render_plane combined = render_plane();
 
 	for (int i = 0; i < length; i++) {
-		std::vector<bool> column = top_resized[i];
+		dynamic_bitset column = top_resized[i];
 		column.push_back(false);
 		column.push_back(true);
 		column.push_back(false);
-		column.insert(column.end(), bottom_resized[i].begin(), bottom_resized[i].end());
+		column.insert(column.size(), bottom_resized[i]);
 		combined.push_back(column);
 	}
 
 	return combined;
 }
 
-render_plane Equation::resize_center_x(render_plane render_plane_input, int length) {
-	std::vector<bool> empty = std::vector<bool>(render_plane_input[0].size(), false);
+render_plane Equation::resize_center_x(const render_plane& render_plane_input, int length) {
+	dynamic_bitset empty = dynamic_bitset(render_plane_input[0].size(), false);
 	render_plane resized_render_plane = render_plane(std::floor((length - render_plane_input.size()) / 2), empty);
 	resized_render_plane.insert(resized_render_plane.end(), render_plane_input.begin(), render_plane_input.end());
 	int s = resized_render_plane.size();
@@ -103,13 +103,13 @@ render_plane Equation::resize_center_x(render_plane render_plane_input, int leng
 	return resized_render_plane;
 }
 
-void Equation::add_resized_symbol(render_plane& resized_render_plane, render_plane symbol, int y_position) {
-	std::vector<bool> empty_top = std::vector<bool>(y_position, false);
-	std::vector<bool> empty_bottom = std::vector<bool>(resized_render_plane[0].size() - y_position - symbol[0].size(), false);
+void Equation::add_resized_symbol(render_plane& resized_render_plane, const render_plane& symbol, int y_position) {
+	dynamic_bitset empty_top = dynamic_bitset(y_position, false);
+	dynamic_bitset empty_bottom = dynamic_bitset(resized_render_plane[0].size() - y_position - symbol[0].size(), false);
 	for (int i = 0; i < symbol.size(); i++) {
-		std::vector<bool> column = empty_top;
-		column.insert(column.end(), symbol[i].begin(), symbol[i].end());
-		column.insert(column.end(), empty_bottom.begin(), empty_bottom.end());
+		dynamic_bitset column = empty_top;
+		column.insert(column.size(), symbol[i]);
+		column.insert(column.size(), empty_bottom);
 		resized_render_plane.push_back(column);
 	}
 }
@@ -136,7 +136,7 @@ double Equation::calculate_equation() {
 	return *calculation->value;
 }
 
-Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNode*> equation, Error& error) {
+Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<RenderNode*>& equation, Error& error) {
 	if (equation.size() == 0) {
 		cursor_position = std::vector<int>(0, 0);
 		error = Error::SYNTAX_ERROR;

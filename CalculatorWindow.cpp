@@ -1,16 +1,20 @@
-#include "Calculator.h"
+#include "CalculatorWindow.h"
 
-Calculator::Calculator() {
+CalculatorWindow::CalculatorWindow() {
 	equation = new Equation();
 }
 
-render_plane Calculator::update_window() {
+CalculatorWindow::~CalculatorWindow() {
+	delete equation;
+}
+
+render_plane CalculatorWindow::update_window() {
 	clear_window();
 	add_to_window(equation->render_equation(), 5, 5);
 	return get_render_canvas();
 }
 
-void Calculator::handle_key_down(KeyPress keypress) {
+void CalculatorWindow::handle_key_down(KeyPress keypress) {
 	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) equation->move_cursor_right();
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) equation->move_cursor_left();
 	//else if (keypress.key_calculator == Chars::KEY_MAP.at("up")) equation->move_cursor_up();

@@ -2,9 +2,8 @@
 #include "IRenderer.h"
 #include "ConsoleRenderer.h"
 #include "WindowManager.h"
-#include "MenuWindow.h"
+#include "MainMenuWindow.h"
 #include "IKeyboard.h"
-#include "Calculator.h"
 #include "Utils.h"
 #include <iostream>
 #include <vector>
@@ -16,6 +15,7 @@
 #include "I2CUtils.h"
 #include "BTManager.h"
 #include "BTRenderer.h"
+#include <malloc.h>
 #else
 #include "SDLKeyboard.h"
 #endif
@@ -28,30 +28,8 @@ MenuWindow* main_menu;
 BTManager* bt_manager;
 #endif
 
-
 /// <summary>
-/// creates the main menu options
-/// </summary>
-/// <returns>menu options</returns>
-std::vector<MenuOption*> create_main_menu_options()
-{
-	std::vector<MenuOption*> options;
-	options.push_back(new MenuOption("Calculator", window_manager));
-	options.push_back(new MenuOption("Notepad", window_manager));
-	options.push_back(new MenuOption("Settings", window_manager));
-	options.push_back(new MenuOption("ChadGPT", window_manager));
-	options.push_back(new MenuOption("DOOM", window_manager));
-	options.push_back(new MenuOption("Another option with a really long name", window_manager));
-	options.push_back(new MenuOption("Option x", window_manager));
-	options.push_back(new MenuOption("Option X", window_manager));
-	options.push_back(new MenuOption("Option XyZ", window_manager));
-
-	options[0]->add_window<Calculator>();
-	return options;
-}
-
-/// <summary>
-/// starts a thread that will update and render the window manager at set fps
+/// starts a thread that will update and render the window manager
 /// </summary>
 void start_main_thread()
 {
@@ -69,7 +47,8 @@ int main(int argc, char* argv[])
 #ifdef PICO
 	// Enable UART so we can print status output
     stdio_init_all();
-
+	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl; 
+	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
 	if(!I2CUtils::device_availible(DEVICE_ADDRESS))
 		std::cout << "Display not found" << std::endl;
@@ -84,7 +63,7 @@ int main(int argc, char* argv[])
 	
 	Utils::sleep_for_ms(1000);
 
-	main_menu = new MenuWindow(create_main_menu_options());
+	main_menu = new MainMenuWindow(window_manager);
 
 #ifdef PICO
 	keyboard = new PicoKeyboard(window_manager);

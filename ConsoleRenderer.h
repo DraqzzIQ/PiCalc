@@ -20,7 +20,7 @@ class ConsoleRenderer : public IRenderer
 		/// renders the given pixels to the console
 		/// </summary>
 		/// <param name="pixels">pixels to render</param>
-		void render(render_plane pixels, std::vector<bool> screen_symbols, bool force_rerender);
+		void render(const render_plane& pixels, const dynamic_bitset& screen_symbols, bool force_rerender);
 
 	private:
 		/// <summary>

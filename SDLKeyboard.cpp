@@ -212,7 +212,7 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event) {
 	case SDL_SCANCODE_F6: return Chars::KEY_MAP.at("log10");
 	case SDL_SCANCODE_C: return Chars::KEY_MAP.at("cos");
 	case SDL_SCANCODE_TAB: return Chars::KEY_MAP.at("S<>D");
-	case SDL_SCANCODE_DELETE: return Chars::KEY_MAP.at("AC");
+	case SDL_SCANCODE_ESCAPE: return Chars::KEY_MAP.at("AC");
 	case SDL_SCANCODE_KP_DIVIDE: return Chars::KEY_MAP.at("divide");
 	case SDL_SCANCODE_KP_MINUS: return Chars::KEY_MAP.at("-");
 	case SDL_SCANCODE_KP_ENTER: return Chars::KEY_MAP.at("="); //?

@@ -34,6 +34,14 @@ private:
 	struct RenderNode {
 		uint8_t* value;
 		std::vector<RenderNode*>* children;
+
+		~RenderNode() {
+			delete value;
+			for (RenderNode* child : *children) {
+				delete child;
+			}
+			delete children;
+		}
 	};
 	RenderNode* root;
 
@@ -44,6 +52,10 @@ private:
 	struct CalculateNode {
 		double* value;
 		uint8_t* operation;
+		~CalculateNode() {
+			delete value;
+			delete operation;
+		}
 	};
 
 	std::vector<double> letterVariables = std::vector<double>(9, 0.0);
@@ -53,9 +65,9 @@ private:
 	bool equation_changed;
 	std::vector<int> cursor_position = std::vector<int>(1, 0);
 	  
-	CalculateNode* calculate_equation_part(std::vector<RenderNode*> equation, Error& error);
-	render_plane render_equation_part(std::vector<RenderNode*> equation, std::map<uint8_t, render_plane> table);
-	render_plane render_fraction(render_plane top, render_plane bottom);
-	render_plane resize_center_x(render_plane render_plane_input, int length);
-	void add_resized_symbol(render_plane &resized_render_plane, render_plane symbol, int y_position);
+	CalculateNode* calculate_equation_part(const std::vector<RenderNode*>& equation, Error& error);
+	render_plane render_equation_part(const std::vector<RenderNode*>& equation, const std::map<uint8_t, render_plane>& table);
+	render_plane render_fraction(const render_plane& top, const render_plane& bottom);
+	render_plane resize_center_x(const render_plane& render_plane_input, const int length);
+	void add_resized_symbol(render_plane& resized_render_plane, const render_plane& symbol, const int y_position);
 };

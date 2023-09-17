@@ -1,69 +1,39 @@
 #include "MenuWindow.h"
 
-MenuWindow::MenuWindow()
+MenuWindow::MenuWindow(WindowManager *window_manager)
 {
+	this->window_manager = window_manager;
 }
 
-MenuWindow::MenuWindow(const std::vector<MenuOption*>& options)
+MenuWindow::~MenuWindow()
 {
-	this->_options = options;
-}
-
-bool MenuWindow::delete_option(const std::string name)
-{
-	for (size_t i = 0; i < this->_options.size(); i++)
+	for (size_t i = 0; i < options.size(); i++)
 	{
-		if (_options[i]->get_display_name() == name)
-		{
-			_options.erase(_options.begin() + i);
-			return true;
-		}
+		delete options[i];
 	}
-
-	return false;
-}
-
-void MenuWindow::add_option(MenuOption* option, const int index)
-{
-	_options.insert(_options.begin() + index, option);
-}
-
-MenuOption* MenuWindow::get_option(const std::string name)
-{
-	for (size_t i = 0; i < this->_options.size(); i++)
-	{
-		if (_options[i]->get_display_name() == name)
-			return _options[i];
-	}
-
-	return nullptr;
-}
-
-const size_t MenuWindow::options_size()
-{
-	return _options.size();
+	options.clear();
 }
 
 render_plane MenuWindow::update_window()
 {
 	create_menu();
-
-	corner_y = _current_page * 4 * _line_height;
+	
+	corner_y = current_page * 4 * line_height;
 
 	return get_render_canvas();
 }
 
 void MenuWindow::create_menu()
 {
-	for (size_t i = 0; i < _options.size() && i < _max_options; i++)
+	for (size_t i = 0; i < options.size(); i++)
 	{
-		add_to_window(Graphics::create_text(std::to_string(i) + ":" + _options[i]->get_display_name(), Graphics::SYMBOLS_6_HIGH, 1), 1, 1 + i * _line_height);
+		add_to_window(Graphics::create_text(std::to_string(i) + ":" + options[i]->get_display_name(), Graphics::SYMBOLS_6_HIGH, 1), 1, 1 + i * line_height);
 	}
 }
 
 const int MenuWindow::pages_count()
 {
-	return static_cast<int>(ceil(static_cast<double>(_options.size()) / 4));
+	return static_cast<int>(ceil(static_cast<double>(options.size()) / 4));
 }
 
 void MenuWindow::handle_key_down(KeyPress keypress)
@@ -72,17 +42,18 @@ void MenuWindow::handle_key_down(KeyPress keypress)
 	else if (keypress.key_raw == Chars::KEY_MAP.at("down")) scroll_down();
     else if(keypress.key_raw == Chars::KEY_MAP.at("left")) scroll_left();
     else if(keypress.key_raw == Chars::KEY_MAP.at("right")) scroll_right();
-	else if (keypress.key_raw < 10 && keypress.key_raw < _options.size()) _options[keypress.key_raw]->on_select();
+	else if(keypress.key_raw <10 && keypress.key_raw < options.size() && keypress.shift) options[keypress.key_raw]->on_shift_select();
+	else if (keypress.key_raw < 10 && keypress.key_raw < options.size()) options[keypress.key_raw]->on_select();
 }
 
 void MenuWindow::scroll_up()
 {
-	if(_current_page > 0)
-		_current_page--;
+	if(current_page > 0)
+		current_page--;
 }
 
 void MenuWindow::scroll_down()
 {
-	if(_current_page < pages_count() - 1)
-		_current_page++;
+	if(current_page < pages_count() - 1)
+		current_page++;
 }

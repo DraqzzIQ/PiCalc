@@ -11,7 +11,7 @@ ConsoleRenderer::ConsoleRenderer()
 	#endif
 }
 
-void ConsoleRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols, bool force_rerender)
+void ConsoleRenderer::render(const render_plane& pixels, const dynamic_bitset& screen_symbols, bool force_rerender)
 {	
 	if(!force_rerender && already_rendered(pixels, screen_symbols))
 		return;

@@ -1,9 +1,11 @@
 #pragma once
 #include "Constants.h"
 #include "KeyPress.h"
+#include "Graphics.h"
 #include <vector>
 #include <string>
 #include <stdint.h>
+#include <algorithm>
 
 /// <summary>
 /// base class for all windows
@@ -17,7 +19,7 @@ class Window
 		/// called when the window gets rerendered
 		/// </summary>
 		/// <returns>pixels to render</returns>
-		virtual render_plane update_window() = 0;
+		virtual render_plane update_window();
 		/// <summary>
 		/// handles keydown events
 		/// </summary>
@@ -43,15 +45,15 @@ class Window
 		/// <summary>
 		/// x coordinate of the upper left corner of the part of the canvas that is rendered
 		/// </summary>
-		int corner_x;
+		int corner_x = 0;
 		/// <summary>
 		/// y coordinate of the upper left corner of the part of the canvas that is rendered
 		/// </summary>
-		int corner_y;
+		int corner_y = 0;
 		/// <summary>
 		/// saves, which symbols on the lcd should be displayed
 		/// </summary>
-		std::vector<bool> screen_symbols;
+		dynamic_bitset screen_symbols;
 		/// <summary>
 		/// extracts the part of the window that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 		/// </summary>

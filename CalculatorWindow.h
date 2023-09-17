@@ -4,10 +4,10 @@
 #include "Graphics.h"
 #include <iostream>
 
-class Calculator : public Window {
+class CalculatorWindow : public Window {
 	public:
-		Calculator();
-
+		CalculatorWindow();
+		~CalculatorWindow();
 		render_plane update_window();
 		void handle_key_down(KeyPress keypress);
 	private:
