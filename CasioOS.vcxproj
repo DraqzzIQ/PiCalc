@@ -155,11 +155,11 @@
     <ClCompile Include="IKeyboard.cpp" />
     <ClCompile Include="IRenderer.cpp" />
     <ClCompile Include="Chars.cpp" />
+    <ClCompile Include="MenuWindow.cpp" />
     <ClCompile Include="PicoKeyboard.cpp" />
     <ClCompile Include="SDLKeyboard.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MenuOption.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
@@ -175,11 +175,11 @@
     <ClInclude Include="Chars.h" />
     <ClInclude Include="KeyPress.h" />
     <ClInclude Include="LCDConstants.h" />
+    <ClInclude Include="MenuWindow.h" />
     <ClInclude Include="PicoKeyboard.h" />
     <ClInclude Include="SDLKeyboard.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MenuOption.h" />
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
