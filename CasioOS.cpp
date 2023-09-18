@@ -36,6 +36,7 @@ void start_main_thread()
 	while (1) {
 		keyboard->check_for_keyboard_presses();
 		window_manager->update();
+		std::cout << Utils::us_since_boot();
 	}
 }
 
@@ -71,6 +72,7 @@ int main(int argc, char* argv[])
 	bt_manager->enable_bt();
 #else
 	keyboard = new SDLKeyboard(window_manager);
+	Utils::set_start_point();
 #endif
 
 	window_manager->add_window(main_menu);
