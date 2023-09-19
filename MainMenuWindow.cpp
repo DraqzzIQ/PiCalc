@@ -12,4 +12,6 @@ MainMenuWindow::MainMenuWindow(WindowManager *window_manager) : MenuWindow(windo
 	options[6] = new MenuOption("Option x", window_manager);
 	options[7] = new MenuOption("Option X", window_manager);
 	options[8] = new MenuOption("Option XyZ", window_manager);
+	
+	create_menu();
 }

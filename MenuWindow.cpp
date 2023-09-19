@@ -16,8 +16,6 @@ MenuWindow::~MenuWindow()
 
 render_plane MenuWindow::update_window()
 {
-	create_menu();
-	
 	corner_y = current_page * 4 * line_height;
 
 	return get_render_canvas();

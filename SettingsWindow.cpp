@@ -6,4 +6,6 @@ SettingsWindow::SettingsWindow(WindowManager* window_manager) : MenuWindow(windo
     options[0] = new MenuOption("Bluetooth", window_manager);
     options[1] = new MenuOption("Wifi", window_manager);
     options[2] = new SysInfoOption(window_manager);
+
+    create_menu();
 }
