@@ -1,5 +1,9 @@
 #include "Utils.h"
 
+#ifndef PICO
+std::chrono::steady_clock::time_point Utils::start_point;
+#endif
+
 void Utils::sleep_for_ms(int milliseconds)
 {
 #ifdef PICO
@@ -21,7 +25,7 @@ uint64_t Utils::us_since_boot() {
 void Utils::set_start_point() {
     start_point = std::chrono::steady_clock::now();
 }
-#endif // !PICO
+#endif
 
 uint32_t Utils::get_total_heap() {
 #ifdef PICO
