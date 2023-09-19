@@ -9,6 +9,20 @@ void Utils::sleep_for_ms(int milliseconds)
 #endif
 }
 
+uint64_t Utils::us_since_boot() {
+#ifdef PICO
+    return time_us_64();
+#else
+    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start_point).count();
+#endif
+}
+
+#ifndef PICO
+void Utils::set_start_point() {
+    start_point = std::chrono::steady_clock::now();
+}
+#endif // !PICO
+
 uint32_t Utils::get_total_heap() {
 #ifdef PICO
    extern char __StackLimit, __bss_end__;

@@ -7,8 +7,7 @@ Equation::Equation() {
 	rendered_equation = render_plane();
 }
 
-Equation::~Equation() 
-{
+Equation::~Equation() {
 	delete root;
 }
 
@@ -17,6 +16,7 @@ render_plane Equation::render_equation() {
 		rendered_equation = render_equation_part(*root->children, Graphics::SYMBOLS_9_HIGH);
 		equation_changed = false;
 	}
+	
 	return rendered_equation;
 }
 
@@ -35,6 +35,7 @@ render_plane Equation::render_equation_part(const std::vector<RenderNode*>& equa
 			render_plane symbol_matrix;
 			if (table.count(*current_symbol->value) != 0) symbol_matrix = table.at(*current_symbol->value);
 			else symbol_matrix = table.at(Chars::KEY_MAP.at("?"));
+			std::string test = bitset_2d::to_string_formatted(symbol_matrix);
 			add_resized_symbol(equation_part, symbol_matrix, y_origin);
 		}
 
@@ -108,8 +109,8 @@ void Equation::add_resized_symbol(render_plane& resized_render_plane, const rend
 	dynamic_bitset empty_bottom = dynamic_bitset(resized_render_plane[0].size() - y_position - symbol[0].size(), false);
 	for (int i = 0; i < symbol.size(); i++) {
 		dynamic_bitset column = empty_top;
-		column.insert(column.size(), symbol[i]);
-		column.insert(column.size(), empty_bottom);
+		column.append(symbol[i]);
+		column.append(empty_bottom);
 		resized_render_plane.push_back(column);
 	}
 }
