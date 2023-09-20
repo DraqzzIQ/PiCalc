@@ -36,7 +36,6 @@ void start_main_thread()
 	while (1) {
 		keyboard->check_for_keyboard_presses();
 		window_manager->update();
-		std::cout << Utils::us_since_boot() << "us" << std::endl;
 	}
 }
 
