@@ -129,6 +129,4 @@ private:
 
 	CalculateNode* calculate_equation_part(const std::vector<RenderNode*>& equation, Error& error);
 	bitset_2d render_equation_part(const std::vector<RenderNode*>& equation, const std::map<uint8_t, bitset_2d>& table,  std::vector<uint16_t> render_index, cursorData& cursor_data);
-	bitset_2d render_fraction(const bitset_2d& top, const bitset_2d& bottom);
-	bitset_2d resize_center_x(const bitset_2d& bitset_2d_input, const uint16_t length);
 };
