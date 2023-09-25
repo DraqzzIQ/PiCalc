@@ -87,14 +87,17 @@ class bitset_2d
         void set_bit(uint32_t coord_x, uint32_t coord_y, bool value);
         /// <summary>
         /// inserts a column to the bitset_2d at x_position coord_x
+        /// NOT DONE YET
         /// </summary>
         void insert_column(uint32_t coord_x, const dynamic_bitset& other);
         /// <summary>
         /// inserts other to the bitset_2d at the specified x-position
+        /// NOT DONE YET
         /// </summary>
         void insert_x(uint32_t coord_x, const bitset_2d& other);
         /// <summary>
         /// inserts other to the bitset_2d at the specified y-position
+        /// NOT DONE YET
         /// </summary>
         void insert_y(uint32_t coord_y, const bitset_2d& other);
         /// <summary>
