@@ -19,7 +19,7 @@ class MenuWindow : public Window
 		/// called when the window gets rerendered
 		/// </summary>
 		/// <returns>pixels to render</returns>
-		render_plane update_window();
+		bitset_2d update_window();
 		/// <summary>
 		/// handles keydown events
 		/// </summary>

@@ -16,30 +16,22 @@ class Graphics
 		~Graphics();
 
         /// <summary>
-        /// creates a render_plane text from string
+        /// creates a bitset_2d text from string
         /// </summary>
         /// <param name="text">text to be transformed</param>
         /// <param name="table">charset to be used</param>
         /// <param name="spacing">spacing between each char</param>
         /// <returns>converted text</returns>
-        static render_plane create_text(const std::string& text, const std::map<uint8_t, render_plane>& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
-        /// <summary>
-        /// creates a render_plane text from wstring
-        /// </summary>
-        /// <param name="text">text to be transformed</param>
-        /// <param name="table">charset to be used</param>
-        /// <param name="spacing">spacing between each char</param>
-        /// <returns>converted text</returns>
-        static render_plane create_text(const std::wstring& text, const std::map<uint8_t, render_plane>& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
+        static bitset_2d create_text(const std::string& text, const std::map<uint8_t, bitset_2d>& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
 
-		static const render_plane EMPTY_SCREEN;
-		static const render_plane LOGO_SCREEN;
+		static const bitset_2d EMPTY_SCREEN;
+		static const bitset_2d LOGO_SCREEN;
 
-        static const std::map<uint8_t, render_plane> SYMBOLS_9_HIGH;
+        static const std::map<uint8_t, bitset_2d> SYMBOLS_9_HIGH;
 
-		static const std::map<uint8_t, render_plane> SYMBOLS_7_HIGH;
+		static const std::map<uint8_t, bitset_2d> SYMBOLS_7_HIGH;
 
-        static const std::map<uint8_t, render_plane> SYMBOLS_6_HIGH;
+        static const std::map<uint8_t, bitset_2d> SYMBOLS_6_HIGH;
 
         //TODO: enum
         static const std::vector<std::string> SCREEN_SYMBOLS;

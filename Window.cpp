@@ -10,22 +10,23 @@ Window::~Window()
 {
 }
 
-render_plane Window::update_window()
+bitset_2d Window::update_window()
 {
     return get_render_canvas();
 }
 
-render_plane Window::get_render_canvas()
+//TODO: replace with get()
+bitset_2d Window::get_render_canvas()
 {
-	render_plane canvas;
+	bitset_2d canvas;
 
 	for (std::size_t i = 0; i < SCREEN_WIDTH; i++)
 	{
-		dynamic_bitset column = dynamic_bitset(SCREEN_HEIGHT, false);
+		dynamic_bitset column(SCREEN_HEIGHT, false);
 
 		for (std::size_t j = 0; j < SCREEN_HEIGHT; j++)
 		{
-			if(corner_x + i < window.size() && corner_y + j < window[corner_x + i].size())
+			if(corner_x + i < window.width() && corner_y + j < window.height())
 				column.set(j, (window[corner_x + i][corner_y + j]));
 		}
 		canvas.push_back(column);
@@ -33,29 +34,12 @@ render_plane Window::get_render_canvas()
 	return canvas;
 }
 
-void Window::add_to_window(render_plane graphic, int corner_x, int corner_y) {
-	//make sure the graphic fits x-wise
-	if (graphic.size() + corner_x > window.size()) {
-		dynamic_bitset empty = dynamic_bitset(window[0].size(), false);
-		while (graphic.size() + corner_x > window.size()) {
-			window.push_back(empty);
-		}
-	}
-	//make sure the graphic fits y-wise
-	if (graphic[0].size() + corner_y > window[0].size()) {
-		dynamic_bitset empty = dynamic_bitset(graphic[0].size() + corner_y - window[0].size(), false);
-		for (std::size_t i = 0; i < window.size(); i++) {
-			window[i].insert(window[i].size(), empty);
-		}
-	}
-
-	for (std::size_t i = 0; i < graphic.size(); i++) {
-		window[i + corner_x].set(corner_y, graphic[i]);
-	}
+void Window::add_to_window(const bitset_2d& graphic, int corner_x, int corner_y) {
+	window.set(corner_x, corner_y, graphic, true);
 }
 
 void Window::clear_window() {
-	window = render_plane(SCREEN_WIDTH, dynamic_bitset(SCREEN_HEIGHT, false));
+	window = bitset_2d(SCREEN_WIDTH, dynamic_bitset(SCREEN_HEIGHT, false));
 }
 
 void Window::clear_symbols() {
@@ -74,7 +58,7 @@ void Window::scroll_left()
 
 void Window::scroll_right()
 {
-	if(corner_x + SCREEN_WIDTH < window.size())
+	if(corner_x + SCREEN_WIDTH < window.width())
 		corner_x += SCREEN_WIDTH;
 }
 

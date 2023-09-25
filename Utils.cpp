@@ -22,7 +22,7 @@ uint64_t Utils::us_since_boot() {
 }
 
 #ifndef PICO
-void Utils::set_start_point() {
+void Utils::set_time_start_point() {
     start_point = std::chrono::steady_clock::now();
 }
 #endif

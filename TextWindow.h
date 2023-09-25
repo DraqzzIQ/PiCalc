@@ -10,7 +10,7 @@ class TextWindow : public Window
 	public:
         ~TextWindow();
         void handle_key_down(KeyPress keypress);
-        render_plane update_window();
+        bitset_2d update_window();
         /// <summary>
         /// container for all text lines
         /// </summary>

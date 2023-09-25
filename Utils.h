@@ -36,7 +36,7 @@ class Utils
         /// <summary>
         /// sets the start point for the us_since_boot function
         /// </summary>
-        static void set_start_point();
+        static void set_time_start_point();
         static std::chrono::steady_clock::time_point start_point;
 #endif 
     private:

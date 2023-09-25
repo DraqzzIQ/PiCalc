@@ -19,7 +19,7 @@ void BTRenderer::render(const render_plane& pixels, const dynamic_bitset& screen
 dynamic_bitset BTRenderer::flatten_2d_bitset(const render_plane& bitset_2d) {
     dynamic_bitset flattened_bitset;
     for (const dynamic_bitset& column : bitset_2d) {
-        flattened_bitset.append(column);
+        flattened_bitset.extend(column);
     }
     return flattened_bitset;
 }

@@ -12,7 +12,7 @@ void TextWindow::handle_key_down(KeyPress keypress)
     else if(keypress.key_raw == Chars::KEY_MAP.at("right")) scroll_right();
 }
 
-render_plane TextWindow::update_window()
+bitset_2d TextWindow::update_window()
 {
 	create_menu();
 

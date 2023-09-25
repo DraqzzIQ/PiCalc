@@ -20,13 +20,17 @@ class dynamic_bitset
         /// </summary>
         dynamic_bitset(uint32_t count);
         /// <summary>
-        /// Construct a dynamic_bitset with n bits, all set to value.
+        /// Construct a dynamic_bitset with n bits, all bits set to value.
         /// </summary>
         dynamic_bitset(uint32_t count, bool value);
         /// <summary>
         /// Construct a dynamic_bitset out of a vector<uint8_t> using the first n bits.
         /// </summary>
-        dynamic_bitset(std::vector<uint8_t> values, uint32_t count);
+        dynamic_bitset(uint32_t count, std::vector<uint8_t> values);
+        /// <summary>
+        /// Construct a dynamic_bitset out of a vector<bool> using the first n bits.
+        /// </summary>
+        dynamic_bitset(uint32_t count, const std::vector<bool> values);
         /// <summary>
         /// Copy constructor.
         /// </summary>
@@ -47,6 +51,7 @@ class dynamic_bitset
         bool operator[](uint32_t index) const;
         /// <summary>
         /// Returns true if equal to other.
+        /// If not Working: manual comparison
         /// </summary>
         bool operator==(const dynamic_bitset& other) const;
         /// <summary>
@@ -58,15 +63,10 @@ class dynamic_bitset
         /// </summary>
         dynamic_bitset& operator=(const dynamic_bitset& other);
         /// <summary>
-        /// Sets the bit at index to value.
+        /// Appends two dynamic_bitsets together
         /// </summary>
-        void set(uint32_t index, bool value);
-        /// <summary>
-        // TODO: optimize this
-        /// Sets bits at index.
-        /// should be used carefully, as it is O(n).
-        /// </summary>
-        void set(uint32_t index, const dynamic_bitset& bits);
+        dynamic_bitset operator+(const dynamic_bitset& other);
+
         /// <summary>
         /// Returns the bit at index.
         /// </summary>
@@ -76,17 +76,21 @@ class dynamic_bitset
         /// </summary>
         uint32_t size() const;
         /// <summary>
-        /// Clears the bitset.
+        /// Returns a vector<uint8_t> containing the bits.
         /// </summary>
-        void clear();
+        std::vector<uint8_t> get_bytes() const;
+
         /// <summary>
-        /// Appends a bit to the end of the bitset.
+        /// Sets the bit at index to value.
+        /// If not Working: manual comparison
         /// </summary>
-        void push_back(bool bit);
+        void set(uint32_t index, bool value);
         /// <summary>
-        /// Removes the last bit from the bitset.
+        // TODO: optimize this
+        /// Sets bits at index.
+        /// should be used carefully, as it is O(n).
         /// </summary>
-        void pop_back();
+        void set(uint32_t index, const dynamic_bitset& bits);
         /// <summary>
         /// Inserts a bit at index.
         /// should be used carefully, as it is O(n).
@@ -99,23 +103,47 @@ class dynamic_bitset
         /// </summary>
         void insert(uint32_t index, const dynamic_bitset& bits);
         /// <summary>
+        /// Resizes the bitset to n bits.
+        /// </summary>
+        void resize(uint32_t count);
+        /// <summary>
         /// Erases the bit at index.
         /// should be used carefully, as it is O(n).
         /// </summary>
         void erase(uint32_t index);
         /// <summary>
-        /// Resizes the bitset to n bits.
+        /// Clears the bitset.
         /// </summary>
-        void resize(uint32_t count);
+        void clear();
+
+        /// <summary>
+        /// Appends a bit to the end of the bitset.
+        /// </summary>
+        void push_back(bool bit);
+        /// <summary>
+        /// Removes the last bit from the bitset.
+        /// </summary>
+        void pop_back();
         /// <summary>
         /// Appends another bitset to the end of this one.
         /// should be used carefully, as it is O(n).
         /// </summary>
-        void append(const dynamic_bitset& other);
+        void extend(const dynamic_bitset& other);
         /// <summary>
-        /// Returns a vector<uint8_t> containing the bits.
+        /// Appends length bits to the dynamic_bitset, all set to value
+        /// TODO: optimize
         /// </summary>
-        std::vector<uint8_t> get_bytes() const;
+        void extend(uint32_t length, bool value);
+        /// <summary>
+        /// Appends another bitset to the start of this one.
+        /// should be used carefully, as it is O(n).
+        /// </summary>
+        void extend_left(const dynamic_bitset& other);
+        /// <summary>
+        /// Appends length bits to the start of the dynamic_bitset, all set to value
+        /// </summary>
+        void extend_left(uint32_t length, bool value);
+        
         /// <summary>
         /// Returns a string representation of the bitset.
         /// </summary>
