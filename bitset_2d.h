@@ -18,7 +18,7 @@ class bitset_2d
         /// </summary>
         bitset_2d(uint32_t width, uint32_t height, bool value);
         /// <summary>
-        /// Construct a bitset_2d with given height, each row is equal to the given dynamic_bitset
+        /// Construct a bitset_2d with given height, each column is equal to the given dynamic_bitset
         /// </summary>
         bitset_2d(uint32_t width, const dynamic_bitset &other);
         /// <summary>

@@ -72,12 +72,20 @@ private:
 	/// root Node for the equation, children contains the equation
 	/// </summary>
 	RenderNode* root;
+	/// <summary>
+	/// root Node for the equation, where parts in brackets are collected in another child
+	/// </summary>
+	RenderNode* root_formatted;
 
 	/// <summary>
 	/// all the operations that have to be between two values to be evaluated
 	/// </summary>
 	std::vector<uint8_t> allowedCalculateOperations {
 		69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164
+	};
+
+	std::vector<uint8_t> singleBracketOpenKeys{
+		74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195
 	};
 
 	/// <summary>
@@ -92,7 +100,7 @@ private:
 		}
 	};
 	/// <summary>
-	/// Vector containing all the Variables (A, B, C, D, E, F, X, Y, M), that are saved
+	/// Vector containing all the Variables (A, B, C, D, E, F, X, Y, M) that are saved
 	/// </summary>
 	std::vector<double> letterVariables = std::vector<double>(9, 0.0);
 
@@ -128,5 +136,7 @@ private:
 	};
 
 	CalculateNode* calculate_equation_part(const std::vector<RenderNode*>& equation, Error& error);
-	bitset_2d render_equation_part(const std::vector<RenderNode*>& equation, const std::map<uint8_t, bitset_2d>& table,  std::vector<uint16_t> render_index, cursorData& cursor_data);
+	bitset_2d render_equation_part(const std::vector<RenderNode*>& equation, const std::map<uint8_t, bitset_2d>& table,  std::vector<uint16_t> render_index, cursorData& cursor_data, uint32_t& y_origin_ref);
+	std::vector<Equation::RenderNode*>* format_equation_part(const std::vector<RenderNode*>* equation, uint32_t& i, bool return_on_closed_bracket);
+	RenderNode* format_equation(const RenderNode* equation);
 };
