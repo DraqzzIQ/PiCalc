@@ -2,38 +2,30 @@ cmake_minimum_required(VERSION 3.25)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
+option(RPI_PICO ON)
 
 set(PICO_BOARD pico_w)
 set(PROJECT_NAME "CasioOS")
 
 # Pico
-if(TRUE)
+if(RPI_PICO)
     set(PICO_CXX_ENABLE_EXCEPTIONS 1)
     set(PICO_CXX_ENABLE_RTTI 1)
-    include(pico_sdk_import.cmake) # must be included before project()
 endif()
 
 project(${PROJECT_NAME} CXX C)
 
-# import source files
-file(GLOB SOURCES "*.c" "*.cpp" "*.h")
 
-add_executable(${PROJECT_NAME} ${SOURCES})
-
+add_executable(${PROJECT_NAME})
+# source files
+add_subdirectory(src)
+add_subdirectory(lib)
 # Linux, (Windows)
-if(NOT TRUE)
-    find_package(Threads REQUIRED)
-
-    find_package(SDL2 REQUIRED) # sudo apt install libsdl2-dev to install
-
-    include_directories(${SDL2_INCLUDE_DIRS})
-
-    target_link_libraries(${PROJECT_NAME} Threads::Threads ${SDL2_LIBRARIES})
-endif()
 
 # Pico
 # cmake -DRPI_PICO=ON to compile
-if(TRUE)
+if(RPI_PICO)
+    include(pico_sdk_import.cmake) # must be included before project()
     # initialize the Raspberry Pi Pico SDK
     pico_sdk_init()
 
@@ -41,10 +33,8 @@ if(TRUE)
     # pico_cyw43_arch_none is nessessary for accessing the CYW4343W WiFi chip and it's LED
     target_link_libraries(${PROJECT_NAME} pico_stdlib pico_cyw43_arch_none hardware_i2c pico_btstack_ble pico_btstack_cyw43)
 
-    target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR} # For btstack config
-    )
     pico_btstack_make_gatt_header(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/casio_os.gatt")
+
 
     # create map/bin/hex/uf2 file in addition to ELF.
     pico_add_extra_outputs(${PROJECT_NAME})
