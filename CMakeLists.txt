@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
-option(RPI_PICO ON)
+option(RPI_PICO "use rpi pico" ON)
 
 set(PICO_BOARD pico_w)
 set(PROJECT_NAME "CasioOS")
@@ -22,12 +22,13 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 # Pico
-if(RPI_PICO)
+if(TRUE)
     set(PICO_CXX_ENABLE_EXCEPTIONS 1)
     set(PICO_CXX_ENABLE_RTTI 1)
+    include(pico_sdk_import.cmake) # must be included before project()
 endif()
 
-project(${PROJECT_NAME} CXX C)
+project(${PROJECT_NAME} CXX C )
 
 
 add_executable(${PROJECT_NAME})
@@ -39,7 +40,6 @@ add_subdirectory(lib)
 # Pico
 # cmake -DRPI_PICO=ON to compile
 if(RPI_PICO)
-    include(pico_sdk_import.cmake) # must be included before project()
     # initialize the Raspberry Pi Pico SDK
     pico_sdk_init()
 
