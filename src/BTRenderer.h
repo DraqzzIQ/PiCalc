@@ -9,10 +9,10 @@ class BTRenderer : public IRenderer
 {
     public:
         BTRenderer(BTManager* bt_manager);
-        void render(const render_plane& pixels, const dynamic_bitset& screen_symbols, bool force_rerender);
+        void render(const bitset_2d& pixels, const dynamic_bitset& screen_symbols, bool force_rerender);
     private:
         BTManager* _bt_manager;
-        dynamic_bitset flatten_2d_bitset(const render_plane& bool_matrix);
+        dynamic_bitset flatten_2d_bitset(const bitset_2d& bool_matrix);
 };
 
 #endif

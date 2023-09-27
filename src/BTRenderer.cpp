@@ -7,7 +7,7 @@ BTRenderer::BTRenderer(BTManager* bt_manager)
     _bt_manager = bt_manager;
 }
 
-void BTRenderer::render(const render_plane& pixels, const dynamic_bitset& screen_symbols, bool force_rerender)
+void BTRenderer::render(const bitset_2d& pixels, const dynamic_bitset& screen_symbols, bool force_rerender)
 {
     if(!force_rerender && already_rendered(pixels, screen_symbols))
         return;
@@ -16,10 +16,10 @@ void BTRenderer::render(const render_plane& pixels, const dynamic_bitset& screen
 }
 
 
-dynamic_bitset BTRenderer::flatten_2d_bitset(const render_plane& bitset_2d) {
+dynamic_bitset BTRenderer::flatten_2d_bitset(const bitset_2d& pixels) {
     dynamic_bitset flattened_bitset;
-    for (const dynamic_bitset& column : bitset_2d) {
-        flattened_bitset.extend(column);
+    for (uint32_t i = 0; i < pixels.width(); i++) {
+        flattened_bitset.extend(pixels.at(i));
     }
     return flattened_bitset;
 }
