@@ -83,7 +83,7 @@ uint32_t bitset_2d::height() const {
 
 bool bitset_2d::get_bit(uint32_t coord_x, uint32_t coord_y) const {
 #ifdef IS_DEBUG_BUILD
-    if (coord_x >= _width || coord_ >= _height) throw(std::out_of_range("bitset_2d::get_bit"));
+    if (coord_x >= _width || coord_y >= _height) throw(std::out_of_range("bitset_2d::get_bit"));
 #endif
     return _plane.at(coord_x).at(coord_y);
 }
@@ -110,7 +110,7 @@ void bitset_2d::set(uint32_t coord_x, uint32_t coord_y, const bitset_2d& other, 
 
 void bitset_2d::set_column(uint32_t coord_x, const dynamic_bitset& other) {
 #ifdef IS_DEBUG_BUILD
-    if (coord_x >= _width || other._height != _height) throw(std::out_of_range("bitset_2d::set_column"));
+    if (coord_x >= _width || other.size() != _height) throw(std::out_of_range("bitset_2d::set_column"));
 #endif
     _plane[coord_x] = other;
 }
