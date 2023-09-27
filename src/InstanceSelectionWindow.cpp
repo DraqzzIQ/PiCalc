@@ -5,7 +5,7 @@ InstanceSelectionWindow::InstanceSelectionWindow(WindowManager* window_manager)
     _window_manager = window_manager;
 }
 
-render_plane InstanceSelectionWindow::update_window()
+bitset_2d InstanceSelectionWindow::update_window()
 {
     corner_y = _current_page * 32;
 

@@ -38,7 +38,7 @@ void WindowManager::update(bool force_rerender)
 		if (!_windows.empty())
 			_renderers->at(i)->render(_windows.top()->update_window(), _windows.top()->screen_symbols, force_rerender);
 		else
-			_renderers->at(i)->render(Graphics::LOGO_SCREEN, std::vector<bool>(Graphics::SCREEN_SYMBOLS.size(), true), force_rerender);
+			_renderers->at(i)->render(Graphics::LOGO_SCREEN, dynamic_bitset(Graphics::SCREEN_SYMBOLS.size(), true), force_rerender);
 	}
 }
 

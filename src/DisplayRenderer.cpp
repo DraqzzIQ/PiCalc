@@ -7,7 +7,7 @@ DisplayRenderer::DisplayRenderer()
     clear();
 }
 
-void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols, bool force_rerender)
+void DisplayRenderer::render(const render_plane& pixels, const dynamic_bitset& screen_symbols, bool force_rerender)
 {
     if(!force_rerender && already_rendered(pixels, screen_symbols))
         return;
@@ -21,19 +21,12 @@ void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen
 
     uint16_t index = 3;
 
-    for(size_t j  = 0; j < 40; j++)
+    for(uint8_t j = 0; j < 40; j++)
     {
-        //make 32 heigh so it's eavenly divided by 8
-        pixels[j].push_back(false);
-        for(size_t i = 0; i < SCREEN_HEIGHT + 1; i+=8)
+        std::vector<uint8_t> bytes = pixels[j].get_bytes();
+        for(uint8_t i = 0; i < 4; i++)
         {
-            uint8_t byte = 0;
-            for(size_t k = 0; k < 8; k++)
-            {
-                if(pixels[j][i + k])
-                    byte |= 1 << k;
-            }
-            command[index++] = byte;
+            command[index++] = bytes[i];
         }
     }
     i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
@@ -44,19 +37,12 @@ void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen
 
     index = 3;
     
-    for(size_t j  = 40; j < 80; j++)
+    for(uint8_t j  = 40; j < 80; j++)
     {
-        //make 32 heigh so it's eavenly divided by 8
-        pixels[j].push_back(false);
-        for(size_t i = 0; i < SCREEN_HEIGHT + 1; i+=8)
+        std::vector<uint8_t> bytes = pixels[j].get_bytes();
+        for(uint8_t i = 0; i < 4; i++)
         {
-            uint8_t byte = 0;
-            for(size_t k = 0; k < 8; k++)
-            {
-                if(pixels[j][i + k])
-                    byte |= 1 << k;
-            }
-            command[index++] = byte;
+            command[index++] = bytes[i];
         }
     }
 
@@ -69,19 +55,12 @@ void DisplayRenderer::render(render_plane pixels, const std::vector<bool> screen
 
     index = 3;
     
-    for(size_t j  = 80; j < 96; j++)
+    for(uint8_t j  = 80; j < 96; j++)
     {
-        //make 32 heigh so it's eavenly divided by 8
-        pixels[j].push_back(false);
-        for(size_t i = 0; i < SCREEN_HEIGHT + 1; i+=8)
+        std::vector<uint8_t> bytes = pixels[j].get_bytes();
+        for(uint8_t i = 0; i < 4; i++)
         {
-            uint8_t byte = 0;
-            for(size_t k = 0; k < 8; k++)
-            {
-                if(pixels[j][i + k])
-                    byte |= 1 << k;
-            }
-            command2[index++] = byte;
+            command2[index++] = bytes[i];
         }
     }
     i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command2, sizeof(command2), C_LAST_COMMAND);

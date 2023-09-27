@@ -9,11 +9,10 @@ class BTRenderer : public IRenderer
 {
     public:
         BTRenderer(BTManager* bt_manager);
-        void render(render_plane pixels, std::vector<bool> screen_symbols, bool force_rerender);
+        void render(const render_plane& pixels, const dynamic_bitset& screen_symbols, bool force_rerender);
     private:
         BTManager* _bt_manager;
-        std::vector<bool> flatten_2d_bool_vector(const std::vector<std::vector<bool>>& bool_matrix);
-        std::vector<uint8_t> convert_bools_to_bits(const std::vector<bool>& bools);
+        dynamic_bitset flatten_2d_bitset(const render_plane& bool_matrix);
 };
 
 #endif

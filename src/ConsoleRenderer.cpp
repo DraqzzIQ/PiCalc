@@ -11,7 +11,7 @@ ConsoleRenderer::ConsoleRenderer()
 	#endif
 }
 
-void ConsoleRenderer::render(render_plane pixels, const std::vector<bool> screen_symbols, bool force_rerender)
+void ConsoleRenderer::render(const bitset_2d& pixels, const dynamic_bitset& screen_symbols, bool force_rerender)
 {	
 	if(!force_rerender && already_rendered(pixels, screen_symbols))
 		return;
@@ -37,7 +37,7 @@ void ConsoleRenderer::render(render_plane pixels, const std::vector<bool> screen
 		out += "# ";
 		for (size_t j = 0; j < SCREEN_WIDTH; j++)
 		{
-			if (pixels[j][i])
+			if (pixels.at(j)[i])
 				out  += '\xFE';
 			else
 				out +=  " ";

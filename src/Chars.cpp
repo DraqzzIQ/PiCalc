@@ -236,7 +236,7 @@ const std::map<std::string, uint8_t> Chars::KEY_MAP = {
 	{ "CONV38", 233 },
 	{ "CONV39", 234 },
 	{ "CONV40", 235 },
-	{"ON", 236},
+	{ "ON", 236 },
 };
 
 const std::map<uint8_t, uint8_t> Chars::KEY_MAP_SHIFT = {

@@ -52,7 +52,7 @@ KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event){
 	keypress.key_calculator = raw_key_to_calculator_key(keypress.key_raw, keypress.shift, keypress.alpha);
 	keypress.key_keyboard = scancode_to_key_keyboard(_event);
 
-	std::cout << unsigned(keypress.key_raw);
+	std::cout << unsigned(keypress.key_raw) << "        ";
 	//std::cout << unsigned(_event->key.keysym.scancode);
 
 	return keypress;
@@ -175,50 +175,50 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event) {
 	case SDL_SCANCODE_F: return Chars::KEY_MAP.at("fraction");
 	case SDL_SCANCODE_N: return Chars::KEY_MAP.at("(-)");
 	case SDL_SCANCODE_R: return Chars::KEY_MAP.at("RCL");
-	case SDL_SCANCODE_KP_7: return Chars::KEY_MAP.at("7");
-	case SDL_SCANCODE_KP_4: return Chars::KEY_MAP.at("4");
-	case SDL_SCANCODE_KP_1: return Chars::KEY_MAP.at("1");
-	case SDL_SCANCODE_KP_0: return Chars::KEY_MAP.at("0");
+	case SDL_SCANCODE_7: return Chars::KEY_MAP.at("7");
+	case SDL_SCANCODE_4: return Chars::KEY_MAP.at("4");
+	case SDL_SCANCODE_1: return Chars::KEY_MAP.at("1");
+	case SDL_SCANCODE_0: return Chars::KEY_MAP.at("0");
 	case SDL_SCANCODE_RALT: return Chars::KEY_MAP.at("ALPHA");
 	case SDL_SCANCODE_LALT: return Chars::KEY_MAP.at("ALPHA");
-	case SDL_SCANCODE_3: return Chars::KEY_MAP.at("x^3");
-	case SDL_SCANCODE_F2: return Chars::KEY_MAP.at("root2");
+	case SDL_SCANCODE_F3: return Chars::KEY_MAP.at("x^3");
+	case SDL_SCANCODE_F6: return Chars::KEY_MAP.at("root2");
 	case SDL_SCANCODE_D: return Chars::KEY_MAP.at("time");
 	case SDL_SCANCODE_E: return Chars::KEY_MAP.at("ENG");
-	case SDL_SCANCODE_KP_8: return Chars::KEY_MAP.at("8");
-	case SDL_SCANCODE_KP_5: return Chars::KEY_MAP.at("5");
-	case SDL_SCANCODE_KP_2: return Chars::KEY_MAP.at("2");
+	case SDL_SCANCODE_8: return Chars::KEY_MAP.at("8");
+	case SDL_SCANCODE_5: return Chars::KEY_MAP.at("5");
+	case SDL_SCANCODE_2: return Chars::KEY_MAP.at("2");
 	case SDL_SCANCODE_COMMA: return Chars::KEY_MAP.at(",");
 	case SDL_SCANCODE_LEFT: return Chars::KEY_MAP.at("left");
 	case SDL_SCANCODE_DOWN: return Chars::KEY_MAP.at("down");
-	case SDL_SCANCODE_2: return Chars::KEY_MAP.at("x^2");
+	case SDL_SCANCODE_F2: return Chars::KEY_MAP.at("x^2");
 	case SDL_SCANCODE_H: return Chars::KEY_MAP.at("hyp");
-	case SDL_SCANCODE_8: return Chars::KEY_MAP.at("(");
-	case SDL_SCANCODE_KP_9: return Chars::KEY_MAP.at("9");
-	case SDL_SCANCODE_KP_6: return Chars::KEY_MAP.at("6");
-	case SDL_SCANCODE_KP_3: return Chars::KEY_MAP.at("3");
-	case SDL_SCANCODE_KP_PERIOD: return Chars::KEY_MAP.at("*10^n"); //?
+	case SDL_SCANCODE_F7: return Chars::KEY_MAP.at("(");
+	case SDL_SCANCODE_9: return Chars::KEY_MAP.at("9");
+	case SDL_SCANCODE_6: return Chars::KEY_MAP.at("6");
+	case SDL_SCANCODE_3: return Chars::KEY_MAP.at("3");
+	case SDL_SCANCODE_X: return Chars::KEY_MAP.at("*10^n");
 	case SDL_SCANCODE_RIGHT: return Chars::KEY_MAP.at("right");
-	case SDL_SCANCODE_1: return Chars::KEY_MAP.at("x^-1");
+	case SDL_SCANCODE_F1: return Chars::KEY_MAP.at("x^-1");
 	case SDL_SCANCODE_F4: return Chars::KEY_MAP.at("x^n");
 	case SDL_SCANCODE_S: return Chars::KEY_MAP.at("sin");
-	case SDL_SCANCODE_9: return Chars::KEY_MAP.at(")");
+	case SDL_SCANCODE_F8: return Chars::KEY_MAP.at(")");
 	case SDL_SCANCODE_BACKSPACE: return Chars::KEY_MAP.at("DEL");
-	case SDL_SCANCODE_KP_MULTIPLY: return Chars::KEY_MAP.at("multiply");
-	case SDL_SCANCODE_KP_PLUS: return Chars::KEY_MAP.at("+");
+	case SDL_SCANCODE_PERIOD: return Chars::KEY_MAP.at("multiply"); // .
+	case 48: return Chars::KEY_MAP.at("+"); // +
 	case SDL_SCANCODE_INSERT: return Chars::KEY_MAP.at("Ans");
 	case SDL_SCANCODE_UP: return Chars::KEY_MAP.at("up");
-	case SDL_SCANCODE_F5: return Chars::KEY_MAP.at("logn");
-	case SDL_SCANCODE_F6: return Chars::KEY_MAP.at("log10");
+	case SDL_SCANCODE_F9: return Chars::KEY_MAP.at("logn");
+	case SDL_SCANCODE_F10: return Chars::KEY_MAP.at("log10");
 	case SDL_SCANCODE_C: return Chars::KEY_MAP.at("cos");
 	case SDL_SCANCODE_TAB: return Chars::KEY_MAP.at("S<>D");
 	case SDL_SCANCODE_ESCAPE: return Chars::KEY_MAP.at("AC");
-	case SDL_SCANCODE_KP_DIVIDE: return Chars::KEY_MAP.at("divide");
-	case SDL_SCANCODE_KP_MINUS: return Chars::KEY_MAP.at("-");
-	case SDL_SCANCODE_KP_ENTER: return Chars::KEY_MAP.at("="); //?
+	case 49: return Chars::KEY_MAP.at("divide"); // #
+	case 56: return Chars::KEY_MAP.at("-"); // -
+	case SDL_SCANCODE_RETURN: return Chars::KEY_MAP.at("=");
 	case SDL_SCANCODE_LCTRL: return Chars::KEY_MAP.at("MODE");
 	case SDL_SCANCODE_RCTRL: return Chars::KEY_MAP.at("MODE");
-	case SDL_SCANCODE_F7: return Chars::KEY_MAP.at("ln");
+	case SDL_SCANCODE_F11: return Chars::KEY_MAP.at("ln");
 	case SDL_SCANCODE_T: return Chars::KEY_MAP.at("tan");
 	case SDL_SCANCODE_M: return Chars::KEY_MAP.at("M+");
 	default: return Chars::KEY_MAP.at("unknown");

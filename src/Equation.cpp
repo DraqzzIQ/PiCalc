@@ -3,142 +3,217 @@
 Equation::Equation() {
 	root = new RenderNode();
 	root->children = new std::vector<RenderNode*>(0);
+	cursor_index = std::vector<uint16_t>{0};
+
+	last_blink_time = Utils::us_since_boot();
 	equation_changed = true;
-	rendered_equation = render_plane();
+	show_cursor = true;
 }
 
-Equation::~Equation() 
-{
+Equation::~Equation() {
 	delete root;
+	delete root_formatted;
 }
 
-render_plane Equation::render_equation() {
+bitset_2d Equation::render_equation() {
 	if (equation_changed) {
-		rendered_equation = render_equation_part(*root->children, Graphics::SYMBOLS_9_HIGH);
+		// the equation is empty
+		if (root->children->size() == 0) {
+			rendered_equation = bitset_2d();
+			rendered_equation_cursor = bitset_2d(2, 9, true);
+		}
+		else {
+			root_formatted = format_equation(root);
+			cursorData cursor_data{ 0, 0, 0 };
+			uint32_t y_origin = 0;
+			rendered_equation = render_equation_part(*root_formatted->children, Graphics::SYMBOLS_9_HIGH, std::vector<uint16_t>(), cursor_data, y_origin);
+			rendered_equation_cursor = rendered_equation;
+			rendered_equation_cursor.set(cursor_data.x, cursor_data.y, bitset_2d(2, cursor_data.size, true), true);
+		}
 		equation_changed = false;
 	}
-	return rendered_equation;
+
+	// change the state of show_cursor every 0.5s
+	if (Utils::us_since_boot() > last_blink_time + 500000) {
+		last_blink_time += 500000;
+		show_cursor = !show_cursor;
+	}
+	
+	return show_cursor ? rendered_equation_cursor : rendered_equation;
 }
 
-render_plane Equation::render_equation_part(std::vector<RenderNode*> equation, std::map<uint8_t, render_plane> table) {
-	int font_height = table.at(' ').at(0).size();
-	int y_origin = 0;
-	render_plane equation_part = render_plane(1, std::vector<bool>(font_height, false));
+bitset_2d Equation::render_equation_part(const std::vector<RenderNode*>& equation, const std::map<uint8_t, bitset_2d>& table, std::vector<uint16_t> render_index, cursorData& cursor_data, uint32_t& y_origin_ref) {
+	uint8_t font_height = table.at(0).height();
+	uint32_t y_origin = 0;
+	bitset_2d equation_part(1, font_height, false);
+	cursorData cursor_data_new = { 0, 0, 0 };
+	render_index.push_back(0);
 
 	if (equation.size() == 0) {
+		if (render_index == cursor_index) cursor_data = { 0, 0, font_height };
+		y_origin_ref = 0;
 		return table.at(Chars::KEY_MAP.at("empty"));
 	}
 	for (size_t i = 0; i < equation.size(); i++) {
 		RenderNode* current_symbol = equation.at(i);
+		bitset_2d symbol_matrix = bitset_2d();
+		render_index.back() = i;
+		if (render_index == cursor_index)
+			cursor_data_new = { equation_part.width() - 1, 0, font_height };
 
 		if (current_symbol->children == nullptr) {
-			render_plane symbol_matrix;
 			if (table.count(*current_symbol->value) != 0) symbol_matrix = table.at(*current_symbol->value);
 			else symbol_matrix = table.at(Chars::KEY_MAP.at("?"));
-			add_resized_symbol(equation_part, symbol_matrix, y_origin);
+			symbol_matrix.extend_up(y_origin, false);
+			symbol_matrix.extend_down(equation_part.height() - symbol_matrix.height(), false);
+			equation_part.extend_right(symbol_matrix);
 		}
-
 		else {
-			std::vector<render_plane> sub_equations;
-			for (RenderNode* node : *current_symbol->children) {
-				sub_equations.push_back(render_equation_part(*node->children, Graphics::SYMBOLS_6_HIGH));
-			}
-
+			render_index.push_back(0);
 			if (*current_symbol->value == Chars::KEY_MAP.at("fraction")) {
-				int fraction_height = (font_height == 9) ? 3 : 2;
-				int add_height = y_origin + fraction_height - sub_equations[0][0].size();
-				if (add_height < 0) {
-					std::vector<bool> empty = std::vector<bool>(-add_height, false);
-					for (int i = 0; i < equation_part.size(); i++) {
-						equation_part[i].insert(equation_part[i].begin(), empty.begin(), empty.end());
-					}
-					y_origin -= add_height;
+				int8_t subequation_cursor_index = -1;
+				uint32_t new_y_origin;
+				cursorData cursor_data_subequation = { 0, 0, 0 };
+				render_index.back() = 0;
+				auto bottom = render_equation_part(*current_symbol->children->at(0)->children, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_subequation, new_y_origin);
+				if (cursor_data_subequation.size != 0) { subequation_cursor_index = 0; cursor_data_new = cursor_data_subequation; }
+				cursor_data_subequation = { 0, 0, 0 };
+				render_index.back() = 1;
+				auto top = render_equation_part(*current_symbol->children->at(1)->children, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_subequation, new_y_origin);
+				if (cursor_data_subequation.size != 0) { subequation_cursor_index = 1; cursor_data_new = cursor_data_subequation; }
+
+
+ 				int32_t diff = top.width() - bottom.width();
+				if (diff > 0) {
+					bottom.extend_right(diff / 2, false);
+					bottom.extend_left((diff + 1) / 2, false);
+					if (subequation_cursor_index == 0) cursor_data_new.x += (diff + 1) / 2;
+				}
+				else if (diff < 0) {
+					top.extend_right(-diff / 2, false);
+					top.extend_left((-diff + 1) / 2, false);
+					if (subequation_cursor_index == 1) cursor_data_new.x += (-diff + 1) / 2;
 				}
 
-				add_height = sub_equations[0][0].size() + sub_equations[1][0].size() + 3 - equation_part[0].size();
-				if (add_height > 0) {
-					std::vector<bool> empty = std::vector<bool>(add_height, false);
-					for (int i = 0; i < equation_part.size(); i++) {
-						equation_part[i].insert(equation_part[i].end(), empty.begin(), empty.end());
-					}
+				for (int i = 0; i < bottom.width(); i++) {
+					dynamic_bitset column = bottom[i];
+					column.push_back(false);
+					column.push_back(true);
+					column.push_back(false);
+					column.insert(column.size(), top[i]);
+					symbol_matrix.push_back(column);
 				}
 
-				render_plane rendered_fraction = render_fraction(sub_equations[0], sub_equations[1]);
-				add_resized_symbol(equation_part, rendered_fraction, y_origin + fraction_height - sub_equations[0][0].size());
+
+				uint8_t fraction_line_height = (font_height == 9) ? 3 : 2;
+
+				if (subequation_cursor_index != -1) {
+					cursor_data_new.x += equation_part.width();
+					if (subequation_cursor_index == 0)
+						cursor_data_new.y += fraction_line_height - bottom.height();
+					else if (subequation_cursor_index == 1)
+						cursor_data_new.y += fraction_line_height + 3;
+				}
+
+				int32_t add_height = y_origin + fraction_line_height - bottom.height();
+				if (add_height < 0) { equation_part.extend_up(-add_height, false); y_origin -= add_height; }
+				else symbol_matrix.extend_up(add_height, false);
+				add_height = symbol_matrix.height() - equation_part.height();
+				if (add_height > 0) equation_part.extend_down(add_height, false);
+				else symbol_matrix.extend_down(-add_height, false);
+				equation_part.extend_right(symbol_matrix);
 			}
+
+			else if (*current_symbol->value == Chars::KEY_MAP.at("(")) {
+				int8_t subequation_cursor_index = -1;
+				cursorData cursor_data_subequation = { 0, 0, 0 };
+				uint32_t new_y_origin;
+				render_index.back() = 0;
+				auto inner = render_equation_part(*current_symbol->children->at(0)->children, table, render_index, cursor_data_subequation, new_y_origin);
+				if (cursor_data_subequation.size != 0) { subequation_cursor_index = 0; cursor_data_new = cursor_data_subequation; }
+
+				dynamic_bitset bracket_raw(inner.height() - 4, true);
+				bracket_raw.extend_left(2, false);
+				bracket_raw.extend(2, false);
+
+				bitset_2d bracket_left(1, bracket_raw);
+				bracket_left.extend_left(1, false);
+				bracket_left.extend_right(3, false);
+				bracket_left.set_bit(3, 0, true);
+				bracket_left.set_bit(2, 1, true);
+				bracket_left.set_bit(3, bracket_left.height()-1, true);
+				bracket_left.set_bit(2, bracket_left.height()-2, true);
+
+				bitset_2d bracket_right(1, bracket_raw);
+				bracket_right.extend_left(3, false);
+				bracket_right.extend_right(1, false);
+				bracket_right.set_bit(1, 0, true);
+				bracket_right.set_bit(2, 1, true);
+				bracket_right.set_bit(1, bracket_right.height() - 1, true);
+				bracket_right.set_bit(2, bracket_right.height() - 2, true);
+
+				symbol_matrix.extend_right(bracket_left);
+				symbol_matrix.extend_right(inner);
+				symbol_matrix.extend_right(bracket_right);
+
+				int32_t add_height = y_origin - new_y_origin;
+				if (add_height < 0) { equation_part.extend_up(-add_height, false); y_origin -= add_height; }
+				else symbol_matrix.extend_up(add_height, false);
+				add_height = symbol_matrix.height() - equation_part.height();
+				if (add_height > 0) equation_part.extend_down(add_height, false);
+				else symbol_matrix.extend_down(-add_height, false);
+				equation_part.extend_right(symbol_matrix);
+			}
+			render_index.pop_back();
 		}
-		if (i + 1 != equation.size())
-			equation_part.push_back(std::vector<bool>(equation_part[0].size(), false));
+		equation_part.push_back(dynamic_bitset(equation_part.height(), false));
 	}
-	equation_part.erase(equation_part.begin());
+	render_index.back()++;
+	if (render_index == cursor_index) cursor_data_new = { equation_part.width() - 1, 0, font_height };
+	cursor_data_new.y += y_origin;
+	y_origin_ref = y_origin;
+	if (cursor_data_new.size != 0) cursor_data = cursor_data_new;
 	return equation_part;
 }
 
-render_plane Equation::render_fraction(render_plane top, render_plane bottom) {
-	int length = std::max(top.size(), bottom.size()) + 2;
-	render_plane top_resized = resize_center_x(top, length);
-	render_plane bottom_resized = resize_center_x(bottom, length);
-	render_plane combined = render_plane();
-
-	for (int i = 0; i < length; i++) {
-		std::vector<bool> column = top_resized[i];
-		column.push_back(false);
-		column.push_back(true);
-		column.push_back(false);
-		column.insert(column.end(), bottom_resized[i].begin(), bottom_resized[i].end());
-		combined.push_back(column);
+std::vector<Equation::RenderNode*>* Equation::format_equation_part(const std::vector<RenderNode*>* equation, uint32_t& i, bool return_on_closed_bracket) {
+	std::vector<Equation::RenderNode*>* new_equation = new std::vector<Equation::RenderNode*>(0);
+	if (equation->size() == 0) {
+		return new_equation;
 	}
-
-	return combined;
+	while (i < equation->size()) {
+		if (equation->at(i)->children == nullptr) {
+			if (std::count(singleBracketOpenKeys.begin(), singleBracketOpenKeys.end(), *equation->at(i)->value) != 0) {
+				new_equation->push_back(new RenderNode{ new uint8_t(*equation->at(i)->value), new std::vector<Equation::RenderNode*>{ new RenderNode{nullptr, format_equation_part(equation, ++i, true) }}});
+			}
+			else if (*equation->at(i)->value == 75 && return_on_closed_bracket) { i++; break; }
+			else new_equation->push_back(equation->at(i++));
+		}
+		else {
+			std::vector<Equation::RenderNode*>* sub_equations = new std::vector<Equation::RenderNode*>(0);
+			for (int j = 0; j < equation->at(i)->children->size(); j++) {
+				uint32_t new_i = 0;
+				sub_equations->push_back(new RenderNode{ nullptr, format_equation_part(equation->at(i)->children->at(j)->children, new_i, false)});
+ 			}
+			new_equation->push_back(new RenderNode{ equation->at(i++)->value, sub_equations});
+		}
+	}
+	return new_equation;
 }
 
-render_plane Equation::resize_center_x(render_plane render_plane_input, int length) {
-	std::vector<bool> empty = std::vector<bool>(render_plane_input[0].size(), false);
-	render_plane resized_render_plane = render_plane(std::floor((length - render_plane_input.size()) / 2), empty);
-	resized_render_plane.insert(resized_render_plane.end(), render_plane_input.begin(), render_plane_input.end());
-	int s = resized_render_plane.size();
-	for (int i = 0; i < length - s; i++) {
-		resized_render_plane.push_back(empty);
-	}
-	return resized_render_plane;
+Equation::RenderNode* Equation::format_equation(const RenderNode* equation) {
+	uint32_t i = 0;
+	return new RenderNode{ nullptr, format_equation_part(root->children, i, false) };
 }
 
-void Equation::add_resized_symbol(render_plane& resized_render_plane, render_plane symbol, int y_position) {
-	std::vector<bool> empty_top = std::vector<bool>(y_position, false);
-	std::vector<bool> empty_bottom = std::vector<bool>(resized_render_plane[0].size() - y_position - symbol[0].size(), false);
-	for (int i = 0; i < symbol.size(); i++) {
-		std::vector<bool> column = empty_top;
-		column.insert(column.end(), symbol[i].begin(), symbol[i].end());
-		column.insert(column.end(), empty_bottom.begin(), empty_bottom.end());
-		resized_render_plane.push_back(column);
-	}
-}
-
-double Equation::calculate_equation() {
-	Error error;
+double Equation::calculate_equation(Error& error) {
 	CalculateNode* calculation = calculate_equation_part(*root->children, error);
-	switch (error) {
-	case Error::MATH_ERROR:
-		;
-	case Error::PUFFER_ERROR:
-		;
-	case Error::SYNTAX_ERROR:
-		;
-	case Error::ARGUMENT_ERROR:
-		;
-	case Error::STORAGE_ERROR:
-		;
-	case Error::TIME_ERROR:
-		;
-	case Error::FINE:
-		;
-	}
 	return *calculation->value;
 }
 
-Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNode*> equation, Error& error) {
+Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<RenderNode*>& equation, Error& error) {
 	if (equation.size() == 0) {
-		cursor_position = std::vector<int>(0, 0);
+		cursor_index = std::vector<uint16_t>{0};
 		error = Error::SYNTAX_ERROR;
 		return nullptr;
 	}
@@ -219,8 +294,8 @@ Equation::CalculateNode* Equation::calculate_equation_part(std::vector<RenderNod
 void Equation::add_value(uint8_t keypress) {
 	RenderNode* modify;
 	modify = root;
-	for (size_t i = 0; i < cursor_position.size() - 1; i++) {
-		modify = modify->children->at(cursor_position[i]);
+	for (size_t i = 0; i < cursor_index.size() - 1; i++) {
+		modify = modify->children->at(cursor_index[i]);
 	}
 
 	uint8_t valueCnt;
@@ -240,41 +315,41 @@ void Equation::add_value(uint8_t keypress) {
 			container->children->at(i)->children = new std::vector<RenderNode*>(0);
 		}
 
-		uint8_t end = cursor_position.back();
-		while (cursor_position.back() != 0) {
-			uint8_t val = *modify->children->at(cursor_position.back() - 1)->value;
-			if (!(val < 10 || val == 82 || val == 127 || modify->children->at(cursor_position.back() - 1)->children != nullptr)) break;
-			cursor_position.back()--;
+		uint8_t end = cursor_index.back();
+		while (cursor_index.back() != 0) {
+			uint8_t val = *modify->children->at(cursor_index.back() - 1)->value;
+			if (!(val < 10 || val == 82 || val == 127 || modify->children->at(cursor_index.back() - 1)->children != nullptr)) break;
+			cursor_index.back()--;
 		}
-		if (end != cursor_position.back()) {
-			auto ptrBegin = modify->children->begin() + cursor_position.back();
+		if (end != cursor_index.back()) {
+			auto ptrBegin = modify->children->begin() + cursor_index.back();
 			auto ptrEnd = modify->children->begin() + end;
 			*container->children->at(0)->children = { ptrBegin, ptrEnd };
 			modify->children->erase(ptrBegin, ptrEnd);
-			auto ptr = modify->children->begin() + cursor_position.back();
+			auto ptr = modify->children->begin() + cursor_index.back();
 			modify->children->insert(ptr, container);
 			if (valueCnt > 1) {
-				cursor_position.push_back(1);
-				cursor_position.push_back(0);
+				cursor_index.push_back(1);
+				cursor_index.push_back(0);
 			}
 			else {
-				cursor_position.back()++;
+				cursor_index.back()++;
 			}
 		}
 		else {
-			auto ptr = modify->children->begin() + cursor_position.back();
+			auto ptr = modify->children->begin() + cursor_index.back();
 			modify->children->insert(ptr, container);
-			cursor_position.push_back(0);
-			cursor_position.push_back(0);
+			cursor_index.push_back(0);
+			cursor_index.push_back(0);
 		}
 	}
 	else {
 		RenderNode* container = new RenderNode();
 		container->value = new uint8_t(keypress);
 		std::vector<RenderNode*>::iterator ptr = modify->children->begin();
-		advance(ptr, cursor_position.back());
+		advance(ptr, cursor_index.back());
 		modify->children->insert(ptr, container);
-		cursor_position.back() += 1;
+		cursor_index.back() += 1;
 	}
 	equation_changed = true;
 }
@@ -284,32 +359,33 @@ void Equation::move_cursor_left() {
 	RenderNode* modify_parent;
 	modify_parent = modify = root;
 	size_t i = 0;
-	for (; i + 1 < cursor_position.size(); i++) {
+	for (; i + 1 < cursor_index.size(); i++) {
 		modify_parent = modify;
-		modify = modify->children->at(cursor_position[i]);
+		modify = modify->children->at(cursor_index[i]);
 	}
-	if (cursor_position.back() != 0) {
-		if (modify->children->at(cursor_position.back() - 1)->children != nullptr) {
-			cursor_position.back() -= 1;
-			std::vector<RenderNode*>* modify_child = modify->children->at(cursor_position.back())->children;
-			cursor_position.push_back(modify_child->size() - 1);
-			cursor_position.push_back(modify_child->at(cursor_position.back())->children->size());
+	if (cursor_index.back() != 0) {
+		if (modify->children->at(cursor_index.back() - 1)->children != nullptr) {
+			cursor_index.back() -= 1;
+			std::vector<RenderNode*>* modify_child = modify->children->at(cursor_index.back())->children;
+			cursor_index.push_back(modify_child->size() - 1);
+			cursor_index.push_back(modify_child->at(cursor_index.back())->children->size());
 		}
 		else {
-			cursor_position.back() -= 1;
+			cursor_index.back() -= 1;
 		}
 	}
-	else if (cursor_position.size() == 1) {
-		cursor_position.back() = modify->children->size();
+	else if (cursor_index.size() == 1) {
+		cursor_index.back() = modify->children->size();
 	}
-	else if (cursor_position[i - 1] != 0) {
-		cursor_position[i - 1] -= 1;
-		cursor_position[i] = modify_parent->children->at(cursor_position[i - 1])->children->size();
+	else if (cursor_index[i - 1] != 0) {
+		cursor_index[i - 1] -= 1;
+		cursor_index[i] = modify_parent->children->at(cursor_index[i - 1])->children->size();
 	}
 	else {
-		cursor_position.pop_back();
-		cursor_position.pop_back();
+		cursor_index.pop_back();
+		cursor_index.pop_back();
 	}
+	equation_changed = true;
 }
 
 void Equation::move_cursor_right() {
@@ -317,41 +393,42 @@ void Equation::move_cursor_right() {
 	RenderNode* modify_parent;
 	modify_parent = modify = root;
 	size_t i = 0;
-	for (; i+1 < cursor_position.size(); i++) {
+	for (; i+1 < cursor_index.size(); i++) {
 		modify_parent = modify;
-		modify = modify->children->at(cursor_position[i]);
+		modify = modify->children->at(cursor_index[i]);
 	}
-	if (modify->children->size() > cursor_position.back()) {
-		if (modify->children->at(cursor_position.back())->children != nullptr) {
-			cursor_position.push_back(0);
-			cursor_position.push_back(0);
+	if (modify->children->size() > cursor_index.back()) {
+		if (modify->children->at(cursor_index.back())->children != nullptr) {
+			cursor_index.push_back(0);
+			cursor_index.push_back(0);
 		}
 		else {
-			cursor_position.back() += 1;
+			cursor_index.back() += 1;
 		}
 	}
-	else if (cursor_position.size() == 1) {
-		cursor_position.back() = 0;
+	else if (cursor_index.size() == 1) {
+		cursor_index.back() = 0;
 	}
-	else if (modify_parent->children->size() > cursor_position[i-1] + 1) {
-		cursor_position[i-1] += 1;
-		cursor_position[i] = 0;
+	else if (modify_parent->children->size() > cursor_index[i-1] + 1) {
+		cursor_index[i-1] += 1;
+		cursor_index[i] = 0;
 	}
 	else {
-		cursor_position.pop_back();
-		cursor_position.pop_back();
-		cursor_position.back() += 1;
+		cursor_index.pop_back();
+		cursor_index.pop_back();
+		cursor_index.back() += 1;
 	}
+	equation_changed = true;
 }
 
 void Equation::del() {
 	RenderNode* modify = root;
-	for (size_t i = 0; i + 1 < cursor_position.size(); i++) {
-		modify = modify->children->at(cursor_position[i]);
+	for (size_t i = 0; i + 1 < cursor_index.size(); i++) {
+		modify = modify->children->at(cursor_index[i]);
 	}
-	if (cursor_position.back() != 0 && modify->children->at(cursor_position.back() - 1)->children == nullptr) {
-		modify->children->erase(modify->children->begin() + cursor_position.back() - 1);
-		cursor_position.back() -= 1;
+	if (cursor_index.back() != 0 && modify->children->at(cursor_index.back() - 1)->children == nullptr) {
+		modify->children->erase(modify->children->begin() + cursor_index.back() - 1);
+		cursor_index.back() -= 1;
 	}
 	else {
 		move_cursor_left();

@@ -5,6 +5,6 @@
 class SysInfoWindow : public TextWindow
 {
     public:
-        render_plane update_window();
+        bitset_2d update_window();
     private:
 };
