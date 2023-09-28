@@ -12,16 +12,15 @@ void DisplayRenderer::render(const bitset_2d& pixels, const dynamic_bitset& scre
     if(!force_rerender && already_rendered(pixels, screen_symbols))
         return;
 
-    //DONT FORGET::: only 3 commands when sub device addressess are properly implemented
-    //3  * 3 commands + 4 bytes per column
-    uint8_t command[163];
+    //3 commands + 4 bytes per column
+    uint8_t command[387];
     command[0] = select_device(A_SUB_ADDRESS_0, C_COMMAND_FOLLOWING);
     command[1] = load_x_address(COLUMN_ZERO_ADDRESS, C_COMMAND_FOLLOWING);
     command[2] = ram_access(G_RAM_FULL_GRAPHIC_MODE, BANK_ZERO_ADDRESS, C_LAST_COMMAND);
 
     uint16_t index = 3;
 
-    for(uint8_t j = 0; j < 40; j++)
+    for(uint8_t j = 0; j < pixels.size(); j++)
     {
         std::vector<uint8_t> bytes = pixels[j].get_bytes();
         for(uint8_t i = 0; i < 4; i++)
@@ -30,40 +29,6 @@ void DisplayRenderer::render(const bitset_2d& pixels, const dynamic_bitset& scre
         }
     }
     i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
-
-    command[0] = select_device(A_SUB_ADDRESS_1, C_COMMAND_FOLLOWING);
-    command[1] = load_x_address(COLUMN_ZERO_ADDRESS, C_COMMAND_FOLLOWING);
-    command[2] = ram_access(G_RAM_FULL_GRAPHIC_MODE, BANK_ZERO_ADDRESS, C_LAST_COMMAND);
-
-    index = 3;
-    
-    for(uint8_t j  = 40; j < 80; j++)
-    {
-        std::vector<uint8_t> bytes = pixels[j].get_bytes();
-        for(uint8_t i = 0; i < 4; i++)
-        {
-            command[index++] = bytes[i];
-        }
-    }
-
-    i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
-
-    uint8_t command2[67];
-    command2[0] = select_device(A_SUB_ADDRESS_2, C_COMMAND_FOLLOWING);
-    command2[1] = load_x_address(COLUMN_ZERO_ADDRESS, C_COMMAND_FOLLOWING);
-    command2[2] = ram_access(G_RAM_FULL_GRAPHIC_MODE, BANK_ZERO_ADDRESS, C_LAST_COMMAND);
-
-    index = 3;
-    
-    for(uint8_t j  = 80; j < 96; j++)
-    {
-        std::vector<uint8_t> bytes = pixels[j].get_bytes();
-        for(uint8_t i = 0; i < 4; i++)
-        {
-            command2[index++] = bytes[i];
-        }
-    }
-    i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command2, sizeof(command2), C_LAST_COMMAND);
 }
 
 
