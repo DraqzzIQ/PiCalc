@@ -38,11 +38,15 @@ public:
 	/// calculate the equation
 	/// </summary>
 	/// <returns>result</returns>
-	double calculate_equation(Error& error);
+	double calculate_equation(const std::vector<double> variables, Error& error);
 	/// <summary>
 	/// delete the character before the Cursor
 	/// </summary>
 	void del();
+	/// <summary>
+	/// delete the character before the Cursor
+	/// </summary>
+	void ac();
 	/// <summary>
 	/// move the Cursor to the left by one
 	/// </summary>
@@ -51,31 +55,39 @@ public:
 	/// move the Cursor to the right by one
 	/// </summary>
 	void move_cursor_right();
+	/// <summary>
+	/// move the Cursor up by one
+	/// </summary>
+	void move_cursor_up();
+	/// <summary>
+	/// move the Cursor down by one
+	/// </summary>
+	void move_cursor_down();
 private:
 
 	/// <summary>
 	/// Node for the tree representing the Equation
 	/// </summary>
-	struct RenderNode {
+	struct EquationNode {
 		uint8_t* value;
-		std::vector<RenderNode*>* children;
+		std::vector<EquationNode*>* children;
 
-		~RenderNode() {
-			delete value;
-			for (RenderNode* child : *children) {
-				delete child;
+		~EquationNode() {
+			if (children != nullptr) {
+				for (EquationNode* child : *children) delete child;
+				delete children;
 			}
-			delete children;
+			if (value != nullptr) delete value;
 		}
 	};
 	/// <summary>
-	/// root Node for the equation, children contains the equation
+	/// _equation_root_raw Node for the equation, children contains the equation
 	/// </summary>
-	RenderNode* root;
+	EquationNode* _equation_root_raw;
 	/// <summary>
-	/// root Node for the equation, where parts in brackets are collected in another child
+	/// _equation_root_raw Node for the equation, where parts in brackets are collected in another child
 	/// </summary>
-	RenderNode* root_formatted;
+	EquationNode* _equation_root_formatted;
 
 	/// <summary>
 	/// all the operations that have to be between two values to be evaluated
@@ -95,14 +107,10 @@ private:
 		double* value;
 		uint8_t* operation;
 		~CalculateNode() {
-			delete value;
-			delete operation;
+			if (value != nullptr) delete value;
+			if (operation != nullptr) delete operation;
 		}
 	};
-	/// <summary>
-	/// Vector containing all the Variables (A, B, C, D, E, F, X, Y, M) that are saved
-	/// </summary>
-	std::vector<double> letterVariables = std::vector<double>(9, 0.0);
 
 	/// <summary>
 	/// the rendered Equation without the Cursor
@@ -135,8 +143,8 @@ private:
 		uint8_t size = 0;
 	};
 
-	CalculateNode* calculate_equation_part(const std::vector<RenderNode*>& equation, Error& error);
-	bitset_2d render_equation_part(const std::vector<RenderNode*>& equation, const std::map<uint8_t, bitset_2d>& table,  std::vector<uint16_t> render_index, cursorData& cursor_data, uint32_t& y_origin_ref);
-	std::vector<Equation::RenderNode*>* format_equation_part(const std::vector<RenderNode*>* equation, uint32_t& i, bool return_on_closed_bracket);
-	RenderNode* format_equation(const RenderNode* equation);
+	CalculateNode* calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error);
+	bitset_2d render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, bitset_2d>& table,  std::vector<uint16_t> render_index, cursorData& cursor_data, uint32_t& y_origin_ref);
+	std::vector<Equation::EquationNode*>* format_equation_part(const std::vector<EquationNode*>* equation, uint32_t& i, bool return_on_closed_bracket);
+	EquationNode* format_equation(const EquationNode* equation);
 };

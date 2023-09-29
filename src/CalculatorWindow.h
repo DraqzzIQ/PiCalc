@@ -12,4 +12,5 @@ class CalculatorWindow : public Window {
 		void handle_key_down(KeyPress keypress);
 	private:
 		Equation* equation;
+		std::vector<double> variables;
 };

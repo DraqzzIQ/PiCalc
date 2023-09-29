@@ -122,9 +122,6 @@ void bitset_2d::set_bit(uint32_t coord_x, uint32_t coord_y, bool value) {
     _plane[coord_x].set(coord_y, value);
 }
 
-// TODO:
-// Insert-functions
-
 void bitset_2d::erase_x(uint32_t coord_x) {
 #ifdef IS_DEBUG_BUILD
     if (coord_x >= _width) throw(std::out_of_range("bitset_2d::erase_x"));

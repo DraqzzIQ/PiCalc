@@ -18,11 +18,11 @@ void CalculatorWindow::handle_key_down(KeyPress keypress) {
 	Equation::Error error;
 	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) equation->move_cursor_right();
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) equation->move_cursor_left();
-	//else if (keypress.key_calculator == Chars::KEY_MAP.at("up")) equation->move_cursor_up();
-	//else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) equation->move_cursor_down();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("up")) equation->move_cursor_up();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) equation->move_cursor_down();
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) equation->del();
-	//else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) equation->ac();
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) equation->calculate_equation(error);
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) equation->ac();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) equation->calculate_equation(variables, error);
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("unknown"));
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("SHIFT"));
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("ALPHA"));

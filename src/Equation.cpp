@@ -1,32 +1,32 @@
 #include "Equation.h"
 
 Equation::Equation() {
-	root = new RenderNode();
-	root->children = new std::vector<RenderNode*>(0);
+	_equation_root_raw = new EquationNode();
+	_equation_root_raw->children = new std::vector<EquationNode*>(0);
 	cursor_index = std::vector<uint16_t>{0};
 
-	last_blink_time = Utils::us_since_boot();
 	equation_changed = true;
-	show_cursor = true;
 }
 
 Equation::~Equation() {
-	delete root;
-	delete root_formatted;
+	delete _equation_root_raw;
+	delete _equation_root_formatted;
 }
 
 bitset_2d Equation::render_equation() {
 	if (equation_changed) {
+		last_blink_time = Utils::us_since_boot();
+		show_cursor = true;
 		// the equation is empty
-		if (root->children->size() == 0) {
+		if (_equation_root_raw->children->size() == 0) {
 			rendered_equation = bitset_2d();
 			rendered_equation_cursor = bitset_2d(2, 9, true);
 		}
 		else {
-			root_formatted = format_equation(root);
+			_equation_root_formatted = format_equation(_equation_root_raw);
 			cursorData cursor_data{ 0, 0, 0 };
 			uint32_t y_origin = 0;
-			rendered_equation = render_equation_part(*root_formatted->children, Graphics::SYMBOLS_9_HIGH, std::vector<uint16_t>(), cursor_data, y_origin);
+			rendered_equation = render_equation_part(*_equation_root_formatted->children, Graphics::SYMBOLS_9_HIGH, std::vector<uint16_t>(), cursor_data, y_origin);
 			rendered_equation_cursor = rendered_equation;
 			rendered_equation_cursor.set(cursor_data.x, cursor_data.y, bitset_2d(2, cursor_data.size, true), true);
 		}
@@ -42,7 +42,7 @@ bitset_2d Equation::render_equation() {
 	return show_cursor ? rendered_equation_cursor : rendered_equation;
 }
 
-bitset_2d Equation::render_equation_part(const std::vector<RenderNode*>& equation, const std::map<uint8_t, bitset_2d>& table, std::vector<uint16_t> render_index, cursorData& cursor_data, uint32_t& y_origin_ref) {
+bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, bitset_2d>& table, std::vector<uint16_t> render_index, cursorData& cursor_data, uint32_t& y_origin_ref) {
 	uint8_t font_height = table.at(0).height();
 	uint32_t y_origin = 0;
 	bitset_2d equation_part(1, font_height, false);
@@ -55,7 +55,7 @@ bitset_2d Equation::render_equation_part(const std::vector<RenderNode*>& equatio
 		return table.at(Chars::KEY_MAP.at("empty"));
 	}
 	for (size_t i = 0; i < equation.size(); i++) {
-		RenderNode* current_symbol = equation.at(i);
+		EquationNode* current_symbol = equation.at(i);
 		bitset_2d symbol_matrix = bitset_2d();
 		render_index.back() = i;
 		if (render_index == cursor_index)
@@ -129,6 +129,8 @@ bitset_2d Equation::render_equation_part(const std::vector<RenderNode*>& equatio
 				cursorData cursor_data_subequation = { 0, 0, 0 };
 				uint32_t new_y_origin;
 				render_index.back() = 0;
+				bool add_close_bracket = *current_symbol->children->at(0)->children->back()->value == 75;
+				if (add_close_bracket) current_symbol->children->at(0)->children->pop_back();
 				auto inner = render_equation_part(*current_symbol->children->at(0)->children, table, render_index, cursor_data_subequation, new_y_origin);
 				if (cursor_data_subequation.size != 0) { subequation_cursor_index = 0; cursor_data_new = cursor_data_subequation; }
 
@@ -154,7 +156,7 @@ bitset_2d Equation::render_equation_part(const std::vector<RenderNode*>& equatio
 
 				symbol_matrix.extend_right(bracket_left);
 				symbol_matrix.extend_right(inner);
-				symbol_matrix.extend_right(bracket_right);
+				if(add_close_bracket) symbol_matrix.extend_right(bracket_right);
 
 				int32_t add_height = y_origin - new_y_origin;
 				if (add_height < 0) { equation_part.extend_up(-add_height, false); y_origin -= add_height; }
@@ -176,42 +178,48 @@ bitset_2d Equation::render_equation_part(const std::vector<RenderNode*>& equatio
 	return equation_part;
 }
 
-std::vector<Equation::RenderNode*>* Equation::format_equation_part(const std::vector<RenderNode*>* equation, uint32_t& i, bool return_on_closed_bracket) {
-	std::vector<Equation::RenderNode*>* new_equation = new std::vector<Equation::RenderNode*>(0);
+std::vector<Equation::EquationNode*>* Equation::format_equation_part(const std::vector<EquationNode*>* equation, uint32_t& i, bool return_on_closed_bracket) {
+	std::vector<Equation::EquationNode*>* new_equation = new std::vector<Equation::EquationNode*>(0);
 	if (equation->size() == 0) {
 		return new_equation;
 	}
 	while (i < equation->size()) {
 		if (equation->at(i)->children == nullptr) {
 			if (std::count(singleBracketOpenKeys.begin(), singleBracketOpenKeys.end(), *equation->at(i)->value) != 0) {
-				new_equation->push_back(new RenderNode{ new uint8_t(*equation->at(i)->value), new std::vector<Equation::RenderNode*>{ new RenderNode{nullptr, format_equation_part(equation, ++i, true) }}});
+				std::vector<Equation::EquationNode*>* equation_temp = format_equation_part(equation, ++i, true);
+				if (equation_temp->size() == 0) {
+					new_equation->push_back(new EquationNode{ new uint8_t(74), nullptr });
+				}
+				else {
+					new_equation->push_back(new EquationNode{ new uint8_t(74), new std::vector<Equation::EquationNode*>{ new EquationNode{nullptr, equation_temp }} });
+				}
 			}
-			else if (*equation->at(i)->value == 75 && return_on_closed_bracket) { i++; break; }
+			else if (*equation->at(i)->value == 75 && return_on_closed_bracket) { new_equation->push_back(equation->at(i++)); break; }
 			else new_equation->push_back(equation->at(i++));
 		}
 		else {
-			std::vector<Equation::RenderNode*>* sub_equations = new std::vector<Equation::RenderNode*>(0);
+			std::vector<Equation::EquationNode*>* sub_equations = new std::vector<Equation::EquationNode*>(0);
 			for (int j = 0; j < equation->at(i)->children->size(); j++) {
 				uint32_t new_i = 0;
-				sub_equations->push_back(new RenderNode{ nullptr, format_equation_part(equation->at(i)->children->at(j)->children, new_i, false)});
+				sub_equations->push_back(new EquationNode{ nullptr, format_equation_part(equation->at(i)->children->at(j)->children, new_i, false)});
  			}
-			new_equation->push_back(new RenderNode{ equation->at(i++)->value, sub_equations});
+			new_equation->push_back(new EquationNode{ equation->at(i++)->value, sub_equations});
 		}
 	}
 	return new_equation;
 }
 
-Equation::RenderNode* Equation::format_equation(const RenderNode* equation) {
+Equation::EquationNode* Equation::format_equation(const EquationNode* equation) {
 	uint32_t i = 0;
-	return new RenderNode{ nullptr, format_equation_part(root->children, i, false) };
+	return new EquationNode{ nullptr, format_equation_part(_equation_root_raw->children, i, false) };
 }
 
-double Equation::calculate_equation(Error& error) {
-	CalculateNode* calculation = calculate_equation_part(*root->children, error);
+double Equation::calculate_equation(const std::vector<double> variables, Error& error) {
+	CalculateNode* calculation = calculate_equation_part(*_equation_root_raw->children, error);
 	return *calculation->value;
 }
 
-Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<RenderNode*>& equation, Error& error) {
+Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error) {
 	if (equation.size() == 0) {
 		cursor_index = std::vector<uint16_t>{0};
 		error = Error::SYNTAX_ERROR;
@@ -226,7 +234,7 @@ Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<Ren
 		if (equation[i]->children != nullptr) {
 			std::vector<CalculateNode*> subEquations;
 			Error err;
-			for (RenderNode* node : *equation[i]->children) {
+			for (EquationNode* node : *equation[i]->children) {
 				subEquations.push_back(calculate_equation_part(*node->children, err));
 				switch (err) {
 				case Error::MATH_ERROR:
@@ -247,7 +255,6 @@ Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<Ren
 			}
 			switch (*equation[i]->value) {
 			case 110: calculation.push_back(CalculateNode(new double(*subEquations[0]->value / *subEquations[1]->value), nullptr));
-			case 131:;
 			}
 		}
 		else {
@@ -292,8 +299,8 @@ Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<Ren
 
 
 void Equation::add_value(uint8_t keypress) {
-	RenderNode* modify;
-	modify = root;
+	EquationNode* modify;
+	modify = _equation_root_raw;
 	for (size_t i = 0; i < cursor_index.size() - 1; i++) {
 		modify = modify->children->at(cursor_index[i]);
 	}
@@ -307,12 +314,12 @@ void Equation::add_value(uint8_t keypress) {
 	}
 
 	if (valueCnt != 0) {
-		RenderNode* container = new RenderNode();
+		EquationNode* container = new EquationNode();
 		container->value = new uint8_t(keypress);
-		container->children = new std::vector<RenderNode*>(valueCnt);
+		container->children = new std::vector<EquationNode*>(valueCnt);
 		for (uint8_t i = 0; i < valueCnt; i++) {
-			container->children->at(i) = new RenderNode();
-			container->children->at(i)->children = new std::vector<RenderNode*>(0);
+			container->children->at(i) = new EquationNode();
+			container->children->at(i)->children = new std::vector<EquationNode*>(0);
 		}
 
 		uint8_t end = cursor_index.back();
@@ -344,9 +351,9 @@ void Equation::add_value(uint8_t keypress) {
 		}
 	}
 	else {
-		RenderNode* container = new RenderNode();
+		EquationNode* container = new EquationNode();
 		container->value = new uint8_t(keypress);
-		std::vector<RenderNode*>::iterator ptr = modify->children->begin();
+		std::vector<EquationNode*>::iterator ptr = modify->children->begin();
 		advance(ptr, cursor_index.back());
 		modify->children->insert(ptr, container);
 		cursor_index.back() += 1;
@@ -355,9 +362,9 @@ void Equation::add_value(uint8_t keypress) {
 }
 
 void Equation::move_cursor_left() {
-	RenderNode* modify;
-	RenderNode* modify_parent;
-	modify_parent = modify = root;
+	EquationNode* modify;
+	EquationNode* modify_parent;
+	modify_parent = modify = _equation_root_raw;
 	size_t i = 0;
 	for (; i + 1 < cursor_index.size(); i++) {
 		modify_parent = modify;
@@ -366,7 +373,7 @@ void Equation::move_cursor_left() {
 	if (cursor_index.back() != 0) {
 		if (modify->children->at(cursor_index.back() - 1)->children != nullptr) {
 			cursor_index.back() -= 1;
-			std::vector<RenderNode*>* modify_child = modify->children->at(cursor_index.back())->children;
+			std::vector<EquationNode*>* modify_child = modify->children->at(cursor_index.back())->children;
 			cursor_index.push_back(modify_child->size() - 1);
 			cursor_index.push_back(modify_child->at(cursor_index.back())->children->size());
 		}
@@ -389,9 +396,9 @@ void Equation::move_cursor_left() {
 }
 
 void Equation::move_cursor_right() {
-	RenderNode* modify;
-	RenderNode* modify_parent;
-	modify_parent = modify = root;
+	EquationNode* modify;
+	EquationNode* modify_parent;
+	modify_parent = modify = _equation_root_raw;
 	size_t i = 0;
 	for (; i+1 < cursor_index.size(); i++) {
 		modify_parent = modify;
@@ -421,9 +428,36 @@ void Equation::move_cursor_right() {
 	equation_changed = true;
 }
 
+void Equation::move_cursor_up() {
+	EquationNode* modify = _equation_root_raw;
+	for (int i = 0; i + 1 < cursor_index.size() - 1; i++) modify = modify->children->at(cursor_index[i]);
+
+	if (*modify->value == 110 && cursor_index[cursor_index.size() - 2] == 1) {
+		cursor_index[cursor_index.size() - 2] = 0;
+		cursor_index.back() = modify->children->at(0)->children->size();
+		equation_changed = true;
+	}
+}
+
+void Equation::move_cursor_down() {
+	EquationNode* modify = _equation_root_raw;
+	for (int i = 0; i + 1 < cursor_index.size() - 1; i++) {
+		modify = modify->children->at(cursor_index[i]);
+	}
+	if (*modify->value == 110 && cursor_index[cursor_index.size() - 2] == 0) {
+		cursor_index[cursor_index.size() - 2] = 1;
+		cursor_index.back() = 0;
+		equation_changed = true;
+	}
+}
+
 void Equation::del() {
-	RenderNode* modify = root;
-	for (size_t i = 0; i + 1 < cursor_index.size(); i++) {
+	EquationNode* modify;
+	EquationNode* modify_parent;
+	modify_parent = modify = _equation_root_raw;
+	size_t i = 0;
+	for (; i + 1 < cursor_index.size(); i++) {
+		modify_parent = modify;
 		modify = modify->children->at(cursor_index[i]);
 	}
 	if (cursor_index.back() != 0 && modify->children->at(cursor_index.back() - 1)->children == nullptr) {
@@ -431,8 +465,36 @@ void Equation::del() {
 		cursor_index.back() -= 1;
 	}
 	else {
-		move_cursor_left();
-		del();
+		if (cursor_index.back() == 0 && modify_parent->children->size() > cursor_index[i - 1] + 1) {
+			if (cursor_index.size() == 1) return;
+			cursor_index.pop_back();
+			cursor_index.pop_back();
+			EquationNode* modify;
+			EquationNode* modify_parent;
+			modify_parent = modify = _equation_root_raw;
+			size_t i = 0;
+			for (; i + 1 < cursor_index.size(); i++) {
+				modify_parent = modify;
+				modify = modify->children->at(cursor_index[i]);
+			}
+			//std::vector<EquationNode*> insert_equation;
+			//for (uint32_t i = 0; i < modify->children->size(); i++) {
+			//	insert_equation.insert(insert_equation.end(), modify->children->at(i)->children->begin(), modify->children->at(i)->children->end());
+			//}
+			modify_parent->children->erase(modify_parent->children->begin() + cursor_index.back());
+			//modify_parent->children->insert(modify_parent->children->begin() + cursor_index.back(), insert_equation.begin(), insert_equation.end());
+		}
+		else {
+			move_cursor_left();
+		}
 	}
+	equation_changed = true;
+}
+
+void Equation::ac() {
+	delete _equation_root_raw;
+	_equation_root_raw = new EquationNode();
+	_equation_root_raw->children = new std::vector<EquationNode*>(0);
+	cursor_index = std::vector<uint16_t>{0};
 	equation_changed = true;
 }
