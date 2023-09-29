@@ -5,7 +5,7 @@ InstanceSelectionWindow::InstanceSelectionWindow(WindowManager* window_manager)
     _window_manager = window_manager;
 }
 
-bitset_2d InstanceSelectionWindow::update_window()
+Bitset2D InstanceSelectionWindow::update_window()
 {
     corner_y = _current_page * 32;
 
@@ -26,7 +26,7 @@ void InstanceSelectionWindow::handle_key_down(KeyPress keypress)
 void InstanceSelectionWindow::setup(std::vector<Window*> instances)
 {
     window.clear();
-    for (size_t i = 0; i < instances.size(); i++)
+    for (uint32_t i = 0; i < instances.size(); i++)
     {
         add_to_window(instances[i]->window, 0, i * 32);
         add_to_window(Graphics::create_text(std::to_string(i)), 91, i * 32 + 22);

@@ -5,6 +5,6 @@
 class SysInfoWindow : public TextWindow
 {
     public:
-        bitset_2d update_window();
+        Bitset2D update_window();
     private:
 };

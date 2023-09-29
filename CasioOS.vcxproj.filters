@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\bitset_2d.h">
+    <ClInclude Include="src\Bitset2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\BTKeyboard.h">
@@ -48,7 +48,7 @@
     <ClInclude Include="src\DisplayRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\dynamic_bitset.h">
+    <ClInclude Include="src\DynamicBitset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Equation.h">
@@ -116,7 +116,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\bitset_2d.cpp">
+    <ClCompile Include="src\Bitset2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BTKeyboard.cpp">
@@ -149,7 +149,7 @@
     <ClCompile Include="src\DisplayRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dynamic_bitset.cpp">
+    <ClCompile Include="src\DynamicBitset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Equation.cpp">

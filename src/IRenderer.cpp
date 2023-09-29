@@ -2,11 +2,11 @@
 
 IRenderer::IRenderer()
 {
-    rendered_pixels = bitset_2d(SCREEN_WIDTH, dynamic_bitset(SCREEN_HEIGHT, false));
-    rendered_screen_symbols = dynamic_bitset(Graphics::SCREEN_SYMBOLS.size(), false);
+    rendered_pixels = Bitset2D(SCREEN_WIDTH, DynamicBitset(SCREEN_HEIGHT, false));
+    rendered_screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), false);
 }
 
-bool IRenderer::already_rendered(const bitset_2d& pixels, const dynamic_bitset& screen_symbols)
+bool IRenderer::already_rendered(const Bitset2D& pixels, const DynamicBitset& screen_symbols)
 {
     if(pixels != rendered_pixels || screen_symbols != rendered_screen_symbols)
     {

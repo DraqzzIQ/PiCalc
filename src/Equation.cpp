@@ -3,7 +3,7 @@
 Equation::Equation() {
 	_equation_root_raw = new EquationNode();
 	_equation_root_raw->children = new std::vector<EquationNode*>(0);
-	cursor_index = std::vector<uint16_t>{0};
+	cursor_index = std::vector<uint32_t>{0};
 
 	equation_changed = true;
 }
@@ -13,22 +13,22 @@ Equation::~Equation() {
 	delete _equation_root_formatted;
 }
 
-bitset_2d Equation::render_equation() {
+Bitset2D Equation::render_equation() {
 	if (equation_changed) {
 		last_blink_time = Utils::us_since_boot();
 		show_cursor = true;
 		// the equation is empty
 		if (_equation_root_raw->children->size() == 0) {
-			rendered_equation = bitset_2d();
-			rendered_equation_cursor = bitset_2d(2, 9, true);
+			rendered_equation = Bitset2D();
+			rendered_equation_cursor = Bitset2D(2, 9, true);
 		}
 		else {
 			_equation_root_formatted = format_equation(_equation_root_raw);
-			cursorData cursor_data{ 0, 0, 0 };
+			CursorPositionData cursor_data{ 0, 0, 0 };
 			uint32_t y_origin = 0;
-			rendered_equation = render_equation_part(*_equation_root_formatted->children, Graphics::SYMBOLS_9_HIGH, std::vector<uint16_t>(), cursor_data, y_origin);
+			rendered_equation = render_equation_part(*_equation_root_formatted->children, Graphics::SYMBOLS_9_HIGH, std::vector<uint32_t>(), cursor_data, y_origin);
 			rendered_equation_cursor = rendered_equation;
-			rendered_equation_cursor.set(cursor_data.x, cursor_data.y, bitset_2d(2, cursor_data.size, true), true);
+			rendered_equation_cursor.set(cursor_data.x, cursor_data.y, Bitset2D(2, cursor_data.size, true), true);
 		}
 		equation_changed = false;
 	}
@@ -42,11 +42,11 @@ bitset_2d Equation::render_equation() {
 	return show_cursor ? rendered_equation_cursor : rendered_equation;
 }
 
-bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, bitset_2d>& table, std::vector<uint16_t> render_index, cursorData& cursor_data, uint32_t& y_origin_ref) {
+Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref) {
 	uint8_t font_height = table.at(0).height();
 	uint32_t y_origin = 0;
-	bitset_2d equation_part(1, font_height, false);
-	cursorData cursor_data_new = { 0, 0, 0 };
+	Bitset2D equation_part(1, font_height, false);
+	CursorPositionData cursor_data_new = { 0, 0, 0 };
 	render_index.push_back(0);
 
 	if (equation.size() == 0) {
@@ -54,9 +54,9 @@ bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equat
 		y_origin_ref = 0;
 		return table.at(Chars::KEY_MAP.at("empty"));
 	}
-	for (size_t i = 0; i < equation.size(); i++) {
+	for (uint32_t i = 0; i < equation.size(); i++) {
 		EquationNode* current_symbol = equation.at(i);
-		bitset_2d symbol_matrix = bitset_2d();
+		Bitset2D symbol_matrix = Bitset2D();
 		render_index.back() = i;
 		if (render_index == cursor_index)
 			cursor_data_new = { equation_part.width() - 1, 0, font_height };
@@ -73,7 +73,7 @@ bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equat
 			if (*current_symbol->value == Chars::KEY_MAP.at("fraction")) {
 				int8_t subequation_cursor_index = -1;
 				uint32_t new_y_origin;
-				cursorData cursor_data_subequation = { 0, 0, 0 };
+				CursorPositionData cursor_data_subequation = { 0, 0, 0 };
 				render_index.back() = 0;
 				auto bottom = render_equation_part(*current_symbol->children->at(0)->children, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_subequation, new_y_origin);
 				if (cursor_data_subequation.size != 0) { subequation_cursor_index = 0; cursor_data_new = cursor_data_subequation; }
@@ -95,8 +95,8 @@ bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equat
 					if (subequation_cursor_index == 1) cursor_data_new.x += (-diff + 1) / 2;
 				}
 
-				for (int i = 0; i < bottom.width(); i++) {
-					dynamic_bitset column = bottom[i];
+				for (uint32_t i = 0; i < bottom.width(); i++) {
+					DynamicBitset column = bottom[i];
 					column.push_back(false);
 					column.push_back(true);
 					column.push_back(false);
@@ -126,7 +126,7 @@ bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equat
 
 			else if (*current_symbol->value == Chars::KEY_MAP.at("(")) {
 				int8_t subequation_cursor_index = -1;
-				cursorData cursor_data_subequation = { 0, 0, 0 };
+				CursorPositionData cursor_data_subequation = { 0, 0, 0 };
 				uint32_t new_y_origin;
 				render_index.back() = 0;
 				bool add_close_bracket = *current_symbol->children->at(0)->children->back()->value == 75;
@@ -134,11 +134,11 @@ bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equat
 				auto inner = render_equation_part(*current_symbol->children->at(0)->children, table, render_index, cursor_data_subequation, new_y_origin);
 				if (cursor_data_subequation.size != 0) { subequation_cursor_index = 0; cursor_data_new = cursor_data_subequation; }
 
-				dynamic_bitset bracket_raw(inner.height() - 4, true);
+				DynamicBitset bracket_raw(inner.height() - 4, true);
 				bracket_raw.extend_left(2, false);
 				bracket_raw.extend(2, false);
 
-				bitset_2d bracket_left(1, bracket_raw);
+				Bitset2D bracket_left(1, bracket_raw);
 				bracket_left.extend_left(1, false);
 				bracket_left.extend_right(3, false);
 				bracket_left.set_bit(3, 0, true);
@@ -146,7 +146,7 @@ bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equat
 				bracket_left.set_bit(3, bracket_left.height()-1, true);
 				bracket_left.set_bit(2, bracket_left.height()-2, true);
 
-				bitset_2d bracket_right(1, bracket_raw);
+				Bitset2D bracket_right(1, bracket_raw);
 				bracket_right.extend_left(3, false);
 				bracket_right.extend_right(1, false);
 				bracket_right.set_bit(1, 0, true);
@@ -168,7 +168,7 @@ bitset_2d Equation::render_equation_part(const std::vector<EquationNode*>& equat
 			}
 			render_index.pop_back();
 		}
-		equation_part.push_back(dynamic_bitset(equation_part.height(), false));
+		equation_part.push_back(DynamicBitset(equation_part.height(), false));
 	}
 	render_index.back()++;
 	if (render_index == cursor_index) cursor_data_new = { equation_part.width() - 1, 0, font_height };
@@ -221,7 +221,7 @@ double Equation::calculate_equation(const std::vector<double> variables, Error& 
 
 Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error) {
 	if (equation.size() == 0) {
-		cursor_index = std::vector<uint16_t>{0};
+		cursor_index = std::vector<uint32_t>{0};
 		error = Error::SYNTAX_ERROR;
 		return nullptr;
 	}
@@ -322,7 +322,7 @@ void Equation::add_value(uint8_t keypress) {
 			container->children->at(i)->children = new std::vector<EquationNode*>(0);
 		}
 
-		uint8_t end = cursor_index.back();
+		uint32_t end = cursor_index.back();
 		while (cursor_index.back() != 0) {
 			uint8_t val = *modify->children->at(cursor_index.back() - 1)->value;
 			if (!(val < 10 || val == 82 || val == 127 || modify->children->at(cursor_index.back() - 1)->children != nullptr)) break;
@@ -365,7 +365,7 @@ void Equation::move_cursor_left() {
 	EquationNode* modify;
 	EquationNode* modify_parent;
 	modify_parent = modify = _equation_root_raw;
-	size_t i = 0;
+	uint32_t i = 0;
 	for (; i + 1 < cursor_index.size(); i++) {
 		modify_parent = modify;
 		modify = modify->children->at(cursor_index[i]);
@@ -495,6 +495,6 @@ void Equation::ac() {
 	delete _equation_root_raw;
 	_equation_root_raw = new EquationNode();
 	_equation_root_raw->children = new std::vector<EquationNode*>(0);
-	cursor_index = std::vector<uint16_t>{0};
+	cursor_index = std::vector<uint32_t>{0};
 	equation_changed = true;
 }

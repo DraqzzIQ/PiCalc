@@ -19,7 +19,7 @@ class Window
 		/// called when the window gets rerendered
 		/// </summary>
 		/// <returns>pixels to render</returns>
-		virtual bitset_2d update_window();
+		virtual Bitset2D update_window();
 		/// <summary>
 		/// handles keydown events
 		/// </summary>
@@ -39,9 +39,9 @@ class Window
 		/// </summary>
 		virtual void lost_focus();
 		/// <summary>
-		/// bitset_2d describing the window
+		/// Bitset2D describing the window
 		/// </summary>
-		bitset_2d window;
+		Bitset2D window;
 		/// <summary>
 		/// x coordinate of the upper left corner of the part of the canvas that is rendered
 		/// </summary>
@@ -53,19 +53,19 @@ class Window
 		/// <summary>
 		/// saves, which symbols on the lcd should be displayed
 		/// </summary>
-		dynamic_bitset screen_symbols;
+		DynamicBitset screen_symbols;
 		/// <summary>
 		/// extracts the part of the window that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 		/// </summary>
 		/// <returns>canvas to render</returns>
-		bitset_2d get_render_canvas();
+		Bitset2D get_render_canvas();
 		/// <summary>
-		/// adds a graphic in form of a bitset_2d (like text) at given coordinates to the screen
+		/// adds a graphic in form of a Bitset2D (like text) at given coordinates to the screen
 		/// </summary>
 		/// <param name="renderplane"></param>
 		/// <param name="corner_x"></param>
 		/// <param name="corner_y"></param>
-		void add_to_window(const bitset_2d& graphic, int corner_x, int corner_y);
+		void add_to_window(const Bitset2D& graphic, int corner_x, int corner_y);
 		/// <summary>
 		/// clears the window
 		/// </summary>

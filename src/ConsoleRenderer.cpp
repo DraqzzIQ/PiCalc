@@ -11,7 +11,7 @@ ConsoleRenderer::ConsoleRenderer()
 	#endif
 }
 
-void ConsoleRenderer::render(const bitset_2d& pixels, const dynamic_bitset& screen_symbols, bool force_rerender)
+void ConsoleRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender)
 {	
 	if(!force_rerender && already_rendered(pixels, screen_symbols))
 		return;
@@ -23,7 +23,7 @@ void ConsoleRenderer::render(const bitset_2d& pixels, const dynamic_bitset& scre
 	out += get_display_border();
 	out += "\n# ";
 
-	for (int i = 0; i < screen_symbols.size(); i++) {
+	for (uint32_t i = 0; i < screen_symbols.size(); i++) {
 		if (screen_symbols[i]) { out += Graphics::SCREEN_SYMBOLS[i]; }
 		else { out += std::string(Graphics::SCREEN_SYMBOLS[i].length(), ' '); }
 		out += "  ";
@@ -32,10 +32,10 @@ void ConsoleRenderer::render(const bitset_2d& pixels, const dynamic_bitset& scre
 	out += std::string(113, ' ');
 	out += "#\n";
 
-	for (size_t i = 0; i < SCREEN_HEIGHT; i++)
+	for (uint32_t i = 0; i < SCREEN_HEIGHT; i++)
 	{
 		out += "# ";
-		for (size_t j = 0; j < SCREEN_WIDTH; j++)
+		for (uint32_t j = 0; j < SCREEN_WIDTH; j++)
 		{
 			if (pixels.at(j)[i])
 				out  += '\xFE';

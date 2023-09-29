@@ -12,7 +12,7 @@ void TextWindow::handle_key_down(KeyPress keypress)
     else if(keypress.key_raw == Chars::KEY_MAP.at("right")) scroll_right();
 }
 
-bitset_2d TextWindow::update_window()
+Bitset2D TextWindow::update_window()
 {
 	create_menu();
 
@@ -23,7 +23,7 @@ bitset_2d TextWindow::update_window()
 
 void TextWindow::create_menu()
 {
-	for (size_t i = 0; i < text.size(); i++)
+	for (uint32_t i = 0; i < text.size(); i++)
 	{
 		add_to_window(Graphics::create_text(text[i], Graphics::SYMBOLS_6_HIGH, text_spacing), 1, 1 + i * line_height);
 	}

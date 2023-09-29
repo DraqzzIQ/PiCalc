@@ -21,7 +21,7 @@ class DisplayRenderer : public IRenderer
         /// renders the given pixels to the console
         /// </summary>
         /// <param name="pixels">pixels to render</param>
-        void render(const bitset_2d& pixels, const dynamic_bitset& screen_symbols, bool force_rerender);
+        void render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender);
     private:
         /// <summary>
         /// clears the display

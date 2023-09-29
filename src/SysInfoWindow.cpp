@@ -1,6 +1,6 @@
 #include "SysInfoWindow.h"
 
-bitset_2d SysInfoWindow::update_window()
+Bitset2D SysInfoWindow::update_window()
 {
     text = std::vector<std::string>(3);
 

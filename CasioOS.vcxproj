@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\bitset_2d.h" />
+    <ClInclude Include="src\Bitset2D.h" />
     <ClInclude Include="src\BTKeyboard.h" />
     <ClInclude Include="src\BTManager.h" />
     <ClInclude Include="src\BTRenderer.h" />
@@ -30,7 +30,7 @@
     <ClInclude Include="src\ConsoleRenderer.h" />
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\DisplayRenderer.h" />
-    <ClInclude Include="src\dynamic_bitset.h" />
+    <ClInclude Include="src\DynamicBitset.h" />
     <ClInclude Include="src\Equation.h" />
     <ClInclude Include="src\Graphics.h" />
     <ClInclude Include="src\I2CUtils.h" />
@@ -54,7 +54,7 @@
     <ClInclude Include="src\WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\bitset_2d.cpp" />
+    <ClCompile Include="src\Bitset2D.cpp" />
     <ClCompile Include="src\BTKeyboard.cpp" />
     <ClCompile Include="src\BTManager.cpp" />
     <ClCompile Include="src\BTRenderer.cpp" />
@@ -65,7 +65,7 @@
     <ClCompile Include="src\ConsoleRenderer.cpp" />
     <ClCompile Include="src\Constants.cpp" />
     <ClCompile Include="src\DisplayRenderer.cpp" />
-    <ClCompile Include="src\dynamic_bitset.cpp" />
+    <ClCompile Include="src\DynamicBitset.cpp" />
     <ClCompile Include="src\Equation.cpp" />
     <ClCompile Include="src\Graphics.cpp" />
     <ClCompile Include="src\I2CUtils.cpp" />

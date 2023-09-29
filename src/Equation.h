@@ -28,7 +28,7 @@ public:
 	/// <summary>
 	/// render the Equation
 	/// </summary>
-	bitset_2d render_equation();
+	Bitset2D render_equation();
 	/// <summary>
 	/// add a Value to the equation at the current Cursor position
 	/// </summary>
@@ -115,11 +115,11 @@ private:
 	/// <summary>
 	/// the rendered Equation without the Cursor
 	/// </summary>
-	bitset_2d rendered_equation;
+	Bitset2D rendered_equation;
 	/// <summary>
 	/// the rendered equation with the Cursor
 	/// </summary>
-	bitset_2d rendered_equation_cursor;
+	Bitset2D rendered_equation_cursor;
 	/// <summary>
 	/// has the equation changed since last rendered?
 	/// </summary>
@@ -131,20 +131,22 @@ private:
 	/// <summary>
 	/// the current Position of the Cursor. Cursor is always displayed between the element it points to and the previous element
 	/// </summary>
-	std::vector<uint16_t> cursor_index;
+	std::vector<uint32_t> cursor_index;
 	/// <summary>
 	/// time since boot at which the cursor last changed its state
 	/// </summary>
 	uint64_t last_blink_time;
-
-	struct cursorData {
+	/// <summary>
+	/// stores the position and size of the cursor
+	/// </summary>
+	struct CursorPositionData {
 		int64_t x = 0;
 		int64_t y = 0;
 		uint8_t size = 0;
 	};
 
 	CalculateNode* calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error);
-	bitset_2d render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, bitset_2d>& table,  std::vector<uint16_t> render_index, cursorData& cursor_data, uint32_t& y_origin_ref);
+	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table,  std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref);
 	std::vector<Equation::EquationNode*>* format_equation_part(const std::vector<EquationNode*>* equation, uint32_t& i, bool return_on_closed_bracket);
 	EquationNode* format_equation(const EquationNode* equation);
 };

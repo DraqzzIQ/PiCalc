@@ -1,71 +1,71 @@
 #pragma once
 #include <vector>
 #include <cstdint>
-#include "dynamic_bitset.h"
+#include "DynamicBitset.h"
 
 /// <summary>
 /// Utility for 2D bitsets.
 /// </summary>
-class bitset_2d
+class Bitset2D
 {
     public:
         /// <summary>
         /// Default constructor
         /// </summary>
-        bitset_2d();
+        Bitset2D();
         /// <summary>
-        /// Construct a bitset_2d with given the width and height, all bits set to value
+        /// Construct a Bitset2D with given the width and height, all bits set to value
         /// </summary>
-        bitset_2d(uint32_t width, uint32_t height, bool value);
+        Bitset2D(uint32_t width, uint32_t height, bool value);
         /// <summary>
-        /// Construct a bitset_2d with given height, each column is equal to the given dynamic_bitset
+        /// Construct a Bitset2D with given height, each column is equal to the given DynamicBitset
         /// </summary>
-        bitset_2d(uint32_t width, const dynamic_bitset &other);
+        Bitset2D(uint32_t width, const DynamicBitset &other);
         /// <summary>
-        /// Construct a bitset_2d with the given 2d vector of uint8_ts, where each uint8_t represents 8 bits in y-direction
+        /// Construct a Bitset2D with the given 2d vector of uint8_ts, where each uint8_t represents 8 bits in y-direction
         /// </summary>
-        bitset_2d(uint32_t width, uint32_t height, const std::vector<std::vector<uint8_t>> &plane);
+        Bitset2D(uint32_t width, uint32_t height, const std::vector<std::vector<uint8_t>> &plane);
         /// <summary>
         /// Copy constructor.
         /// </summary>
-        bitset_2d(const bitset_2d &other);
+        Bitset2D(const Bitset2D &other);
         /// <summary>
         /// Destructor.
         /// </summary>
-        ~bitset_2d();
+        ~Bitset2D();
 
         /// <summary>
-        /// Returns the dynamic_bitset at index.
+        /// Returns the DynamicBitset at index.
         /// </summary>
-        const dynamic_bitset& operator[](uint32_t index) const;
+        const DynamicBitset& operator[](uint32_t index) const;
         /// <summary>
         /// Compares two 2D bitsets.
         /// </summary>
-        bool operator==(const bitset_2d& other) const;
+        bool operator==(const Bitset2D& other) const;
         /// <summary>
         /// Compares two 2D bitsets.
         /// </summary>
-        bool operator!=(const bitset_2d& other) const;
+        bool operator!=(const Bitset2D& other) const;
         /// <summary>
         /// Assignment operator.
         /// </summary>
-        bitset_2d& operator=(const bitset_2d& other);
+        Bitset2D& operator=(const Bitset2D& other);
         /// <summary>
         /// appends two bitset_2ds together
         /// Very Inefficient due to return by value
         /// </summary>
-        bitset_2d operator+(const bitset_2d& other);
+        Bitset2D operator+(const Bitset2D& other);
 
         /// <summary>
         /// Returns the bit at index.
         /// </summary>
-        const dynamic_bitset& at(uint32_t index) const;
+        const DynamicBitset& at(uint32_t index) const;
         /// <summary>
-        /// Returns the width of the bitset_2d
+        /// Returns the width of the Bitset2D
         /// </summary>
         uint32_t width() const;
         /// <summary>
-        /// Returns the height of the bitset_2d
+        /// Returns the height of the Bitset2D
         /// </summary>
         uint32_t height() const;
         /// <summary>
@@ -74,32 +74,32 @@ class bitset_2d
         bool get_bit(uint32_t coord_x, uint32_t coord_y) const;
 
         /// <summary>
-        /// Overwrite the bitset_2d with other placed on the position coord_x, coord_y
+        /// Overwrite the Bitset2D with other placed on the position coord_x, coord_y
         /// </summary>
-        void set(uint32_t coord_x, uint32_t coord_y, const bitset_2d& other, bool resize_if_needed);
+        void set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bool resize_if_needed);
         /// <summary>
-        /// Overwrite a column of the bitset_2d with other placed on the x-position coord_x
+        /// Overwrite a column of the Bitset2D with other placed on the x-position coord_x
         /// </summary>
-        void set_column(uint32_t coord_x, const dynamic_bitset& other);
+        void set_column(uint32_t coord_x, const DynamicBitset& other);
         /// <summary>
         /// Overwrite the bit on the position coord_x, coord_y with value
         /// </summary>
         void set_bit(uint32_t coord_x, uint32_t coord_y, bool value);
         /// <summary>
-        /// inserts a column to the bitset_2d at x_position coord_x
+        /// inserts a column to the Bitset2D at x_position coord_x
         /// NOT DONE YET
         /// </summary>
-        void insert_column(uint32_t coord_x, const dynamic_bitset& other);
+        void insert_column(uint32_t coord_x, const DynamicBitset& other);
         /// <summary>
-        /// inserts other to the bitset_2d at the specified x-position
+        /// inserts other to the Bitset2D at the specified x-position
         /// NOT DONE YET
         /// </summary>
-        void insert_x(uint32_t coord_x, const bitset_2d& other);
+        void insert_x(uint32_t coord_x, const Bitset2D& other);
         /// <summary>
-        /// inserts other to the bitset_2d at the specified y-position
+        /// inserts other to the Bitset2D at the specified y-position
         /// NOT DONE YET
         /// </summary>
-        void insert_y(uint32_t coord_y, const bitset_2d& other);
+        void insert_y(uint32_t coord_y, const Bitset2D& other);
         /// <summary>
         /// Erases the Column at index
         /// </summary>
@@ -109,48 +109,48 @@ class bitset_2d
         /// </summary>
         void erase_y(uint32_t coord_y);
         /// <summary>
-        /// Clears the bitset_2d
+        /// Clears the Bitset2D
         /// </summary>
         void clear();
 
         /// <summary>
-        /// Appends a column to the right of the bitset_2d
+        /// Appends a column to the right of the Bitset2D
         /// </summary>
-        void push_back(const dynamic_bitset& other);
+        void push_back(const DynamicBitset& other);
         /// <summary>
-        /// Appends a column to the left of the bitset_2d
+        /// Appends a column to the left of the Bitset2D
         /// </summary>
-        void push_front(const dynamic_bitset& other);
+        void push_front(const DynamicBitset& other);
         /// <summary>
-        /// extends the bitset_2d by other in x-direction
+        /// extends the Bitset2D by other in x-direction
         /// </summary>
-        void extend_right(const bitset_2d &other);
+        void extend_right(const Bitset2D &other);
         /// <summary>
-        /// extends the bitset_2d by length in x_direction, all new bits set to value
+        /// extends the Bitset2D by length in x_direction, all new bits set to value
         /// </summary>
         void extend_right(uint32_t length, bool value);
         /// <summary>
-        /// extends the bitset_2d by other in y-direction
+        /// extends the Bitset2D by other in y-direction
         /// </summary>
-        void extend_down(const bitset_2d& other);
+        void extend_down(const Bitset2D& other);
         /// <summary>
-        /// extends the bitset_2d by length in y_direction, all new bits set to value
+        /// extends the Bitset2D by length in y_direction, all new bits set to value
         /// </summary>
         void extend_down(uint32_t length, bool value);
         /// <summary>
-        /// extends the bitset_2d by other in x-direction
+        /// extends the Bitset2D by other in x-direction
         /// </summary>
-        void extend_left(const bitset_2d& other);
+        void extend_left(const Bitset2D& other);
         /// <summary>
-        /// extends the bitset_2d by length in x_direction, all new bits set to value
+        /// extends the Bitset2D by length in x_direction, all new bits set to value
         /// </summary>
         void extend_left(uint32_t length, bool value);
         /// <summary>
-        /// extends the bitset_2d by other in y-direction
+        /// extends the Bitset2D by other in y-direction
         /// </summary>
-        void extend_up(const bitset_2d& other);
+        void extend_up(const Bitset2D& other);
         /// <summary>
-        /// extends the bitset_2d by length in y_direction, all new bits set to value
+        /// extends the Bitset2D by length in y_direction, all new bits set to value
         /// </summary>
         void extend_up(uint32_t length, bool value);
 
@@ -166,13 +166,13 @@ class bitset_2d
         /// <summary>
         /// The underlying storage type storing the bits.
         /// </summary>
-        std::vector<dynamic_bitset> _plane;
+        std::vector<DynamicBitset> _plane;
         /// <summary>
-        /// width of the bitset_2d
+        /// width of the Bitset2D
         /// </summary>
         uint32_t _width;
         /// <summary>
-        /// height of the bitset_2d
+        /// height of the Bitset2D
         /// </summary>
         uint32_t _height;
 };

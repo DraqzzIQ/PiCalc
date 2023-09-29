@@ -14,7 +14,7 @@ MenuWindow::~MenuWindow()
 	options.clear();
 }
 
-bitset_2d MenuWindow::update_window()
+Bitset2D MenuWindow::update_window()
 {
 	corner_y = current_page * 4 * line_height;
 

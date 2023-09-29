@@ -18,7 +18,7 @@ class MenuOption
 		/// <param name="window_manager">window_manager to add windows to</param>
 		MenuOption(const std::string display_name, WindowManager* window_manager);
 		virtual ~MenuOption() {};
-		// /// <summary>
+		/// <summary>
 		/// fired when option is selected
 		/// </summary>
 		virtual void on_select();
@@ -49,7 +49,7 @@ class MenuOption
 			}
 			return true;
 		}
-		// /// <summary>
+		/// <summary>
 		/// fired when option is selected with shift active
 		/// </summary>
 		virtual void on_shift_select();

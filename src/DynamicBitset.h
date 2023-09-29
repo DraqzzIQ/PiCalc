@@ -6,44 +6,44 @@
 
 /// <summary>
 /// A simple dynamic bitset type
-/// using std::vector<uint8_t> as the underlying storage type.
+/// using std::vector of uint8_t as the underlying storage type.
 /// </summary>
-class dynamic_bitset
+class DynamicBitset
 {
     public:
         /// <summary>
         /// Default constructor.
         /// </summary>
-        dynamic_bitset();
+        DynamicBitset();
         /// <summary>
-        /// Construct a dynamic_bitset with n bits.
+        /// Construct a DynamicBitset with n bits.
         /// </summary>
-        dynamic_bitset(uint32_t count);
+        DynamicBitset(uint32_t count);
         /// <summary>
-        /// Construct a dynamic_bitset with n bits, all bits set to value.
+        /// Construct a DynamicBitset with n bits, all bits set to value.
         /// </summary>
-        dynamic_bitset(uint32_t count, bool value);
+        DynamicBitset(uint32_t count, bool value);
         /// <summary>
-        /// Construct a dynamic_bitset out of a vector<uint8_t> using the first n bits.
+        /// Construct a DynamicBitset out of a vector of uint8_t using the first n bits.
         /// </summary>
-        dynamic_bitset(uint32_t count, std::vector<uint8_t> values);
+        DynamicBitset(uint32_t count, std::vector<uint8_t> values);
         /// <summary>
-        /// Construct a dynamic_bitset out of a vector<bool> using the first n bits.
+        /// Construct a DynamicBitset out of a vector of bool using the first n bits.
         /// </summary>
-        dynamic_bitset(uint32_t count, const std::vector<bool> values);
+        DynamicBitset(uint32_t count, const std::vector<bool> values);
         /// <summary>
         /// Copy constructor.
         /// </summary>
-        dynamic_bitset(const dynamic_bitset& other);
+        DynamicBitset(const DynamicBitset& other);
         /// <summary>
         /// Destructor.
         /// </summary>
-        ~dynamic_bitset();
+        ~DynamicBitset();
 
         /// <summary>
-        /// Construct a dynamic_bitset with n bits, out of the provided bits.
+        /// Construct a DynamicBitset with n bits, out of the provided bits.
         /// </summary>
-        static dynamic_bitset from_bits(uint8_t bits, uint32_t count);
+        static DynamicBitset from_bits(uint8_t bits, uint32_t count);
 
         /// <summary>
         /// Returns the bit at index.
@@ -53,19 +53,19 @@ class dynamic_bitset
         /// Returns true if equal to other.
         /// If not Working: manual comparison
         /// </summary>
-        bool operator==(const dynamic_bitset& other) const;
+        bool operator==(const DynamicBitset& other) const;
         /// <summary>
         /// Returns true if not equal to other.
         /// </summary>
-        bool operator!=(const dynamic_bitset& other) const;
+        bool operator!=(const DynamicBitset& other) const;
         /// <summary>
         /// Assignment operator.
         /// </summary>
-        dynamic_bitset& operator=(const dynamic_bitset& other);
+        DynamicBitset& operator=(const DynamicBitset& other);
         /// <summary>
         /// Appends two dynamic_bitsets together
         /// </summary>
-        dynamic_bitset operator+(const dynamic_bitset& other);
+        DynamicBitset operator+(const DynamicBitset& other);
 
         /// <summary>
         /// Returns the bit at index.
@@ -76,7 +76,7 @@ class dynamic_bitset
         /// </summary>
         uint32_t size() const;
         /// <summary>
-        /// Returns a vector<uint8_t> containing the bits.
+        /// Returns a vector of uint8_t containing the bits.
         /// </summary>
         std::vector<uint8_t> get_bytes() const;
 
@@ -90,7 +90,7 @@ class dynamic_bitset
         /// Sets bits at index.
         /// should be used carefully, as it is O(n).
         /// </summary>
-        void set(uint32_t index, const dynamic_bitset& bits);
+        void set(uint32_t index, const DynamicBitset& bits);
         /// <summary>
         /// Inserts a bit at index.
         /// should be used carefully, as it is O(n).
@@ -101,7 +101,7 @@ class dynamic_bitset
         /// Inserts bits at index.
         /// should be used carefully, as it is O(n).
         /// </summary>
-        void insert(uint32_t index, const dynamic_bitset& bits);
+        void insert(uint32_t index, const DynamicBitset& bits);
         /// <summary>
         /// Resizes the bitset to n bits.
         /// </summary>
@@ -128,9 +128,9 @@ class dynamic_bitset
         /// Appends another bitset to the end of this one.
         /// should be used carefully, as it is O(n).
         /// </summary>
-        void extend(const dynamic_bitset& other);
+        void extend(const DynamicBitset& other);
         /// <summary>
-        /// Appends length bits to the dynamic_bitset, all set to value
+        /// Appends length bits to the DynamicBitset, all set to value
         /// TODO: optimize
         /// </summary>
         void extend(uint32_t length, bool value);
@@ -138,9 +138,9 @@ class dynamic_bitset
         /// Appends another bitset to the start of this one.
         /// should be used carefully, as it is O(n).
         /// </summary>
-        void extend_left(const dynamic_bitset& other);
+        void extend_left(const DynamicBitset& other);
         /// <summary>
-        /// Appends length bits to the start of the dynamic_bitset, all set to value
+        /// Appends length bits to the start of the DynamicBitset, all set to value
         /// </summary>
         void extend_left(uint32_t length, bool value);
         

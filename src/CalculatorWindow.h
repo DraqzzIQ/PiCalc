@@ -8,7 +8,7 @@ class CalculatorWindow : public Window {
 	public:
 		CalculatorWindow();
 		~CalculatorWindow();
-		bitset_2d update_window();
+		Bitset2D update_window();
 		void handle_key_down(KeyPress keypress);
 	private:
 		Equation* equation;

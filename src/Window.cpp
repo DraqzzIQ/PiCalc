@@ -10,21 +10,21 @@ Window::~Window()
 {
 }
 
-bitset_2d Window::update_window()
+Bitset2D Window::update_window()
 {
     return get_render_canvas();
 }
 
 //TODO: replace with get()
-bitset_2d Window::get_render_canvas()
+Bitset2D Window::get_render_canvas()
 {
-	bitset_2d canvas;
+	Bitset2D canvas;
 
-	for (std::size_t i = 0; i < SCREEN_WIDTH; i++)
+	for (uint32_t i = 0; i < SCREEN_WIDTH; i++)
 	{
-		dynamic_bitset column(SCREEN_HEIGHT, false);
+		DynamicBitset column(SCREEN_HEIGHT, false);
 
-		for (std::size_t j = 0; j < SCREEN_HEIGHT; j++)
+		for (uint32_t j = 0; j < SCREEN_HEIGHT; j++)
 		{
 			if(corner_x + i < window.width() && corner_y + j < window.height())
 				column.set(j, (window[corner_x + i][corner_y + j]));
@@ -34,16 +34,16 @@ bitset_2d Window::get_render_canvas()
 	return canvas;
 }
 
-void Window::add_to_window(const bitset_2d& graphic, int corner_x, int corner_y) {
+void Window::add_to_window(const Bitset2D& graphic, int corner_x, int corner_y) {
 	window.set(corner_x, corner_y, graphic, true);
 }
 
 void Window::clear_window() {
-	window = bitset_2d(SCREEN_WIDTH, dynamic_bitset(SCREEN_HEIGHT, false));
+	window = Bitset2D(SCREEN_WIDTH, DynamicBitset(SCREEN_HEIGHT, false));
 }
 
 void Window::clear_symbols() {
-	screen_symbols = dynamic_bitset(Graphics::SCREEN_SYMBOLS.size(), false);
+	screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), false);
 }
 
 void Window::change_symbol(std::string symbol, bool state) {

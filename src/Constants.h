@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "dynamic_bitset.h"
+#include "DynamicBitset.h"
 
 const int SCREEN_WIDTH = 96;
 const int SCREEN_HEIGHT = 31;
