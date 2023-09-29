@@ -64,7 +64,6 @@ public:
 	/// </summary>
 	void move_cursor_down();
 private:
-
 	/// <summary>
 	/// Node for the tree representing the Equation
 	/// </summary>
@@ -80,25 +79,6 @@ private:
 			if (value != nullptr) delete value;
 		}
 	};
-	/// <summary>
-	/// _equation_root_raw Node for the equation, children contains the equation
-	/// </summary>
-	EquationNode* _equation_root_raw;
-	/// <summary>
-	/// _equation_root_raw Node for the equation, where parts in brackets are collected in another child
-	/// </summary>
-	EquationNode* _equation_root_formatted;
-
-	/// <summary>
-	/// all the operations that have to be between two values to be evaluated
-	/// </summary>
-	std::vector<uint8_t> allowedCalculateOperations {
-		69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164
-	};
-
-	std::vector<uint8_t> singleBracketOpenKeys{
-		74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195
-	};
 
 	/// <summary>
 	/// Node Used for the Calculation
@@ -113,30 +93,6 @@ private:
 	};
 
 	/// <summary>
-	/// the rendered Equation without the Cursor
-	/// </summary>
-	Bitset2D rendered_equation;
-	/// <summary>
-	/// the rendered equation with the Cursor
-	/// </summary>
-	Bitset2D rendered_equation_cursor;
-	/// <summary>
-	/// has the equation changed since last rendered?
-	/// </summary>
-	bool equation_changed;
-	/// <summary>
-	/// bool keeping track of wether to show the cursor or not (in 0.5s intervals)
-	/// </summary>
-	bool show_cursor;
-	/// <summary>
-	/// the current Position of the Cursor. Cursor is always displayed between the element it points to and the previous element
-	/// </summary>
-	std::vector<uint32_t> cursor_index;
-	/// <summary>
-	/// time since boot at which the cursor last changed its state
-	/// </summary>
-	uint64_t last_blink_time;
-	/// <summary>
 	/// stores the position and size of the cursor
 	/// </summary>
 	struct CursorPositionData {
@@ -145,8 +101,80 @@ private:
 		uint8_t size = 0;
 	};
 
+	/// <summary>
+	/// root Node for the equation, children contains the equation
+	/// </summary>
+	EquationNode* _equation_root_raw;
+	/// <summary>
+	/// root Node for the formatted equation, where parts in brackets are collected in another child
+	/// </summary>
+	EquationNode* _equation_root_formatted;
+	/// <summary>
+	/// the current Position of the Cursor in the raw equation. Cursor is always displayed between the element it points to and the previous element
+	/// </summary>
+	std::vector<uint32_t> _cursor_index_raw;
+	/// <summary>
+	/// the current Position of the Cursor in the formatted equation. Cursor is always displayed between the element it points to and the previous element
+	/// </summary>
+	std::vector<uint32_t> _cursor_index_formatted;
+	/// <summary>
+	/// the rendered Equation without the Cursor
+	/// </summary>
+	Bitset2D _rendered_equation;
+	/// <summary>
+	/// the rendered equation with the Cursor
+	/// </summary>
+	Bitset2D _rendered_equation_cursor;
+	/// <summary>
+	/// has the equation changed since last rendered?
+	/// </summary>
+	bool _equation_changed;
+	/// <summary>
+	/// bool keeping track of wether to show the cursor or not (in 0.5s intervals)
+	/// </summary>
+	bool _show_cursor;
+	/// <summary>
+	/// time since boot at which the cursor last changed its state
+	/// </summary>
+	uint64_t _last_blink_time;
+	/// <summary>
+	/// all the operations that have to be between two values to be evaluated
+	/// </summary>
+	std::vector<uint8_t> allowedCalculateOperations{ 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
+	/// <summary>
+	/// all Keys that end with an open rounded bracket
+	/// </summary>
+	std::vector<uint8_t> singleBracketOpenKeys{ 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
+
+	/// <summary>
+	/// calculates the result of a equation, made for recursion
+	/// </summary>
+	/// <param name="equation">the equation to be calculated</param>
+	/// <param name="error">set to an error type if any occur, else Fine</param>
+	/// <returns>Result</returns>
 	CalculateNode* calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error);
+	/// <summary>
+	/// renders an equation, made for recursion
+	/// </summary>
+	/// <param name="equation">equation to be rendered</param>
+	/// <param name="table">the Keymap to be used</param>
+	/// <param name="render_index">absolute index of the equation, that ie being rendered</param>
+	/// <param name="cursor_data">set to the new cursor Position if the cursor is in the passed equation</param>
+	/// <param name="y_origin_ref">y origin of the rendered equation</param>
+	/// <returns>the rendered equation</returns>
 	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table,  std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref);
+	/// <summary>
+	/// formats an equation part by collecting all parts in brackets in a child, made for recursion
+	/// </summary>
+	/// <param name="equation">equation to be formatted</param>
+	/// <param name="i">index to start at</param>
+	/// <param name="return_on_closed_bracket">set to true if it should return as soon as a closed bracket occurs</param>
+	/// <returns>the formatted equation</returns>
 	std::vector<Equation::EquationNode*>* format_equation_part(const std::vector<EquationNode*>* equation, uint32_t& i, bool return_on_closed_bracket);
+	/// <summary>
+	/// formats an equation by collecting all parts in brackets in a child
+	/// </summary>
+	/// <param name="equation">equation to be formatted</param>
+	/// <returns>formatted equation</returns>
 	EquationNode* format_equation(const EquationNode* equation);
 };
