@@ -10,7 +10,7 @@ CalculatorWindow::~CalculatorWindow() {
 
 Bitset2D CalculatorWindow::update_window() {
 	clear_window();
-	add_to_window(equation->render_equation(), 0, 1);
+	add_to_window(equation->get_rendered_equation(), 0, 1);
 	return get_render_canvas();
 }
 
