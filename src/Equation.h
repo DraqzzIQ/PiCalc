@@ -104,19 +104,11 @@ private:
 	/// <summary>
 	/// root Node for the equation, children contains the equation
 	/// </summary>
-	EquationNode* _equation_root_raw;
-	/// <summary>
-	/// root Node for the formatted equation, where parts in brackets are collected in another child
-	/// </summary>
-	EquationNode* _equation_root_formatted;
+	EquationNode* _equation_root;
 	/// <summary>
 	/// the current Position of the Cursor in the raw equation. Cursor is always displayed between the element it points to and the previous element
 	/// </summary>
-	std::vector<uint32_t> _cursor_index_raw;
-	/// <summary>
-	/// the current Position of the Cursor in the formatted equation. Cursor is always displayed between the element it points to and the previous element
-	/// </summary>
-	std::vector<uint32_t> _cursor_index_formatted;
+	std::vector<uint32_t> _cursor_index;
 	/// <summary>
 	/// the rendered Equation without the Cursor
 	/// </summary>
@@ -162,7 +154,7 @@ private:
 	/// <param name="cursor_data">set to the new cursor Position if the cursor is in the passed equation</param>
 	/// <param name="y_origin_ref">y origin of the rendered equation</param>
 	/// <returns>the rendered equation</returns>
-	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table,  std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref);
+	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table,  std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t start = 0, uint32_t end = -1);
 	/// <summary>
 	/// formats an equation part by collecting all parts in brackets in a child, made for recursion
 	/// </summary>
@@ -171,5 +163,5 @@ private:
 	/// <param name="cursor_index_curr">current cursor index</param>
 	/// <param name="return_on_closed_bracket">set to true if it should return as soon as a closed bracket occurs</param>
 	/// <returns>the formatted equation</returns>
-	std::vector<Equation::EquationNode*>* format_equation_part(const std::vector<EquationNode*>* equation, uint32_t& i, std::vector<uint32_t> cursor_index_old, std::vector<uint32_t> cursor_index_new, bool return_on_closed_bracket);
+	std::vector<Equation::EquationNode*>* format_equation_part(const std::vector<EquationNode*>* equation, uint32_t& i, bool return_on_closed_bracket);
 };
