@@ -3,6 +3,7 @@
 #include "Graphics.h"
 #include "KeyPress.h"
 #include "Utils.h"
+#include "Graphics.h"
 #include <vector>
 #include <string>
 #include <map>

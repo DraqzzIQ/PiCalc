@@ -33,6 +33,7 @@ class Graphics
 
         static const std::map<uint8_t, Bitset2D> SYMBOLS_6_HIGH;
 
+        static const std::map<uint8_t, std::vector<uint8_t>> key_text;
         //TODO: enum
         static const std::vector<std::string> SCREEN_SYMBOLS;
 };
