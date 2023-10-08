@@ -92,18 +92,20 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 				}
 				i = j - 1;
 				render_index.push_back(i);
-
-				DynamicBitset bracket_raw(symbol_matrix.height() - 4, true);
-				bracket_raw.extend_left(2, false);
-				bracket_raw.extend(2, false);
-				Bitset2D bracket_left(1, bracket_raw);
-				bracket_left.extend_left(1, false);
-				bracket_left.extend_right(3, false);
-				bracket_left.set_bit(3, 0, true);
-				bracket_left.set_bit(2, 1, true);
-				bracket_left.set_bit(3, bracket_left.height() - 1, true);
-				bracket_left.set_bit(2, bracket_left.height() - 2, true);
-				symbol_matrix.extend_left(bracket_left);
+				if (symbol_matrix.height() == 6) symbol_matrix.extend_left(Graphics::SYMBOLS_6_HIGH.at(74));
+				else {
+					DynamicBitset bracket_raw(symbol_matrix.height() - 4, true);
+					bracket_raw.extend_left(2, false);
+					bracket_raw.extend(2, false);
+					Bitset2D bracket_left(1, bracket_raw);
+					bracket_left.extend_left(1, false);
+					bracket_left.extend_right(3, false);
+					bracket_left.set_bit(3, 0, true);
+					bracket_left.set_bit(2, 1, true);
+					bracket_left.set_bit(3, bracket_left.height() - 1, true);
+					bracket_left.set_bit(2, bracket_left.height() - 2, true);
+					symbol_matrix.extend_left(bracket_left);
+				}
 
 				int32_t add_height = y_origin - new_y_origin;
 				if (add_height < 0) { equation_part.extend_up(-add_height, false); y_origin -= add_height; }
@@ -114,17 +116,20 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 				equation_part.extend_right(symbol_matrix);
 			}
 			else if (*current_symbol->value == Chars::KEY_MAP.at(")")) {
-				DynamicBitset bracket_raw(equation_part.height() - 4, true);
-				bracket_raw.extend_left(2, false);
-				bracket_raw.extend(2, false);
-				Bitset2D bracket_right(1, bracket_raw);
-				bracket_right.extend_left(3, false);
-				bracket_right.extend_right(1, false);
-				bracket_right.set_bit(1, 0, true);
-				bracket_right.set_bit(2, 1, true);
-				bracket_right.set_bit(1, bracket_right.height() - 1, true);
-				bracket_right.set_bit(2, bracket_right.height() - 2, true);
-				equation_part.extend_right(bracket_right);
+				if (equation_part.height() == 6) equation_part.extend_right(Graphics::SYMBOLS_6_HIGH.at(75));
+				else {
+					DynamicBitset bracket_raw(equation_part.height() - 4, true);
+					bracket_raw.extend_left(2, false);
+					bracket_raw.extend(2, false);
+					Bitset2D bracket_right(1, bracket_raw);
+					bracket_right.extend_left(3, false);
+					bracket_right.extend_right(1, false);
+					bracket_right.set_bit(1, 0, true);
+					bracket_right.set_bit(2, 1, true);
+					bracket_right.set_bit(1, bracket_right.height() - 1, true);
+					bracket_right.set_bit(2, bracket_right.height() - 2, true);
+					equation_part.extend_right(bracket_right);
+				}
 			}
 			else {
 				if (table.count(*current_symbol->value) != 0) symbol_matrix = table.at(*current_symbol->value);
