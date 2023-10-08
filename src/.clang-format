@@ -1,0 +1,32 @@
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass:      true
+  AfterControlStatement: Never
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: true
+  AfterStruct:     false
+  AfterUnion:      false
+  BeforeCatch:     false
+  BeforeElse:      false
+  IndentBraces:    false
+  BeforeCatch: false
+  BeforeElse: false
+
+IndentWidth: 4
+PointerAlignment: Left
+
+ColumnLimit: 0
+
+# use tabs for indentation but not for alignment when formatting 
+UseTab: AlignWithSpaces
+
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 1
+
+SpacesInParens: Never
+
+
+
