@@ -26,7 +26,6 @@ AlignTrailingComments:
   Kind: Always
   OverEmptyLines: 1
 
-SpacesInParens: Never
 
 
 
