@@ -1,19 +1,18 @@
 #pragma once
-#include "Window.h"
 #include "Graphics.h"
 #include "KeyPress.h"
 #include "Utils.h"
-#include "Graphics.h"
-#include <vector>
-#include <string>
-#include <map>
-#include <cmath>
+#include "Window.h"
 #include <algorithm>
+#include <cmath>
+#include <map>
+#include <string>
+#include <vector>
 
 
 class Equation
 {
-public:
+	public:
 	/// <summary>
 	/// Construct a new Equation
 	/// </summary>
@@ -64,7 +63,8 @@ public:
 	/// move the Cursor down by one
 	/// </summary>
 	void move_cursor_down();
-private:
+
+	private:
 	/// <summary>
 	/// Node for the tree representing the Equation
 	/// </summary>
@@ -72,7 +72,8 @@ private:
 		uint8_t* value;
 		std::vector<EquationNode*>* children;
 
-		~EquationNode() {
+		~EquationNode()
+		{
 			if (children != nullptr) {
 				for (EquationNode* child : *children) delete child;
 				delete children;
@@ -87,7 +88,8 @@ private:
 	struct CalculateNode {
 		double* value;
 		uint8_t* operation;
-		~CalculateNode() {
+		~CalculateNode()
+		{
 			if (value != nullptr) delete value;
 			if (operation != nullptr) delete operation;
 		}
@@ -131,7 +133,7 @@ private:
 	/// </summary>
 	std::vector<uint8_t> allowedCalculateOperations{ 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
 	/// <summary>
-	/// all Keys that end with an open rounded bracket 
+	/// all Keys that end with an open rounded bracket
 	/// </summary>
 	std::vector<uint8_t> singleBracketOpenKeys{ 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
 
@@ -155,7 +157,7 @@ private:
 	/// <param name="cursor_data">set to the new cursor Position if the cursor is in the passed equation</param>
 	/// <param name="y_origin_ref">y origin of the rendered equation</param>
 	/// <returns>the rendered equation</returns>
-	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table,  std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t start = 0, uint32_t end = -1);
+	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t start = 0, uint32_t end = -1);
 	/// <summary>
 	/// formats an equation part by collecting all parts in brackets in a child, made for recursion
 	/// </summary>
