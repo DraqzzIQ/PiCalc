@@ -22,7 +22,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 # Pico
-if(TRUE)
+if(RPI_PICO)
     set(PICO_CXX_ENABLE_EXCEPTIONS 1)
     set(PICO_CXX_ENABLE_RTTI 1)
     include(pico_sdk_import.cmake) # must be included before project()
