@@ -79,8 +79,12 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 				uint32_t new_y_origin;
 
 				uint32_t j = ++i;
+				uint32_t inception_cnt = 1;
 				while (j < equation.size()) {
-					if (*equation.at(j++)->value == Chars::KEY_MAP.at(")")) break;
+					if (*equation.at(j)->value == Chars::KEY_MAP.at("(")) inception_cnt++;
+					if (*equation.at(j)->value == Chars::KEY_MAP.at(")")) inception_cnt--;
+					if (inception_cnt == 0) break;
+					j++;
 				}
 
 				render_index.pop_back();
