@@ -14,6 +14,7 @@ Bitset2D CalculatorWindow::update_window() {
 	return get_render_canvas();
 }
 
+
 void CalculatorWindow::handle_key_down(KeyPress keypress) {
 	Equation::Error error;
 	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) equation->move_cursor_right();

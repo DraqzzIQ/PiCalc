@@ -1,20 +1,20 @@
 // CasioOS.cpp : This file contains the 'main' function. Program execution begins and ends there.
-#include "IRenderer.h"
 #include "ConsoleRenderer.h"
-#include "WindowManager.h"
-#include "MainMenuWindow.h"
 #include "IKeyboard.h"
+#include "IRenderer.h"
+#include "MainMenuWindow.h"
 #include "Utils.h"
+#include "WindowManager.h"
 #include <iostream>
 #include <vector>
 
 #ifdef PICO
-#include "PicoKeyboard.h"
-#include "DisplayRenderer.h"
-#include "pico/stdlib.h"
-#include "I2CUtils.h"
 #include "BTManager.h"
 #include "BTRenderer.h"
+#include "DisplayRenderer.h"
+#include "I2CUtils.h"
+#include "PicoKeyboard.h"
+#include "pico/stdlib.h"
 #include <malloc.h>
 #else
 #include "SDLKeyboard.h"
@@ -46,21 +46,19 @@ int main(int argc, char* argv[])
 {
 #ifdef PICO
 	// Enable UART so we can print status output
-    stdio_init_all();
-	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl; 
+	stdio_init_all();
+	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl;
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
-	if(!I2CUtils::device_availible(DEVICE_ADDRESS))
-		std::cout << "Display not found" << std::endl;
-	else
-		renderers->push_back(new DisplayRenderer());
+	if (!I2CUtils::device_availible(DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
+	else renderers->push_back(new DisplayRenderer());
 	renderers->push_back(new BTRenderer(bt_manager));
 #else
 	renderers->push_back(new ConsoleRenderer());
 #endif
 	window_manager = new WindowManager(renderers);
 	window_manager->update();
-	
+
 	Utils::sleep_for_ms(1000);
 
 	main_menu = new MainMenuWindow(window_manager);
@@ -73,12 +71,12 @@ int main(int argc, char* argv[])
 	keyboard = new SDLKeyboard(window_manager);
 	Utils::set_time_start_point();
 #endif
-	
+
 
 	window_manager->add_window(main_menu);
 
 	// start main thread
 	start_main_thread();
 
-    return 0;
+	return 0;
 }

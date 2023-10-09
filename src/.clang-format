@@ -2,7 +2,7 @@
 BasedOnStyle: LLVM
 AccessModifierOffset: 0
 AlignAfterOpenBracket: Align
-AlignArrayOfStructures: Left
+AlignArrayOfStructures: None
 AlignConsecutiveAssignments:
   Enabled: false
   AcrossEmptyLines: false
@@ -27,7 +27,7 @@ AlignConsecutiveMacros:
   AcrossComments: false
   AlignCompound: false
   PadOperators: false
-AlignEscapedNewlines: Right
+AlignEscapedNewlines: Left
 AlignOperands: Align
 AlignTrailingComments:
   Kind: Always
@@ -79,7 +79,7 @@ BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: AfterColon
 BreakInheritanceList: AfterColon
 BreakStringLiterals: false
-ColumnLimit: 500
+ColumnLimit: 0
 CommentPragmas: "^ IWYU pragma:"
 CompactNamespaces: false
 ConstructorInitializerIndentWidth: 4
@@ -89,7 +89,7 @@ DerivePointerAlignment: false
 DisableFormat: false
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: LogicalBlock
-ExperimentalAutoDetectBinPacking: false
+ExperimentalAutoDetectBinPacking: true
 FixNamespaceComments: true
 ForEachMacros:
   - foreach
@@ -148,7 +148,7 @@ ObjCBreakBeforeNestedBlockParam: true
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 PPIndentWidth: -1
-PackConstructorInitializers: CurrentLine
+PackConstructorInitializers: Never
 PenaltyBreakAssignment: 2
 PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 300

@@ -1,10 +1,9 @@
 #pragma once
 #include <stdint.h>
 /// <summary>
-/// KeyPress 
+/// KeyPress
 /// </summary>
-struct KeyPress
-{
+struct KeyPress {
 	uint8_t key_calculator;
 	uint8_t key_keyboard;
 	uint8_t key_raw;

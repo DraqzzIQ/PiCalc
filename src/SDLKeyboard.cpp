@@ -1,13 +1,14 @@
 #include "SDLKeyboard.h"
 #ifndef PICO
 
-SDLKeyboard::SDLKeyboard(WindowManager *window_manager) : IKeyboard(window_manager)
+SDLKeyboard::SDLKeyboard(WindowManager* window_manager): IKeyboard(window_manager)
 {
-    _event = new SDL_Event();
-    sdl_init();
+	_event = new SDL_Event();
+	sdl_init();
 }
 
-void SDLKeyboard::sdl_init(){
+void SDLKeyboard::sdl_init()
+{
 	SDL_Init(SDL_INIT_EVERYTHING);
 	_window = SDL_CreateWindow("keyboard input, NEEDS TO BE IN FOCUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 400, 200, SDL_WINDOW_ALLOW_HIGHDPI);
 	SDL_SetWindowAlwaysOnTop(_window, SDL_TRUE);
@@ -28,23 +29,23 @@ bool SDLKeyboard::is_alpha_active()
 	return SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LALT] || SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RALT];
 }
 
-void SDLKeyboard::check_for_keyboard_presses() {
+void SDLKeyboard::check_for_keyboard_presses()
+{
 	if (SDL_PollEvent(_event)) {
 		if (_event->type == SDL_QUIT) {
 			SDL_DestroyWindow(_window);
-	        SDL_Quit();
-	        exit(0);
-		}
-		else if (_event->type == SDL_KEYDOWN) {
+			SDL_Quit();
+			exit(0);
+		} else if (_event->type == SDL_KEYDOWN) {
 			_window_manager->handle_key_down(sdl_event_to_keypress(_event));
-		}
-		else if (_event->type == SDL_KEYUP) {
+		} else if (_event->type == SDL_KEYUP) {
 			_window_manager->handle_key_up(sdl_event_to_keypress(_event));
 		}
 	}
 }
 
-KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event){
+KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event)
+{
 	KeyPress keypress = KeyPress();
 	keypress.shift = is_shift_active();
 	keypress.alpha = is_alpha_active();
@@ -53,15 +54,16 @@ KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event){
 	keypress.key_keyboard = scancode_to_key_keyboard(_event);
 
 	std::cout << unsigned(keypress.key_raw) << "        ";
-	//std::cout << unsigned(_event->key.keysym.scancode);
+	// std::cout << unsigned(_event->key.keysym.scancode);
 
 	return keypress;
 }
 
-uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event) {
+uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
+{
 	if (is_shift_active()) {
 		switch (_event->key.keysym.scancode) {
-			//letters
+			// letters
 		case SDL_SCANCODE_A: return Chars::KEY_MAP.at("A");
 		case SDL_SCANCODE_B: return Chars::KEY_MAP.at("B");
 		case SDL_SCANCODE_C: return Chars::KEY_MAP.at("C");
@@ -87,18 +89,19 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event) {
 		case SDL_SCANCODE_W: return Chars::KEY_MAP.at("W");
 		case SDL_SCANCODE_X: return Chars::KEY_MAP.at("X");
 		case SDL_SCANCODE_Y: return Chars::KEY_MAP.at("Y");
-		case SDL_SCANCODE_Z: return Chars::KEY_MAP.at("Z");
+		case SDL_SCANCODE_Z:
+			return Chars::KEY_MAP.at("Z");
 			// everything else
 		case SDL_SCANCODE_7: return Chars::KEY_MAP.at("fraction");
 		case SDL_SCANCODE_KP_DIVIDE: return Chars::KEY_MAP.at("fraction");
 		case SDL_SCANCODE_8: return Chars::KEY_MAP.at("(");
 		case SDL_SCANCODE_9: return Chars::KEY_MAP.at(")");
-		case 48: return Chars::KEY_MAP.at("*");
+		case 48:
+			return Chars::KEY_MAP.at("*");
 			// default
 		default: return Chars::KEY_MAP.at("unknown");
 		}
-	}
-	else {
+	} else {
 		switch (_event->key.keysym.scancode) {
 			// Numbers
 		case SDL_SCANCODE_1: return Chars::KEY_MAP.at("1");
@@ -110,7 +113,8 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event) {
 		case SDL_SCANCODE_7: return Chars::KEY_MAP.at("7");
 		case SDL_SCANCODE_8: return Chars::KEY_MAP.at("8");
 		case SDL_SCANCODE_9: return Chars::KEY_MAP.at("9");
-		case SDL_SCANCODE_0: return Chars::KEY_MAP.at("0");
+		case SDL_SCANCODE_0:
+			return Chars::KEY_MAP.at("0");
 			// Keypad Numbers
 		case SDL_SCANCODE_KP_1: return Chars::KEY_MAP.at("1");
 		case SDL_SCANCODE_KP_2: return Chars::KEY_MAP.at("2");
@@ -121,7 +125,8 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event) {
 		case SDL_SCANCODE_KP_7: return Chars::KEY_MAP.at("7");
 		case SDL_SCANCODE_KP_8: return Chars::KEY_MAP.at("8");
 		case SDL_SCANCODE_KP_9: return Chars::KEY_MAP.at("9");
-		case SDL_SCANCODE_KP_0: return Chars::KEY_MAP.at("0");
+		case SDL_SCANCODE_KP_0:
+			return Chars::KEY_MAP.at("0");
 			// Letters
 		case SDL_SCANCODE_A: return Chars::KEY_MAP.at("a");
 		case SDL_SCANCODE_B: return Chars::KEY_MAP.at("b");
@@ -148,7 +153,8 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event) {
 		case SDL_SCANCODE_W: return Chars::KEY_MAP.at("w");
 		case SDL_SCANCODE_X: return Chars::KEY_MAP.at("x");
 		case SDL_SCANCODE_Y: return Chars::KEY_MAP.at("y");
-		case SDL_SCANCODE_Z: return Chars::KEY_MAP.at("z");
+		case SDL_SCANCODE_Z:
+			return Chars::KEY_MAP.at("z");
 			// everything else
 		case SDL_SCANCODE_LEFT: return Chars::KEY_MAP.at("left");
 		case SDL_SCANCODE_RIGHT: return Chars::KEY_MAP.at("right");
@@ -160,14 +166,16 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event) {
 		case SDL_SCANCODE_KP_MINUS: return Chars::KEY_MAP.at("-");
 		case SDL_SCANCODE_KP_PLUS: return Chars::KEY_MAP.at("+");
 		case 48: return Chars::KEY_MAP.at("+");
-		case 56: return Chars::KEY_MAP.at("-");
+		case 56:
+			return Chars::KEY_MAP.at("-");
 			// default
 		default: return Chars::KEY_MAP.at("unknown");
 		}
 	}
 }
 
-uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event) {
+uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event)
+{
 	switch (_event->key.keysym.scancode) {
 	case SDL_SCANCODE_RSHIFT: return Chars::KEY_MAP.at("SHIFT");
 	case SDL_SCANCODE_LSHIFT: return Chars::KEY_MAP.at("SHIFT");
@@ -205,7 +213,7 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event) {
 	case SDL_SCANCODE_F8: return Chars::KEY_MAP.at(")");
 	case SDL_SCANCODE_BACKSPACE: return Chars::KEY_MAP.at("DEL");
 	case SDL_SCANCODE_PERIOD: return Chars::KEY_MAP.at("multiply"); // .
-	case 48: return Chars::KEY_MAP.at("+"); // +
+	case 48: return Chars::KEY_MAP.at("+");                         // +
 	case SDL_SCANCODE_INSERT: return Chars::KEY_MAP.at("Ans");
 	case SDL_SCANCODE_UP: return Chars::KEY_MAP.at("up");
 	case SDL_SCANCODE_F9: return Chars::KEY_MAP.at("logn");
@@ -214,7 +222,7 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event) {
 	case SDL_SCANCODE_TAB: return Chars::KEY_MAP.at("S<>D");
 	case SDL_SCANCODE_ESCAPE: return Chars::KEY_MAP.at("AC");
 	case 49: return Chars::KEY_MAP.at("divide"); // #
-	case 56: return Chars::KEY_MAP.at("-"); // -
+	case 56: return Chars::KEY_MAP.at("-");      // -
 	case SDL_SCANCODE_RETURN: return Chars::KEY_MAP.at("=");
 	case SDL_SCANCODE_LCTRL: return Chars::KEY_MAP.at("MODE");
 	case SDL_SCANCODE_RCTRL: return Chars::KEY_MAP.at("MODE");

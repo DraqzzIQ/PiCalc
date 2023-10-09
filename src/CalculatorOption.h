@@ -1,11 +1,11 @@
 #pragma once
-#include "MenuOption.h"
 #include "CalculatorWindow.h"
+#include "MenuOption.h"
 
-class CalculatorOption : public MenuOption
+class CalculatorOption: public MenuOption
 {
-public:
-    CalculatorOption(WindowManager* window_manager) : MenuOption("Calculator", window_manager) {}
-    void on_select();
-    void on_shift_select();
+	public:
+	CalculatorOption(WindowManager* window_manager): MenuOption("Calculator", window_manager) {}
+	void on_select();
+	void on_shift_select();
 };
