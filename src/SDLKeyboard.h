@@ -2,7 +2,7 @@
 #ifndef PICO
 #include "Chars.h"
 #include "IKeyboard.h"
-#include "SDL.h"
+#include <SDL2/SDL.h>
 #include "WindowManager.h"
 #include <iostream>
 
