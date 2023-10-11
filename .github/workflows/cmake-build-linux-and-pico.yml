@@ -30,7 +30,7 @@ env:
   PRERELEASE: ${{ inputs.prerelease }}
 
 permissions:
-  contents: read|write
+  contents: write
 
 jobs:
   linux-build:
