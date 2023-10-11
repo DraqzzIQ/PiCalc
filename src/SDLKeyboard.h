@@ -2,8 +2,12 @@
 #ifndef PICO
 #include "Chars.h"
 #include "IKeyboard.h"
-#include <SDL2/SDL.h>
 #include "WindowManager.h"
+#ifdef _WIN32
+#include "SDL.h"
+#else
+#include <SDL2/SDL.h>
+#endif
 #include <iostream>
 
 /// <summary>
