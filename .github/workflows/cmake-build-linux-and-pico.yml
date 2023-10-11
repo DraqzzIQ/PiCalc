@@ -122,6 +122,9 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
 
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
+    needs: [linux-build, pico-build, windows-build]
+
     steps:
     - uses: actions/checkout@v3
 
@@ -148,3 +151,4 @@ jobs:
           ${{github.workspace}}/builds/CasioOS-pico.uf2
           ${{github.workspace}}/builds/CasioOS-win-x64.exe
         prerelease: ${{env.PRERELEASE}}
+        fail_on_unmatched_files: false
