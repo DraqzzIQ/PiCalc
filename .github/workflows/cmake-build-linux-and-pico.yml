@@ -44,7 +44,7 @@ jobs:
     - name: Clone Pico SDK  
       run: git clone https://github.com/raspberrypi/pico-sdk.git ${{github.workspace}}/pico-sdk
     - name: Configure Pico SDK
-      run: git submodule update --init ${{github.workspace}}/pico-sdk
+      run: cd ${{github.workspace}}/pico-sdk && git submodule update --init
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DRPI_PICO=ON -DPICO_SDK_PATH=${{github.workspace}}/pico-sdk
     - name: Build
