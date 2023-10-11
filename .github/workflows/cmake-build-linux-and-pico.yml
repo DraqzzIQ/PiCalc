@@ -27,7 +27,7 @@ env:
   # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
   BUILD_CONFIGURATION: Release
 
-  PRERELEASE: ${{ inputs.prerelease }}
+  PRERELEASE: ${{ inputs.prerelease || true}}
 
 permissions:
   contents: write
@@ -127,6 +127,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
     - name: Download builds
       uses: actions/download-artifact@v3
@@ -143,12 +146,23 @@ jobs:
         mv ${{github.workspace}}/builds/CasioOS.uf2 ${{github.workspace}}/builds/CasioOS-pico.uf2
         mv ${{github.workspace}}/builds/CasioOS.exe ${{github.workspace}}/builds/CasioOS-win-x64.exe
 
+    - name: Bump version and push tag
+      id: release_tag
+      uses: anothrNick/github-tag-action@1.64.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        PRERELEASE_SUFFIX: alpha
+        DEFAULT_BUMP: patch
+        VERBOSE: true
+
     - name: Release
-      uses: softprops/action-gh-release@v1
+      uses: marvinpinto/action-automatic-releases@latest
       with:
         files: |
           ${{github.workspace}}/builds/CasioOS-linux-x64
           ${{github.workspace}}/builds/CasioOS-pico.uf2
           ${{github.workspace}}/builds/CasioOS-win-x64.exe
         prerelease: ${{env.PRERELEASE}}
-        fail_on_unmatched_files: false
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: ${{steps.release_tag.outputs.new_tag}}
