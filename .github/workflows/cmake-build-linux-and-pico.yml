@@ -11,6 +11,17 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: CasioOS.sln
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+permissions:
+  contents: read
 
 jobs:
   linux-build:
@@ -38,14 +49,44 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
+
+    - name: Cache SDK
+      id: cache-sdk
+      uses: actions/cache@v3
+      with:
+        path: ${{github.workspace}}/pico-sdk
+        key: ${{ runner.os }}-pico-sdk
+        
     - name: Install Pico SDK Dependencies
       run: sudo apt install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib -y && pip3 install pycryptodomex
-    - name: Clone Pico SDK  
+  
+    - name: Clone Pico SDK
+      if: steps.cache-sdk.outputs.cache-hit != 'true'
       run: git clone https://github.com/raspberrypi/pico-sdk.git ${{github.workspace}}/pico-sdk
     - name: Configure Pico SDK
+      if: steps.cache-sdk.outputs.cache-hit != 'true'
       run: cd ${{github.workspace}}/pico-sdk && git submodule update --init
+      
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DRPI_PICO=ON -DPICO_SDK_PATH=${{github.workspace}}/pico-sdk
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+  windows-build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
