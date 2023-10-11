@@ -55,7 +55,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Upload build
-    - uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3
       with:
         name: builds
         path: ${{github.workspace}}/build/CasioOS
@@ -93,7 +93,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
       
     - name: Upload build
-    - uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3
       with:
         name: builds
         path: ${{github.workspace}}/build/CasioOS.uf2
@@ -114,7 +114,7 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
     - name: Upload build
-    - uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3
       with:
         name: builds
         path: ${{github.workspace}}/x64/Release/CasioOS.exe
@@ -125,7 +125,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: actions/download-artifact@v3
+    - name: Download builds
+      uses: actions/download-artifact@v3
       with:
         name: builds
         path: ${{github.workspace}}/builds
