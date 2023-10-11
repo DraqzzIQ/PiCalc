@@ -7,6 +7,13 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Prerelease'
+        required: true
+        default: true
+        type: boolean
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -20,8 +27,10 @@ env:
   # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
   BUILD_CONFIGURATION: Release
 
+  PRERELEASE: ${{ inputs.prerelease }}
+
 permissions:
-  contents: read
+  contents: read|write
 
 jobs:
   linux-build:
@@ -44,6 +53,13 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Upload build
+    - uses: actions/upload-artifact@v3
+      with:
+        name: builds
+        path: ${{github.workspace}}/build/CasioOS
+      
   pico-build:
     runs-on: ubuntu-latest
 
@@ -58,19 +74,29 @@ jobs:
         key: ${{ runner.os }}-pico-sdk
         
     - name: Install Pico SDK Dependencies
-      run: sudo apt install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib -y && pip3 install pycryptodomex
+      run: |
+        sudo apt install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib -y
+        pip3 install pycryptodomex
   
     - name: Clone Pico SDK
       if: steps.cache-sdk.outputs.cache-hit != 'true'
       run: git clone https://github.com/raspberrypi/pico-sdk.git ${{github.workspace}}/pico-sdk
     - name: Configure Pico SDK
       if: steps.cache-sdk.outputs.cache-hit != 'true'
-      run: cd ${{github.workspace}}/pico-sdk && git submodule update --init
+      run: |
+        cd ${{github.workspace}}/pico-sdk 
+        git submodule update --init
       
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DRPI_PICO=ON -DPICO_SDK_PATH=${{github.workspace}}/pico-sdk
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      
+    - name: Upload build
+    - uses: actions/upload-artifact@v3
+      with:
+        name: builds
+        path: ${{github.workspace}}/build/CasioOS.uf2
 
   windows-build:
     runs-on: windows-latest
@@ -86,3 +112,38 @@ jobs:
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Upload build
+    - uses: actions/upload-artifact@v3
+      with:
+        name: builds
+        path: ${{github.workspace}}/x64/Release/CasioOS.exe
+
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: builds
+        path: ${{github.workspace}}/builds
+    
+    - name: Display structure of downloaded files
+      run: ls -R
+
+    - name: Rename builds
+      run: |
+        mv ${{github.workspace}}/builds/CasioOS ${{github.workspace}}/builds/CasioOS-linux-x64
+        mv ${{github.workspace}}/builds/CasioOS.uf2 ${{github.workspace}}/builds/CasioOS-pico.uf2
+        mv ${{github.workspace}}/builds/CasioOS.exe ${{github.workspace}}/builds/CasioOS-win-x64.exe
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ${{github.workspace}}/builds/CasioOS-linux-x64
+          ${{github.workspace}}/builds/CasioOS-pico.uf2
+          ${{github.workspace}}/builds/CasioOS-win-x64.exe
+        prerelease: ${{env.PRERELEASE}}
