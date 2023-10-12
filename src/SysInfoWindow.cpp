@@ -1,5 +1,10 @@
 #include "SysInfoWindow.h"
 
+SysInfoWindow::SysInfoWindow()
+{
+	screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true);
+}
+
 Bitset2D SysInfoWindow::update_window()
 {
 	text = std::vector<std::string>(3);
