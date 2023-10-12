@@ -8,6 +8,13 @@ ConsoleRenderer::ConsoleRenderer()
 	GetWindowRect(console, &r);                          // stores the console's current dimensions
 
 	MoveWindow(console, r.left, r.top, 1600, 600, TRUE); // 800 width, 100 height
+
+	// Windows exe fix
+	DWORD consoleMode;
+	HANDLE outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (GetConsoleMode(outputHandle, &consoleMode)) {
+		SetConsoleMode(outputHandle, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+	}
 #endif
 }
 
