@@ -61,13 +61,13 @@
 	<ClCompile Include="src\bluetooth\BTManager.cpp" />
 	<ClCompile Include="src\bluetooth\BTOut.cpp" />
 	<ClCompile Include="src\bluetooth\BTRenderer.cpp" />
-	<ClCompile Include="src\CasioOS.cpp" \>
-	<ClCompile Include="src\Chars.cpp" \>
-	<ClCompile Include="src\Constants.cpp" \>
+	<ClCompile Include="src\CasioOS.cpp" />
+	<ClCompile Include="src\Chars.cpp" />
+	<ClCompile Include="src\Constants.cpp" />
 	<ClCompile Include="src\datastructs\Bitset2D.cpp" />
 	<ClCompile Include="src\datastructs\DynamicBitset.cpp" />
-	<ClCompile Include="src\Equation.cpp" \>
-	<ClCompile Include="src\Graphics.cpp" \>
+	<ClCompile Include="src\Equation.cpp" />
+	<ClCompile Include="src\Graphics.cpp" />
 	<ClCompile Include="src\keyboard\IKeyboard.cpp" />
 	<ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
 	<ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
@@ -78,7 +78,7 @@
 	<ClCompile Include="src\renderers\ConsoleRenderer.cpp" />
 	<ClCompile Include="src\renderers\DisplayRenderer.cpp" />
 	<ClCompile Include="src\renderers\IRenderer.cpp" />
-	<ClCompile Include="src\StreamBufferCapturer.cpp" \>
+	<ClCompile Include="src\StreamBufferCapturer.cpp" />
 	<ClCompile Include="src\utils\I2CUtils.cpp" />
 	<ClCompile Include="src\utils\Utils.cpp" />
 	<ClCompile Include="src\windows\CalculatorWindow.cpp" />
