@@ -1,8 +1,8 @@
 #pragma once
 #include "Graphics.h"
-#include "KeyPress.h"
-#include "Utils.h"
-#include "Window.h"
+#include "keyboard/KeyPress.h"
+#include "utils/Utils.h"
+#include "windows/Window.h"
 #include <algorithm>
 #include <cmath>
 #include <map>

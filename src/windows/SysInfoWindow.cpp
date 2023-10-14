@@ -1,4 +1,4 @@
-#include "SysInfoWindow.h"
+#include "windows/SysInfoWindow.h"
 
 SysInfoWindow::SysInfoWindow()
 {

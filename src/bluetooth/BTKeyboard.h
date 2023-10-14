@@ -1,7 +1,7 @@
 #pragma once
 #ifdef PICO
-#include "IKeyboard.h"
-#include "KeyPress.h"
+#include "keyboard/IKeyboard.h"
+#include "keyboard/KeyPress.h"
 
 class BTKeyboard: public IKeyboard
 {

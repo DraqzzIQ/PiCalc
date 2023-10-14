@@ -1,4 +1,4 @@
-#include "MainMenuWindow.h"
+#include "windows/MainMenuWindow.h"
 
 MainMenuWindow::MainMenuWindow(WindowManager* window_manager): MenuWindow(window_manager)
 {

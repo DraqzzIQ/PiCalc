@@ -1,4 +1,4 @@
-#include "SettingsOption.h"
+#include "options/SettingsOption.h"
 
 void SettingsOption::on_select()
 {

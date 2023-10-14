@@ -1,4 +1,4 @@
-#include "DisplayRenderer.h"
+#include "renderers/DisplayRenderer.h"
 #ifdef PICO
 
 DisplayRenderer::DisplayRenderer()

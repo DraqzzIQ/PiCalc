@@ -1,7 +1,7 @@
 #pragma once
-#include "CalculatorOption.h"
-#include "MenuWindow.h"
-#include "SettingsOption.h"
+#include "options/CalculatorOption.h"
+#include "windows/MenuWindow.h"
+#include "options/SettingsOption.h"
 
 class MainMenuWindow: public MenuWindow
 {

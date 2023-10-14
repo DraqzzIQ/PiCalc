@@ -1,4 +1,4 @@
-#include "SettingsWindow.h"
+#include "windows/SettingsWindow.h"
 
 SettingsWindow::SettingsWindow(WindowManager* window_manager): MenuWindow(window_manager)
 {

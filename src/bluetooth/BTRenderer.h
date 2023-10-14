@@ -1,8 +1,8 @@
 #pragma once
 #ifdef PICO
-#include "BTManager.h"
-#include "IRenderer.h"
-#include "WindowManager.h"
+#include "bluetooth/BTManager.h"
+#include "renderers/IRenderer.h"
+#include "windows/WindowManager.h"
 
 
 class BTRenderer: public IRenderer

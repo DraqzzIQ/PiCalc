@@ -1,4 +1,4 @@
-#include "InstanceSelectionWindow.h"
+#include "windows/InstanceSelectionWindow.h"
 
 InstanceSelectionWindow::InstanceSelectionWindow(WindowManager* window_manager)
 {

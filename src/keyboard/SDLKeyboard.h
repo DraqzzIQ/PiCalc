@@ -1,8 +1,8 @@
 #pragma once
 #ifndef PICO
 #include "Chars.h"
-#include "IKeyboard.h"
-#include "WindowManager.h"
+#include "keyboard/IKeyboard.h"
+#include "windows/WindowManager.h"
 #ifdef _WIN32
 #include "SDL.h"
 #else

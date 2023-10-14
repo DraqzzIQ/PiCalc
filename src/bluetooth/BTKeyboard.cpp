@@ -1,4 +1,4 @@
-#include "BTKeyboard.h"
+#include "bluetooth/BTKeyboard.h"
 #ifdef PICO
 
 BTKeyboard::BTKeyboard(WindowManager* window_manager): IKeyboard(window_manager) {}

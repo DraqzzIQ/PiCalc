@@ -1,4 +1,4 @@
-#include "I2CUtils.h"
+#include "utils/I2CUtils.h"
 #ifdef PICO
 
 void I2CUtils::init_i2c()

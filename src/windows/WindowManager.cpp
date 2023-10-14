@@ -1,4 +1,4 @@
-#include "WindowManager.h"
+#include "windows/WindowManager.h"
 
 WindowManager::WindowManager(std::vector<IRenderer*>* renderers)
 {

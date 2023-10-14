@@ -1,4 +1,4 @@
-#include "ConsoleRenderer.h"
+#include "renderers/ConsoleRenderer.h"
 
 ConsoleRenderer::ConsoleRenderer()
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "WindowManager.h"
+#include "windows/WindowManager.h"
 
 /// <summary>
 /// provides an interface for keyboard input

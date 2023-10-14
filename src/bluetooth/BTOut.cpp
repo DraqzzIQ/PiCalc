@@ -1,5 +1,5 @@
 #ifdef PICO
-#include "BTOut.h"
+#include "bluetooth/BTOut.h"
 
 BTOut::BTOut(BTManager* bt_manager)
 {

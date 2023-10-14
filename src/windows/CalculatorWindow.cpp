@@ -1,4 +1,4 @@
-#include "CalculatorWindow.h"
+#include "windows/CalculatorWindow.h"
 
 CalculatorWindow::CalculatorWindow() {
 	equation = new Equation();

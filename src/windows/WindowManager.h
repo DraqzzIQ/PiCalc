@@ -1,8 +1,8 @@
 #pragma once
 #include "Graphics.h"
-#include "IRenderer.h"
-#include "KeyPress.h"
-#include "Window.h"
+#include "renderers/IRenderer.h"
+#include "keyboard/KeyPress.h"
+#include "windows/Window.h"
 #include <stack>
 #include <typeinfo>
 #include <unordered_map>

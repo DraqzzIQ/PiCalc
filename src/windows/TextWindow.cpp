@@ -1,4 +1,4 @@
-#include "TextWindow.h"
+#include "windows/TextWindow.h"
 
 TextWindow::~TextWindow() {}
 

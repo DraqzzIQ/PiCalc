@@ -1,9 +1,9 @@
 #pragma once
 #include "Constants.h"
 #include "Graphics.h"
-#include "MenuOption.h"
-#include "Window.h"
-#include "WindowManager.h"
+#include "options/MenuOption.h"
+#include "windows/Window.h"
+#include "windows/WindowManager.h"
 #include <cmath>
 #include <vector>
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "DynamicBitset.h"
+#include "datastructs/DynamicBitset.h"
 #include <string>
 #include <vector>
 

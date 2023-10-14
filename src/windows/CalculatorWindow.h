@@ -1,7 +1,7 @@
 #pragma once
 #include "Equation.h"
 #include "Graphics.h"
-#include "Window.h"
+#include "windows/Window.h"
 #include <iostream>
 
 class CalculatorWindow: public Window

@@ -1,4 +1,4 @@
-#include "WindowManager.h"
+#include "windows/WindowManager.h"
 #include <iostream>
 
 class InstanceSelectionWindow: public Window

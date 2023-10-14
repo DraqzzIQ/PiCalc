@@ -1,4 +1,4 @@
-#include "MenuOption.h"
+#include "options/MenuOption.h"
 
 MenuOption::MenuOption(const std::string display_name, WindowManager* window_manager)
 {

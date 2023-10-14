@@ -1,7 +1,7 @@
 #pragma once
 #include "Constants.h"
 #include "Graphics.h"
-#include "IRenderer.h"
+#include "renderers/IRenderer.h"
 #include <algorithm>
 #include <iostream>
 #ifdef _WIN32

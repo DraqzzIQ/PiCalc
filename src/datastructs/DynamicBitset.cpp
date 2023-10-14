@@ -1,4 +1,4 @@
-#include "DynamicBitset.h"
+#include "datastructs/DynamicBitset.h"
 
 
 DynamicBitset::DynamicBitset()

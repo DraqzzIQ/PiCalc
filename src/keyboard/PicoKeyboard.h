@@ -1,7 +1,7 @@
 #pragma once
 #ifdef PICO
-#include "IKeyboard.h"
-#include "WindowManager.h"
+#include "keyboard/IKeyboard.h"
+#include "windows/WindowManager.h"
 #include <iostream>
 #include <map>
 #include <pico/stdlib.h>
