@@ -1,6 +1,6 @@
 #pragma once
-#include "MenuOption.h"
-#include "SettingsWindow.h"
+#include "options/MenuOption.h"
+#include "windows/SettingsWindow.h"
 
 class SettingsOption: public MenuOption
 {

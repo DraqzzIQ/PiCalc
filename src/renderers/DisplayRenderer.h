@@ -1,8 +1,8 @@
 #pragma once
 #ifdef PICO
-#include "IRenderer.h"
+#include "renderers/IRenderer.h"
 #include "LCDConstants.h"
-#include "Utils.h"
+#include "utils/Utils.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
 #include <algorithm>

@@ -1,4 +1,4 @@
-#include "PicoKeyboard.h"
+#include "keyboard/PicoKeyboard.h"
 #ifdef PICO
 
 PicoKeyboard::PicoKeyboard(WindowManager* window_manager): IKeyboard(window_manager)

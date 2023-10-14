@@ -1,8 +1,8 @@
 #pragma once
 #ifdef PICO
-#include "BTKeyboard.h"
-#include "Utils.h"
-#include "WindowManager.h"
+#include "bluetooth/BTKeyboard.h"
+#include "utils/Utils.h"
+#include "windows/WindowManager.h"
 #include "btstack.h"
 #include "casio_os.h"
 #include "pico/cyw43_arch.h"

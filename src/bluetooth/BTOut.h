@@ -1,6 +1,6 @@
 #pragma once
 #ifdef PICO
-#include "BTManager.h"
+#include "bluetooth/BTManager.h"
 #include "IStreamBufferReceiver.h"
 
 /// <summary>

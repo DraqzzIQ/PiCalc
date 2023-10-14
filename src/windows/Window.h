@@ -1,7 +1,7 @@
 #pragma once
 #include "Constants.h"
 #include "Graphics.h"
-#include "KeyPress.h"
+#include "keyboard/KeyPress.h"
 #include <algorithm>
 #include <stdint.h>
 #include <string>

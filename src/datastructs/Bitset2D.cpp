@@ -1,4 +1,4 @@
-#include "Bitset2D.h"
+#include "datastructs/Bitset2D.h"
 
 Bitset2D::Bitset2D()
 {

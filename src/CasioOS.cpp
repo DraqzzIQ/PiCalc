@@ -1,25 +1,25 @@
 // CasioOS.cpp : This file contains the 'main' function. Program execution begins and ends there.
-#include "ConsoleRenderer.h"
-#include "IKeyboard.h"
-#include "IRenderer.h"
-#include "MainMenuWindow.h"
-#include "Utils.h"
-#include "WindowManager.h"
+#include "renderers/ConsoleRenderer.h"
+#include "keyboard/IKeyboard.h"
+#include "renderers/IRenderer.h"
+#include "windows/MainMenuWindow.h"
+#include "utils/Utils.h"
+#include "windows/WindowManager.h"
 #include <iostream>
 #include <vector>
 
 #ifdef PICO
-#include "BTManager.h"
-#include "BTOut.h"
-#include "BTRenderer.h"
-#include "DisplayRenderer.h"
-#include "I2CUtils.h"
-#include "PicoKeyboard.h"
+#include "bluetooth/BTManager.h"
+#include "bluetooth/BTOut.h"
+#include "bluetooth/BTRenderer.h"
+#include "renderers/DisplayRenderer.h"
+#include "utils/I2CUtils.h"
+#include "keyboard/PicoKeyboard.h"
 #include "StreamBufferCapturer.h"
 #include "pico/stdlib.h"
 #include <malloc.h>
 #else
-#include "SDLKeyboard.h"
+#include "keyboard/SDLKeyboard.h"
 #endif
 
 std::vector<IRenderer*>* renderers = new std::vector<IRenderer*>();

@@ -1,6 +1,6 @@
 #pragma once
-#include "MenuOption.h"
-#include "SysInfoWindow.h"
+#include "options/MenuOption.h"
+#include "windows/SysInfoWindow.h"
 
 class SysInfoOption: public MenuOption
 {

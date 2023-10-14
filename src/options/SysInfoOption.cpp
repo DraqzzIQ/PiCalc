@@ -1,4 +1,4 @@
-#include "SysInfoOption.h"
+#include "options/SysInfoOption.h"
 
 void SysInfoOption::on_select()
 {

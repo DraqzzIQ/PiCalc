@@ -1,6 +1,6 @@
 #pragma once
-#include "CalculatorWindow.h"
-#include "MenuOption.h"
+#include "windows/CalculatorWindow.h"
+#include "options/MenuOption.h"
 
 class CalculatorOption: public MenuOption
 {

@@ -1,7 +1,7 @@
 #pragma once
-#include "InstanceSelectionWindow.h"
-#include "Window.h"
-#include "WindowManager.h"
+#include "windows/InstanceSelectionWindow.h"
+#include "windows/Window.h"
+#include "windows/WindowManager.h"
 #include <iostream>
 #include <string>
 

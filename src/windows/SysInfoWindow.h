@@ -1,6 +1,6 @@
 #pragma once
-#include "TextWindow.h"
-#include "Utils.h"
+#include "windows/TextWindow.h"
+#include "utils/Utils.h"
 
 class SysInfoWindow: public TextWindow
 {

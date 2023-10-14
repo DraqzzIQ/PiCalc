@@ -1,5 +1,5 @@
 #pragma once
-#include "Bitset2D.h"
+#include "datastructs/Bitset2D.h"
 #include "Chars.h"
 #include "Constants.h"
 #include <map>
