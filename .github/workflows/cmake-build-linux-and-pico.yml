@@ -122,7 +122,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
 
-    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }} && github.event_name != 'pull_request'
     needs: [linux-build, pico-build, windows-build]
 
     steps:
