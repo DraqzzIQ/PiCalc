@@ -48,6 +48,10 @@ btstack_packet_callback_registration_t hci_event_callback_registration;
 uint16_t display_notification_enabled;
 // display attribute handle
 uint16_t display_attribute_handle;
+// stdout notification state
+uint16_t stdout_notification_enabled;
+// stdout attribute handle
+uint16_t stdout_attribute_handle;
 // connection handle
 hci_con_handle_t connection_handle;
 // max ATT MTU - 1 for 0x00 packet header
@@ -185,7 +189,14 @@ int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_
 	if (transaction_mode != ATT_TRANSACTION_MODE_NONE) return 0;
 	switch (att_handle) {
 	// stdout characteristic notification
-	case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_CLIENT_CONFIGURATION_HANDLE: break;
+	case ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_CLIENT_CONFIGURATION_HANDLE:
+		stdout_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
+		printf("stdout notification enabled: %u\n", stdout_notification_enabled);
+		if (stdout_notification_enabled) {
+			stdout_attribute_handle = ATT_CHARACTERISTIC_205b0a33_bfaf_44ca_8c39_fd248f281f4f_01_VALUE_HANDLE;
+			att_server_request_can_send_now_event(connection_handle);
+		}
+		break;
 	// display characteristic notification
 	case ATT_CHARACTERISTIC_018ea0e5_77a0_424f_bd71_73a2ac1792dd_01_CLIENT_CONFIGURATION_HANDLE:
 		display_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
@@ -255,7 +266,13 @@ void send_frame_chunk()
 
 	att_server_notify(connection_handle, display_attribute_handle, data_chunk->data(), data_chunk->size());
 
-	if (frame_chunks.size() > frame_chunk_index) att_server_request_can_send_now_event(connection_handle);
+	att_server_request_can_send_now_event(connection_handle);
+}
+
+void BTManager::send_char(char c)
+{
+	att_server_notify(connection_handle, stdout_attribute_handle, (uint8_t*)&c, sizeof(c));
+	att_server_request_can_send_now_event(connection_handle);
 }
 
 void BTManager::get_mac(bd_addr_t mac)

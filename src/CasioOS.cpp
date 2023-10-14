@@ -10,10 +10,12 @@
 
 #ifdef PICO
 #include "BTManager.h"
+#include "BTOut.h"
 #include "BTRenderer.h"
 #include "DisplayRenderer.h"
 #include "I2CUtils.h"
 #include "PicoKeyboard.h"
+#include "StreamBufferCapturer.h"
 #include "pico/stdlib.h"
 #include <malloc.h>
 #else
@@ -26,6 +28,9 @@ WindowManager* window_manager;
 MenuWindow* main_menu;
 #ifdef PICO
 BTManager* bt_manager;
+BTOut* bt_out;
+StreamBufferCapturer* cout_capturer;
+StreamBufferCapturer* cerr_capturer;
 #endif
 
 /// <summary>
@@ -53,6 +58,10 @@ int main(int argc, char* argv[])
 	if (!I2CUtils::device_availible(DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
 	else renderers->push_back(new DisplayRenderer());
 	renderers->push_back(new BTRenderer(bt_manager));
+
+	bt_out = new BTOut(bt_manager);
+	cout_capturer = new StreamBufferCapturer(std::cout.rdbuf(), bt_out);
+	cerr_capturer = new StreamBufferCapturer(std::cerr.rdbuf(), bt_out);
 #else
 	renderers->push_back(new ConsoleRenderer());
 #endif
@@ -67,6 +76,8 @@ int main(int argc, char* argv[])
 	keyboard = new PicoKeyboard(window_manager);
 	bt_manager = new BTManager(window_manager);
 	bt_manager->enable_bt();
+	std::cout.rdbuf(cout_capturer);
+	std::cerr.rdbuf(cerr_capturer);
 #else
 	keyboard = new SDLKeyboard(window_manager);
 	Utils::set_time_start_point();
