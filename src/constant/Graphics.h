@@ -1,7 +1,7 @@
 #pragma once
 #include "datastructs/Bitset2D.h"
 #include "Chars.h"
-#include "Constants.h"
+#include "constant\Constants.h"
 #include <map>
 #include <string>
 #include <vector>
