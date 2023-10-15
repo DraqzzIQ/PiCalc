@@ -1,4 +1,4 @@
-#include "DisplayRenderer.h"
+#include "renderers/DisplayRenderer.h"
 #ifdef PICO
 
 DisplayRenderer::DisplayRenderer()
@@ -20,7 +20,7 @@ void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen
 
 	uint16_t index = 3;
 
-	for (uint8_t j = 0; j < pixels.size(); j++) {
+	for (uint8_t j = 0; j < pixels.width(); j++) {
 		std::vector<uint8_t> bytes = pixels[j].get_bytes();
 		for (uint8_t i = 0; i < 4; i++) {
 			command[index++] = bytes[i];
