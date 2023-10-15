@@ -1,6 +1,6 @@
 #pragma once
-#include "calculator\Equation.h"
-#include "constant\Graphics.h"
+#include "calculator/Equation.h"
+#include "constant/Graphics.h"
 #include "windows/Window.h"
 #include <iostream>
 
