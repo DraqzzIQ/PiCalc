@@ -1,5 +1,5 @@
 #pragma once
-#include "IStreamBufferReceiver.h"
+#include "stream_buffer/IStreamBufferReceiver.h"
 #include <iostream>
 #include <sstream>
 #include <streambuf>

@@ -1,4 +1,4 @@
-#include "StreamBufferCapturer.h"
+#include "stream_buffer/StreamBufferCapturer.h"
 
 StreamBufferCapturer::StreamBufferCapturer(std::streambuf* originalBuffer, IStreamBufferReceiver* receiver)
 {
