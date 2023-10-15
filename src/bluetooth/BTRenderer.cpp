@@ -1,6 +1,6 @@
 #include "bluetooth/BTRenderer.h"
 #ifdef PICO
-#include "constant\Constants.h"
+#include "constant/Constants.h"
 
 BTRenderer::BTRenderer(BTManager* bt_manager)
 {
