@@ -1,6 +1,6 @@
 #pragma once
-#include "Constants.h"
-#include "Graphics.h"
+#include "constant\Constants.h"
+#include "constant\Graphics.h"
 #include <stddef.h>
 
 /// <summary>
