@@ -1,7 +1,7 @@
 #pragma once
 #ifdef PICO
 #include "renderers/IRenderer.h"
-#include "LCDConstants.h"
+#include "constant/LCDConstants.h"
 #include "utils/Utils.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
