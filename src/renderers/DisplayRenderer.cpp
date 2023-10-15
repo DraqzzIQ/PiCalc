@@ -7,7 +7,7 @@ DisplayRenderer::DisplayRenderer()
 	clear();
 }
 
-void DisplayRenderer::render(const bitset_2d& pixels, const dynamic_bitset& screen_symbols, bool force_rerender)
+void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender)
 {
 	if (!force_rerender && already_rendered(pixels, screen_symbols))
 		return;
