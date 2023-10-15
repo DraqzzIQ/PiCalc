@@ -15,199 +15,214 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\bitset_2d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BTKeyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BTManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BTRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\btstack_config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CalculatorOption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CalculatorWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chars.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ConsoleRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Constants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DisplayRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\dynamic_bitset.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Equation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\I2CUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\IKeyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\InstanceSelectionWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\IRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\KeyPress.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LCDConstants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MainMenuWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MenuOption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MenuWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PicoKeyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SDLKeyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SettingsOption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SettingsWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SysInfoOption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SysInfoWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TextWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\WindowManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+	<ClInclude Include="src\bluetooth\BTKeyboard.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\bluetooth\BTManager.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\bluetooth\BTOut.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\bluetooth\BTRenderer.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\btstack_config.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\constant\Chars.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\constant\Constants.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\datastructs\Bitset2D.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\datastructs\DynamicBitset.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\calculator\Equation.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\constant\Graphics.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\stream_buffer\IStreamBufferReceiver.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\keyboard\IKeyboard.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\keyboard\KeyPress.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\keyboard\PicoKeyboard.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\keyboard\SDLKeyboard.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\constant\LCDConstants.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\options\CalculatorOption.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\options\MenuOption.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\options\SettingsOption.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\options\SysInfoOption.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\renderers\ConsoleRenderer.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\renderers\DisplayRenderer.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\renderers\IRenderer.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\stream_buffer\StreamBufferCapturer.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\utils\I2CUtils.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\utils\Utils.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\CalculatorWindow.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\InstanceSelectionWindow.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\MainMenuWindow.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\MenuWindow.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\SettingsWindow.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\SysInfoWindow.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\TextWindow.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\Window.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
+	<ClInclude Include="src\windows\WindowManager.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\bitset_2d.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BTKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BTManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BTRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CalculatorOption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CalculatorWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CasioOS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chars.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ConsoleRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Constants.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DisplayRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dynamic_bitset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Equation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\I2CUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\IKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\InstanceSelectionWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\IRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MainMenuWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MenuOption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MenuWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PicoKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SDLKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SettingsOption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SettingsWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SysInfoOption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SysInfoWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TextWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\WindowManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+	<ClCompile Include="src\bluetooth\BTKeyboard.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\bluetooth\BTManager.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\bluetooth\BTOut.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\bluetooth\BTRenderer.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\CasioOS.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\constant\Chars.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\constant\Constants.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\datastructs\Bitset2D.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\datastructs\DynamicBitset.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\calculator\Equation.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\constant\Graphics.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\keyboard\IKeyboard.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\keyboard\PicoKeyboard.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\keyboard\SDLKeyboard.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\options\CalculatorOption.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\options\MenuOption.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\options\SettingsOption.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\options\SysInfoOption.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\renderers\ConsoleRenderer.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\renderers\DisplayRenderer.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\renderers\IRenderer.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\stream_buffer\StreamBufferCapturer.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\utils\I2CUtils.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\utils\Utils.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\CalculatorWindow.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\InstanceSelectionWindow.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\MainMenuWindow.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\MenuWindow.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\SettingsWindow.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\SysInfoWindow.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\TextWindow.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\Window.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
+	<ClCompile Include="src\windows\WindowManager.cpp">
+	  <Filter>Source Files</Filter>
+	</ClCompile>
   </ItemGroup>
 </Project>
