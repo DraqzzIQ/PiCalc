@@ -1,7 +1,7 @@
 #pragma once
 #ifdef PICO
 #include "bluetooth/BTManager.h"
-#include "IStreamBufferReceiver.h"
+#include "stream_buffer/IStreamBufferReceiver.h"
 
 /// <summary>
 /// Receives characters from the stream buffer and sends them to the connected device

@@ -15,7 +15,7 @@
 #include "renderers/DisplayRenderer.h"
 #include "utils/I2CUtils.h"
 #include "keyboard/PicoKeyboard.h"
-#include "StreamBufferCapturer.h"
+#include "stream_buffer/StreamBufferCapturer.h"
 #include "pico/stdlib.h"
 #include <malloc.h>
 #else
