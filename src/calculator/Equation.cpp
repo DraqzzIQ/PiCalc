@@ -1,4 +1,4 @@
-#include "Equation.h"
+#include "calculator/Equation.h"
 
 Equation::Equation()
 {
