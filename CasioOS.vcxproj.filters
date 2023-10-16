@@ -15,21 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-	<ClInclude Include="src\bluetooth\BTKeyboard.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
-	<ClInclude Include="src\bluetooth\BTManager.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
-	<ClInclude Include="src\bluetooth\BTOut.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
-	<ClInclude Include="src\bluetooth\BTRenderer.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
-	<ClInclude Include="src\btstack_config.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
 	<ClInclude Include="src\constant\Chars.h">
 	  <Filter>Header Files</Filter>
 	</ClInclude>
@@ -46,9 +31,6 @@
 	  <Filter>Header Files</Filter>
 	</ClInclude>
 	<ClInclude Include="src\constant\Graphics.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
-	<ClInclude Include="src\stream_buffer\IStreamBufferReceiver.h">
 	  <Filter>Header Files</Filter>
 	</ClInclude>
 	<ClInclude Include="src\keyboard\IKeyboard.h">
@@ -87,9 +69,6 @@
 	<ClInclude Include="src\renderers\IRenderer.h">
 	  <Filter>Header Files</Filter>
 	</ClInclude>
-	<ClInclude Include="src\stream_buffer\StreamBufferCapturer.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
 	<ClInclude Include="src\utils\I2CUtils.h">
 	  <Filter>Header Files</Filter>
 	</ClInclude>
@@ -125,18 +104,6 @@
 	</ClInclude>
   </ItemGroup>
   <ItemGroup>
-	<ClCompile Include="src\bluetooth\BTKeyboard.cpp">
-	  <Filter>Source Files</Filter>
-	</ClCompile>
-	<ClCompile Include="src\bluetooth\BTManager.cpp">
-	  <Filter>Source Files</Filter>
-	</ClCompile>
-	<ClCompile Include="src\bluetooth\BTOut.cpp">
-	  <Filter>Source Files</Filter>
-	</ClCompile>
-	<ClCompile Include="src\bluetooth\BTRenderer.cpp">
-	  <Filter>Source Files</Filter>
-	</ClCompile>
 	<ClCompile Include="src\CasioOS.cpp">
 	  <Filter>Source Files</Filter>
 	</ClCompile>
@@ -186,9 +153,6 @@
 	  <Filter>Source Files</Filter>
 	</ClCompile>
 	<ClCompile Include="src\renderers\IRenderer.cpp">
-	  <Filter>Source Files</Filter>
-	</ClCompile>
-	<ClCompile Include="src\stream_buffer\StreamBufferCapturer.cpp">
 	  <Filter>Source Files</Filter>
 	</ClCompile>
 	<ClCompile Include="src\utils\I2CUtils.cpp">

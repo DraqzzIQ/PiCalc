@@ -19,18 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\bluetooth\BTKeyboard.h" />
-    <ClInclude Include="src\bluetooth\BTManager.h" />
-    <ClInclude Include="src\bluetooth\BTOut.h" />
-    <ClInclude Include="src\bluetooth\BTRenderer.h" />
-    <ClInclude Include="src\btstack_config.h" />
     <ClInclude Include="src\constant\Chars.h" />
     <ClInclude Include="src\constant\Constants.h" />
     <ClInclude Include="src\datastructs\Bitset2D.h" />
     <ClInclude Include="src\datastructs\DynamicBitset.h" />
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
-    <ClInclude Include="src\stream_buffer\IStreamBufferReceiver.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />
@@ -43,7 +37,6 @@
     <ClInclude Include="src\renderers\ConsoleRenderer.h" />
     <ClInclude Include="src\renderers\DisplayRenderer.h" />
     <ClInclude Include="src\renderers\IRenderer.h" />
-    <ClInclude Include="src\stream_buffer\StreamBufferCapturer.h" />
     <ClInclude Include="src\utils\I2CUtils.h" />
     <ClInclude Include="src\utils\Utils.h" />
     <ClInclude Include="src\windows\CalculatorWindow.h" />
@@ -57,10 +50,6 @@
     <ClInclude Include="src\windows\WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\bluetooth\BTKeyboard.cpp" />
-    <ClCompile Include="src\bluetooth\BTManager.cpp" />
-    <ClCompile Include="src\bluetooth\BTOut.cpp" />
-    <ClCompile Include="src\bluetooth\BTRenderer.cpp" />
     <ClCompile Include="src\CasioOS.cpp" />
     <ClCompile Include="src\constant\Chars.cpp" />
     <ClCompile Include="src\constant\Constants.cpp" />
@@ -78,7 +67,6 @@
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp" />
     <ClCompile Include="src\renderers\DisplayRenderer.cpp" />
     <ClCompile Include="src\renderers\IRenderer.cpp" />
-    <ClCompile Include="src\stream_buffer\StreamBufferCapturer.cpp" />
     <ClCompile Include="src\utils\I2CUtils.cpp" />
     <ClCompile Include="src\utils\Utils.cpp" />
     <ClCompile Include="src\windows\CalculatorWindow.cpp" />
