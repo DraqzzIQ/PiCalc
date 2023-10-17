@@ -40,7 +40,7 @@ void Equation::render_equation()
 	}
 }
 
-Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t start, uint32_t end)
+Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equation, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t start, uint32_t end)
 {
 	uint8_t font_height = table.at(0).height();
 	uint32_t y_origin = 0;

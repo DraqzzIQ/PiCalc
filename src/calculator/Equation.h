@@ -24,7 +24,13 @@ class Equation
 	/// <summary>
 	/// enum for all error types
 	/// </summary>
-	enum class Error { MATH_ERROR, PUFFER_ERROR, SYNTAX_ERROR, ARGUMENT_ERROR, STORAGE_ERROR, TIME_ERROR, FINE };
+	enum class Error { MATH_ERROR,
+		               PUFFER_ERROR,
+		               SYNTAX_ERROR,
+		               ARGUMENT_ERROR,
+		               STORAGE_ERROR,
+		               TIME_ERROR,
+		               FINE };
 	/// <summary>
 	/// return the rendered equation
 	/// </summary>
@@ -157,7 +163,7 @@ class Equation
 	/// <param name="cursor_data">set to the new cursor Position if the cursor is in the passed equation</param>
 	/// <param name="y_origin_ref">y origin of the rendered equation</param>
 	/// <returns>the rendered equation</returns>
-	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, const std::map<uint8_t, Bitset2D>& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t start = 0, uint32_t end = -1);
+	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t start = 0, uint32_t end = -1);
 	/// <summary>
 	/// formats an equation part by collecting all parts in brackets in a child, made for recursion
 	/// </summary>
