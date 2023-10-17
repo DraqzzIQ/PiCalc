@@ -137,11 +137,11 @@ class Equation
 	/// <summary>
 	/// all the operations that have to be between two values to be evaluated
 	/// </summary>
-	std::vector<uint8_t> allowedCalculateOperations{ 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
+	std::vector<uint8_t> _allowed_calculate_operations{ 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
 	/// <summary>
 	/// all Keys that end with an open rounded bracket
 	/// </summary>
-	std::vector<uint8_t> singleBracketOpenKeys{ 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
+	std::vector<uint8_t> _single_bracket_open_keys{ 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
 
 	/// <summary>
 	/// render the equation
@@ -163,7 +163,7 @@ class Equation
 	/// <param name="cursor_data">set to the new cursor Position if the cursor is in the passed equation</param>
 	/// <param name="y_origin_ref">y origin of the rendered equation</param>
 	/// <returns>the rendered equation</returns>
-	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t start = 0, uint32_t end = -1);
+	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t& start_index, bool stop_on_closed_bracket = false);
 	/// <summary>
 	/// formats an equation part by collecting all parts in brackets in a child, made for recursion
 	/// </summary>
