@@ -242,7 +242,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 			uint8_t value = equation[i]->value;
 			if (value < 10) {
 				num.push_back(value + 48);
-			} else if (value == Chars::KEY_MAP.at(".")) {
+			} else if (value == Chars::KEY_MAP.at(",")) {
 				num.push_back('.');
 			} else if (value == Chars::KEY_MAP.at("*10^n")) {
 				num.push_back('e');
