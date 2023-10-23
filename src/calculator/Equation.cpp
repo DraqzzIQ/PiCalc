@@ -32,7 +32,7 @@ void Equation::render_equation()
 		_rendered_equation = Bitset2D();
 		_rendered_equation_cursor = Bitset2D(2, 9, true);
 	} else {
-		CursorPositionData cursor_data{ 0, 0, 0 };
+		CursorPositionData cursor_data = { 0, 0, 0 };
 		uint32_t y_origin = 0;
 		uint32_t start_index = 0;
 		_rendered_equation = render_equation_part(*_equation_root->children, Graphics::SYMBOLS_9_HIGH, std::vector<uint32_t>(), cursor_data, y_origin, start_index);
@@ -113,7 +113,7 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 				if (add_height > 0) equation_part.extend_down(add_height, false);
 				else symbol_matrix.extend_down(-add_height, false);
 				equation_part.extend_right(symbol_matrix);
-			} else if (*current_symbol->value == Chars::KEY_MAP.at(")")) {
+			} else if (value == Chars::KEY_MAP.at(")")) {
 				if (equation_part.height() == 6) equation_part.extend_right(Graphics::SYMBOLS_6_HIGH.at(75));
 				else {
 					DynamicBitset bracket_raw(equation_part.height() - 4, true);
@@ -132,7 +132,7 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 					break;
 				}
 			} else {
-				if (table.count(*current_symbol->value) != 0) symbol_matrix = table.at(*current_symbol->value);
+				if (table.count(value) != 0) symbol_matrix = table.at(value);
 				else symbol_matrix = table.at(Chars::KEY_MAP.at("?"));
 				symbol_matrix.extend_up(y_origin, false);
 				symbol_matrix.extend_down(equation_part.height() - symbol_matrix.height(), false);
@@ -239,28 +239,71 @@ std::vector<Equation::EquationNode*>* Equation::format_equation_part(const std::
 
 double Equation::calculate_equation(const std::vector<double> variables, Error& error)
 {
-	CalculateNode* calculation = calculate_equation_part(*_equation_root->children, error);
-	return *calculation->value;
+	uint32_t i = 0;
+	CalculateNode calculation = calculate_equation_part(*_equation_root->children, error, std::vector<uint32_t>(), i);
+	return *calculation.value;
 }
 
-Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error)
+Equation::CalculateNode Equation::calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
 {
+	calculate_index.push_back(i);
+	// equation is empty
 	if (equation.size() == 0) {
 		_cursor_index = std::vector<uint32_t>{ 0 };
 		error = Error::SYNTAX_ERROR;
-		return nullptr;
+		return CalculateNode();
 	}
-	std::vector<CalculateNode> calculation(0);
-	bool negative = false;
+
+	// parse the equation to a 1D vector of numbers and operations
+	std::vector<CalculateNode> calculation;
+	CalculateNode next_value;
 	bool numExpected = true;
-	bool insideFunction = false;
 	std::string num;
-	for (size_t i = 0; i < equation.size(); i++) {
-		if (equation[i]->children != nullptr) {
-			std::vector<CalculateNode*> subEquations;
+	for (; i < equation.size(); i++) {
+		calculate_index.back() = i;
+		if (equation[i]->children == nullptr) {
+			uint8_t value = *equation[i]->value;
+			if (value < 10) {
+				num.push_back(value + 48);
+			} else if (value == Chars::KEY_MAP.at(".")) {
+				num.push_back('.');
+			} else if (value == Chars::KEY_MAP.at("*10^n")) {
+				num.push_back('e');
+			} else {
+				if (num != "") {
+					next_value = { new double(std::stod(num)), nullptr };
+					calculation.push_back(next_value);
+					num = "";
+				}
+
+				if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0) {
+					Error err;
+					calculate_index.pop_back();
+					calculation.push_back(calculate_equation_part(equation, err, calculate_index, ++i, true));
+					calculate_index.push_back(i);
+				} else if (value == Chars::KEY_MAP.at(")")) {
+					if (stop_on_closed_bracket) {
+						break;
+					} else {
+						_cursor_index = calculate_index;
+						error = Error::SYNTAX_ERROR;
+						return CalculateNode();
+					}
+				} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
+					next_value = { nullptr, new uint8_t(value) };
+					calculation.push_back(next_value);
+				} else {
+					switch (value) {
+					case 10:;
+					}
+				}
+			}
+		} else {
 			Error err;
+			std::vector<CalculateNode> subEquations;
 			for (EquationNode* node : *equation[i]->children) {
-				subEquations.push_back(calculate_equation_part(*node->children, err));
+				uint32_t new_i = 0;
+				subEquations.push_back(calculate_equation_part(*node->children, err, calculate_index, new_i));
 				switch (err) {
 				case Error::MATH_ERROR:;
 				case Error::PUFFER_ERROR:;
@@ -271,42 +314,98 @@ Equation::CalculateNode* Equation::calculate_equation_part(const std::vector<Equ
 				case Error::FINE:;
 				}
 			}
-			switch (*equation[i]->value) {
-			case 110: calculation.push_back(CalculateNode(new double(*subEquations[0]->value / *subEquations[1]->value), nullptr));
-			}
-		} else {
 			uint8_t value = *equation[i]->value;
-			if (value < 10) {
-				num.push_back(value + 48);
-			} else if (value == Chars::KEY_MAP.at(".")) {
-				num.push_back('.');
-			} else if (value == Chars::KEY_MAP.at("*10^n")) {
-				num.push_back('e');
+			if (value == 110) {
+				next_value = { new double(*subEquations[0].value / *subEquations[1].value), nullptr };
+				calculation.push_back(next_value);
+			} else if (calculation.back().value != nullptr) {
+				if (value == 113) calculation.back() = CalculateNode(new double(pow(*calculation.back().value, *subEquations[0].value)), nullptr);
+				else if (value == 85) calculation.back() = CalculateNode(new double(tgamma(*calculation.back().value - 1)), nullptr);
+				else if (value == 98) calculation.back() = CalculateNode(new double(*calculation.back().value / 100), nullptr);
 			} else {
-				if (num != "") {
-					calculation.push_back(CalculateNode(new double(std::stod(num)), nullptr));
-					num = "";
-				}
-
-				if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
-					calculation.push_back(CalculateNode(nullptr, new uint8_t(value)));
-				} else {
-					switch (value) {
-					case 10:;
-					}
-				}
+				_cursor_index = calculate_index;
+				error = Error::SYNTAX_ERROR;
+				return CalculateNode();
 			}
 		}
 	}
 	if (num != "") {
-		calculation.push_back(CalculateNode(new double(std::stod(num)), nullptr));
+		double test = std::stod(num);
+		// next_value = { new double(std::stod(num)), nullptr };
+		calculation.push_back(CalculateNode(&test, nullptr));
+		std::cout << *calculation.back().value;
 		num = "";
 	}
 
-	// TODO: calculate result from calculation
+	// handle negative numbers
+	std::cout << *calculation.back().value;
+	bool negative = false;
+	bool operation = true;
+	for (uint32_t j = 0; j < calculation.size(); j++) {
+		calculate_index.back() = j;
+		if (calculation.at(j).operation != nullptr) {
+			if (!operation) operation = true;
+			else {
+				if (*calculation.at(j).operation == 70 || *calculation.at(j).operation == 116) {
+					negative = !negative;
+					calculation.erase(calculation.begin() + j--);
+				} else if (*calculation.at(j).operation != 69) {
+					_cursor_index = calculate_index;
+					error = Error::SYNTAX_ERROR;
+					return CalculateNode();
+				}
+			}
+		} else {
+			if (negative) *calculation.at(j).value *= -1;
+			negative = false;
+			operation = false;
+		}
+	}
 
+	// metric conversion
 
-	return nullptr;
+	// multiplication without sign
+	operation = true;
+	for (uint32_t j = 0; j < calculation.size(); j++) {
+		calculate_index.back() = j;
+		if (calculation.at(j).operation != nullptr) {
+			operation = true;
+		} else {
+			if (!operation) {
+				*calculation.at(j - 1).value *= *calculation.at(j).value;
+				calculation.erase(calculation.begin() + j--);
+			}
+			operation = false;
+		}
+	}
+
+	// permutation and combination
+
+	// multiplication and division
+	for (uint32_t j = 0; j < calculation.size(); j++) {
+		calculate_index.back() = j;
+		if (calculation.at(j).operation != nullptr) {
+			if (*calculation.at(j).operation == 71) *calculation.at(j - 1).value *= *calculation.at(j + 1).value;
+			else if (*calculation.at(j).operation == 72) *calculation.at(j - 1).value /= *calculation.at(j + 1).value;
+			calculation.erase(calculation.begin() + j);
+			calculation.erase(calculation.begin() + j--);
+		}
+	}
+
+	// addition and subtraction
+	for (uint32_t j = 0; j < calculation.size(); j++) {
+		calculate_index.back() = j;
+		if (calculation.at(j).operation != nullptr) {
+			if (*calculation.at(j).operation == 69) *calculation.at(j - 1).value += *calculation.at(j + 1).value;
+			else if (*calculation.at(j).operation == 70) *calculation.at(j - 1).value -= *calculation.at(j + 1).value;
+			calculation.erase(calculation.begin() + j);
+			calculation.erase(calculation.begin() + j--);
+		}
+	}
+
+	// logic operators
+
+	return calculation.at(0);
 }
 
 
@@ -442,6 +541,7 @@ void Equation::move_cursor_up()
 
 void Equation::move_cursor_down()
 {
+	// double fraction: not working
 	EquationNode* modify = _equation_root;
 	for (int i = 0; i + 2 < _cursor_index.size(); i++) modify = modify->children->at(_cursor_index[i]);
 

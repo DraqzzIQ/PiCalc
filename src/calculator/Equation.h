@@ -137,7 +137,7 @@ class Equation
 	/// <summary>
 	/// all the operations that have to be between two values to be evaluated
 	/// </summary>
-	std::vector<uint8_t> _allowed_calculate_operations{ 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
+	std::vector<uint8_t> _allowed_calculate_operations{ 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 116, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
 	/// <summary>
 	/// all Keys that end with an open rounded bracket
 	/// </summary>
@@ -153,7 +153,7 @@ class Equation
 	/// <param name="equation">the equation to be calculated</param>
 	/// <param name="error">set to an error type if any occur, else Fine</param>
 	/// <returns>Result</returns>
-	CalculateNode* calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error);
+	CalculateNode calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
 	/// <summary>
 	/// renders an equation, made for recursion
 	/// </summary>
