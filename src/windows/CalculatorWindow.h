@@ -14,5 +14,8 @@ class CalculatorWindow: public Window
 
 	private:
 	Equation* equation;
+	double result;
+	Bitset2D result_rendered;
+	bool calculated;
 	std::vector<double> variables;
 };

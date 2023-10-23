@@ -75,16 +75,12 @@ class Equation
 	/// Node for the tree representing the Equation
 	/// </summary>
 	struct EquationNode {
-		uint8_t* value;
-		std::vector<EquationNode*>* children;
+		uint8_t value = 95;
+		std::vector<EquationNode*> children = std::vector<EquationNode*>();
 
 		~EquationNode()
 		{
-			if (children != nullptr) {
-				for (EquationNode* child : *children) delete child;
-				delete children;
-			}
-			if (value != nullptr) delete value;
+			for (EquationNode* child : children) delete child;
 		}
 	};
 
@@ -92,13 +88,8 @@ class Equation
 	/// Node Used for the Calculation
 	/// </summary>
 	struct CalculateNode {
-		double* value;
-		uint8_t* operation;
-		~CalculateNode()
-		{
-			if (value != nullptr) delete value;
-			if (operation != nullptr) delete operation;
-		}
+		double value;
+		uint8_t operation = 95;
 	};
 
 	/// <summary>
@@ -164,13 +155,4 @@ class Equation
 	/// <param name="y_origin_ref">y origin of the rendered equation</param>
 	/// <returns>the rendered equation</returns>
 	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t& start_index, bool stop_on_closed_bracket = false);
-	/// <summary>
-	/// formats an equation part by collecting all parts in brackets in a child, made for recursion
-	/// </summary>
-	/// <param name="equation">equation to be formatted</param>
-	/// <param name="i">index to start at</param>
-	/// <param name="cursor_index_curr">current cursor index</param>
-	/// <param name="return_on_closed_bracket">set to true if it should return as soon as a closed bracket occurs</param>
-	/// <returns>the formatted equation</returns>
-	std::vector<Equation::EquationNode*>* format_equation_part(const std::vector<EquationNode*>* equation, uint32_t& i, bool return_on_closed_bracket);
 };

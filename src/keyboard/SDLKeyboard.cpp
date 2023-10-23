@@ -1,7 +1,8 @@
 #include "keyboard/SDLKeyboard.h"
 #ifndef PICO
 
-SDLKeyboard::SDLKeyboard(WindowManager* window_manager): IKeyboard(window_manager)
+SDLKeyboard::SDLKeyboard(WindowManager* window_manager):
+	IKeyboard(window_manager)
 {
 	_event = new SDL_Event();
 	sdl_init();
@@ -53,8 +54,8 @@ KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event)
 	keypress.key_calculator = raw_key_to_calculator_key(keypress.key_raw, keypress.shift, keypress.alpha);
 	keypress.key_keyboard = scancode_to_key_keyboard(_event);
 
-	std::cout << unsigned(keypress.key_raw) << "        ";
-	// std::cout << unsigned(_event->key.keysym.scancode);
+	// std::cout << unsigned(keypress.key_raw) << "        ";
+	//  std::cout << unsigned(_event->key.keysym.scancode);
 
 	return keypress;
 }
