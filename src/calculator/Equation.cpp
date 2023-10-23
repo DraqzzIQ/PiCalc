@@ -228,6 +228,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 	if (equation.size() == 0) {
 		_cursor_index = std::vector<uint32_t>{ 0 };
 		error = Error::SYNTAX_ERROR;
+		render_equation();
 		return CalculateNode();
 	}
 
@@ -262,6 +263,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 					} else {
 						_cursor_index = calculate_index;
 						error = Error::SYNTAX_ERROR;
+						render_equation();
 						return CalculateNode();
 					}
 				} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
@@ -298,6 +300,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 			} else {
 				_cursor_index = calculate_index;
 				error = Error::SYNTAX_ERROR;
+				render_equation();
 				return CalculateNode();
 			}
 		}
