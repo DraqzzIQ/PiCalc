@@ -132,26 +132,7 @@ class Equation
 	/// <summary>
 	/// all Keys that end with an open rounded bracket
 	/// </summary>
-	std::vector<uint8_t> _single_bracket_open_keys{ 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
-	/// <summary>
-	/// Number of values for all multi-Value operations
-	/// </summary>
-	std::map<uint8_t, std::pair<uint8_t, bool>> _symbols_value_cnt{
-		{ 106, std::make_pair(1, false) },
-		{ 107, std::make_pair(1, true) },
-		{ 108, std::make_pair(1, true) },
-		{ 109, std::make_pair(2, false) },
-		{ 110, std::make_pair(2, false) },
-		{ 111, std::make_pair(1, false) },
-		{ 112, std::make_pair(1, false) },
-		{ 113, std::make_pair(2, false) },
-		{ 131, std::make_pair(3, false) },
-		{ 132, std::make_pair(1, false) },
-		{ 133, std::make_pair(1, false) },
-		{ 134, std::make_pair(2, false) },
-		{ 135, std::make_pair(1, false) },
-		{ 136, std::make_pair(1, false) },
-	};
+	std::vector<uint8_t> _single_bracket_open_keys{ 74, 109, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
 
 	/// <summary>
 	/// render the equation
@@ -160,7 +141,7 @@ class Equation
 	/// <summary>
 	/// appenbds the second bitset to the first one with their y_origins aligned
 	/// </summary>
-	void extend_bitset_left_and_match_y_origin(Bitset2D& bitset, uint32_t& y_origin, Bitset2D& bitset_new, uint32_t y_origin_new);
+	void extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, Bitset2D& bitset_new, int32_t y_origin_new);
 	/// <summary>
 	/// calculates the result of a equation, made for recursion
 	/// </summary>
@@ -181,7 +162,7 @@ class Equation
 	/// <summary>
 	///
 	/// </summary>
-	Bitset2D render_subequation(const std::vector<EquationNode*>& equation, uint8_t child_index, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint8_t& child_index_cursor, uint32_t cursor_offset_x, uint32_t cursor_offset_y);
+	Bitset2D render_subequation(const std::vector<EquationNode*>& equation, uint8_t child_index, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint8_t& child_index_cursor, int32_t cursor_offset_x, int32_t cursor_offset_y);
 	/// <summary>
 	/// add a new child with the given value and amount of children to the equation at the cursor position
 	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child

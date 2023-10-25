@@ -451,6 +451,7 @@ const std::vector<std::string> Graphics::SCREEN_SYMBOLS = { "S", "A", "M", "STO"
 
 const std::map<uint8_t, std::vector<uint8_t>> Graphics::key_text{
 	{ 74, {} },
+	{ 109, { 51, 54, 46 } },
 	{ 114, { 51, 54, 46 } },
 	{ 115, { 51, 53 } },
 	{ 118, { 58, 48, 53 } },
