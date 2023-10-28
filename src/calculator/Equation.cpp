@@ -81,18 +81,6 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 			if (value != 109) value = 74;
 		}
 
-		// 10^n
-		else if (value == 135) {
-			symbol_matrix.extend_right(table.at(127));
-			value = 113;
-		}
-
-		// e^n
-		else if (value == 136) {
-			symbol_matrix.extend_right(table.at(165));
-			value = 113;
-		}
-
 		// open bracket
 		if (value == 74) {
 			// render everything until the closing bracket
@@ -243,13 +231,40 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 
 		// root2
 		else if (value == 111) {
+			uint32_t new_y_origin;
+			uint8_t subequation_cursor_index = -1;
+			symbol_matrix = render_subequation(current_symbol->children, 0, table, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width() + 4, 0);
+			symbol_matrix.extend_right(1, false);
+			symbol_matrix.extend_up(1, false);
+			symbol_matrix.extend_up(1, true);
+
+			uint32_t split_point;
+			if (symbol_matrix.height() > 29) split_point = 15;
+			else split_point = symbol_matrix.height() / 2;
+			DynamicBitset root_lower = DynamicBitset(split_point, false);
+			DynamicBitset root_upper = DynamicBitset(split_point, true);
+			root_lower.extend(symbol_matrix.height() - split_point, true);
+			root_upper.extend(symbol_matrix.height() - split_point, false);
+			symbol_matrix.push_front(root_upper);
+			symbol_matrix.push_front(root_lower);
+			symbol_matrix.extend_left(2, false);
+			symbol_matrix.set_bit(0, symbol_matrix.height() - 3, true);
+			symbol_matrix.set_bit(1, symbol_matrix.height() - 2, true);
+
+			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, new_y_origin + 2);
 		}
 
 		// x^n
-		else if (value == 113) {
+		else if (value == 113 || value == 135 || value == 136) {
 			uint32_t new_y_origin;
 			uint8_t subequation_cursor_index = -1;
-			equation_part.pop_back_x();
+
+			if (value == 135) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(135), 0);
+			else if (value == 136) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(165), 0);
+			else {
+				if (i == 0 || !(equation.at(i - 1)->value < 69 || std::count(_values_before_exponent.begin(), _values_before_exponent.end(), equation.at(i - 1)->value) != 0)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(Chars::KEY_MAP.at("empty")), 0);
+				else equation_part.pop_back_x();
+			}
 			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
 			if (subequation_cursor_index == 0) cursor_data_new.y += new_y_origin - symbol_matrix.height() + 4;
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, symbol_matrix.height() - 4);
@@ -265,10 +280,43 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 
 		// periodic
 		else if (value == 133) {
+			uint32_t new_y_origin;
+			uint8_t subequation_cursor_index = -1;
+			symbol_matrix = render_subequation(current_symbol->children, 0, table, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
+			symbol_matrix.extend_up(1, false);
+			symbol_matrix.extend_up(1, true);
+			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 2);
 		}
 
 		// rootn
 		else if (value == 134) {
+			uint32_t new_y_origin;
+			uint8_t subequation_cursor_index = -1;
+			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
+			if (subequation_cursor_index == 0) cursor_data_new.y += new_y_origin - symbol_matrix.height() + 2;
+			symbol_matrix.extend_down(7, false);
+			symbol_matrix.set_bit(symbol_matrix.width() - 2, symbol_matrix.height() - 3, true);
+			symbol_matrix.set_bit(symbol_matrix.width() - 1, symbol_matrix.height() - 2, true);
+
+			Bitset2D radicant = render_subequation(current_symbol->children, 1, table, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width() + symbol_matrix.width() + 2, 0);
+			radicant.extend_right(1, false);
+			radicant.extend_up(1, false);
+			radicant.extend_up(1, true);
+
+			uint32_t split_point;
+			if (radicant.height() > 29) split_point = 15;
+			else split_point = radicant.height() / 2;
+			DynamicBitset root_lower = DynamicBitset(split_point, false);
+			DynamicBitset root_upper = DynamicBitset(split_point, true);
+			root_lower.extend(radicant.height() - split_point, true);
+			root_upper.extend(radicant.height() - split_point, false);
+			radicant.push_front(root_upper);
+			radicant.push_front(root_lower);
+			int32_t diff = symbol_matrix.height() - radicant.height();
+			radicant.extend_up(diff, false);
+			symbol_matrix.extend_right(radicant);
+
+			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, new_y_origin + 2 + diff);
 		}
 
 		// any other symbol
@@ -291,15 +339,16 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 	return equation_part;
 }
 
-void Equation::extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, Bitset2D& bitset_new, int32_t y_origin_new)
+void Equation::extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, const Bitset2D& bitset_new, int32_t y_origin_new)
 {
+	Bitset2D bitset_new_copy = bitset_new;
 	if (y_origin < y_origin_new) {
 		bitset.extend_up(y_origin_new - y_origin, false);
 		y_origin = y_origin_new;
-	} else bitset_new.extend_up(y_origin - y_origin_new, false);
-	if (bitset.height() < bitset_new.height()) bitset.extend_down(bitset_new.height() - bitset.height(), false);
-	else bitset_new.extend_down(bitset.height() - bitset_new.height(), false);
-	bitset.extend_right(bitset_new);
+	} else bitset_new_copy.extend_up(y_origin - y_origin_new, false);
+	if (bitset.height() < bitset_new_copy.height()) bitset.extend_down(bitset_new_copy.height() - bitset.height(), false);
+	else bitset_new_copy.extend_down(bitset.height() - bitset_new_copy.height(), false);
+	bitset.extend_right(bitset_new_copy);
 }
 
 Bitset2D Equation::render_subequation(const std::vector<EquationNode*>& equation, uint8_t child_index, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint8_t& child_index_cursor, int32_t cursor_offset_x, int32_t cursor_offset_y)
