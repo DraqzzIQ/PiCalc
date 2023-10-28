@@ -40,6 +40,7 @@ void Equation::render_equation()
 		uint32_t start_index = 0;
 		_rendered_equation = render_equation_part(_equation_root->children, Graphics::SYMBOLS_9_HIGH, std::vector<uint32_t>(), cursor_data, y_origin, start_index);
 		_rendered_equation_cursor = _rendered_equation;
+		cursor_data.y += y_origin;
 		_rendered_equation_cursor.set(cursor_data.x, cursor_data.y, Bitset2D(2, cursor_data.size, true), true);
 	}
 }
@@ -55,7 +56,9 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 	if (equation.size() == 0) {
 		if (render_index == _cursor_index) cursor_data = { 0, 0, font_height };
 		y_origin_ref = 0;
-		return table.at(Chars::KEY_MAP.at("empty"));
+		equation_part.extend_left(table.at(Chars::KEY_MAP.at("empty")));
+		equation_part.extend_left(1, false);
+		return equation_part;
 	}
 	for (; i < equation.size(); i++) {
 		EquationNode* current_symbol = equation.at(i);
@@ -78,26 +81,35 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 			if (value != 109) value = 74;
 		}
 
-		// mixedfraction
-		else if (value == 131) {
+		// 10^n
+		else if (value == 135) {
+			symbol_matrix.extend_right(table.at(127));
+			value = 113;
+		}
+
+		// e^n
+		else if (value == 136) {
+			symbol_matrix.extend_right(table.at(165));
+			value = 113;
 		}
 
 		// open bracket
 		if (value == 74) {
 			// render everything until the closing bracket
 			CursorPositionData cursor_data_subequation = { 0, 0, 0 };
-			uint32_t new_y_origin;
-			render_index.pop_back();
-			symbol_matrix = render_equation_part(equation, table, render_index, cursor_data_subequation, new_y_origin, ++i, true);
-			symbol_matrix.erase_x(symbol_matrix.width() - 1);
-			if (cursor_data_subequation.size != 0) {
-				cursor_data_new = cursor_data_subequation;
-				cursor_data_new.x += equation_part.width() + 5;
-				cursor_data_new.y -= new_y_origin;
-			}
+			uint32_t new_y_origin = 0;
+			if (i != equation.size() - 1) {
+				render_index.pop_back();
+				symbol_matrix = render_equation_part(equation, table, render_index, cursor_data_subequation, new_y_origin, ++i, true);
+				symbol_matrix.erase_x(symbol_matrix.width() - 1);
+				if (cursor_data_subequation.size != 0) {
+					cursor_data_new = cursor_data_subequation;
+					cursor_data_new.x += equation_part.width() + 5;
+				}
+				render_index.push_back(i);
+			} else symbol_matrix = Bitset2D(0, font_height, false);
 
 			// add opening bracket
-			render_index.push_back(i);
 			if (symbol_matrix.height() == 6) symbol_matrix.extend_left(Graphics::SYMBOLS_6_HIGH.at(74));
 			else {
 				DynamicBitset bracket_raw(symbol_matrix.height() - 4, true);
@@ -154,15 +166,16 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 
 		// logn
 		else if (value == 109) {
-			CursorPositionData cursor_data_subequation = { 0, 0, 0 };
 			uint8_t subequation_cursor_index = -1;
 			uint32_t new_y_origin;
+			equation_part.pop_back_x();
 
 			// render the subequation
-			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_subequation, new_y_origin, subequation_cursor_index, equation_part.width(), 5);
+			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
+			if (subequation_cursor_index == 0) cursor_data_new.y += new_y_origin + 5;
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, -5);
 
-			symbol_matrix = render_subequation(current_symbol->children, 1, table, render_index, cursor_data_subequation, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
+			symbol_matrix = render_subequation(current_symbol->children, 1, table, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width() + 5, 0);
 
 			DynamicBitset bracket_raw(symbol_matrix.height() - 4, true);
 			bracket_raw.extend_left(2, false);
@@ -187,38 +200,45 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, new_y_origin);
 		}
 
-		// fraction
-		else if (value == 110) {
+		// fraction or mixedfraction
+		else if (value == 110 || value == 131) {
 			// render top and bottom
 			uint8_t fraction_line_height = (font_height == 9) ? 3 : 2;
 			uint32_t new_y_origin;
 			uint8_t subequation_cursor_index = -1;
-			auto bottom = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
-			auto top = render_subequation(current_symbol->children, 1, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), fraction_line_height + 3);
-			if (subequation_cursor_index == 0) cursor_data_new.y += fraction_line_height - bottom.height();
+			bool mixed = false;
+			if (value == 131) {
+				mixed = true;
+				auto front = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), fraction_line_height - 2);
+				extend_bitset_left_and_match_y_origin(equation_part, y_origin, front, -fraction_line_height + 2);
+			}
+			auto top = render_subequation(current_symbol->children, mixed ? 1 : 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
+			if (subequation_cursor_index == (mixed ? 1 : 0)) cursor_data_new.y += new_y_origin - top.height() + fraction_line_height;
+			auto bottom = render_subequation(current_symbol->children, mixed ? 2 : 1, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
+			if (subequation_cursor_index == (mixed ? 2 : 1)) cursor_data_new.y += new_y_origin + fraction_line_height + 3;
 
 			// extend the top and bottom to the same width
-			int32_t diff = top.width() - bottom.width();
+			int32_t diff = bottom.width() - top.width();
 			if (diff > 0) {
-				bottom.extend_right(diff / 2, false);
-				bottom.extend_left((diff + 1) / 2, false);
-				if (subequation_cursor_index == 0) cursor_data_new.x += (diff + 1) / 2;
+				top.extend_right(diff / 2, false);
+				top.extend_left((diff + 1) / 2, false);
+				if (subequation_cursor_index == (mixed ? 1 : 0)) cursor_data_new.x += (diff + 1) / 2;
 			} else if (diff < 0) {
-				top.extend_right(-diff / 2, false);
-				top.extend_left((-diff + 1) / 2, false);
-				if (subequation_cursor_index == 1) cursor_data_new.x += (-diff + 1) / 2;
+				bottom.extend_right(-diff / 2, false);
+				bottom.extend_left((-diff + 1) / 2, false);
+				if (subequation_cursor_index == (mixed ? 2 : 1)) cursor_data_new.x += (-diff + 1) / 2;
 			}
 			// combine top and bottom with a fraction line
-			for (uint32_t i = 0; i < bottom.width(); i++) {
-				DynamicBitset column = bottom[i];
+			for (uint32_t i = 0; i < top.width(); i++) {
+				DynamicBitset column = top[i];
 				column.push_back(false);
 				column.push_back(true);
 				column.push_back(false);
-				column.insert(column.size(), top[i]);
+				column.insert(column.size(), bottom[i]);
 				symbol_matrix.push_back(column);
 			}
 
-			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, bottom.height() - fraction_line_height);
+			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, top.height() - fraction_line_height);
 		}
 
 		// root2
@@ -227,6 +247,12 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 
 		// x^n
 		else if (value == 113) {
+			uint32_t new_y_origin;
+			uint8_t subequation_cursor_index = -1;
+			equation_part.pop_back_x();
+			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
+			if (subequation_cursor_index == 0) cursor_data_new.y += new_y_origin - symbol_matrix.height() + 4;
+			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, symbol_matrix.height() - 4);
 		}
 
 		// *10^n
@@ -242,15 +268,7 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 		}
 
 		// rootn
-		else if (value == 133) {
-		}
-
-		// 10^n
-		else if (value == 133) {
-		}
-
-		// e^n
-		else if (value == 133) {
+		else if (value == 134) {
 		}
 
 		// any other symbol
@@ -267,7 +285,7 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 	render_index.back()++;
 	if (render_index == _cursor_index) cursor_data_new = { equation_part.width() - 1, 0, font_height };
 
-	cursor_data_new.y += y_origin;
+	// cursor_data_new.y += y_origin;
 	y_origin_ref = y_origin;
 	if (cursor_data_new.size != 0) cursor_data = cursor_data_new;
 	return equation_part;

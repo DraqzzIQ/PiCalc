@@ -157,6 +157,12 @@ void Bitset2D::erase_y(uint32_t coord_y)
 	_height--;
 }
 
+void Bitset2D::pop_back_x()
+{
+	_plane.pop_back();
+	_width--;
+}
+
 void Bitset2D::clear()
 {
 	_plane.clear();

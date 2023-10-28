@@ -150,17 +150,19 @@ class Equation
 	/// <returns>Result</returns>
 	CalculateNode calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
 	/// <summary>
-	/// renders an equation, made for recursion
+	/// renders an equation with a leading and trailing free column
 	/// </summary>
 	/// <param name="equation">equation to be rendered</param>
 	/// <param name="table">the Keymap to be used</param>
-	/// <param name="render_index">absolute index of the equation, that ie being rendered</param>
-	/// <param name="cursor_data">set to the new cursor Position if the cursor is in the passed equation</param>
-	/// <param name="y_origin_ref">y origin of the rendered equation</param>
+	/// <param name="render_index">absolute index of the equation in reference to equation_root</param>
+	/// <param name="cursor_data">(output) set to the new cursor Position in reference to the y_origin if the cursor is in the equation</param>
+	/// <param name="y_origin_ref">(output) y origin of the rendered equation</param>
+	/// <param name="i">(input + output)index of the equation to start rendering at</param>
+	/// <param name="stop_on_closed_bracket">if true, the rendering stops at the first closed bracket, with i being set to the last rendered index</param>
 	/// <returns>the rendered equation</returns>
-	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t& start_index, bool stop_on_closed_bracket = false);
+	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t& i, bool stop_on_closed_bracket = false);
 	/// <summary>
-	///
+	/// calls render_equation_part and sets not neccesery variables, made for easier impelemtation of new symbols for rendering
 	/// </summary>
 	Bitset2D render_subequation(const std::vector<EquationNode*>& equation, uint8_t child_index, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint8_t& child_index_cursor, int32_t cursor_offset_x, int32_t cursor_offset_y);
 	/// <summary>

@@ -116,6 +116,10 @@ class Bitset2D
 	/// </summary>
 	void erase_y(uint32_t coord_y);
 	/// <summary>
+	/// Erases the Column at index
+	/// </summary>
+	void pop_back_x();
+	/// <summary>
 	/// Clears the Bitset2D
 	/// </summary>
 	void clear();
