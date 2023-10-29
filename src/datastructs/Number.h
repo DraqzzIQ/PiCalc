@@ -2,6 +2,7 @@
 #include "constant/Chars.h"
 #include "constant/Graphics.h"
 #include "datastructs/Bitset2D.h"
+#include <cmath>
 #include <string>
 #include <vector>
 
