@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Number.h" />
     <ClInclude Include="src\constant\Chars.h" />
     <ClInclude Include="src\constant\Constants.h" />
     <ClInclude Include="src\datastructs\Bitset2D.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="src\windows\WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Number.cpp" />
     <ClCompile Include="src\CasioOS.cpp" />
     <ClCompile Include="src\constant\Chars.cpp" />
     <ClCompile Include="src\constant\Constants.cpp" />

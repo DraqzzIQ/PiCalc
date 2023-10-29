@@ -78,7 +78,7 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 			symbol_matrix.extend_up(y_origin, false);
 			symbol_matrix.extend_down(equation_part.height() - symbol_matrix.height(), false);
 			equation_part.extend_right(symbol_matrix);
-			if (value != 109) value = 74;
+			value = 74;
 		}
 
 		// open bracket
@@ -154,9 +154,15 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 
 		// logn
 		else if (value == 109) {
+			symbol_matrix.extend_right(table.at(51));
+			symbol_matrix.extend_right(1, false);
+			symbol_matrix.extend_right(table.at(54));
+			symbol_matrix.extend_right(1, false);
+			symbol_matrix.extend_right(table.at(46));
+			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
+
 			uint8_t subequation_cursor_index = -1;
 			uint32_t new_y_origin;
-			equation_part.pop_back_x();
 
 			// render the subequation
 			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
@@ -406,10 +412,31 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 				}
 
 				if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0) {
+					// ;: 152, 153, 160, 161, 164
 					Error err;
 					calculate_index.pop_back();
-					calculation.push_back(calculate_equation_part(equation, err, calculate_index, ++i, true));
+					CalculateNode result = calculate_equation_part(equation, err, calculate_index, ++i, true);
 					calculate_index.push_back(i);
+					switch (value) {
+					case 74: calculation.push_back(result); break;
+					case 114: calculation.push_back(CalculateNode(log(result.value) / log(10), 95)); break;
+					case 115: calculation.push_back(CalculateNode(log(result.value), 95)); break;
+					case 118: calculation.push_back(CalculateNode(sin(result.value), 95)); break;
+					case 119: calculation.push_back(CalculateNode(cos(result.value), 95)); break;
+					case 120: calculation.push_back(CalculateNode(tan(result.value), 95)); break;
+					case 138: calculation.push_back(CalculateNode(asin(result.value), 95)); break;
+					case 139: calculation.push_back(CalculateNode(acos(result.value), 95)); break;
+					case 140: calculation.push_back(CalculateNode(atan(result.value), 95)); break;
+					case 154: calculation.push_back(CalculateNode(round(result.value), 95)); break; // not done
+					case 162: calculation.push_back(CalculateNode((int)result.value, 95)); break;
+					case 163: calculation.push_back(CalculateNode(floor(result.value), 95)); break;
+					case 190: calculation.push_back(CalculateNode(sinh(result.value), 95)); break;
+					case 191: calculation.push_back(CalculateNode(cosh(result.value), 95)); break;
+					case 192: calculation.push_back(CalculateNode(tanh(result.value), 95)); break;
+					case 193: calculation.push_back(CalculateNode(asinh(result.value), 95)); break;
+					case 194: calculation.push_back(CalculateNode(acosh(result.value), 95)); break;
+					case 195: calculation.push_back(CalculateNode(atanh(result.value), 95)); break;
+					}
 				} else if (value == Chars::KEY_MAP.at(")")) {
 					if (stop_on_closed_bracket) {
 						break;
@@ -422,6 +449,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 				} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
 					calculation.push_back(CalculateNode(0, value));
 				} else {
+					// constants
 					switch (value) {
 					case 10:;
 					}
@@ -444,9 +472,9 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 				}
 			}
 			uint8_t value = equation[i]->value;
-			if (value == 110) {
-				calculation.push_back(CalculateNode(subEquations[0].value / subEquations[1].value, 95));
-			} else if (calculation.back().value != 95) {
+			if (value == 110) calculation.push_back(CalculateNode(subEquations[0].value / subEquations[1].value, 95));
+			else if (value == 106) calculation.push_back(CalculateNode(abs(subEquations[0].value), 95));
+			else if (calculation.back().value != 95) {
 				if (value == 113) calculation.back() = CalculateNode(pow(calculation.back().value, subEquations[0].value), 95);
 				else if (value == 85) calculation.back() = CalculateNode(tgamma(calculation.back().value - 1), 95);
 				else if (value == 98) calculation.back() = CalculateNode(calculation.back().value / 100, 95);
@@ -538,6 +566,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 
 void Equation::add_value(uint8_t keypress)
 {
+	// TODO: restrictions
 	switch (keypress) {
 	case 106: add_value_raw(keypress, 1); break;
 	case 107: add_value_raw(keypress, 1, false, std::vector<uint8_t>{ 3 }); break;

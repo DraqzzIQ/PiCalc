@@ -88,7 +88,7 @@ class Equation
 	/// Node Used for the Calculation
 	/// </summary>
 	struct CalculateNode {
-		double value;
+		Number value;
 		uint8_t operation = 95;
 	};
 
@@ -132,7 +132,7 @@ class Equation
 	/// <summary>
 	/// all Keys that end with an open rounded bracket
 	/// </summary>
-	std::vector<uint8_t> _single_bracket_open_keys{ 74, 109, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
+	std::vector<uint8_t> _single_bracket_open_keys{ 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
 	/// <summary>
 	/// when these values are in front of an exponent, no empty-value is added
 	/// </summary>
