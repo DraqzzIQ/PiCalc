@@ -373,14 +373,13 @@ Bitset2D Equation::render_subequation(const std::vector<EquationNode*>& equation
 	return rendered;
 }
 
-double Equation::calculate_equation(const std::vector<double> variables, Error& error)
+Number Equation::calculate_equation(const std::vector<double> variables, Error& error)
 {
 	uint32_t i = 0;
-	CalculateNode calculation = calculate_equation_part(_equation_root->children, error, std::vector<uint32_t>(), i);
-	return calculation.value;
+	return calculate_equation_part(_equation_root->children, error, std::vector<uint32_t>(), i);
 }
 
-Equation::CalculateNode Equation::calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
+Number Equation::calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
 {
 	calculate_index.push_back(i);
 	// equation is empty
@@ -388,7 +387,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 		_cursor_index = std::vector<uint32_t>{ 0 };
 		error = Error::SYNTAX_ERROR;
 		render_equation();
-		return CalculateNode();
+		return Number();
 	}
 
 	// parse the equation to a 1D vector of numbers and operations
@@ -407,47 +406,53 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 				num.push_back('e');
 			} else {
 				if (num != "") {
-					calculation.push_back(CalculateNode{ std::stod(num), 95 });
+					calculation.push_back(CalculateNode{ Number(num), 95 });
 					num = "";
 				}
 
 				if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0) {
-					// ;: 152, 153, 160, 161, 164
 					Error err;
 					calculate_index.pop_back();
-					CalculateNode result = calculate_equation_part(equation, err, calculate_index, ++i, true);
+					Number result = calculate_equation_part(equation, err, calculate_index, ++i, true);
+					Number result2;
+					if (value == 152 || value == 153 || value == 160 || value == 161 || value == 164) result2 = calculate_equation_part(equation, err, calculate_index, ++i, true);
 					calculate_index.push_back(i);
 					switch (value) {
-					case 74: calculation.push_back(result); break;
-					case 114: calculation.push_back(CalculateNode(log(result.value) / log(10), 95)); break;
-					case 115: calculation.push_back(CalculateNode(log(result.value), 95)); break;
-					case 118: calculation.push_back(CalculateNode(sin(result.value), 95)); break;
-					case 119: calculation.push_back(CalculateNode(cos(result.value), 95)); break;
-					case 120: calculation.push_back(CalculateNode(tan(result.value), 95)); break;
-					case 138: calculation.push_back(CalculateNode(asin(result.value), 95)); break;
-					case 139: calculation.push_back(CalculateNode(acos(result.value), 95)); break;
-					case 140: calculation.push_back(CalculateNode(atan(result.value), 95)); break;
-					case 154: calculation.push_back(CalculateNode(round(result.value), 95)); break; // not done
-					case 162: calculation.push_back(CalculateNode((int)result.value, 95)); break;
-					case 163: calculation.push_back(CalculateNode(floor(result.value), 95)); break;
-					case 190: calculation.push_back(CalculateNode(sinh(result.value), 95)); break;
-					case 191: calculation.push_back(CalculateNode(cosh(result.value), 95)); break;
-					case 192: calculation.push_back(CalculateNode(tanh(result.value), 95)); break;
-					case 193: calculation.push_back(CalculateNode(asinh(result.value), 95)); break;
-					case 194: calculation.push_back(CalculateNode(acosh(result.value), 95)); break;
-					case 195: calculation.push_back(CalculateNode(atanh(result.value), 95)); break;
+					case 74: calculation.push_back(CalculateNode(result, 95)); break;
+					case 114: calculation.push_back(CalculateNode(result.log(), 95)); break;
+					case 115: calculation.push_back(CalculateNode(result.ln(), 95)); break;
+					case 118: calculation.push_back(CalculateNode(result.sin(), 95)); break;
+					case 119: calculation.push_back(CalculateNode(result.cos(), 95)); break;
+					case 120: calculation.push_back(CalculateNode(result.tan(), 95)); break;
+					case 138: calculation.push_back(CalculateNode(result.asin(), 95)); break;
+					case 139: calculation.push_back(CalculateNode(result.acos(), 95)); break;
+					case 140: calculation.push_back(CalculateNode(result.atan(), 95)); break;
+					case 152: calculation.push_back(CalculateNode(Number::pol(result, result2), 95)); break;
+					case 153: calculation.push_back(CalculateNode(Number::rec(result, result2), 95)); break;
+					case 154: calculation.push_back(CalculateNode(result.round(), 95)); break;
+					case 160: calculation.push_back(CalculateNode(Number::gcd(result, result2), 95)); break;
+					case 161: calculation.push_back(CalculateNode(Number::lcm(result, result2), 95)); break;
+					case 162: calculation.push_back(CalculateNode(result.to_int(), 95)); break;
+					case 163: calculation.push_back(CalculateNode(result.floor(), 95)); break;
+					case 164: calculation.push_back(CalculateNode(Number::ran_int(result, result2), 95)); break;
+					case 190: calculation.push_back(CalculateNode(result.sinh(), 95)); break;
+					case 191: calculation.push_back(CalculateNode(result.cosh(), 95)); break;
+					case 192: calculation.push_back(CalculateNode(result.tanh(), 95)); break;
+					case 193: calculation.push_back(CalculateNode(result.asinh(), 95)); break;
+					case 194: calculation.push_back(CalculateNode(result.acosh(), 95)); break;
+					case 195: calculation.push_back(CalculateNode(result.atanh(), 95)); break;
 					}
-				} else if (value == Chars::KEY_MAP.at(")")) {
+				} else if (value == 75 || value == 83) {
 					if (stop_on_closed_bracket) {
 						break;
 					} else {
 						_cursor_index = calculate_index;
 						error = Error::SYNTAX_ERROR;
 						render_equation();
-						return CalculateNode();
+						return Number();
 					}
 				} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
-					calculation.push_back(CalculateNode(0, value));
+					calculation.push_back(CalculateNode(Number(), value));
 				} else {
 					// constants
 					switch (value) {
@@ -456,8 +461,13 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 				}
 			}
 		} else {
+			if (num != "") {
+				calculation.push_back(CalculateNode{ Number(num), 95 });
+				num = "";
+			}
+
 			Error err;
-			std::vector<CalculateNode> subEquations;
+			std::vector<Number> subEquations;
 			for (EquationNode* node : equation[i]->children) {
 				uint32_t new_i = 0;
 				subEquations.push_back(calculate_equation_part(node->children, err, calculate_index, new_i));
@@ -471,23 +481,39 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 				case Error::FINE:;
 				}
 			}
+			// TODO: periodic
 			uint8_t value = equation[i]->value;
-			if (value == 110) calculation.push_back(CalculateNode(subEquations[0].value / subEquations[1].value, 95));
-			else if (value == 106) calculation.push_back(CalculateNode(abs(subEquations[0].value), 95));
-			else if (calculation.back().value != 95) {
-				if (value == 113) calculation.back() = CalculateNode(pow(calculation.back().value, subEquations[0].value), 95);
-				else if (value == 85) calculation.back() = CalculateNode(tgamma(calculation.back().value - 1), 95);
-				else if (value == 98) calculation.back() = CalculateNode(calculation.back().value / 100, 95);
-			} else {
+			switch (value) {
+			case 95:
 				_cursor_index = calculate_index;
 				error = Error::SYNTAX_ERROR;
 				render_equation();
-				return CalculateNode();
+				return Number();
+			case 106: calculation.push_back(CalculateNode(subEquations[0].abs(), 95)); break;
+			case 109: calculation.push_back(CalculateNode(subEquations[0].log(subEquations[1]), 95)); break;
+			case 110: calculation.push_back(CalculateNode(subEquations[0] / subEquations[1], 95)); break;
+			case 111: calculation.push_back(CalculateNode(subEquations[0].root(2), 95)); break;
+			case 131: calculation.push_back(CalculateNode(subEquations[0] + (subEquations[1] / subEquations[2]), 95)); break;
+			case 134: calculation.push_back(CalculateNode(subEquations[0].root(subEquations[1]), 95)); break;
+			case 135: calculation.push_back(CalculateNode(Number(10).pow(subEquations[0]), 95)); break;
+			case 136: calculation.push_back(CalculateNode(Number(2.718281828).pow(subEquations[0]), 95)); break;
+			default:
+				if (calculation.size() == 0 || calculation.back().operation != 95) {
+					_cursor_index = calculate_index;
+					error = Error::SYNTAX_ERROR;
+					render_equation();
+					return Number();
+				}
+				switch (value) {
+				case 113: calculation.back().value.pow(subEquations[0]); break;
+				case 85: calculation.back().value.factorial(); break;
+				case 98: calculation.back().value /= 100; break;
+				}
 			}
 		}
 	}
 	if (num != "") {
-		calculation.push_back(CalculateNode{ std::stod(num), 95 });
+		calculation.push_back(CalculateNode{ Number(num), 95 });
 		num = "";
 	}
 
@@ -505,7 +531,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 				} else if (calculation.at(j).operation != 69) {
 					_cursor_index = calculate_index;
 					error = Error::SYNTAX_ERROR;
-					return CalculateNode();
+					return Number();
 				}
 			}
 		} else {
@@ -540,6 +566,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 		if (calculation.at(j).operation != 95) {
 			if (calculation.at(j).operation == 71) calculation.at(j - 1).value *= calculation.at(j + 1).value;
 			else if (calculation.at(j).operation == 72) calculation.at(j - 1).value /= calculation.at(j + 1).value;
+			else if (calculation.at(j).operation == 130) calculation.at(j - 1).value %= calculation.at(j + 1).value;
 			else continue;
 			calculation.erase(calculation.begin() + j);
 			calculation.erase(calculation.begin() + j--);
@@ -560,7 +587,7 @@ Equation::CalculateNode Equation::calculate_equation_part(const std::vector<Equa
 
 	// logic operators
 
-	return calculation.at(0);
+	return calculation.at(0).value;
 }
 
 
@@ -568,20 +595,20 @@ void Equation::add_value(uint8_t keypress)
 {
 	// TODO: restrictions
 	switch (keypress) {
-	case 106: add_value_raw(keypress, 1); break;
-	case 107: add_value_raw(keypress, 1, false, std::vector<uint8_t>{ 3 }); break;
-	case 108: add_value_raw(keypress, 1, false, std::vector<uint8_t>{ 116, 1 }); break;
-	case 109: add_value_raw(keypress, 2, true); break;
-	case 110: add_value_raw(keypress, 2, true); break;
-	case 111: add_value_raw(keypress, 1); break;
-	case 112: add_value_raw(keypress, 1, false, std::vector<uint8_t>{ 2 }); break;
-	case 113: add_value_raw(keypress, 1); break;
-	case 131: add_value_raw(keypress, 3, true); break;
-	case 132: add_value_raw(keypress, 2, true); break;
-	case 133: add_value_raw(keypress, 1); break; // condition
-	case 134: add_value_raw(keypress, 2, true); break;
-	case 135: add_value_raw(keypress, 1); break;
-	case 136: add_value_raw(keypress, 1); break;
+	case 106: add_value_raw(106, 1); break;
+	case 107: add_value_raw(113, 1, false, std::vector<uint8_t>{ 3 }); break;
+	case 108: add_value_raw(113, 1, false, std::vector<uint8_t>{ 116, 1 }); break;
+	case 109: add_value_raw(109, 2, true); break;
+	case 110: add_value_raw(110, 2, true); break;
+	case 111: add_value_raw(111, 1); break;
+	case 112: add_value_raw(113, 1, false, std::vector<uint8_t>{ 2 }); break;
+	case 113: add_value_raw(113, 1); break;
+	case 131: add_value_raw(131, 3, true); break;
+	case 132: add_value_raw(134, 2, true); break;
+	case 133: add_value_raw(133, 1); break; // condition
+	case 134: add_value_raw(134, 2, true); break;
+	case 135: add_value_raw(135, 1); break;
+	case 136: add_value_raw(136, 1); break;
 	default: add_value_raw(keypress, 0); break;
 	}
 
@@ -741,7 +768,7 @@ void Equation::move_cursor_down()
 
 void Equation::del()
 {
-	if (_equation_root->children.size() == 0) return;
+	if (_cursor_index == std::vector<uint32_t>{ 0 }) return;
 
 	EquationNode* modify = _equation_root;
 	EquationNode* modify_parent = _equation_root;

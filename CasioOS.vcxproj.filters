@@ -102,7 +102,7 @@
     <ClInclude Include="src\windows\WindowManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Number.h">
+    <ClInclude Include="src\datastructs\Number.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -191,7 +191,7 @@
     <ClCompile Include="src\windows\WindowManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Number.cpp">
+    <ClCompile Include="src\datastructs\Number.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
