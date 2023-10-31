@@ -62,21 +62,13 @@
             "name": "Run Key Map Creator",
             "type": "python",
             "workingDir": "$PROJECT_DIR$\\Graphics Designer",
-            "environment": {
-                "PYTHONUNBUFFERED": "1",
-                "PYTHONPATH": "$PROJECT_DIR$"
-            },
             "file": "$PROJECT_DIR$\\Graphics Designer\\keyMapCreator.py"
         },
         {
             "name": "Run Pico Keyborad-Map Creator",
             "type": "python",
-            "workingDir": "D:\\fleet\\CasioOS\\Graphics Designer",
-            "environment": {
-                "PYTHONUNBUFFERED": "1",
-                "PYTHONPATH": "D:\\fleet\\CasioOS"
-            },
-            "file": "D:\\fleet\\CasioOS\\Graphics Designer\\picoKeyboardMapCreator.py"
+            "workingDir": "$PROJECT_DIR$\\Graphics Designer",
+            "file": "$PROJECT_DIR$\\Graphics Designer\\picoKeyboardMapCreator.py"
         }
     ]
 }
