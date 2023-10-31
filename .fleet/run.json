@@ -4,7 +4,7 @@
             "name": "Build Debug CasioOS",
             "type": "command",
             "workingDir": "$PROJECT_DIR$",
-            "program": "D:\\Visualstudio\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+            "program": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
             "args": [
                 "-maxcpucount",
                 "/property:Configuration=Debug",
@@ -17,7 +17,7 @@
             "name": "Build Release CasioOS",
             "type": "command",
             "workingDir": "$PROJECT_DIR$",
-            "program": "D:\\Visualstudio\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+            "program": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
             "args": [
                 "-maxcpucount",
                 "/property:Configuration=Release",
@@ -52,7 +52,7 @@
                 "PICO_SDK_FETCH_FROM_GIT": "ON"
             },
         },
-{
+        {
             "type": "python",
             "name": "Run Graphics Designer",
             "file": "$PROJECT_DIR$/Graphics Designer/main.py",
