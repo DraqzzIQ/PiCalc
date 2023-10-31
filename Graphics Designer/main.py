@@ -1,6 +1,5 @@
 import tkinter as tk
 import math
-import pyperclip
 
 
 def motion(event):
