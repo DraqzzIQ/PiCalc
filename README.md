@@ -4,7 +4,7 @@ Simulates the OS of a CASIO fx-87DE PLUS (2nd edition) with some additional feat
 
 ## How To Start
 
-- Clone repo with JetBrains Fleet
+- Clone repo with JetBrains Fleet or JetBrains CLion
 - Click on the Start button
 - Select Run config (e.g.: "Run CasioOS")
 
