@@ -52,6 +52,12 @@
                 "PICO_SDK_FETCH_FROM_GIT": "ON"
             },
         },
+{
+            "type": "python",
+            "name": "Run Graphics Designer",
+            "file": "$PROJECT_DIR$/Graphics Designer/main.py",
+            "arguments": [],
+        },
 
     ]
 }
