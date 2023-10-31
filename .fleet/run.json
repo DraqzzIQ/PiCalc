@@ -1,5 +1,57 @@
 {
     "configurations": [
-        
+        {
+            "name": "Build Debug CasioOS",
+            "type": "command",
+            "workingDir": "$PROJECT_DIR$",
+            "program": "D:\\Visualstudio\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+            "args": [
+                "-maxcpucount",
+                "/property:Configuration=Debug",
+                "/property:Platform=x64",
+                "/t:CasioOS",
+                "D:\\fleet\\CasioOS\\CasioOS.sln"
+            ]
+        },
+        {
+            "name": "Build Release CasioOS",
+            "type": "command",
+            "workingDir": "$PROJECT_DIR$",
+            "program": "D:\\Visualstudio\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+            "args": [
+                "-maxcpucount",
+                "/property:Configuration=Release",
+                "/property:Platform=x64",
+                "/t:CasioOS",
+                "D:\\fleet\\CasioOS\\CasioOS.sln"
+            ],
+        },
+        {
+            "name": "Run CasioOS",
+            "type": "command",
+            "workingDir": "$PROJECT_DIR$",
+            "program": "cmd.exe",
+            "args": [
+                "@cmd",
+                "/k",
+                "$PROJECT_DIR$/x64/Release/CasioOS.exe"
+            ],
+            "dependsOn": [
+                "Build Release CasioOS"
+            ],
+        },
+        {
+            "type": "command",
+            "name": "Build for Raspi",
+            "program": "cmake",
+            "args": [
+                "."
+            ],
+            "workingDir": "$PROJECT_DIR$",
+            "environment": {
+                "PICO_SDK_FETCH_FROM_GIT": "ON"
+            },
+        },
+
     ]
 }

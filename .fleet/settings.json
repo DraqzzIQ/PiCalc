@@ -1,4 +1,6 @@
 {
     "editor.formatOnSave": true,
-    "toolchains": []
+    "toolchains": [],
+    "editor.guides": [],
+    "java.debugger.reloadClassesAfterCompilation": "Ask"
 }
