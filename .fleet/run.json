@@ -10,7 +10,7 @@
                 "/property:Configuration=Debug",
                 "/property:Platform=x64",
                 "/t:CasioOS",
-                "D:\\fleet\\CasioOS\\CasioOS.sln"
+                "$PROJECT_DIR$\\CasioOS.sln"
             ]
         },
         {
@@ -23,7 +23,7 @@
                 "/property:Configuration=Release",
                 "/property:Platform=x64",
                 "/t:CasioOS",
-                "D:\\fleet\\CasioOS\\CasioOS.sln"
+                "$PROJECT_DIR$/CasioOS.sln"
             ],
         },
         {
