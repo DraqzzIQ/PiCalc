@@ -375,3 +375,5 @@ CppProperties.json
 .vscode/
 /cmake-build-release/
 /cmake-build-debug/
+
+poetry.lock
