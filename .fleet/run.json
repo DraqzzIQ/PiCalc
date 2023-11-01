@@ -24,7 +24,7 @@
                 "/property:Platform=x64",
                 "/t:CasioOS",
                 "$PROJECT_DIR$/CasioOS.sln"
-            ],
+            ]
         },
         {
             "name": "Run CasioOS",
@@ -38,7 +38,7 @@
             ],
             "dependsOn": [
                 "Build Release CasioOS"
-            ],
+            ]
         },
         {
             "type": "command",
@@ -50,13 +50,13 @@
             "workingDir": "$PROJECT_DIR$",
             "environment": {
                 "PICO_SDK_FETCH_FROM_GIT": "ON"
-            },
+            }
         },
         {
             "type": "python",
             "name": "Run Graphics Designer",
             "file": "$PROJECT_DIR$/Graphics Designer/main.py",
-            "arguments": [],
+            "arguments": []
         },
         {
             "name": "Run Key Map Creator",
