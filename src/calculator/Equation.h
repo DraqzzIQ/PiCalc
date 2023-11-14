@@ -91,6 +91,7 @@ class Equation
 	struct CalculateNode {
 		Number value = Number();
 		uint8_t operation = 95;
+		int32_t equation_index = -1;
 	};
 
 	/// <summary>
@@ -153,7 +154,7 @@ class Equation
 	/// <param name="equation">the equation to be calculated</param>
 	/// <param name="error">set to an error type if any occur, else Fine</param>
 	/// <returns>Result</returns>
-	Number calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
+	Number calculate_equation_part(std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
 	/// <summary>
 	/// renders an equation with a leading and trailing free column
 	/// </summary>

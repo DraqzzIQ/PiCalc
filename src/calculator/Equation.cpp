@@ -376,10 +376,12 @@ Bitset2D Equation::render_subequation(const std::vector<EquationNode*>& equation
 Number Equation::calculate_equation(const std::vector<double> variables, Error& error)
 {
 	uint32_t i = 0;
-	return calculate_equation_part(_equation_root->children, error, std::vector<uint32_t>(), i);
+	Number res = calculate_equation_part(_equation_root->children, error, std::vector<uint32_t>(), i);
+	render_equation();
+	return res;
 }
 
-Number Equation::calculate_equation_part(const std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
+Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
 {
 	calculate_index.push_back(i);
 	// equation is empty
@@ -391,129 +393,136 @@ Number Equation::calculate_equation_part(const std::vector<EquationNode*>& equat
 	}
 
 	// parse the equation to a 1D vector of numbers and operations
+	uint32_t add_i = 0;
 	std::vector<CalculateNode> calculation;
 	bool numExpected = true;
 	std::string num;
 	for (; i < equation.size(); i++) {
 		calculate_index.back() = i;
-		if (equation[i]->children.size() == 0) {
-			uint8_t value = equation[i]->value;
-			if (value < 10) {
-				num.push_back(value + 48);
-			} else if (value == Chars::KEY_MAP.at(",")) {
-				num.push_back('.');
-			} else if (value == Chars::KEY_MAP.at("*10^n")) {
-				num.push_back('e');
-			} else {
-				if (num != "") {
-					calculation.push_back(CalculateNode{ Number(num), 95 });
-					num = "";
-				}
+		uint8_t value = equation[i]->value;
 
-				if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0) {
-					Error err;
-					calculate_index.pop_back();
-					Number result = calculate_equation_part(equation, err, calculate_index, ++i, true);
-					Number result2;
-					if (value == 152 || value == 153 || value == 160 || value == 161 || value == 164) result2 = calculate_equation_part(equation, err, calculate_index, ++i, true);
-					calculate_index.push_back(i);
-					switch (value) {
-					case 74: calculation.push_back(CalculateNode(result, 95)); break;
-					case 114: calculation.push_back(CalculateNode(result.log(), 95)); break;
-					case 115: calculation.push_back(CalculateNode(result.ln(), 95)); break;
-					case 118: calculation.push_back(CalculateNode(result.sin(), 95)); break;
-					case 119: calculation.push_back(CalculateNode(result.cos(), 95)); break;
-					case 120: calculation.push_back(CalculateNode(result.tan(), 95)); break;
-					case 138: calculation.push_back(CalculateNode(result.asin(), 95)); break;
-					case 139: calculation.push_back(CalculateNode(result.acos(), 95)); break;
-					case 140: calculation.push_back(CalculateNode(result.atan(), 95)); break;
-					case 152: calculation.push_back(CalculateNode(Number::pol(result, result2), 95)); break;
-					case 153: calculation.push_back(CalculateNode(Number::rec(result, result2), 95)); break;
-					case 154: calculation.push_back(CalculateNode(result.round(), 95)); break;
-					case 160: calculation.push_back(CalculateNode(Number::gcd(result, result2), 95)); break;
-					case 161: calculation.push_back(CalculateNode(Number::lcm(result, result2), 95)); break;
-					case 162: calculation.push_back(CalculateNode(result.to_int(), 95)); break;
-					case 163: calculation.push_back(CalculateNode(result.floor(), 95)); break;
-					case 164: calculation.push_back(CalculateNode(Number::ran_int(result, result2), 95)); break;
-					case 190: calculation.push_back(CalculateNode(result.sinh(), 95)); break;
-					case 191: calculation.push_back(CalculateNode(result.cosh(), 95)); break;
-					case 192: calculation.push_back(CalculateNode(result.tanh(), 95)); break;
-					case 193: calculation.push_back(CalculateNode(result.asinh(), 95)); break;
-					case 194: calculation.push_back(CalculateNode(result.acosh(), 95)); break;
-					case 195: calculation.push_back(CalculateNode(result.atanh(), 95)); break;
+		if (value < 10) {
+			num.push_back(value + 48);
+		} else if (value == Chars::KEY_MAP.at(",")) {
+			if (num.find('.') != std::string::npos || num.find('e') != std::string::npos) {
+				_cursor_index = calculate_index;
+				error = Error::SYNTAX_ERROR;
+				render_equation();
+				return Number();
+			}
+			num.push_back('.');
+		} else if (value == Chars::KEY_MAP.at("*10^n")) {
+			if (num.find('e') != std::string::npos) {
+				_cursor_index = calculate_index;
+				error = Error::SYNTAX_ERROR;
+				render_equation();
+				return Number();
+			}
+			num.push_back('e');
+		} else {
+			if (num != "") {
+				calculation.push_back(CalculateNode(Number(num), 95, i - num.length()));
+				num = "";
+			}
+
+			if (equation[i]->children.size() != 0) {
+				Error err;
+				std::vector<Number> subEquations;
+				for (EquationNode* node : equation[i]->children) {
+					uint32_t new_i = 0;
+					subEquations.push_back(calculate_equation_part(node->children, err, calculate_index, new_i));
+					switch (err) {
+					case Error::MATH_ERROR:;
+					case Error::PUFFER_ERROR:;
+					case Error::SYNTAX_ERROR:;
+					case Error::ARGUMENT_ERROR:;
+					case Error::STORAGE_ERROR:;
+					case Error::TIME_ERROR:;
+					case Error::FINE:;
 					}
-				} else if (value == 75 || value == 83) {
-					if (stop_on_closed_bracket) {
-						break;
-					} else {
+				}
+				// TODO: periodic
+				uint8_t value = equation[i]->value;
+				switch (value) {
+				case 95:
+					_cursor_index = calculate_index;
+					error = Error::SYNTAX_ERROR;
+					render_equation();
+					return Number();
+				case 106: calculation.push_back(CalculateNode(subEquations[0].abs(), 95, i)); break;
+				case 109: calculation.push_back(CalculateNode(subEquations[0].log(subEquations[1]), 95, i)); break;
+				case 110: calculation.push_back(CalculateNode(subEquations[0] / subEquations[1], 95, i)); break;
+				case 111: calculation.push_back(CalculateNode(subEquations[0].root(2), 95, i)); break;
+				case 131: calculation.push_back(CalculateNode(subEquations[0] + (subEquations[1] / subEquations[2]), 95, i)); break;
+				case 134: calculation.push_back(CalculateNode(subEquations[1].root(subEquations[0]), 95, i)); break;
+				case 135: calculation.push_back(CalculateNode(Number(10).pow(subEquations[0]), 95, i)); break;
+				case 136: calculation.push_back(CalculateNode(Number(2.718281828).pow(subEquations[0]), 95, i)); break;
+				default:
+					if (calculation.size() == 0 || calculation.back().operation != 95) {
 						_cursor_index = calculate_index;
 						error = Error::SYNTAX_ERROR;
 						render_equation();
 						return Number();
 					}
-				} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
-					calculation.push_back(CalculateNode(Number(), value));
-				} else {
-					// constants
 					switch (value) {
-					case 10:;
+					case 113: calculation.back().value.pow(subEquations[0]); break;
+					case 85: calculation.back().value.factorial(); break;
+					case 98: calculation.back().value /= 100; break;
 					}
 				}
-			}
-		} else {
-			if (num != "") {
-				calculation.push_back(CalculateNode{ Number(num), 95 });
-				num = "";
-			}
-
-			Error err;
-			std::vector<Number> subEquations;
-			for (EquationNode* node : equation[i]->children) {
-				uint32_t new_i = 0;
-				subEquations.push_back(calculate_equation_part(node->children, err, calculate_index, new_i));
-				switch (err) {
-				case Error::MATH_ERROR:;
-				case Error::PUFFER_ERROR:;
-				case Error::SYNTAX_ERROR:;
-				case Error::ARGUMENT_ERROR:;
-				case Error::STORAGE_ERROR:;
-				case Error::TIME_ERROR:;
-				case Error::FINE:;
+			} else if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0) {
+				Error err;
+				calculate_index.pop_back();
+				Number result = calculate_equation_part(equation, err, calculate_index, ++i, true);
+				Number result2;
+				if (value == 152 || value == 153 || value == 160 || value == 161 || value == 164) result2 = calculate_equation_part(equation, err, calculate_index, ++i, true);
+				calculate_index.push_back(i);
+				switch (value) {
+				case 74: calculation.push_back(CalculateNode(result, 95, i)); break;
+				case 114: calculation.push_back(CalculateNode(result.log(), 95, i)); break;
+				case 115: calculation.push_back(CalculateNode(result.ln(), 95, i)); break;
+				case 118: calculation.push_back(CalculateNode(result.sin(), 95, i)); break;
+				case 119: calculation.push_back(CalculateNode(result.cos(), 95, i)); break;
+				case 120: calculation.push_back(CalculateNode(result.tan(), 95, i)); break;
+				case 138: calculation.push_back(CalculateNode(result.asin(), 95, i)); break;
+				case 139: calculation.push_back(CalculateNode(result.acos(), 95, i)); break;
+				case 140: calculation.push_back(CalculateNode(result.atan(), 95, i)); break;
+				case 152: calculation.push_back(CalculateNode(Number::pol(result, result2), 95, i)); break;
+				case 153: calculation.push_back(CalculateNode(Number::rec(result, result2), 95, i)); break;
+				case 154: calculation.push_back(CalculateNode(result.round(), 95, i)); break;
+				case 160: calculation.push_back(CalculateNode(Number::gcd(result, result2), 95, i)); break;
+				case 161: calculation.push_back(CalculateNode(Number::lcm(result, result2), 95, i)); break;
+				case 162: calculation.push_back(CalculateNode(result.to_int(), 95, i)); break;
+				case 163: calculation.push_back(CalculateNode(result.floor(), 95, i)); break;
+				case 164: calculation.push_back(CalculateNode(Number::ran_int(result, result2), 95, i)); break;
+				case 190: calculation.push_back(CalculateNode(result.sinh(), 95, i)); break;
+				case 191: calculation.push_back(CalculateNode(result.cosh(), 95, i)); break;
+				case 192: calculation.push_back(CalculateNode(result.tanh(), 95, i)); break;
+				case 193: calculation.push_back(CalculateNode(result.asinh(), 95, i)); break;
+				case 194: calculation.push_back(CalculateNode(result.acosh(), 95, i)); break;
+				case 195: calculation.push_back(CalculateNode(result.atanh(), 95, i)); break;
 				}
-			}
-			// TODO: periodic
-			uint8_t value = equation[i]->value;
-			switch (value) {
-			case 95:
-				_cursor_index = calculate_index;
-				error = Error::SYNTAX_ERROR;
-				render_equation();
-				return Number();
-			case 106: calculation.push_back(CalculateNode(subEquations[0].abs(), 95)); break;
-			case 109: calculation.push_back(CalculateNode(subEquations[0].log(subEquations[1]), 95)); break;
-			case 110: calculation.push_back(CalculateNode(subEquations[0] / subEquations[1], 95)); break;
-			case 111: calculation.push_back(CalculateNode(subEquations[0].root(2), 95)); break;
-			case 131: calculation.push_back(CalculateNode(subEquations[0] + (subEquations[1] / subEquations[2]), 95)); break;
-			case 134: calculation.push_back(CalculateNode(subEquations[0].root(subEquations[1]), 95)); break;
-			case 135: calculation.push_back(CalculateNode(Number(10).pow(subEquations[0]), 95)); break;
-			case 136: calculation.push_back(CalculateNode(Number(2.718281828).pow(subEquations[0]), 95)); break;
-			default:
-				if (calculation.size() == 0 || calculation.back().operation != 95) {
+			} else if (value == 75 || value == 83) {
+				if (stop_on_closed_bracket) {
+					break;
+				} else {
 					_cursor_index = calculate_index;
 					error = Error::SYNTAX_ERROR;
 					render_equation();
 					return Number();
 				}
+			} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
+				calculation.push_back(CalculateNode(Number(), value, i));
+			} else {
+				// constants
 				switch (value) {
-				case 113: calculation.back().value.pow(subEquations[0]); break;
-				case 85: calculation.back().value.factorial(); break;
-				case 98: calculation.back().value /= 100; break;
+				case 10:;
 				}
 			}
 		}
 	}
 	if (num != "") {
-		calculation.push_back(CalculateNode{ Number(num), 95 });
+		calculation.push_back(CalculateNode(Number(num), 95, i - num.length()));
 		num = "";
 	}
 
@@ -551,6 +560,14 @@ Number Equation::calculate_equation_part(const std::vector<EquationNode*>& equat
 			operation = true;
 		} else {
 			if (!operation) {
+				if (j > 1 && calculation.at(j - 2).operation == 72) {
+					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i + 1, new EquationNode{ 75 });
+					equation.insert(equation.begin() + calculation.at(j - 1).equation_index + add_i++, new EquationNode{ 74 });
+				}
+				if (equation.at(calculation.at(j).equation_index + add_i)->value == 110) {
+					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i + 1, new EquationNode{ 75 });
+					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i++, new EquationNode{ 74 });
+				}
 				calculation.at(j - 1).value *= calculation.at(j).value;
 				calculation.erase(calculation.begin() + j--);
 			}

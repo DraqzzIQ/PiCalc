@@ -355,13 +355,13 @@ Number& Number::sqrt()
 
 Number& Number::root(const Number& other)
 {
-	_rounded = std::pow(other._rounded, 1 / _rounded);
+	_rounded = std::pow(_rounded, 1 / other._rounded);
 	return *this;
 }
 
 Number& Number::root(const double& other)
 {
-	_rounded = std::pow(other, 1 / _rounded);
+	_rounded = std::pow(_rounded, 1 / other);
 	return *this;
 }
 
