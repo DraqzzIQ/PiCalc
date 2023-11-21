@@ -2,30 +2,24 @@
 
 Number::Number()
 {
-	_rounded = 0;
 	_root = new NumberNode();
 }
 
 
-Number::Number(const double value)
+Number::Number(const uint64_t value, const uint16_t exp)
 {
-	_rounded = value;
 	_root = new NumberNode();
-	_root->value = _rounded;
-}
-
-Number::Number(const std::string value)
-{
-	_rounded = std::stod(value);
-	_root = new NumberNode();
-	_root->value = _rounded;
+	_root->value = value;
+	_root->exp = exp;
 }
 
 Number::Number(const Number& other)
 {
-	_rounded = other._rounded;
-	_root = new NumberNode();
-	_root->value = _rounded;
+	_root = other._root->clone();
+
+	_state = other._state;
+	_periodic = other._periodic;
+	_value_cnt = other._value_cnt;
 }
 
 Number::~Number()
@@ -35,7 +29,11 @@ Number::~Number()
 
 Number Number::operator+(const Number& other)
 {
-	Number result = Number(_rounded + other._rounded);
+	Number result;
+
+	if (!other._root->first && !_root->first) {
+	}
+
 	return result;
 }
 
@@ -149,7 +147,10 @@ Number& Number::operator^=(const Number& other)
 
 Number& Number::operator=(const Number& other)
 {
+	_rounded_str = other._rounded_str;
 	_rounded = other._rounded;
+	_state = other._state;
+	_root = other._root->clone();
 	return *this;
 }
 
@@ -400,7 +401,50 @@ double Number::get_value() const
 	return _rounded;
 }
 
+bool Number::add_digit(const uint8_t digit)
+{
+	if (_state & 0b1000) {
+		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+	} else if (digit < 10) {
+		if (_state & 0b010) _root->exp = _root->exp * 10 + digit;
+		else {
+			if (_state & 0b001) _root->exp--;
+			else if (_state & 0b100) _periodic = _periodic * 10 + digit;
+			_root->value = _root->value * 10 + digit;
+		}
+	} else if (digit == 82) {
+		if (_state & 0b111) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		_state |= 0b001;
+	} else if (digit == 127) {
+		if (_state & 0b110) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		_state |= 0b0010;
+	} else if (digit == 133) {
+		if (!(_state & 0b001) || _state & 0b010) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		if (_state & 0b100) _state |= 0b1000;
+		else _state |= 0b100;
+	} else return false;
+	_value_cnt++;
+	return true;
+}
+
+uint16_t Number::finalize()
+{
+	if (!_value_cnt || ((_state & 0b100) && !_periodic)) return 0;
+	if (_state & 0b100) {
+		// TODO
+	} else {
+		_root->operation = 0;
+		_root->first = nullptr;
+		_root->second = nullptr;
+	}
+
+	_periodic = 0;
+	_state = 0;
+	_value_cnt = 0;
+	return _value_cnt;
+}
+
 Bitset2D Number::render() const
 {
-	return Graphics::create_text(std::to_string(_rounded));
+	return Graphics::create_text(std::to_string(_root));
 }

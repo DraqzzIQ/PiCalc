@@ -23,7 +23,6 @@ Bitset2D CalculatorWindow::update_window()
 
 void CalculatorWindow::handle_key_down(KeyPress keypress)
 {
-	Equation::Error error;
 	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) equation->move_cursor_right();
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) equation->move_cursor_left();
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("up")) equation->move_cursor_up();
@@ -32,10 +31,16 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) equation->ac();
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
 		// TODO: output with , instead of .
-		result = equation->calculate_equation(variables, error);
+		result = equation->calculate_equation(variables);
+		if (Error::error_thrown()) {
+			result_rendered = Error::render_error();
+			Error::error_handled();
+			calculated = true;
+		} else {
+			result_rendered = result.render();
+			calculated = true;
+		}
 		// result_rendered = Graphics::create_text(std::to_string(result));
-		result_rendered = result.render();
-		calculated = true;
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("unknown"))
 		;
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("SHIFT"))

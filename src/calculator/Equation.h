@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Number.h"
 #include "keyboard/KeyPress.h"
@@ -23,16 +24,6 @@ class Equation
 	/// </summary>
 	~Equation();
 	/// <summary>
-	/// enum for all error types
-	/// </summary>
-	enum class Error { MATH_ERROR,
-		               PUFFER_ERROR,
-		               SYNTAX_ERROR,
-		               ARGUMENT_ERROR,
-		               STORAGE_ERROR,
-		               TIME_ERROR,
-		               FINE };
-	/// <summary>
 	/// return the rendered equation
 	/// </summary>
 	Bitset2D get_rendered_equation();
@@ -45,7 +36,7 @@ class Equation
 	/// calculate the equation
 	/// </summary>
 	/// <returns>result</returns>
-	Number calculate_equation(const std::vector<double> variables, Error& error);
+	Number calculate_equation(const std::vector<double> variables);
 	/// <summary>
 	/// delete the character before the Cursor
 	/// </summary>
@@ -154,7 +145,7 @@ class Equation
 	/// <param name="equation">the equation to be calculated</param>
 	/// <param name="error">set to an error type if any occur, else Fine</param>
 	/// <returns>Result</returns>
-	Number calculate_equation_part(std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
+	Number calculate_equation_part(std::vector<EquationNode*>& equation, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
 	/// <summary>
 	/// renders an equation with a leading and trailing free column
 	/// </summary>

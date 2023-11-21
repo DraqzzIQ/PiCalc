@@ -373,82 +373,51 @@ Bitset2D Equation::render_subequation(const std::vector<EquationNode*>& equation
 	return rendered;
 }
 
-Number Equation::calculate_equation(const std::vector<double> variables, Error& error)
+Number Equation::calculate_equation(const std::vector<double> variables)
 {
 	uint32_t i = 0;
-	Number res = calculate_equation_part(_equation_root->children, error, std::vector<uint32_t>(), i);
+	Number res = calculate_equation_part(_equation_root->children, std::vector<uint32_t>(), i);
+	if (Error::error_thrown()) return Number();
 	render_equation();
 	return res;
 }
 
-Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, Error& error, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
+Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
 {
 	calculate_index.push_back(i);
+
 	// equation is empty
 	if (equation.size() == 0) {
-		_cursor_index = std::vector<uint32_t>{ 0 };
-		error = Error::SYNTAX_ERROR;
-		render_equation();
+		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		_cursor_index = calculate_index;
 		return Number();
 	}
 
 	// parse the equation to a 1D vector of numbers and operations
-	uint32_t add_i = 0;
 	std::vector<CalculateNode> calculation;
 	bool numExpected = true;
-	std::string num;
+	Number number = Number();
 	for (; i < equation.size(); i++) {
 		calculate_index.back() = i;
 		uint8_t value = equation[i]->value;
 
-		if (value < 10) {
-			num.push_back(value + 48);
-		} else if (value == Chars::KEY_MAP.at(",")) {
-			if (num.find('.') != std::string::npos || num.find('e') != std::string::npos) {
-				_cursor_index = calculate_index;
-				error = Error::SYNTAX_ERROR;
-				render_equation();
-				return Number();
+		if (value == 133) {
+			number.add_digit(133);
+			for (uint32_t j = 0; j < equation[i]->children.size(); j++) {
+				number.add_digit(equation[i]->children[0]->children[j]->value);
 			}
-			num.push_back('.');
-		} else if (value == Chars::KEY_MAP.at("*10^n")) {
-			if (num.find('e') != std::string::npos) {
-				_cursor_index = calculate_index;
-				error = Error::SYNTAX_ERROR;
-				render_equation();
-				return Number();
-			}
-			num.push_back('e');
-		} else {
-			if (num != "") {
-				calculation.push_back(CalculateNode(Number(num), 95, i - num.length()));
-				num = "";
-			}
+			number.add_digit(133);
+		} else if (!number.add_digit(value)) {
+			if (uint16_t length = number.finalize()) calculation.push_back(CalculateNode(number, 95, i - length));
 
 			if (equation[i]->children.size() != 0) {
-				Error err;
 				std::vector<Number> subEquations;
 				for (EquationNode* node : equation[i]->children) {
 					uint32_t new_i = 0;
-					subEquations.push_back(calculate_equation_part(node->children, err, calculate_index, new_i));
-					switch (err) {
-					case Error::MATH_ERROR:;
-					case Error::PUFFER_ERROR:;
-					case Error::SYNTAX_ERROR:;
-					case Error::ARGUMENT_ERROR:;
-					case Error::STORAGE_ERROR:;
-					case Error::TIME_ERROR:;
-					case Error::FINE:;
-					}
+					subEquations.push_back(calculate_equation_part(node->children, calculate_index, new_i));
 				}
-				// TODO: periodic
-				uint8_t value = equation[i]->value;
 				switch (value) {
-				case 95:
-					_cursor_index = calculate_index;
-					error = Error::SYNTAX_ERROR;
-					render_equation();
-					return Number();
+				case 95: Error::throw_error(Error::ErrorType::SYNTAX_ERROR); break;
 				case 106: calculation.push_back(CalculateNode(subEquations[0].abs(), 95, i)); break;
 				case 109: calculation.push_back(CalculateNode(subEquations[0].log(subEquations[1]), 95, i)); break;
 				case 110: calculation.push_back(CalculateNode(subEquations[0] / subEquations[1], 95, i)); break;
@@ -459,10 +428,7 @@ Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, E
 				case 136: calculation.push_back(CalculateNode(Number(2.718281828).pow(subEquations[0]), 95, i)); break;
 				default:
 					if (calculation.size() == 0 || calculation.back().operation != 95) {
-						_cursor_index = calculate_index;
-						error = Error::SYNTAX_ERROR;
-						render_equation();
-						return Number();
+						Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 					}
 					switch (value) {
 					case 113: calculation.back().value.pow(subEquations[0]); break;
@@ -471,11 +437,10 @@ Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, E
 					}
 				}
 			} else if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0) {
-				Error err;
 				calculate_index.pop_back();
-				Number result = calculate_equation_part(equation, err, calculate_index, ++i, true);
+				Number result = calculate_equation_part(equation, calculate_index, ++i, true);
 				Number result2;
-				if (value == 152 || value == 153 || value == 160 || value == 161 || value == 164) result2 = calculate_equation_part(equation, err, calculate_index, ++i, true);
+				if (value == 152 || value == 153 || value == 160 || value == 161 || value == 164) result2 = calculate_equation_part(equation, calculate_index, ++i, true);
 				calculate_index.push_back(i);
 				switch (value) {
 				case 74: calculation.push_back(CalculateNode(result, 95, i)); break;
@@ -503,14 +468,8 @@ Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, E
 				case 195: calculation.push_back(CalculateNode(result.atanh(), 95, i)); break;
 				}
 			} else if (value == 75 || value == 83) {
-				if (stop_on_closed_bracket) {
-					break;
-				} else {
-					_cursor_index = calculate_index;
-					error = Error::SYNTAX_ERROR;
-					render_equation();
-					return Number();
-				}
+				if (stop_on_closed_bracket) break;
+				else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
 				calculation.push_back(CalculateNode(Number(), value, i));
 			} else {
@@ -519,14 +478,16 @@ Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, E
 				case 10:;
 				}
 			}
+			if (Error::error_thrown()) {
+				_cursor_index = calculate_index;
+				return Number();
+			}
 		}
 	}
-	if (num != "") {
-		calculation.push_back(CalculateNode(Number(num), 95, i - num.length()));
-		num = "";
-	}
+	if (uint16_t length = number.finalize()) calculation.push_back(CalculateNode(number, 95, i - length));
 
 	// handle negative numbers
+	uint8_t add_i = 0;
 	bool negative = false;
 	bool operation = true;
 	for (uint32_t j = 0; j < calculation.size(); j++) {
@@ -538,8 +499,8 @@ Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, E
 					negative = !negative;
 					calculation.erase(calculation.begin() + j--);
 				} else if (calculation.at(j).operation != 69) {
+					Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 					_cursor_index = calculate_index;
-					error = Error::SYNTAX_ERROR;
 					return Number();
 				}
 			}
