@@ -1,10 +1,15 @@
 #include "IHttpClient.h"
-#include "httplib.h"
+#define CPPHTTPLIB_OPENSSL_SUPPORT
+#include <lib\httplib.h>
 
-class DesktopHttpClient : IHttpClient
+class DesktopHttpClient: IHttpClient
 {
 	public:
-	DesktopHttpClient();
-	HttpResponse get(HttpRequest req, std::string url);
-	HttpResponse post(HttpRequest req, std::string url);
+	DesktopHttpClient(std::string& baseUrl);
+	HttpResponse get(HttpRequest& req, std::string& path);
+	HttpResponse post(HttpRequest& req, std::string& path);
+	void set_bearer_auth_token(std::string& token);
+
+	private:
+	httplib::Client client;
 };

@@ -49,6 +49,12 @@
     <ClInclude Include="src\windows\TextWindow.h" />
     <ClInclude Include="src\windows\Window.h" />
     <ClInclude Include="src\windows\WindowManager.h" />
+    <ClInclude Include="lib\httplib.h" />
+    <ClInclude Include="src\http\IHttpClient.h" />
+    <ClInclude Include="src\http\DesktopHttpClient.h" />
+    <ClInclude Include="src\http\HttpHeaders.h" />
+    <ClInclude Include="src\http\HttpRequest.h" />
+    <ClInclude Include="src\http\HttpResponse.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
@@ -80,6 +86,8 @@
     <ClCompile Include="src\windows\TextWindow.cpp" />
     <ClCompile Include="src\windows\Window.cpp" />
     <ClCompile Include="src\windows\WindowManager.cpp" />
+    <ClInclude Include="src\http\DesktopHttpClient.cpp" />
+    <ClInclude Include="src\http\IHttpClient.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

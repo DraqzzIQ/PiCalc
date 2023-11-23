@@ -4,7 +4,7 @@
 #include "keyboard/IKeyboard.h"
 #include "windows/WindowManager.h"
 #ifdef _WIN32
-#include "SDL.h"
+#include <SDL.h>
 #else
 #include <SDL2/SDL.h>
 #endif
@@ -44,7 +44,7 @@ class SDLKeyboard: public IKeyboard
 	/// <summary>
 	/// SDL event
 	/// </summary>
-	SDL_Event* _event;
+	SDL_Event _event;
 	/// <summary>
 	/// initializes SDL
 	/// </summary>

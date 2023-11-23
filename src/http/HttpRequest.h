@@ -1,11 +1,13 @@
+#include "HttpHeaders.h"
 #include <string>
 
-struct HttpRequest
-{	
+struct HttpRequest {
+	Headers headers;
 	std::string body;
 
-	HttpRequest(std::string& body)
+	HttpRequest(Headers& headers, std::string& body)
 	{
+		this->headers = headers;
 		this->body = body;
 	}
 };

@@ -4,7 +4,6 @@
 SDLKeyboard::SDLKeyboard(WindowManager* window_manager):
 	IKeyboard(window_manager)
 {
-	_event = new SDL_Event();
 	sdl_init();
 }
 
@@ -32,15 +31,15 @@ bool SDLKeyboard::is_alpha_active()
 
 void SDLKeyboard::check_for_keyboard_presses()
 {
-	if (SDL_PollEvent(_event)) {
-		if (_event->type == SDL_QUIT) {
+	if (SDL_PollEvent(&_event)) {
+		if (_event.type == SDL_QUIT) {
 			SDL_DestroyWindow(_window);
 			SDL_Quit();
 			exit(0);
-		} else if (_event->type == SDL_KEYDOWN) {
-			_window_manager->handle_key_down(sdl_event_to_keypress(_event));
-		} else if (_event->type == SDL_KEYUP) {
-			_window_manager->handle_key_up(sdl_event_to_keypress(_event));
+		} else if (_event.type == SDL_KEYDOWN) {
+			_window_manager->handle_key_down(sdl_event_to_keypress(&_event));
+		} else if (_event.type == SDL_KEYUP) {
+			_window_manager->handle_key_up(sdl_event_to_keypress(&_event));
 		}
 	}
 }

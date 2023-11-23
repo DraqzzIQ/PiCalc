@@ -7,6 +7,4 @@ if(NOT RPI_PICO)
     include_directories(${SDL2_INCLUDE_DIRS})
 
     target_link_libraries(${PROJECT_NAME} Threads::Threads ${SDL2_LIBRARIES})
-
-    include(httplib.h)
 endif()

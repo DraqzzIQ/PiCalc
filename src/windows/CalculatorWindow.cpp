@@ -2,20 +2,18 @@
 
 CalculatorWindow::CalculatorWindow()
 {
-	equation = new Equation();
 	result = 0;
 	calculated = false;
 }
 
 CalculatorWindow::~CalculatorWindow()
 {
-	delete equation;
 }
 
 Bitset2D CalculatorWindow::update_window()
 {
 	clear_window();
-	add_to_window(equation->get_rendered_equation(), 0, 1);
+	add_to_window(equation.get_rendered_equation(), 0, 1);
 	if (calculated) add_to_window(result_rendered, SCREEN_WIDTH - result_rendered.width(), SCREEN_HEIGHT - result_rendered.height());
 	return get_render_canvas();
 }
@@ -24,15 +22,15 @@ Bitset2D CalculatorWindow::update_window()
 void CalculatorWindow::handle_key_down(KeyPress keypress)
 {
 	Equation::Error error;
-	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) equation->move_cursor_right();
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) equation->move_cursor_left();
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("up")) equation->move_cursor_up();
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) equation->move_cursor_down();
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) equation->del();
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) equation->ac();
+	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) equation.move_cursor_right();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) equation.move_cursor_left();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("up")) equation.move_cursor_up();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) equation.move_cursor_down();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) equation.del();
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) equation.ac();
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
 		// TODO: output with , instead of .
-		result = equation->calculate_equation(variables, error);
+		result = equation.calculate_equation(variables, error);
 		// result_rendered = Graphics::create_text(std::to_string(result));
 		result_rendered = result.render();
 		calculated = true;
@@ -86,5 +84,5 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 		;
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("wav="))
 		;
-	else equation->add_value(keypress.key_calculator);
+	else equation.add_value(keypress.key_calculator);
 }

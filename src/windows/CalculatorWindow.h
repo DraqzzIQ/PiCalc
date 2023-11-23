@@ -13,7 +13,7 @@ class CalculatorWindow: public Window
 	void handle_key_down(KeyPress keypress);
 
 	private:
-	Equation* equation;
+	Equation equation;
 	Number result;
 	Bitset2D result_rendered;
 	bool calculated;
