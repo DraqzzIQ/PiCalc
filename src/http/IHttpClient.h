@@ -5,6 +5,6 @@
 class IHttpClient
 {
 	public:
-	virtual HttpResponse get(HttpRequest request, std::string url) = 0;
-	virtual HttpResponse post(HttpRequest request, std::string url) = 0;	
+	virtual HttpResponse get(HttpRequest req, std::string url) = 0;
+	virtual HttpResponse post(HttpRequest req, std::string url) = 0;	
 };
