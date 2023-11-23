@@ -2,7 +2,7 @@
 Simulates the OS of a CASIO fx-87DE PLUS (2nd edition) with some additional features
 
 ## How To Start
-- Clone and open repo with Editor of your choice
+- Clone and open repo with an editor of your choice
 
 ### JetBrains Fleet or CLion
 - Click on the Start button
@@ -10,4 +10,5 @@ Simulates the OS of a CASIO fx-87DE PLUS (2nd edition) with some additional feat
 
 ## Dependencies
 [SDL2](https://github.com/libsdl-org/SDL)
+
 [cpp-httplib](https://github.com/yhirose/cpp-httplib)
