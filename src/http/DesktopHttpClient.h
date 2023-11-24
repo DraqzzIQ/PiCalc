@@ -1,7 +1,7 @@
 #pragma once
 #ifndef PICO
 #include "http/IHttpClient.h"
-#include <httplib/httplib.h>
+#include <httplib.h>
 
 class DesktopHttpClient: IHttpClient
 {

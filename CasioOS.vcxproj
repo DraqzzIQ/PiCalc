@@ -186,7 +186,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;lib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -210,7 +210,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;lib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
