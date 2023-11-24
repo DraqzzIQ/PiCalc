@@ -1,22 +1,22 @@
 // CasioOS.cpp : This file contains the 'main' function. Program execution begins and ends there.
-#include "renderers/ConsoleRenderer.h"
 #include "keyboard/IKeyboard.h"
+#include "renderers/ConsoleRenderer.h"
 #include "renderers/IRenderer.h"
-#include "windows/MainMenuWindow.h"
 #include "utils/Utils.h"
+#include "windows/MainMenuWindow.h"
 #include "windows/WindowManager.h"
 #include <iostream>
 #include <vector>
 
 #ifdef PICO
-#include "renderers/DisplayRenderer.h"
-#include "utils/I2CUtils.h"
 #include "keyboard/PicoKeyboard.h"
 #include "pico/stdlib.h"
+#include "renderers/DisplayRenderer.h"
+#include "utils/I2CUtils.h"
 #include <malloc.h>
 #else
-#include "keyboard/SDLKeyboard.h"
 #include "http/DesktopHttpClient.h"
+#include "keyboard/SDLKeyboard.h"
 #endif
 
 std::vector<IRenderer*>* renderers = new std::vector<IRenderer*>();
@@ -49,7 +49,6 @@ int main(int argc, char* argv[])
 	if (!I2CUtils::device_availible(DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
 	else renderers->push_back(new DisplayRenderer());
 #else
-	auto client = DesktopHttpClient("https://google.com");
 	renderers->push_back(new ConsoleRenderer());
 #endif
 	window_manager = new WindowManager(renderers);
@@ -66,8 +65,11 @@ int main(int argc, char* argv[])
 	Utils::set_time_start_point();
 #endif
 
-
 	window_manager->add_window(main_menu);
+
+#ifndef PICO
+	DesktopHttpClient client = DesktopHttpClient("https://google.com");
+#endif
 
 	// start main thread
 	start_main_thread();

@@ -1,11 +1,11 @@
+#include "http/DesktopHttpClient.h"
 #ifndef PICO
-#include "DesktopHttpClient.h"
 
 DesktopHttpClient::DesktopHttpClient(std::string baseUrl):
 	IHttpClient(baseUrl),
 	client(baseUrl)
 {
-	//client.set_ca_cert_path("../ca-bundle.crt");
+	// client.set_ca_cert_path("../ca-bundle.crt");
 	auto res = get(HttpRequest(Headers(), ""), "/");
 	std::cout << res.body << std::endl;
 	std::cout << res.status_code << std::endl;
@@ -14,8 +14,8 @@ DesktopHttpClient::DesktopHttpClient(std::string baseUrl):
 HttpResponse DesktopHttpClient::get(HttpRequest req, std::string path)
 {
 	httplib::Result res = client.Get(path, req.headers);
-	//std::cout << httplib::to_string(res.error()) << std::endl;
-        return HttpResponse(res->headers, res->body, res->status);
+	// std::cout << httplib::to_string(res.error()) << std::endl;
+	return HttpResponse(res->headers, res->body, res->status);
 }
 
 HttpResponse DesktopHttpClient::post(HttpRequest req, std::string path)

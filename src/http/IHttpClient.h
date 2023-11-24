@@ -1,6 +1,6 @@
 #pragma once
-#include "HttpRequest.h"
-#include "HttpResponse.h"
+#include "http/HttpRequest.h"
+#include "http/HttpResponse.h"
 #include <string>
 
 class IHttpClient
