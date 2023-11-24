@@ -4,6 +4,8 @@ if(NOT RPI_PICO)
 
     find_package(SDL2 REQUIRED) # sudo apt install libsdl2-dev to install
 
+    find_package(OpenSSL COMPONENTS Crypto SSL REQUIRED) # required for https
+
     include_directories(${SDL2_INCLUDE_DIRS})
 
     # httplib
@@ -18,5 +20,5 @@ if(NOT RPI_PICO)
             ${CMAKE_CURRENT_SOURCE_DIR}/httplib/
     )
 
-    target_link_libraries(${PROJECT_NAME} Threads::Threads ${SDL2_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} Threads::Threads ${SDL2_LIBRARIES} OpenSSL::SSL OpenSSL::Crypto)
 endif()

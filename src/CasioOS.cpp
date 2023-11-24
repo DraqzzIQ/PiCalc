@@ -16,6 +16,7 @@
 #include <malloc.h>
 #else
 #include "keyboard/SDLKeyboard.h"
+#include "http/DesktopHttpClient.h"
 #endif
 
 std::vector<IRenderer*>* renderers = new std::vector<IRenderer*>();
@@ -48,6 +49,7 @@ int main(int argc, char* argv[])
 	if (!I2CUtils::device_availible(DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
 	else renderers->push_back(new DisplayRenderer());
 #else
+	auto client = DesktopHttpClient("https://google.com");
 	renderers->push_back(new ConsoleRenderer());
 #endif
 	window_manager = new WindowManager(renderers);

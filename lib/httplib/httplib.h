@@ -4,6 +4,8 @@
 //  Copyright (c) 2023 Yuji Hirose. All rights reserved.
 //  MIT License
 //
+#define CPPHTTPLIB_OPENSSL_SUPPORT //always use https
+
 
 #ifndef CPPHTTPLIB_HTTPLIB_H
 #define CPPHTTPLIB_HTTPLIB_H

@@ -1,6 +1,6 @@
 #include "IHttpClient.h"
 
-IHttpClient::IHttpClient(std::string& baseUrl)
+IHttpClient::IHttpClient(std::string baseUrl)
 {
 	this->baseUrl = baseUrl;
 }

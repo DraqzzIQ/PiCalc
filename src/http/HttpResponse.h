@@ -6,7 +6,7 @@ struct HttpResponse {
 	std::string body;
 	int status_code;
 
-	HttpResponse(Headers& headers, std::string& body, int status_code)
+	HttpResponse(Headers headers, std::string body, int status_code)
 	{
 		this->headers = headers;
 		this->body = body;
