@@ -1,7 +1,7 @@
 #include <map>
 #include <string>
 
-#ifndef CPPHTTPLIB_HTTPLIB_H
+#ifdef PICO // httplib not available on PICO
 namespace httplib
 {
 namespace detail
@@ -16,6 +16,8 @@ struct ci {
 };
 } // namespace detail
 } // namespace httplib
+#else
+#include "httplib.h"
 #endif
 
 using Headers = std::multimap<std::string, std::string, httplib::detail::ci>;

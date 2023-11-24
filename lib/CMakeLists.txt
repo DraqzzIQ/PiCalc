@@ -6,5 +6,17 @@ if(NOT RPI_PICO)
 
     include_directories(${SDL2_INCLUDE_DIRS})
 
+    # httplib
+    target_sources(${PROJECT_NAME}
+        PRIVATE
+            httplib/httplib.h
+    )
+
+    # httplib
+    target_include_directories(${PROJECT_NAME}
+        PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/httplib/
+    )
+
     target_link_libraries(${PROJECT_NAME} Threads::Threads ${SDL2_LIBRARIES})
 endif()

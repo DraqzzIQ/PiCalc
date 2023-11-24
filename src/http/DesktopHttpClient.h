@@ -1,6 +1,6 @@
 #include "IHttpClient.h"
 #define CPPHTTPLIB_OPENSSL_SUPPORT
-#include <lib\httplib.h>
+#include "httplib.h"
 
 class DesktopHttpClient: IHttpClient
 {
