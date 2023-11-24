@@ -1,3 +1,5 @@
+#pragma once
+#ifndef PICO
 #include "IHttpClient.h"
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include "httplib.h"
@@ -13,3 +15,4 @@ class DesktopHttpClient: IHttpClient
 	private:
 	httplib::Client client;
 };
+#endif

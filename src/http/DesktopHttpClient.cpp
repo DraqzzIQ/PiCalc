@@ -1,3 +1,4 @@
+#ifndef PICO
 #include "DesktopHttpClient.h"
 
 DesktopHttpClient::DesktopHttpClient(std::string& baseUrl):
@@ -22,3 +23,4 @@ void DesktopHttpClient::set_bearer_auth_token(std::string& token)
 {
 	client.set_bearer_token_auth(token);
 }
+#endif

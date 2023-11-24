@@ -1,3 +1,4 @@
+#pragma once
 #include "HttpHeaders.h"
 #include <string>
 
