@@ -1,12 +1,13 @@
 #pragma once
-#include "options/CalculatorOption.h"
+#include "options/MenuOption.h"
+#include "windows/CalculatorWindow.h"
 #include "windows/MenuWindow.h"
-#include "options/SettingsOption.h"
+#include "windows/SettingsWindow.h"
 
 class MainMenuWindow: public MenuWindow
 {
 	public:
-	MainMenuWindow(WindowManager* window_manager);
+	MainMenuWindow();
 
 	private:
 };

@@ -1,7 +1,10 @@
 #include "renderers/IRenderer.h"
 
+std::vector<IRenderer*> IRenderer::Renderers;
+
 IRenderer::IRenderer()
 {
+	Renderers.push_back(this);
 	rendered_pixels = Bitset2D(SCREEN_WIDTH, DynamicBitset(SCREEN_HEIGHT, false));
 	rendered_screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), false);
 }
