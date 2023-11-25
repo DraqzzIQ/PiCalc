@@ -48,16 +48,10 @@
     <ClInclude Include="src\constant\LCDConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\options\CalculatorOption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\options\MenuOption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\options\SettingsOption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\options\SysInfoOption.h">
+    <ClInclude Include="src\options\MenuOptionBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderers\ConsoleRenderer.h">
@@ -135,18 +129,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\keyboard\SDLKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\options\CalculatorOption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\options\MenuOption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\options\SettingsOption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\options\SysInfoOption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp">

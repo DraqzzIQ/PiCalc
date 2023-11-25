@@ -13,7 +13,7 @@
 class MenuWindow: public Window
 {
 	public:
-	MenuWindow(WindowManager* window_manager);
+	MenuWindow();
 	~MenuWindow();
 	/// <summary>
 	/// called when the window gets rerendered
@@ -32,7 +32,7 @@ class MenuWindow: public Window
 	/// <summary>
 	/// container for all options
 	/// </summary>
-	std::vector<MenuOption*> options;
+	std::vector<MenuOptionBase*> options;
 	/// <summary>
 	/// max number of options per page
 	/// </summary>

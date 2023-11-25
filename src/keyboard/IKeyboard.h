@@ -7,7 +7,7 @@
 class IKeyboard
 {
 	public:
-	IKeyboard(WindowManager* window_manager);
+	IKeyboard();
 	virtual ~IKeyboard(){};
 	/// <summary>
 	/// checks for keyboard presses

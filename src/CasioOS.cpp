@@ -1,24 +1,23 @@
 // CasioOS.cpp : This file contains the 'main' function. Program execution begins and ends there.
-#include "renderers/ConsoleRenderer.h"
 #include "keyboard/IKeyboard.h"
+#include "renderers/ConsoleRenderer.h"
 #include "renderers/IRenderer.h"
-#include "windows/MainMenuWindow.h"
 #include "utils/Utils.h"
+#include "windows/MainMenuWindow.h"
 #include "windows/WindowManager.h"
 #include <iostream>
 #include <vector>
 
 #ifdef PICO
-#include "renderers/DisplayRenderer.h"
-#include "utils/I2CUtils.h"
 #include "keyboard/PicoKeyboard.h"
 #include "pico/stdlib.h"
+#include "renderers/DisplayRenderer.h"
+#include "utils/I2CUtils.h"
 #include <malloc.h>
 #else
 #include "keyboard/SDLKeyboard.h"
 #endif
 
-std::vector<IRenderer*>* renderers = new std::vector<IRenderer*>();
 IKeyboard* keyboard;
 WindowManager* window_manager;
 MenuWindow* main_menu;
@@ -46,21 +45,21 @@ int main(int argc, char* argv[])
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
 	if (!I2CUtils::device_availible(DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
-	else renderers->push_back(new DisplayRenderer());
+	new DisplayRenderer();
 #else
-	renderers->push_back(new ConsoleRenderer());
+	new ConsoleRenderer();
 #endif
-	window_manager = new WindowManager(renderers);
+	window_manager = WindowManager::get_instance();
 	window_manager->update();
 
 	Utils::sleep_for_ms(1000);
 
-	main_menu = new MainMenuWindow(window_manager);
+	main_menu = new MainMenuWindow();
 
 #ifdef PICO
-	keyboard = new PicoKeyboard(window_manager);
+	keyboard = new PicoKeyboard();
 #else
-	keyboard = new SDLKeyboard(window_manager);
+	keyboard = new SDLKeyboard();
 	Utils::set_time_start_point();
 #endif
 
