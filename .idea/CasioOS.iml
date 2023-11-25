@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module classpath="CMake" type="CPP_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Python" name="Python facet">
+      <configuration sdkName="Poetry (CasioOS)" />
+    </facet>
+  </component>
+  <component name="SonarLintModuleSettings">
+    <option name="uniqueId" value="ca662b01-31da-4b62-b5cb-dcf9db0283b3" />
+  </component>
+</module>

@@ -1,7 +1,8 @@
 #include "keyboard/SDLKeyboard.h"
 #ifndef PICO
 
-SDLKeyboard::SDLKeyboard(WindowManager* window_manager): IKeyboard(window_manager)
+SDLKeyboard::SDLKeyboard():
+	IKeyboard()
 {
 	_event = new SDL_Event();
 	sdl_init();
@@ -53,8 +54,8 @@ KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event)
 	keypress.key_calculator = raw_key_to_calculator_key(keypress.key_raw, keypress.shift, keypress.alpha);
 	keypress.key_keyboard = scancode_to_key_keyboard(_event);
 
-	std::cout << unsigned(keypress.key_raw) << "        ";
-	// std::cout << unsigned(_event->key.keysym.scancode);
+	// std::cout << unsigned(keypress.key_raw) << "        ";
+	//  std::cout << unsigned(_event->key.keysym.scancode);
 
 	return keypress;
 }
@@ -153,9 +154,8 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 		case SDL_SCANCODE_W: return Chars::KEY_MAP.at("w");
 		case SDL_SCANCODE_X: return Chars::KEY_MAP.at("x");
 		case SDL_SCANCODE_Y: return Chars::KEY_MAP.at("y");
-		case SDL_SCANCODE_Z:
-			return Chars::KEY_MAP.at("z");
-			// everything else
+		case SDL_SCANCODE_Z: return Chars::KEY_MAP.at("z");
+		// everything else
 		case SDL_SCANCODE_LEFT: return Chars::KEY_MAP.at("left");
 		case SDL_SCANCODE_RIGHT: return Chars::KEY_MAP.at("right");
 		case SDL_SCANCODE_DOWN: return Chars::KEY_MAP.at("down");
@@ -166,9 +166,8 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 		case SDL_SCANCODE_KP_MINUS: return Chars::KEY_MAP.at("-");
 		case SDL_SCANCODE_KP_PLUS: return Chars::KEY_MAP.at("+");
 		case 48: return Chars::KEY_MAP.at("+");
-		case 56:
-			return Chars::KEY_MAP.at("-");
-			// default
+		case 56: return Chars::KEY_MAP.at("-");
+		// default
 		default: return Chars::KEY_MAP.at("unknown");
 		}
 	}

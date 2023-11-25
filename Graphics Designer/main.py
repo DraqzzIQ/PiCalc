@@ -1,6 +1,5 @@
 import tkinter as tk
 import math
-import pyperclip
 
 
 def motion(event):
@@ -19,9 +18,21 @@ def tool(event):
 
 
 def save(event):
-    saveString = str([[1 if w.itemcget(fields[cx][cy], "fill") == "black" else 0 for cy in range(height)] for cx in range(width)]).replace("[", "{").replace("]", "}")
-    print(saveString + "\n")
-    pyperclip.copy("\t{ " + name + ", " + saveString + "},")
+    # saveString = str([[1 if w.itemcget(fields[cx][cy], "fill") == "black" else 0 for cy in range(height)] for cx in range(width)]).replace("[", "{").replace("]", "}")
+    output = [["1" if w.itemcget(fields[cx][cy], "fill") == "black" else "0" for cy in range(height)] for cx in range(width)]
+    output_str = []
+    print(output)
+    for cx in range(width):
+        for i in range(7-((height-1) % 8)):
+            output[cx].append("0")
+        output_str.append("".join(output[cx]))
+
+    for cx in output_str:
+        print(str([("0b" + cx[i:i+8]) for i in range(0, len(cx), 8)]).replace("[", "{").replace("]", "}").replace("'", ""), end=", ")
+    # print(output_str)
+    # saveString = str()
+    # print(saveString + "\n")
+    # pyperclip.copy("\t{ " + name + ", " + saveString + "},")
 
 def close():
     save(0)
@@ -167,8 +178,8 @@ if start_type == "1":
     # height = int(input("height: "))
 
     width = 5
-    height = 6
-    start(int(width), 6)
+    height = 9
+    start(width, height)
 
     root.bind("<Escape>", save)
     root.protocol("WM_DELETE_WINDOW", close)
@@ -196,7 +207,7 @@ elif start_type == "3":
 
     # name = 16
     width = 5
-    height = 7
+    height = 9
 
     start(width, height)
 

@@ -3,6 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+compile_commands.json
+
 # User-specific files
 *.rsuser
 *.suo
@@ -362,7 +364,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #JetBrains
-.idea/
 
 #Build
 build/
@@ -372,3 +373,7 @@ CppProperties.json
 
 #vscode
 .vscode/
+/cmake-build-release/
+/cmake-build-debug/
+
+poetry.lock

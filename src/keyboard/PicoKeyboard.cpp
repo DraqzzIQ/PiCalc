@@ -1,7 +1,8 @@
 #include "keyboard/PicoKeyboard.h"
 #ifdef PICO
 
-PicoKeyboard::PicoKeyboard(WindowManager* window_manager): IKeyboard(window_manager)
+PicoKeyboard::PicoKeyboard():
+	IKeyboard()
 {
 	stdio_init_all();
 

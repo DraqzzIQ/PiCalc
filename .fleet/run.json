@@ -1,0 +1,74 @@
+{
+    "configurations": [
+        {
+            "name": "Build Debug CasioOS",
+            "type": "command",
+            "workingDir": "$PROJECT_DIR$",
+            "program": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+            "args": [
+                "-maxcpucount",
+                "/property:Configuration=Debug",
+                "/property:Platform=x64",
+                "/t:CasioOS",
+                "$PROJECT_DIR$\\CasioOS.sln"
+            ]
+        },
+        {
+            "name": "Build Release CasioOS",
+            "type": "command",
+            "workingDir": "$PROJECT_DIR$",
+            "program": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+            "args": [
+                "-maxcpucount",
+                "/property:Configuration=Release",
+                "/property:Platform=x64",
+                "/t:CasioOS",
+                "$PROJECT_DIR$/CasioOS.sln"
+            ]
+        },
+        {
+            "name": "Run CasioOS",
+            "type": "command",
+            "workingDir": "$PROJECT_DIR$",
+            "program": "cmd.exe",
+            "args": [
+                "@cmd",
+                "/k",
+                "$PROJECT_DIR$/x64/Release/CasioOS.exe"
+            ],
+            "dependsOn": [
+                "Build Release CasioOS"
+            ]
+        },
+        {
+            "type": "command",
+            "name": "Build for Raspi",
+            "program": "cmake",
+            "args": [
+                "."
+            ],
+            "workingDir": "$PROJECT_DIR$",
+            "environment": {
+                "PICO_SDK_FETCH_FROM_GIT": "ON"
+            }
+        },
+        {
+            "type": "python",
+            "name": "Run Graphics Designer",
+            "file": "$PROJECT_DIR$/Graphics Designer/main.py",
+            "arguments": []
+        },
+        {
+            "name": "Run Key Map Creator",
+            "type": "python",
+            "workingDir": "$PROJECT_DIR$\\Graphics Designer",
+            "file": "$PROJECT_DIR$\\Graphics Designer\\keyMapCreator.py"
+        },
+        {
+            "name": "Run Pico Keyborad-Map Creator",
+            "type": "python",
+            "workingDir": "$PROJECT_DIR$\\Graphics Designer",
+            "file": "$PROJECT_DIR$\\Graphics Designer\\picoKeyboardMapCreator.py"
+        }
+    ]
+}

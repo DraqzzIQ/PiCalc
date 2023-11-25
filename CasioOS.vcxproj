@@ -19,31 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\bluetooth\BTKeyboard.h" />
-    <ClInclude Include="src\bluetooth\BTManager.h" />
-    <ClInclude Include="src\bluetooth\BTOut.h" />
-    <ClInclude Include="src\bluetooth\BTRenderer.h" />
-    <ClInclude Include="src\btstack_config.h" />
     <ClInclude Include="src\constant\Chars.h" />
     <ClInclude Include="src\constant\Constants.h" />
     <ClInclude Include="src\datastructs\Bitset2D.h" />
     <ClInclude Include="src\datastructs\DynamicBitset.h" />
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
-    <ClInclude Include="src\stream_buffer\IStreamBufferReceiver.h" />
+    <ClInclude Include="src\datastructs\Number.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />
     <ClInclude Include="src\keyboard\SDLKeyboard.h" />
     <ClInclude Include="src\constant\LCDConstants.h" />
-    <ClInclude Include="src\options\CalculatorOption.h" />
     <ClInclude Include="src\options\MenuOption.h" />
-    <ClInclude Include="src\options\SettingsOption.h" />
-    <ClInclude Include="src\options\SysInfoOption.h" />
+    <ClInclude Include="src\options\MenuOptionBase.h" />
     <ClInclude Include="src\renderers\ConsoleRenderer.h" />
     <ClInclude Include="src\renderers\DisplayRenderer.h" />
     <ClInclude Include="src\renderers\IRenderer.h" />
-    <ClInclude Include="src\stream_buffer\StreamBufferCapturer.h" />
     <ClInclude Include="src\utils\I2CUtils.h" />
     <ClInclude Include="src\utils\Utils.h" />
     <ClInclude Include="src\windows\CalculatorWindow.h" />
@@ -57,10 +49,6 @@
     <ClInclude Include="src\windows\WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\bluetooth\BTKeyboard.cpp" />
-    <ClCompile Include="src\bluetooth\BTManager.cpp" />
-    <ClCompile Include="src\bluetooth\BTOut.cpp" />
-    <ClCompile Include="src\bluetooth\BTRenderer.cpp" />
     <ClCompile Include="src\CasioOS.cpp" />
     <ClCompile Include="src\constant\Chars.cpp" />
     <ClCompile Include="src\constant\Constants.cpp" />
@@ -68,17 +56,13 @@
     <ClCompile Include="src\datastructs\DynamicBitset.cpp" />
     <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />
+    <ClCompile Include="src\datastructs\Number.cpp" />
     <ClCompile Include="src\keyboard\IKeyboard.cpp" />
     <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
     <ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
-    <ClCompile Include="src\options\CalculatorOption.cpp" />
-    <ClCompile Include="src\options\MenuOption.cpp" />
-    <ClCompile Include="src\options\SettingsOption.cpp" />
-    <ClCompile Include="src\options\SysInfoOption.cpp" />
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp" />
     <ClCompile Include="src\renderers\DisplayRenderer.cpp" />
     <ClCompile Include="src\renderers\IRenderer.cpp" />
-    <ClCompile Include="src\stream_buffer\StreamBufferCapturer.cpp" />
     <ClCompile Include="src\utils\I2CUtils.cpp" />
     <ClCompile Include="src\utils\Utils.cpp" />
     <ClCompile Include="src\windows\CalculatorWindow.cpp" />

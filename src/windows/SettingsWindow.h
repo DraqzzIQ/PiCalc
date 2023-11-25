@@ -1,11 +1,11 @@
 #pragma once
 #include "windows/MenuWindow.h"
-#include "options/SysInfoOption.h"
+#include "windows/SysInfoWindow.h"
 
 class SettingsWindow: public MenuWindow
 {
 	public:
-	SettingsWindow(WindowManager* window_manager);
+	SettingsWindow();
 
 	private:
 };

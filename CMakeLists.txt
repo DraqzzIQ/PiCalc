@@ -45,10 +45,7 @@ if(RPI_PICO)
 
     # Add pico_stdlib library which aggregates commonly used features
     # pico_cyw43_arch_none is nessessary for accessing the CYW4343W WiFi chip and it's LED
-    target_link_libraries(${PROJECT_NAME} pico_stdlib pico_cyw43_arch_none hardware_i2c pico_btstack_ble pico_btstack_cyw43)
-
-    pico_btstack_make_gatt_header(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/casio_os.gatt")
-
+    target_link_libraries(${PROJECT_NAME} pico_stdlib pico_cyw43_arch_none hardware_i2c)
 
     # create map/bin/hex/uf2 file in addition to ELF.
     pico_add_extra_outputs(${PROJECT_NAME})
