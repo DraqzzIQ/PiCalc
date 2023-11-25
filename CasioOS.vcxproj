@@ -49,7 +49,6 @@
     <ClInclude Include="src\windows\TextWindow.h" />
     <ClInclude Include="src\windows\Window.h" />
     <ClInclude Include="src\windows\WindowManager.h" />
-    <ClInclude Include="lib\httplib\httplib.h" />
     <ClInclude Include="src\http\IHttpClient.h" />
     <ClInclude Include="src\http\DesktopHttpClient.h" />
     <ClInclude Include="src\http\HttpHeaders.h" />

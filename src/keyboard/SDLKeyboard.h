@@ -3,11 +3,7 @@
 #include "constant/Chars.h"
 #include "keyboard/IKeyboard.h"
 #include "windows/WindowManager.h"
-#ifdef _WIN32
-#include <SDL.h>
-#else
 #include <SDL2/SDL.h>
-#endif
 #include <iostream>
 
 /// <summary>
