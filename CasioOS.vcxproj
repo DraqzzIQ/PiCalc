@@ -33,10 +33,8 @@
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />
     <ClInclude Include="src\keyboard\SDLKeyboard.h" />
     <ClInclude Include="src\constant\LCDConstants.h" />
-    <ClInclude Include="src\options\CalculatorOption.h" />
     <ClInclude Include="src\options\MenuOption.h" />
-    <ClInclude Include="src\options\SettingsOption.h" />
-    <ClInclude Include="src\options\SysInfoOption.h" />
+    <ClInclude Include="src\options\MenuOptionBase.h" />
     <ClInclude Include="src\renderers\ConsoleRenderer.h" />
     <ClInclude Include="src\renderers\DisplayRenderer.h" />
     <ClInclude Include="src\renderers\IRenderer.h" />
@@ -66,10 +64,6 @@
     <ClCompile Include="src\keyboard\IKeyboard.cpp" />
     <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
     <ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
-    <ClCompile Include="src\options\CalculatorOption.cpp" />
-    <ClCompile Include="src\options\MenuOption.cpp" />
-    <ClCompile Include="src\options\SettingsOption.cpp" />
-    <ClCompile Include="src\options\SysInfoOption.cpp" />
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp" />
     <ClCompile Include="src\renderers\DisplayRenderer.cpp" />
     <ClCompile Include="src\renderers\IRenderer.cpp" />

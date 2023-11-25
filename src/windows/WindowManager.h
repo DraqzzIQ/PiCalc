@@ -1,7 +1,7 @@
 #pragma once
 #include "constant/Graphics.h"
-#include "renderers/IRenderer.h"
 #include "keyboard/KeyPress.h"
+#include "renderers/IRenderer.h"
 #include "windows/Window.h"
 #include <stack>
 #include <typeinfo>
@@ -14,7 +14,10 @@
 class WindowManager
 {
 	public:
-	WindowManager(std::vector<IRenderer*>* renderers);
+	/// <summary>
+	/// returns instance of singleton WindowManager
+	/// </summary>
+	static WindowManager* get_instance();
 	/// <summary>
 	/// adds a window to the window stack
 	/// </summary>
@@ -25,7 +28,8 @@ class WindowManager
 	/// if > 1 window instances are already open
 	/// opens an instance selection window
 	/// </summary>
-	template <typename T> std::vector<Window*> get_windows()
+	template <typename T>
+	std::vector<Window*> get_windows()
 	{
 		return _window_instances[&typeid(T)];
 	}
@@ -33,7 +37,8 @@ class WindowManager
 	/// returns true if a window instance is already open
 	/// else false
 	/// </summary>
-	template <typename T> bool has_window()
+	template <typename T>
+	bool has_window()
 	{
 		if (_window_instances.count(&typeid(T)) > 0 && _window_instances[&typeid(T)].size() > 0) return true;
 		return false;
@@ -65,9 +70,22 @@ class WindowManager
 
 	private:
 	/// <summary>
-	/// the renderer used
+	/// private constructor to prevent instantiation
 	/// </summary>
-	std::vector<IRenderer*>* _renderers;
+	WindowManager();
+	/// <summary>
+	/// private deconstructor to prevent deletion
+	/// </summary>
+	~WindowManager();
+	/// <summary>
+	/// private copy constructor and assignmnt operator to prevent copying
+	/// </summary>
+	WindowManager(const WindowManager&);
+	WindowManager& operator=(const WindowManager&);
+	/// <summary>
+	/// the instance
+	/// </summary>
+	static WindowManager* instance;
 	/// <summary>
 	/// the window stack
 	/// </summary>

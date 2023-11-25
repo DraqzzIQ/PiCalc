@@ -16,8 +16,7 @@ class PicoKeyboard: public IKeyboard
 	/// <summary>
 	/// constructs a new keyboard-listener
 	/// </summary>
-	/// <param name="window_manager">windowmanager do send keyevents to</param>
-	PicoKeyboard(WindowManager* window_manager);
+	PicoKeyboard();
 	/// <summary>
 	/// checks for keyboard presses
 	/// </summary>
@@ -39,7 +38,10 @@ class PicoKeyboard: public IKeyboard
 	/// is also used to save with which function key activated a button was pressed to later output the correct key using that info
 	/// (otherwise if you press a key with shift, on the release of that key another keycode will be returned)
 	/// </summary>
-	enum class KeyState { OFF, ON, SHIFT_ON, ALPHA_ON };
+	enum class KeyState { OFF,
+		                  ON,
+		                  SHIFT_ON,
+		                  ALPHA_ON };
 	/// <summary>
 	/// keeps track which function key (shift / alpha) is activated using the KeyState enumerator
 	/// </summary>
