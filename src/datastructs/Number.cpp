@@ -6,11 +6,10 @@ Number::Number()
 }
 
 
-Number::Number(const uint64_t value, const uint16_t exp)
+Number::Number(const double value, const uint16_t exp)
 {
 	_root = new NumberNode();
 	_root->value = value;
-	_root->exp = exp;
 }
 
 Number::Number(const Number& other)
@@ -31,7 +30,13 @@ Number Number::operator+(const Number& other)
 {
 	Number result;
 
-	if (!other._root->first && !_root->first) {
+	result._root->value = _root->value + other._root->value;
+	if (other._root->operation != 95 || _root->operation != 95) {
+		result._root->first = _root->clone();
+		result._root->second = other._root->clone();
+	}
+	if (!_simplyfy()) {
+		result._root->value = _root->value + other._root->value;
 	}
 
 	return result;
@@ -447,4 +452,10 @@ uint16_t Number::finalize()
 Bitset2D Number::render() const
 {
 	return Graphics::create_text(std::to_string(_root));
+}
+
+bool Number::_simplyfy()
+{
+	// TODO
+	return false;
 }

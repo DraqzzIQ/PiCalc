@@ -3,6 +3,7 @@
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Bitset2D.h"
+// #include "datastructs/Decimal.h"
 #include <cmath>
 #include <string>
 #include <vector>
@@ -12,7 +13,7 @@ class Number
 {
 	public:
 	Number();
-	Number(const uint64_t value, const uint16_t exp);
+	Number(const double value, const uint16_t exp);
 	Number(const Number& other);
 	~Number();
 
@@ -93,8 +94,14 @@ class Number
 	Bitset2D render() const;
 
 	private:
+	/// <summary>
+	/// tries to simplyfy the Number as much as possible (e.g. reduce fraction)
+	/// </summary>
+	/// <returns>true if any simlification was made</returns>
+	bool _simplyfy();
+
 	struct NumberNode {
-		Decimal value;
+		double value;
 
 		uint8_t operation = 0;
 		NumberNode* first = nullptr;
@@ -108,7 +115,7 @@ class Number
 
 		NumberNode* clone()
 		{
-			if (this) return new NumberNode{ value, exp, operation, first->clone(), second->clone() };
+			if (this) return new NumberNode{ value, operation, first->clone(), second->clone() };
 			else return nullptr;
 		}
 	};
