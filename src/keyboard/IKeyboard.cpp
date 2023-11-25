@@ -1,8 +1,8 @@
 #include "keyboard/IKeyboard.h"
 
-IKeyboard::IKeyboard(WindowManager* window_manager)
+IKeyboard::IKeyboard()
 {
-	_window_manager = window_manager;
+	_window_manager = WindowManager::get_instance();
 }
 
 uint8_t IKeyboard::raw_key_to_calculator_key(uint8_t raw_key, bool shift, bool alpha)

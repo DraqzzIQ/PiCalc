@@ -1,8 +1,8 @@
 #include "windows/InstanceSelectionWindow.h"
 
-InstanceSelectionWindow::InstanceSelectionWindow(WindowManager* window_manager)
+InstanceSelectionWindow::InstanceSelectionWindow()
 {
-	_window_manager = window_manager;
+	_window_manager = WindowManager::get_instance();
 }
 
 Bitset2D InstanceSelectionWindow::update_window()

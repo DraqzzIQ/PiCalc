@@ -1,8 +1,17 @@
 #include "windows/WindowManager.h"
 
-WindowManager::WindowManager(std::vector<IRenderer*>* renderers)
+WindowManager* WindowManager::instance = nullptr;
+
+WindowManager* WindowManager::get_instance()
 {
-	_renderers = renderers;
+	if (!instance)
+		instance = new WindowManager();
+
+	return instance;
+}
+
+WindowManager::WindowManager()
+{
 }
 
 void WindowManager::add_window(Window* window)
@@ -32,9 +41,9 @@ void WindowManager::close_window()
 
 void WindowManager::update(bool force_rerender)
 {
-	for (size_t i = 0; i < _renderers->size(); i++) {
-		if (!_windows.empty()) _renderers->at(i)->render(_windows.top()->update_window(), _windows.top()->screen_symbols, force_rerender);
-		else _renderers->at(i)->render(Graphics::LOGO_SCREEN, DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true), force_rerender);
+	for (size_t i = 0; i < IRenderer::Renderers.size(); i++) {
+		if (!_windows.empty()) IRenderer::Renderers.at(i)->render(_windows.top()->update_window(), _windows.top()->screen_symbols, force_rerender);
+		else IRenderer::Renderers.at(i)->render(Graphics::LOGO_SCREEN, DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true), force_rerender);
 	}
 }
 

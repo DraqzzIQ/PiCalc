@@ -1,8 +1,8 @@
 #include "windows/MenuWindow.h"
 
-MenuWindow::MenuWindow(WindowManager* window_manager)
+MenuWindow::MenuWindow()
 {
-	this->window_manager = window_manager;
+	this->window_manager = WindowManager::get_instance();
 }
 
 MenuWindow::~MenuWindow()
