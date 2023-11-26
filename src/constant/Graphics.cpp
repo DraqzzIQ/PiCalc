@@ -479,7 +479,13 @@ const std::map<uint8_t, std::vector<uint8_t>> Graphics::key_text{
 
 Bitset2D Graphics::create_text(const std::string& text, FONT& table, const uint16_t spacing)
 {
+	if (text.empty()) {
+		return Bitset2D(0, 0, false);
+	}
 	std::string letter(1, text.at(0));
+	if (!Chars::KEY_MAP.contains(letter)) {
+		letter = "?";
+	}
 	Bitset2D rendered_text = table.at(Chars::KEY_MAP.at(letter));
 	Bitset2D space(spacing, rendered_text[0].size(), false);
 	for (size_t i = 1; i < text.length(); i++) {
@@ -487,6 +493,9 @@ Bitset2D Graphics::create_text(const std::string& text, FONT& table, const uint1
 
 		letter = std::string(1, text.at(i));
 
+		if (!Chars::KEY_MAP.contains(letter)) {
+			letter = "?";
+		}
 		rendered_text.extend_right(table.at(Chars::KEY_MAP.at(letter)));
 	}
 	return rendered_text;

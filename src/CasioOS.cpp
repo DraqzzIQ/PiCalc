@@ -15,7 +15,6 @@
 #include "utils/I2CUtils.h"
 #include <malloc.h>
 #else
-#include "http/DesktopHttpClient.h"
 #include "keyboard/SDLKeyboard.h"
 #endif
 
@@ -65,10 +64,6 @@ int main(int argc, char* argv[])
 #endif
 
 	window_manager->add_window(main_menu);
-
-#ifndef PICO
-	DesktopHttpClient client = DesktopHttpClient("https://google.com");
-#endif
 
 	// start main thread
 	start_main_thread();

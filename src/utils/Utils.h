@@ -1,9 +1,11 @@
 #pragma once
 #include <iostream>
 #ifdef PICO
+#include "http/PicoHttpClient.h"
 #include "pico/stdlib.h"
 #include <malloc.h>
 #else
+#include "http/DesktopHttpClient.h"
 #include <chrono>
 #include <thread>
 #endif

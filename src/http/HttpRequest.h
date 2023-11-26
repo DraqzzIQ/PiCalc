@@ -11,4 +11,13 @@ struct HttpRequest {
 		this->headers = headers;
 		this->body = body;
 	}
+
+	HttpRequest(Headers headersy)
+	{
+		this->headers = headers;
+	}
+
+	HttpRequest()
+	{
+	}
 };
