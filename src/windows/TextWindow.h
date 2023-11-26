@@ -8,13 +8,14 @@
 class TextWindow: public Window
 {
 	public:
+	TextWindow();
 	~TextWindow();
 	void handle_key_down(KeyPress keypress);
 	Bitset2D update_window();
 	/// <summary>
-	/// container for all text lines
+	/// text to display
 	/// </summary>
-	std::vector<std::string> text;
+	std::string text;
 	/// <summary>
 	/// spacing between characters
 	/// </summary>

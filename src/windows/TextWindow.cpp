@@ -1,5 +1,9 @@
 #include "windows/TextWindow.h"
 
+TextWindow::TextWindow()
+{
+}
+
 TextWindow::~TextWindow() {}
 
 void TextWindow::handle_key_down(KeyPress keypress)
@@ -21,7 +25,9 @@ Bitset2D TextWindow::update_window()
 
 void TextWindow::create_menu()
 {
-	for (uint32_t i = 0; i < text.size(); i++) { add_to_window(Graphics::create_text(text[i], Graphics::SYMBOLS_6_HIGH, text_spacing), 1, 1 + i * line_height); }
+	for (uint32_t i = 0; i < text.size(); i += 10) {
+		add_to_window(Graphics::create_text(text.substr(i, 10), Graphics::SYMBOLS_6_HIGH, text_spacing), 1, 1 + i * line_height);
+	}
 }
 
 const int TextWindow::pages_count()

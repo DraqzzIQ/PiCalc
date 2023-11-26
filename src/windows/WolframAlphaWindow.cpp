@@ -1,0 +1,1 @@
+#include "WolframAlphaWindow.h"
