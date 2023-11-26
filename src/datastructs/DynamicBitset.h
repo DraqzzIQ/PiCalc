@@ -76,10 +76,6 @@ class DynamicBitset
 	/// </summary>
 	uint32_t size() const;
 	/// <summary>
-	/// Returns a vector of uint8_t containing the bits.
-	/// </summary>
-	std::vector<uint8_t> get_bytes() const;
-	/// <summary>
 	/// copy width bits starting at start to another DynamicBitset
 	/// </summary>
 	/// <param name="start"></param>
@@ -110,10 +106,6 @@ class DynamicBitset
 	/// </summary>
 	void insert(uint32_t index, const DynamicBitset& bits);
 	/// <summary>
-	/// Resizes the bitset to n bits.
-	/// </summary>
-	void resize(uint32_t count);
-	/// <summary>
 	/// Erases the bit at index.
 	/// should be used carefully, as it is O(n).
 	/// </summary>
@@ -128,9 +120,17 @@ class DynamicBitset
 	/// </summary>
 	void push_back(bool bit);
 	/// <summary>
+	/// Appends a bit to the start of the bitset.
+	/// </summary>
+	void push_front(bool bit);
+	/// <summary>
 	/// Removes the last bit from the bitset.
 	/// </summary>
 	void pop_back();
+	/// <summary>
+	/// Removes the first bit from the bitset.
+	/// </summary>
+	void pop_front();
 	/// <summary>
 	/// Appends another bitset to the end of this one.
 	/// should be used carefully, as it is O(n).
