@@ -29,6 +29,7 @@ void start_main_thread()
 {
 	while (1) {
 		keyboard->check_for_keyboard_presses();
+		// TODO: option to only update on keypress
 		window_manager->update();
 	}
 }

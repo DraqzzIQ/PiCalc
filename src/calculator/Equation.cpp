@@ -1,5 +1,9 @@
 #include "calculator/Equation.h"
 
+const std::vector<uint8_t> Equation::_allowed_calculate_operations = { 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 116, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
+const std::vector<uint8_t> Equation::_single_bracket_open_keys = { 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
+const std::vector<uint8_t> Equation::_values_before_exponent = { 75, 85, 102, 106, 109, 110, 111, 127, 128, 131, 155, 156, 165, 186, 187, 188 };
+
 Equation::Equation()
 {
 	_equation_root = new EquationNode();
@@ -12,7 +16,7 @@ Equation::~Equation()
 	delete _equation_root;
 }
 
-Bitset2D Equation::get_rendered_equation()
+Bitset2D Equation::get_rendered_equation(bool complete)
 {
 	// change _show_cursor every 500ms
 	if (Utils::us_since_boot() > _last_blink_time + 500000) {
@@ -20,7 +24,8 @@ Bitset2D Equation::get_rendered_equation()
 		_show_cursor = !_show_cursor;
 	}
 
-	return _show_cursor ? _rendered_equation_cursor : _rendered_equation;
+	if (complete) return _show_cursor ? _rendered_equation_cursor : _rendered_equation;
+	else
 }
 
 void Equation::render_equation()
@@ -425,7 +430,7 @@ Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, s
 				case 131: calculation.push_back(CalculateNode(subEquations[0] + (subEquations[1] / subEquations[2]), 95, i)); break;
 				case 134: calculation.push_back(CalculateNode(subEquations[1].root(subEquations[0]), 95, i)); break;
 				case 135: calculation.push_back(CalculateNode(Number(10).pow(subEquations[0]), 95, i)); break;
-				case 136: calculation.push_back(CalculateNode(Number(2.718281828).pow(subEquations[0]), 95, i)); break;
+				case 136: calculation.push_back(CalculateNode(Number::euler.pow(subEquations[0]), 95, i)); break;
 				default:
 					if (calculation.size() == 0 || calculation.back().operation != 95) {
 						Error::throw_error(Error::ErrorType::SYNTAX_ERROR);

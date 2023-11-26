@@ -5,24 +5,28 @@ DynamicBitset::DynamicBitset()
 {
 	_bits = std::vector<uint8_t>();
 	_bit_count = 0;
+	_bit_start = 0;
 }
 
 DynamicBitset::DynamicBitset(uint32_t count)
 {
 	_bits = std::vector<uint8_t>((count + 7) / 8);
 	_bit_count = count;
+	_bit_start = 0;
 }
 
 DynamicBitset::DynamicBitset(uint32_t count, bool value)
 {
 	_bits = std::vector<uint8_t>((count + 7) / 8, value ? 0xFF : 0x00);
 	_bit_count = count;
+	_bit_start = 0;
 }
 
 DynamicBitset::DynamicBitset(uint32_t count, std::vector<uint8_t> values)
 {
 	_bits = std::vector<uint8_t>(values.begin(), values.begin() + (count + 7) / 8);
 	_bit_count = count;
+	_bit_start = 0;
 }
 
 DynamicBitset::DynamicBitset(uint32_t count, std::vector<bool> values)
@@ -41,12 +45,14 @@ DynamicBitset::DynamicBitset(uint32_t count, std::vector<bool> values)
 	}
 	_bits.push_back(byte);
 	_bit_count = count;
+	_bit_start = 0;
 }
 
 DynamicBitset::DynamicBitset(const DynamicBitset& other)
 {
 	_bits = other._bits;
 	_bit_count = other._bit_count;
+	_bit_start = other._bit_start;
 }
 
 DynamicBitset::~DynamicBitset() {}
@@ -57,6 +63,7 @@ DynamicBitset DynamicBitset::from_bits(uint8_t bits, uint32_t count)
 	DynamicBitset bs;
 	bs._bits = std::vector<uint8_t>((count + 7) / 8, bits);
 	bs._bit_count = count;
+	bs._bit_start = 0;
 	return bs;
 }
 
@@ -66,6 +73,7 @@ bool DynamicBitset::operator[](uint32_t i) const
 #ifdef IS_DEBUG_BUILD
 	if (i >= _bit_count) { throw std::out_of_range("DynamicBitset::operator[]"); }
 #endif
+	i += _bit_start;
 	return (_bits[i / 8] & (1 << (7 - (i % 8)))) != 0;
 }
 
@@ -109,6 +117,15 @@ std::vector<uint8_t> DynamicBitset::get_bytes() const
 	return _bits;
 }
 
+DynamicBitset DynamicBitset::copy(uint32_t start, uint32_t width) const
+{
+#ifdef IS_DEBUG_BUILD
+	if (start + width >= _bit_count) { throw std::out_of_range("DynamicBitset::copy"); }
+#endif
+	DynamicBitset bs(width);
+	for (uint32_t i = 0; i < width; i++) { bs.set(i, at(start + i)); }
+	return bs;
+}
 
 void DynamicBitset::set(uint32_t index, bool value)
 {

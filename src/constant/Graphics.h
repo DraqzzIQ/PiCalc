@@ -25,6 +25,7 @@ class Graphics
 	/// <param name="spacing">spacing between each char</param>
 	/// <returns>converted text</returns>
 	static Bitset2D create_text(const std::string& text, FONT& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
+	static Bitset2D create_text(const std::vector<uint8_t>, FONT& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
 
 	static const Bitset2D EMPTY_SCREEN;
 	static const Bitset2D LOGO_SCREEN;

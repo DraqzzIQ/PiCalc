@@ -78,7 +78,7 @@ class Bitset2D
 	/// <param name="start">start Index (inclusive)</param>
 	/// <param name="end">end Index (exclusive)</param>
 	/// <returns>new Bitset2D</returns>
-	Bitset2D copy(uint32_t start, uint32_t end) const;
+	Bitset2D copy(uint32_t x_start, uint32_t y_start, uint32_t width, uint32_t height) const;
 
 	/// <summary>
 	/// Overwrite the Bitset2D with other placed on the position coord_x, coord_y

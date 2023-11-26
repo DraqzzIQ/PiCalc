@@ -3,7 +3,7 @@
 #include "constant/Constants.h"
 #include "datastructs/Bitset2D.h"
 
-static class Error
+class Error
 {
 	public:
 	enum class ErrorType { MATH_ERROR,

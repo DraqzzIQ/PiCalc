@@ -79,6 +79,13 @@ class DynamicBitset
 	/// Returns a vector of uint8_t containing the bits.
 	/// </summary>
 	std::vector<uint8_t> get_bytes() const;
+	/// <summary>
+	/// copy width bits starting at start to another DynamicBitset
+	/// </summary>
+	/// <param name="start"></param>
+	/// <param name="width"></param>
+	/// <returns></returns>
+	DynamicBitset copy(uint32_t start, uint32_t width) const;
 
 	/// <summary>
 	/// Sets the bit at index to value.
@@ -162,4 +169,8 @@ class DynamicBitset
 	/// The number of bits in the bitset.
 	/// </summary>
 	uint32_t _bit_count;
+	/// <summary>
+	/// saves a value from 0 to 7 indicating the location of the first bit in the bitset
+	/// </summary>
+	uint8_t _bit_start;
 };

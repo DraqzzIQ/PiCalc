@@ -26,7 +26,7 @@ class Equation
 	/// <summary>
 	/// return the rendered equation
 	/// </summary>
-	Bitset2D get_rendered_equation();
+	Bitset2D get_rendered_equation(bool complete = false);
 	/// <summary>
 	/// add a Value to the equation at the current Cursor position
 	/// </summary>
@@ -63,6 +63,20 @@ class Equation
 	void move_cursor_down();
 
 	private:
+	/// <summary>
+	/// all the operations that have to be between two values to be evaluated
+	/// </summary>
+	static const std::vector<uint8_t> _allowed_calculate_operations;
+	/// <summary>
+	/// all Keys that end with an open rounded bracket
+	/// </summary>
+	static const std::vector<uint8_t> _single_bracket_open_keys;
+	/// <summary>
+	/// when these values are in front of an exponent, no empty-value is added
+	/// </summary>
+	static const std::vector<uint8_t> _values_before_exponent;
+
+
 	/// <summary>
 	/// Node for the tree representing the Equation
 	/// </summary>
@@ -118,18 +132,8 @@ class Equation
 	/// time since boot at which the cursor last changed its state
 	/// </summary>
 	uint64_t _last_blink_time;
-	/// <summary>
-	/// all the operations that have to be between two values to be evaluated
-	/// </summary>
-	std::vector<uint8_t> _allowed_calculate_operations{ 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 116, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
-	/// <summary>
-	/// all Keys that end with an open rounded bracket
-	/// </summary>
-	std::vector<uint8_t> _single_bracket_open_keys{ 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
-	/// <summary>
-	/// when these values are in front of an exponent, no empty-value is added
-	/// </summary>
-	std::vector<uint8_t> _values_before_exponent{ 75, 85, 102, 106, 109, 110, 111, 127, 128, 131, 155, 156, 165, 186, 187, 188 };
+	uint32_t _frame_x = 0;
+	uint32_t _frame_y = 0;
 
 	/// <summary>
 	/// render the equation
