@@ -15,8 +15,7 @@ class SDLKeyboard: public IKeyboard
 	/// <summary>
 	/// constructs a new keyboard-listener
 	/// </summary>
-	/// <param name="window_manager">windowmanager do send keyevents to</param>
-	SDLKeyboard(WindowManager* window_manager);
+	SDLKeyboard();
 	/// <summary>
 	/// checks for keyboard presses
 	/// </summary>

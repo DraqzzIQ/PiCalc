@@ -1,8 +1,8 @@
 #include "keyboard/SDLKeyboard.h"
 #ifndef PICO
 
-SDLKeyboard::SDLKeyboard(WindowManager* window_manager):
-	IKeyboard(window_manager)
+SDLKeyboard::SDLKeyboard():
+	IKeyboard()
 {
 	sdl_init();
 }

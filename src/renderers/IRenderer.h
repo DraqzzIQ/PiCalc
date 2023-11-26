@@ -23,6 +23,11 @@ class IRenderer
 	/// <returns>true if same else false</returns>
 	bool already_rendered(const Bitset2D& pixels, const DynamicBitset& screen_symbols);
 
+	/// <summary>
+	/// holds all renderers
+	/// </summary>
+	static std::vector<IRenderer*> Renderers;
+
 	private:
 	/// <summary>
 	/// currently rendered pixels
