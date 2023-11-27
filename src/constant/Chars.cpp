@@ -239,7 +239,7 @@ const std::map<std::string, uint8_t> Chars::CHAR_TO_KEYCODE = {
 	{ "ON", 236 },
 };
 
-const std::vector<std::string> Chars::CHAR_TO_KEYCODE = {
+const std::vector<std::string> Chars::KEY_MAP = {
 	"0",
 	"1",
 	"2",

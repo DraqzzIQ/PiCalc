@@ -14,8 +14,8 @@ Bitset2D InstanceSelectionWindow::update_window()
 
 void InstanceSelectionWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == Chars::KEY_MAP.at("up")) scroll_up();
-	else if (keypress.key_raw == Chars::KEY_MAP.at("down")) scroll_down();
+	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) scroll_up();
+	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) scroll_down();
 	else if (keypress.key_raw < 10 && keypress.key_raw < _instances.size()) {
 		_window_manager->minimize_window();
 		_window_manager->add_window(_instances[keypress.key_raw]);

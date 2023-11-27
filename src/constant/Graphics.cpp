@@ -483,20 +483,20 @@ Bitset2D Graphics::create_text(const std::string& text, FONT& table, const uint1
 		return Bitset2D(0, 0, false);
 	}
 	std::string letter(1, text.at(0));
-	if (!Chars::KEY_MAP.contains(letter)) {
+	if (!Chars::CHAR_TO_KEYCODE.contains(letter)) {
 		letter = "?";
 	}
-	Bitset2D rendered_text = table.at(Chars::KEY_MAP.at(letter));
+	Bitset2D rendered_text = table.at(Chars::CHAR_TO_KEYCODE.at(letter));
 	Bitset2D space(spacing, rendered_text[0].size(), false);
 	for (size_t i = 1; i < text.length(); i++) {
 		rendered_text.extend_right(space);
 
 		letter = std::string(1, text.at(i));
 
-		if (!Chars::KEY_MAP.contains(letter)) {
+		if (!Chars::CHAR_TO_KEYCODE.contains(letter)) {
 			letter = "?";
 		}
-		rendered_text.extend_right(table.at(Chars::KEY_MAP.at(letter)));
+		rendered_text.extend_right(table.at(Chars::CHAR_TO_KEYCODE.at(letter)));
 	}
 	return rendered_text;
 }

@@ -56,7 +56,7 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 	if (equation.size() == 0) {
 		if (render_index == _cursor_index) cursor_data = { 0, 0, font_height };
 		y_origin_ref = 0;
-		equation_part.extend_left(table.at(Chars::KEY_MAP.at("empty")));
+		equation_part.extend_left(table.at(Chars::CHAR_TO_KEYCODE.at("empty")));
 		equation_part.extend_left(1, false);
 		return equation_part;
 	}
@@ -268,7 +268,7 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 			if (value == 135) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(135), 0);
 			else if (value == 136) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(165), 0);
 			else {
-				if (i == 0 || !(equation.at(i - 1)->value < 69 || std::count(_values_before_exponent.begin(), _values_before_exponent.end(), equation.at(i - 1)->value) != 0)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(Chars::KEY_MAP.at("empty")), 0);
+				if (i == 0 || !(equation.at(i - 1)->value < 69 || std::count(_values_before_exponent.begin(), _values_before_exponent.end(), equation.at(i - 1)->value) != 0)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(Chars::CHAR_TO_KEYCODE.at("empty")), 0);
 				else equation_part.pop_back_x();
 			}
 			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
@@ -278,9 +278,9 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 
 		// *10^n
 		else if (value == 127) {
-			symbol_matrix = table.at(Chars::KEY_MAP.at("*10^n"));
+			symbol_matrix = table.at(Chars::CHAR_TO_KEYCODE.at("*10^n"));
 			symbol_matrix.extend_right(1, false);
-			symbol_matrix.extend_right(table.at(Chars::KEY_MAP.at("10^n")));
+			symbol_matrix.extend_right(table.at(Chars::CHAR_TO_KEYCODE.at("10^n")));
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
@@ -328,7 +328,7 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 		// any other symbol
 		else {
 			if (table.count(value) != 0) symbol_matrix = table.at(value);
-			else symbol_matrix = table.at(Chars::KEY_MAP.at("?"));
+			else symbol_matrix = table.at(Chars::CHAR_TO_KEYCODE.at("?"));
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
@@ -403,7 +403,7 @@ Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, E
 
 		if (value < 10) {
 			num.push_back(value + 48);
-		} else if (value == Chars::KEY_MAP.at(",")) {
+		} else if (value == Chars::CHAR_TO_KEYCODE.at(",")) {
 			if (num.find('.') != std::string::npos || num.find('e') != std::string::npos) {
 				_cursor_index = calculate_index;
 				error = Error::SYNTAX_ERROR;
@@ -411,7 +411,7 @@ Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, E
 				return Number();
 			}
 			num.push_back('.');
-		} else if (value == Chars::KEY_MAP.at("*10^n")) {
+		} else if (value == Chars::CHAR_TO_KEYCODE.at("*10^n")) {
 			if (num.find('e') != std::string::npos) {
 				_cursor_index = calculate_index;
 				error = Error::SYNTAX_ERROR;

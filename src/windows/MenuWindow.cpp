@@ -30,10 +30,10 @@ int MenuWindow::pages_count() const
 
 void MenuWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == Chars::KEY_MAP.at("up")) scroll_up();
-	else if (keypress.key_raw == Chars::KEY_MAP.at("down")) scroll_down();
-	else if (keypress.key_raw == Chars::KEY_MAP.at("left")) scroll_left();
-	else if (keypress.key_raw == Chars::KEY_MAP.at("right")) scroll_right();
+	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) scroll_up();
+	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) scroll_down();
+	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("left")) scroll_left();
+	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) scroll_right();
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size() && keypress.shift) options[keypress.key_raw]->on_shift_select();
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size()) options[keypress.key_raw]->on_select();
 }

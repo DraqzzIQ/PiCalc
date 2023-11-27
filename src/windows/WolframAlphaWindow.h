@@ -12,15 +12,16 @@ class WolframAlphaWindow: public TextWindow
 	WolframAlphaWindow();
 	~WolframAlphaWindow();
 	void handle_key_down(KeyPress keypress);
+
 	private:
-	HttpResponse request(std::string query);
+	void request(std::string query);
 	const std::string base_url = "https://api.wolframalpha.com";
 	const std::string endpoint = "/v1/result";
 	const std::string app_id = "";
 	const Params default_params{
-                { "appid", app_id },
-                { "units", "metric" }
-        };
+		{ "appid", app_id },
+		{ "units", "metric" }
+	};
 #ifdef PICO
 	PicoHttpClient client;
 #else

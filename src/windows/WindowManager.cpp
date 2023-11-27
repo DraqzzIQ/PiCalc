@@ -49,9 +49,9 @@ void WindowManager::update(bool force_rerender)
 
 void WindowManager::handle_key_down(KeyPress keypress)
 {
-	if (keypress.alpha && keypress.key_raw == Chars::KEY_MAP.at("AC")) {
+	if (keypress.alpha && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("AC")) {
 		if (_windows.size() > 1) minimize_window();
-	} else if (keypress.alpha && keypress.key_raw == Chars::KEY_MAP.at("DEL")) {
+	} else if (keypress.alpha && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("DEL")) {
 		if (_windows.size() > 1) close_window();
 	} else if (_windows.size() > 0) _windows.top()->handle_key_down(keypress);
 }
