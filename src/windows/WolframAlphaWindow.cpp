@@ -1,24 +1,12 @@
 #include "WolframAlphaWindow.h"
 
 WolframAlphaWindow::WolframAlphaWindow()
+:client(base_url)
 {
-	std::string base_url = "https://api.wolframalpha.com/v1/result";
-	std::string app_id = "";
-#ifdef PICO
-	PicoHttpClient client = PicoHttpClient(base_url);
-#else
-	DesktopHttpClient client = DesktopHttpClient(base_url);
-#endif
-
-	Params params{
-		{ "appid", app_id },
-		{ "i", "How far is Los Angeles from New York?" },
-		{ "units", "metric" }
-	};
-
-	HttpResponse res = client.get("/", HttpRequest(params));
+	HttpResponse res = request("27=x³");
 
 	if (res.error()) {
+	      	text.push_back("error: ");
 		for (int i = 0; i < res.error_msg.size(); i += 16) {
 			text.push_back(res.error_msg.substr(i, 16));
 		}
@@ -28,10 +16,27 @@ WolframAlphaWindow::WolframAlphaWindow()
 	for (int i = 0; i < res.body.size(); i += 16) {
 		text.push_back(res.body.substr(i, 16));
 	}
-
-	text.push_back("status code: " + res.status_code);
 }
 
 WolframAlphaWindow::~WolframAlphaWindow()
 {
+}
+
+void WolframAlphaWindow::handle_key_down(KeyPress keypress)
+{
+	std::string character = ;
+
+	if(text.length() < 1 || text[text.length() - 1].size() < 16)
+		text += character;
+	else
+	{
+		text.push_back(character);
+	}
+}
+
+HttpResponse WolframAlphaWindow::request(std::string query)
+{
+	Params params = default_params;
+	params.emplace("i", query);
+	return client.get(endpoint, HttpRequest(params));
 }
