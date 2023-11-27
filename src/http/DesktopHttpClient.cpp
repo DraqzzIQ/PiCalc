@@ -7,16 +7,20 @@ DesktopHttpClient::DesktopHttpClient(std::string base_url):
 {
 }
 
-HttpResponse DesktopHttpClient::get(HttpRequest req, std::string path)
+HttpResponse DesktopHttpClient::get(std::string path, HttpRequest req)
 {
-	httplib::Result res = client.Get(path, req.headers);
-	return HttpResponse(res->headers, res->body, res->status);
+	if (httplib::Result res = client.Get(path, req.params, req.headers))
+		return HttpResponse(res->headers, res->body, res->status);
+	else
+		return HttpResponse(httplib::to_string(res.error()));
 }
 
-HttpResponse DesktopHttpClient::post(HttpRequest req, std::string path)
+HttpResponse DesktopHttpClient::post(std::string path, HttpRequest req)
 {
-	httplib::Result res = client.Post(path, req.headers, req.body, "application/json");
-	return HttpResponse(res->headers, res->body, res->status);
+	if (httplib::Result res = client.Post(path, req.headers, req.body, "application/json"))
+		return HttpResponse(res->headers, res->body, res->status);
+	else
+		return HttpResponse(httplib::to_string(res.error()));
 }
 
 void DesktopHttpClient::set_bearer_auth_token(std::string token)

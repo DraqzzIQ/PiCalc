@@ -52,7 +52,7 @@ class MenuWindow: public Window
 	/// <summary>
 	/// number of pages
 	/// </summary>
-	const int pages_count();
+	int pages_count() const;
 	/// <summary>
 	/// scrolls the menu up
 	/// </summary>

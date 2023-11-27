@@ -34,7 +34,7 @@ class TextWindow: public Window
 	/// <summary>
 	/// number of pages
 	/// </summary>
-	const int pages_count();
+	int pages_count() const;
 	/// <summary>
 	/// index of currently selected page
 	/// </summary>

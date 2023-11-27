@@ -26,6 +26,7 @@
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
     <ClInclude Include="src\datastructs\Number.h" />
+    <ClInclude Include="src\http\HttpParams.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />

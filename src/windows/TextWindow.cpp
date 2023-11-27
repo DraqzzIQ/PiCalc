@@ -26,7 +26,7 @@ void TextWindow::create_menu()
 	}
 }
 
-const int TextWindow::pages_count()
+int TextWindow::pages_count() const
 {
 	return static_cast<int>(ceil(static_cast<double>(text.size()) / 4));
 }

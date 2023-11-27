@@ -23,7 +23,7 @@ void MenuWindow::create_menu()
 	for (size_t i = 0; i < options.size(); i++) { add_to_window(Graphics::create_text(std::to_string(i) + ":" + options[i]->get_display_name(), Graphics::SYMBOLS_6_HIGH, 1), 1, 1 + i * line_height); }
 }
 
-const int MenuWindow::pages_count()
+int MenuWindow::pages_count() const
 {
 	return static_cast<int>(ceil(static_cast<double>(options.size()) / 4));
 }
