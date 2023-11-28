@@ -40,7 +40,7 @@ add_subdirectory(lib)
 
 # SECRETS
 # Read from file
-file(STRINGS "secrets" SECRETS_LIST OPTIONAL)
+file(READ "secrets" SECRETS_LIST)
 
 if(SECRETS_LIST)
     # Set during configuration
