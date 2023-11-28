@@ -48,3 +48,23 @@ uint32_t Utils::get_free_heap()
 	return 0;
 #endif
 }
+
+std::vector<std::string> Utils::split_string(std::string string_to_split, char delimiter)
+{
+	std::vector<std::string> result = std::vector<std::string>(1);
+
+	for(int i = 0; i < string_to_split.size(); i++)
+	{
+		if(string_to_split[i] == delimiter)
+			result.push_back("");
+		else
+			result[result.size() -1] += string_to_split[i];
+	}
+
+	return result;
+}
+
+uint32_t Utils::get_string_as_pixel_width(std::string text, FONT& table, uint16_t spacing)
+{
+	return Graphics::create_text(text, table, spacing).width();
+}

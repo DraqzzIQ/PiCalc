@@ -1,5 +1,6 @@
 #pragma once
 #include "windows/Window.h"
+#include "utils/Utils.h"
 #include <math.h>
 
 /// <summary>
@@ -43,6 +44,12 @@ class TextWindow: public Window
 	/// height of a text line
 	/// </summary>
 	const int line_height = 8;
-
+	/// <summary>
+	/// splits a string into multiple lines fitting the screen
+	/// <param name="text_to_add">text to add to the screen</param>
+	/// <param name="keep_words">if true will try to not split words</param>
+	/// <param name="newline"if a newline should be inserted</param>
+	/// </summary>
+	void add_text(std::string text_to_add, bool keep_words = true, bool newline = false, bool leading_space = false);
 	private:
 };

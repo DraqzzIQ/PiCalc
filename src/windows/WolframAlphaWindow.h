@@ -22,6 +22,7 @@ class WolframAlphaWindow: public TextWindow
 		{ "appid", app_id },
 		{ "units", "metric" }
 	};
+	std::string input;
 #ifdef PICO
 	PicoHttpClient client;
 #else

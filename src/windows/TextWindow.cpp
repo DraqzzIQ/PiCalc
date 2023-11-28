@@ -40,3 +40,50 @@ void TextWindow::scroll_down()
 {
 	if (current_page < pages_count() - 1) current_page++;
 }
+
+void TextWindow::add_text(std::string text_to_add, bool keep_words, bool newline, bool leading_space)
+{
+	std::vector<std::string> words = Utils::split_string(text_to_add, ' ');
+
+	if(newline || text.size() == 0)
+		text.push_back("");
+
+	if(leading_space)
+		text[text.size() -1] += " ";
+
+	if(!keep_words)
+	{
+		for(int i = 0; i < text_to_add.size(); i++)
+		{
+			if(Utils::get_string_as_pixel_width(text[text.size() -1] + text_to_add[i], Graphics::SYMBOLS_6_HIGH) > SCREEN_WIDTH)
+				text.push_back("");
+
+			if(text_to_add[i] == '\n')
+				text.push_back("");
+			else			
+				text[text.size() -1] += text_to_add[i];
+		}
+		return;
+	}
+
+	for(int i = 0; i < words.size(); i++)
+	{
+		uint32_t word_width = Utils::get_string_as_pixel_width(words[i], Graphics::SYMBOLS_6_HIGH);
+
+		if(Utils::get_string_as_pixel_width(text[text.size() -1], Graphics::SYMBOLS_6_HIGH) + word_width > SCREEN_WIDTH)
+			text.push_back("");
+		if(word_width > SCREEN_WIDTH)
+		{
+			for(int j = 0; j < words[i].size(); j++)
+                {
+                        if(Utils::get_string_as_pixel_width(text[text.size() -1] + words[i][j], Graphics::SYMBOLS_6_HIGH) > SCREEN_WIDTH)
+                                text.push_back("");
+
+			if(words[i][j] == '\n')
+                        	text.push_back("");
+                        else
+                        	text[text.size() -1] += words[i][j];
+                }
+		}
+	}
+}

@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include "constant/Graphics.h"
+#include <vector>
 #ifdef PICO
 #include "http/PicoHttpClient.h"
 #include "pico/stdlib.h"
@@ -33,7 +35,15 @@ class Utils
 	/// returns the free heap size in bytes
 	/// </summary>
 	static uint32_t get_free_heap();
-
+	/// <summary>
+	/// splits a string on a character
+	/// </summary>
+	static std::vector<std::string> split_string(std::string string_to_split, char delimiter);
+	/// <summary>
+	/// gets the width of the visual representation of a string in pixels
+	/// for a specific font size
+	/// </summary>
+	static uint32_t get_string_as_pixel_width(std::string text, FONT& table, uint16_t spacing = 1);
 #ifndef PICO
 	/// <summary>
 	/// sets the start point for the us_since_boot function

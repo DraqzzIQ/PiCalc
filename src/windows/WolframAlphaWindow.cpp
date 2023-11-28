@@ -12,18 +12,13 @@ WolframAlphaWindow::~WolframAlphaWindow()
 void WolframAlphaWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("=")) {
-		request(text[text.size() - 1]);
 		text.push_back("");
+		request(input);
+		input = "";
 		return;
 	}
 
-	std::string character = Chars::KEY_MAP[keypress.key_keyboard];
-
-	if (text[text.size() - 1].size() > 15)
-		text.push_back(character);
-	else {
-		text[text.size() - 1] += character;
-	}
+	add_text(Chars::KEY_MAP[keypress.key_calculator], false, false, false)
 }
 
 void WolframAlphaWindow::request(std::string query)
@@ -33,14 +28,9 @@ void WolframAlphaWindow::request(std::string query)
 	HttpResponse res = client.get(endpoint, HttpRequest(params));
 
 	if (res.error()) {
-		text.push_back("error: ");
-		for (int i = 0; i < res.error_msg.size(); i += 16) {
-			text.push_back(res.error_msg.substr(i, 16));
-		}
+		add_text("error: " + res.error_msg, true, true, false);
 		return;
 	}
-
-	for (int i = 0; i < res.body.size(); i += 16) {
-		text.push_back(res.body.substr(i, 16));
-	}
+	
+	add_text(res.body, true, true, false);
 }
