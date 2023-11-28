@@ -39,10 +39,11 @@ add_subdirectory(lib)
 
 
 # SECRETS
-# Read from file
-file(READ "secrets" SECRETS_LIST)
+#check if file exists
+if(EXISTS "secrets")
+    # Read from file
+    file(READ "secrets" SECRETS_LIST)
 
-if(SECRETS_LIST)
     # Set during configuration
     list(GET SECRETS_LIST 0 WOLFRAMALPHA_APPID)
 
