@@ -40,13 +40,25 @@ add_subdirectory(lib)
 
 # SECRETS
 # Read from file
-file(STRINGS "secrets" SECRETS_LIST)
+file(STRINGS "secrets" SECRETS_LIST OPTIONAL)
+
+if(SECRETS_LIST)
+    # Set during configuration
+    list(GET SECRETS_LIST 0 WOLFRAMALPHA_APPID)
+
+    # Extract values after the equal sign
+    string(REGEX REPLACE "WOLFRAMALPHA_APPID=(.*)" "\\1" WOLFRAMALPHA_APPID "${WOLFRAMALPHA_APPID}")
+
+    message(STATUS "Secrets have been loaded from file")
+else()
+    # Use default values if the file is not found
+    message(WARNING "Secrets file not found, using default values")
+    set(WOLFRAMALPHA_APPID "DEMO")
+endif()
 
 # Set during configuration
-list(GET SECRETS_LIST 0 WOLFRAMALPHA_APPID)
+set(WOLFRAMALPHA_APPID "WOLFRAMALPHA_APPID")
 
-# Extract values after the equal sign
-string(REGEX REPLACE "WOLFRAMALPHA_APPID=(.*)" "\\1" WOLFRAMALPHA_APPID "${WOLFRAMALPHA_APPID}")
 
 # Define secrets compile time
 add_compile_definitions(WOLFRAMALPHA_APPID="${WOLFRAMALPHA_APPID}")
