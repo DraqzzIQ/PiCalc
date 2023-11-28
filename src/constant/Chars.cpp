@@ -237,6 +237,7 @@ const std::map<std::string, uint8_t> Chars::CHAR_TO_KEYCODE = {
 	{ "CONV39", 234 },
 	{ "CONV40", 235 },
 	{ "ON", 236 },
+	{ "RETURN", 237 }
 };
 
 const std::vector<std::string> Chars::KEY_MAP = {
@@ -246,7 +247,7 @@ const std::vector<std::string> Chars::KEY_MAP = {
 	"3",
 	"4",
 	"5",
-	"5",
+	"6",
 	"7",
 	"8",
 	"9",
@@ -406,6 +407,7 @@ const std::vector<std::string> Chars::KEY_MAP = {
 	"Intg",
 	"RanInt",
 	"euler",
+	"",
 	"up",
 	"down",
 	"left",
@@ -475,7 +477,8 @@ const std::vector<std::string> Chars::KEY_MAP = {
 	"CONV38",
 	"CONV39",
 	"CONV40",
-	"ON"
+	"ON",
+	"RETURN"
 };
 
 const std::map<uint8_t, uint8_t> Chars::KEY_MAP_SHIFT = {

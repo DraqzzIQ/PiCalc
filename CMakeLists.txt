@@ -37,6 +37,20 @@ add_subdirectory(src)
 add_subdirectory(lib)
 # Linux, (Windows)
 
+
+# SECRETS
+# Read from file
+file(STRINGS "secrets.txt" SECRETS_LIST)
+
+# Set during configuration
+list(GET SECRETS_LIST 0 WOLFRAMALPHA_APPID)
+
+# Extract values after the equal sign
+string(REGEX REPLACE "WOLFRAMALPHA_APPID=(.*)" "\\1" WOLFRAMALPHA_APPID "${WOLFRAMALPHA_APPID}")
+
+# Define secrets compile time
+add_compile_definitions(WOLFRAMALPHA_APPID="${WOLFRAMALPHA_APPID}")
+
 # Pico
 # cmake -DRPI_PICO=ON to compile
 if(RPI_PICO)

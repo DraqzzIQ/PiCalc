@@ -63,7 +63,7 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 {
 	if (is_shift_active()) {
 		switch (_event->key.keysym.scancode) {
-			// letters
+		// letters
 		case SDL_SCANCODE_A: return Chars::CHAR_TO_KEYCODE.at("A");
 		case SDL_SCANCODE_B: return Chars::CHAR_TO_KEYCODE.at("B");
 		case SDL_SCANCODE_C: return Chars::CHAR_TO_KEYCODE.at("C");
@@ -88,22 +88,24 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 		case SDL_SCANCODE_V: return Chars::CHAR_TO_KEYCODE.at("V");
 		case SDL_SCANCODE_W: return Chars::CHAR_TO_KEYCODE.at("W");
 		case SDL_SCANCODE_X: return Chars::CHAR_TO_KEYCODE.at("X");
-		case SDL_SCANCODE_Y: return Chars::CHAR_TO_KEYCODE.at("Y");
-		case SDL_SCANCODE_Z:
-			return Chars::CHAR_TO_KEYCODE.at("Z");
-			// everything else
+		case SDL_SCANCODE_Y: return Chars::CHAR_TO_KEYCODE.at("Z");
+		case SDL_SCANCODE_Z: return Chars::CHAR_TO_KEYCODE.at("Y");
+		// everything else
 		case SDL_SCANCODE_7: return Chars::CHAR_TO_KEYCODE.at("fraction");
 		case SDL_SCANCODE_KP_DIVIDE: return Chars::CHAR_TO_KEYCODE.at("fraction");
 		case SDL_SCANCODE_8: return Chars::CHAR_TO_KEYCODE.at("(");
 		case SDL_SCANCODE_9: return Chars::CHAR_TO_KEYCODE.at(")");
-		case 48:
-			return Chars::CHAR_TO_KEYCODE.at("*");
-			// default
+		case SDL_SCANCODE_RIGHTBRACKET: return Chars::CHAR_TO_KEYCODE.at("*");
+		case SDL_SCANCODE_MINUS: return Chars::CHAR_TO_KEYCODE.at("?");
+		case SDL_SCANCODE_COMMA: return Chars::CHAR_TO_KEYCODE.at(";");
+		case SDL_SCANCODE_PERIOD: return Chars::CHAR_TO_KEYCODE.at(":");
+
+		// default
 		default: return Chars::CHAR_TO_KEYCODE.at("unknown");
 		}
 	} else {
 		switch (_event->key.keysym.scancode) {
-			// Numbers
+		// Numbers
 		case SDL_SCANCODE_1: return Chars::CHAR_TO_KEYCODE.at("1");
 		case SDL_SCANCODE_2: return Chars::CHAR_TO_KEYCODE.at("2");
 		case SDL_SCANCODE_3: return Chars::CHAR_TO_KEYCODE.at("3");
@@ -113,9 +115,8 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 		case SDL_SCANCODE_7: return Chars::CHAR_TO_KEYCODE.at("7");
 		case SDL_SCANCODE_8: return Chars::CHAR_TO_KEYCODE.at("8");
 		case SDL_SCANCODE_9: return Chars::CHAR_TO_KEYCODE.at("9");
-		case SDL_SCANCODE_0:
-			return Chars::CHAR_TO_KEYCODE.at("0");
-			// Keypad Numbers
+		case SDL_SCANCODE_0: return Chars::CHAR_TO_KEYCODE.at("0");
+		// Keypad Numbers
 		case SDL_SCANCODE_KP_1: return Chars::CHAR_TO_KEYCODE.at("1");
 		case SDL_SCANCODE_KP_2: return Chars::CHAR_TO_KEYCODE.at("2");
 		case SDL_SCANCODE_KP_3: return Chars::CHAR_TO_KEYCODE.at("3");
@@ -125,9 +126,8 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 		case SDL_SCANCODE_KP_7: return Chars::CHAR_TO_KEYCODE.at("7");
 		case SDL_SCANCODE_KP_8: return Chars::CHAR_TO_KEYCODE.at("8");
 		case SDL_SCANCODE_KP_9: return Chars::CHAR_TO_KEYCODE.at("9");
-		case SDL_SCANCODE_KP_0:
-			return Chars::CHAR_TO_KEYCODE.at("0");
-			// Letters
+		case SDL_SCANCODE_KP_0: return Chars::CHAR_TO_KEYCODE.at("0");
+		// Letters
 		case SDL_SCANCODE_A: return Chars::CHAR_TO_KEYCODE.at("a");
 		case SDL_SCANCODE_B: return Chars::CHAR_TO_KEYCODE.at("b");
 		case SDL_SCANCODE_C: return Chars::CHAR_TO_KEYCODE.at("c");
@@ -152,20 +152,24 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 		case SDL_SCANCODE_V: return Chars::CHAR_TO_KEYCODE.at("v");
 		case SDL_SCANCODE_W: return Chars::CHAR_TO_KEYCODE.at("w");
 		case SDL_SCANCODE_X: return Chars::CHAR_TO_KEYCODE.at("x");
-		case SDL_SCANCODE_Y: return Chars::CHAR_TO_KEYCODE.at("y");
-		case SDL_SCANCODE_Z: return Chars::CHAR_TO_KEYCODE.at("z");
+		case SDL_SCANCODE_Y: return Chars::CHAR_TO_KEYCODE.at("z");
+		case SDL_SCANCODE_Z: return Chars::CHAR_TO_KEYCODE.at("y");
 		// everything else
 		case SDL_SCANCODE_LEFT: return Chars::CHAR_TO_KEYCODE.at("left");
 		case SDL_SCANCODE_RIGHT: return Chars::CHAR_TO_KEYCODE.at("right");
 		case SDL_SCANCODE_DOWN: return Chars::CHAR_TO_KEYCODE.at("down");
 		case SDL_SCANCODE_UP: return Chars::CHAR_TO_KEYCODE.at("up");
 		case SDL_SCANCODE_BACKSPACE: return Chars::CHAR_TO_KEYCODE.at("DEL");
+		case SDL_SCANCODE_SPACE: return Chars::CHAR_TO_KEYCODE.at(" ");
+		case SDL_SCANCODE_RETURN: return Chars::CHAR_TO_KEYCODE.at("RETURN");
 		case SDL_SCANCODE_KP_DIVIDE: return Chars::CHAR_TO_KEYCODE.at("/");
 		case SDL_SCANCODE_KP_MULTIPLY: return Chars::CHAR_TO_KEYCODE.at("*");
 		case SDL_SCANCODE_KP_MINUS: return Chars::CHAR_TO_KEYCODE.at("-");
 		case SDL_SCANCODE_KP_PLUS: return Chars::CHAR_TO_KEYCODE.at("+");
-		case 48: return Chars::CHAR_TO_KEYCODE.at("+");
-		case 56: return Chars::CHAR_TO_KEYCODE.at("-");
+		case SDL_SCANCODE_RIGHTBRACKET: return Chars::CHAR_TO_KEYCODE.at("+");
+		case SDL_SCANCODE_SLASH: return Chars::CHAR_TO_KEYCODE.at("-");
+		case SDL_SCANCODE_COMMA: return Chars::CHAR_TO_KEYCODE.at(",");
+		case SDL_SCANCODE_PERIOD: return Chars::CHAR_TO_KEYCODE.at(".");
 		// default
 		default: return Chars::CHAR_TO_KEYCODE.at("unknown");
 		}
@@ -211,7 +215,7 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event)
 	case SDL_SCANCODE_F8: return Chars::CHAR_TO_KEYCODE.at(")");
 	case SDL_SCANCODE_BACKSPACE: return Chars::CHAR_TO_KEYCODE.at("DEL");
 	case SDL_SCANCODE_PERIOD: return Chars::CHAR_TO_KEYCODE.at("multiply"); // .
-	case 48: return Chars::CHAR_TO_KEYCODE.at("+");                         // +
+	case SDL_SCANCODE_RIGHTBRACKET: return Chars::CHAR_TO_KEYCODE.at("+");  // +
 	case SDL_SCANCODE_INSERT: return Chars::CHAR_TO_KEYCODE.at("Ans");
 	case SDL_SCANCODE_UP: return Chars::CHAR_TO_KEYCODE.at("up");
 	case SDL_SCANCODE_F9: return Chars::CHAR_TO_KEYCODE.at("logn");
@@ -219,8 +223,8 @@ uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event)
 	case SDL_SCANCODE_C: return Chars::CHAR_TO_KEYCODE.at("cos");
 	case SDL_SCANCODE_TAB: return Chars::CHAR_TO_KEYCODE.at("S<>D");
 	case SDL_SCANCODE_ESCAPE: return Chars::CHAR_TO_KEYCODE.at("AC");
-	case 49: return Chars::CHAR_TO_KEYCODE.at("divide"); // #
-	case 56: return Chars::CHAR_TO_KEYCODE.at("-");      // -
+	case SDL_SCANCODE_BACKSLASH: return Chars::CHAR_TO_KEYCODE.at("divide"); // #
+	case SDL_SCANCODE_SLASH: return Chars::CHAR_TO_KEYCODE.at("-");          // -
 	case SDL_SCANCODE_RETURN: return Chars::CHAR_TO_KEYCODE.at("=");
 	case SDL_SCANCODE_LCTRL: return Chars::CHAR_TO_KEYCODE.at("MODE");
 	case SDL_SCANCODE_RCTRL: return Chars::CHAR_TO_KEYCODE.at("MODE");

@@ -4,7 +4,7 @@ if(NOT RPI_PICO)
 
     find_package(SDL2 REQUIRED) # sudo apt install libsdl2-dev to install
 
-    find_package(OpenSSL COMPONENTS Crypto SSL REQUIRED) # required for https
+    find_package(OpenSSL COMPONENTS Crypto SSL REQUIRED) # required for https #sudo apt install libssl-dev to install
 
     include_directories(${SDL2_INCLUDE_DIRS})
 

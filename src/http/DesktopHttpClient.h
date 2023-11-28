@@ -6,12 +6,12 @@
 class DesktopHttpClient: public IHttpClient
 {
 	public:
-	DesktopHttpClient(std::string base_url);
+	DesktopHttpClient(std::string _base_url);
 	HttpResponse get(std::string path, HttpRequest req);
 	HttpResponse post(std::string path, HttpRequest req);
 	void set_bearer_auth_token(std::string token);
 
 	private:
-	httplib::Client client;
+	httplib::Client _client;
 };
 #endif

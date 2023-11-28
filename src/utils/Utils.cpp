@@ -1,7 +1,7 @@
 #include "utils/Utils.h"
 
 #ifndef PICO
-std::chrono::steady_clock::time_point Utils::start_point;
+std::chrono::steady_clock::time_point Utils::_start_point;
 #endif
 
 void Utils::sleep_for_ms(int milliseconds)
@@ -18,14 +18,14 @@ uint64_t Utils::us_since_boot()
 #ifdef PICO
 	return time_us_64();
 #else
-	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start_point).count();
+	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - _start_point).count();
 #endif
 }
 
 #ifndef PICO
 void Utils::set_time_start_point()
 {
-	start_point = std::chrono::steady_clock::now();
+	_start_point = std::chrono::steady_clock::now();
 }
 #endif
 
@@ -53,12 +53,11 @@ std::vector<std::string> Utils::split_string(std::string string_to_split, char d
 {
 	std::vector<std::string> result = std::vector<std::string>(1);
 
-	for(int i = 0; i < string_to_split.size(); i++)
-	{
-		if(string_to_split[i] == delimiter)
+	for (int i = 0; i < string_to_split.size(); i++) {
+		if (string_to_split[i] == delimiter || string_to_split[i] == '\n')
 			result.push_back("");
 		else
-			result[result.size() -1] += string_to_split[i];
+			result[result.size() - 1] += string_to_split[i];
 	}
 
 	return result;

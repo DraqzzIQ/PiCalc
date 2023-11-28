@@ -1,6 +1,6 @@
 #pragma once
-#include <iostream>
 #include "constant/Graphics.h"
+#include <iostream>
 #include <vector>
 #ifdef PICO
 #include "http/PicoHttpClient.h"
@@ -44,12 +44,14 @@ class Utils
 	/// for a specific font size
 	/// </summary>
 	static uint32_t get_string_as_pixel_width(std::string text, FONT& table, uint16_t spacing = 1);
-#ifndef PICO
 	/// <summary>
 	/// sets the start point for the us_since_boot function
 	/// </summary>
+#ifndef PICO
 	static void set_time_start_point();
-	static std::chrono::steady_clock::time_point start_point;
 #endif
 	private:
+#ifndef PICO
+	static std::chrono::steady_clock::time_point _start_point;
+#endif
 };

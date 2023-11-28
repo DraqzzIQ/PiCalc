@@ -6,26 +6,34 @@
 #include <http/DesktopHttpClient.h>
 #endif
 
+#ifndef WOLFRAMALPHA_APPID
+#define WOLFRAMALPHA_APPID "DEMO"
+#endif
+
 class WolframAlphaWindow: public TextWindow
 {
 	public:
 	WolframAlphaWindow();
 	~WolframAlphaWindow();
-	void handle_key_down(KeyPress keypress);
+	Bitset2D update_window();
+	void create_menu();
+	bool handle_key_down(KeyPress keypress);
 
 	private:
 	void request(std::string query);
-	const std::string base_url = "https://api.wolframalpha.com";
-	const std::string endpoint = "/v1/result";
-	const std::string app_id = "";
-	const Params default_params{
-		{ "appid", app_id },
+	const std::string _base_url = "https://api.wolframalpha.com";
+	const std::string _endpoint = "/v1/result";
+	const std::string _app_id = WOLFRAMALPHA_APPID;
+	const Params _default_params{
+		{ "appid", _app_id },
 		{ "units", "metric" }
 	};
-	std::string input;
+	std::string _input;
+	uint64_t _last_blink_time = 0;
+	bool _show_cursor = false;
 #ifdef PICO
-	PicoHttpClient client;
+	PicoHttpClient _client;
 #else
-	DesktopHttpClient client;
+	DesktopHttpClient _client;
 #endif
 };

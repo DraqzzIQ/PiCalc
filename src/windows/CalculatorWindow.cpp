@@ -19,7 +19,7 @@ Bitset2D CalculatorWindow::update_window()
 }
 
 
-void CalculatorWindow::handle_key_down(KeyPress keypress)
+bool CalculatorWindow::handle_key_down(KeyPress keypress)
 {
 	Equation::Error error;
 	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("right")) equation.move_cursor_right();
@@ -85,4 +85,6 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 	else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("wav="))
 		;
 	else equation.add_value(keypress.key_calculator);
+
+	return true;
 }

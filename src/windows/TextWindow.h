@@ -1,6 +1,6 @@
 #pragma once
-#include "windows/Window.h"
 #include "utils/Utils.h"
+#include "windows/Window.h"
 #include <math.h>
 
 /// <summary>
@@ -10,7 +10,7 @@ class TextWindow: public Window
 {
 	public:
 	~TextWindow();
-	void handle_key_down(KeyPress keypress);
+	bool handle_key_down(KeyPress keypress);
 	Bitset2D update_window();
 	/// <summary>
 	/// container for all text lines
@@ -46,10 +46,15 @@ class TextWindow: public Window
 	const int line_height = 8;
 	/// <summary>
 	/// splits a string into multiple lines fitting the screen
+	/// </summary>
 	/// <param name="text_to_add">text to add to the screen</param>
 	/// <param name="keep_words">if true will try to not split words</param>
 	/// <param name="newline"if a newline should be inserted</param>
-	/// </summary>
 	void add_text(std::string text_to_add, bool keep_words = true, bool newline = false, bool leading_space = false);
+	/// <summary>
+	/// removes the last character of the text
+	/// </summary>
+	void remove_chars();
+
 	private:
 };

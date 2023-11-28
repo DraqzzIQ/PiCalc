@@ -28,7 +28,7 @@ int MenuWindow::pages_count() const
 	return static_cast<int>(ceil(static_cast<double>(options.size()) / 4));
 }
 
-void MenuWindow::handle_key_down(KeyPress keypress)
+bool MenuWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) scroll_up();
 	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) scroll_down();
@@ -36,6 +36,9 @@ void MenuWindow::handle_key_down(KeyPress keypress)
 	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) scroll_right();
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size() && keypress.shift) options[keypress.key_raw]->on_shift_select();
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size()) options[keypress.key_raw]->on_select();
+	else return false;
+
+	return true;
 }
 
 void MenuWindow::scroll_up()
