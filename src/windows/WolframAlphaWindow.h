@@ -7,6 +7,7 @@
 #endif
 
 #ifndef WOLFRAMALPHA_APPID
+#warning "WOLFRAMALPHA_APPID not defined"
 #define WOLFRAMALPHA_APPID "DEMO"
 #endif
 

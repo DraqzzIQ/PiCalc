@@ -57,10 +57,6 @@ else()
     set(WOLFRAMALPHA_APPID "DEMO")
 endif()
 
-# Set during configuration
-set(WOLFRAMALPHA_APPID "WOLFRAMALPHA_APPID")
-
-
 # Define secrets compile time
 add_compile_definitions(WOLFRAMALPHA_APPID="${WOLFRAMALPHA_APPID}")
 
