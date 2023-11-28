@@ -40,9 +40,9 @@ add_subdirectory(lib)
 
 # SECRETS
 #check if file exists
-if(EXISTS "secrets")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/secrets")
     # Read from file
-    file(READ "secrets" SECRETS_LIST)
+    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/secrets" SECRETS_LIST)
 
     # Set during configuration
     list(GET SECRETS_LIST 0 WOLFRAMALPHA_APPID)
@@ -50,10 +50,10 @@ if(EXISTS "secrets")
     # Extract values after the equal sign
     string(REGEX REPLACE "WOLFRAMALPHA_APPID=(.*)" "\\1" WOLFRAMALPHA_APPID "${WOLFRAMALPHA_APPID}")
 
-    message(STATUS "Secrets have been loaded from file")
+    message(STATUS "Secrets have been loaded from file.")
 else()
     # Use default values if the file is not found
-    message(WARNING "Secrets file not found, using default values")
+    message(WARNING "Secrets file not found, using default values.")
     set(WOLFRAMALPHA_APPID "DEMO")
 endif()
 
