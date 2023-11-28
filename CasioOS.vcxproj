@@ -85,9 +85,6 @@
     <ClCompile Include="src\http\DesktopHttpClient.cpp" />
     <ClCompile Include="src\windows\WolframAlphaWindow.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="secrets" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
