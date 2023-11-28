@@ -40,7 +40,7 @@ add_subdirectory(lib)
 
 # SECRETS
 # Read from file
-file(STRINGS "secrets.txt" SECRETS_LIST)
+file(STRINGS "secrets" SECRETS_LIST)
 
 # Set during configuration
 list(GET SECRETS_LIST 0 WOLFRAMALPHA_APPID)
