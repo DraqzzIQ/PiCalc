@@ -49,6 +49,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/secrets")
 
     # Extract values after the equal sign
     string(REGEX REPLACE "WOLFRAMALPHA_APPID=(.*)" "\\1" WOLFRAMALPHA_APPID "${WOLFRAMALPHA_APPID}")
+    # Replace new line and other unwanted chars
+    string(STRIP "${WOLFRAMALPHA_APPID}" WOLFRAMALPHA_APPID)
 
     message(STATUS "Secrets have been loaded from file.")
 else()
@@ -56,7 +58,6 @@ else()
     message(WARNING "Secrets file not found, using default values.")
     set(WOLFRAMALPHA_APPID "DEMO")
 endif()
-
 # Define secrets compile time
 add_compile_definitions(WOLFRAMALPHA_APPID="${WOLFRAMALPHA_APPID}")
 
