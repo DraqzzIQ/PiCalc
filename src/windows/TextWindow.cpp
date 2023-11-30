@@ -11,7 +11,10 @@ bool TextWindow::handle_key_down(KeyPress keypress)
 	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("left")) scroll_left();
 	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) scroll_right();
 	else if (key == "RETURN") {
+		add_text("...", false, false, false);
 		on_return_key();
+		_input = "";
+		text.push_back("");
 		return true;
 	} else if (key == "DEL") {
 		if (_input.size() > 0)

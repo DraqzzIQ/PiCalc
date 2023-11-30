@@ -27,8 +27,5 @@ void WolframAlphaWindow::request(std::string query)
 
 void WolframAlphaWindow::on_return_key()
 {
-	add_text("...", false, false, false);
 	request(_input);
-	_input = "";
-	text.push_back("");
 }
