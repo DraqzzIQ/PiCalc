@@ -4,18 +4,36 @@ TextWindow::~TextWindow() {}
 
 bool TextWindow::handle_key_down(KeyPress keypress)
 {
+	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
+
 	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) scroll_up();
 	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) scroll_down();
 	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("left")) scroll_left();
 	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) scroll_right();
-	else
-		return false;
-
-	return true;
+	else if (key == "RETURN") {
+		on_return_key();
+		return true;
+	} else if (key == "DEL") {
+		if (_input.size() > 0)
+			_input.pop_back();
+		remove_chars();
+		return true;
+	} else if (key == "unknown") return false;
+	else {
+		_input += key;
+		add_text(key, false, false, false);
+		return true;
+	}
+	return false;
 }
 
 Bitset2D TextWindow::update_window()
 {
+	if (Utils::us_since_boot() > _last_blink_time + 500000) {
+		_last_blink_time = Utils::us_since_boot();
+		_show_cursor = !_show_cursor;
+	}
+
 	clear_window();
 	create_menu();
 
@@ -28,6 +46,16 @@ void TextWindow::create_menu()
 {
 	for (uint32_t i = 0; i < text.size(); i++) {
 		add_to_window(Graphics::create_text(text[i], Graphics::SYMBOLS_6_HIGH, text_spacing), 0, 1 + i * line_height);
+	}
+	if (_show_cursor) {
+		if (text.size() == 0)
+			add_to_window(Bitset2D(2, 9, true), 0, 0);
+		else {
+			uint16_t cursor_x = Utils::get_string_as_pixel_width(text.back(), Graphics::SYMBOLS_6_HIGH, text_spacing);
+			uint16_t cursor_y = (text.size() - 1) * line_height;
+
+			add_to_window(Bitset2D(2, 9, true), cursor_x, cursor_y);
+		}
 	}
 }
 
@@ -98,4 +126,8 @@ void TextWindow::remove_chars()
 
 	if (text.size() < 1 || text[text.size() - 1].size() < 1) return;
 	text[text.size() - 1].pop_back();
+}
+
+void TextWindow::on_return_key()
+{
 }
