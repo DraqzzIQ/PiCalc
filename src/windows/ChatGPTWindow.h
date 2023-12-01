@@ -2,7 +2,7 @@
 #include <regex>
 
 #ifndef OPENAI_API_KEY
-#warning "OpenAI API key not defined"
+#pragma message("warning: OPENAI_API_KEY not defined")
 #define OPENAI_API_KEY "DEMO"
 #endif
 
