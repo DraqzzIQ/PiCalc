@@ -54,6 +54,8 @@
     <ClInclude Include="src\http\HttpRequest.h" />
     <ClInclude Include="src\http\HttpResponse.h" />
     <ClInclude Include="src\windows\WolframAlphaWindow.h" />
+    <ClInclude Include="src\windows\ChatGPTWindow.h" />
+
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
@@ -84,6 +86,8 @@
     <ClCompile Include="src\windows\WindowManager.cpp" />
     <ClCompile Include="src\http\DesktopHttpClient.cpp" />
     <ClCompile Include="src\windows\WolframAlphaWindow.cpp" />
+    <ClCompile Include="src\windows\ChatGPTWindow.cpp" />
+
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

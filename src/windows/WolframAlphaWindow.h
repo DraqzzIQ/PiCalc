@@ -7,7 +7,7 @@
 #endif
 
 #ifndef WOLFRAMALPHA_APPID
-#warning "WOLFRAMALPHA_APPID not defined"
+#pragma message("warning: WOLFRAMALPHA_APPID not defined")
 #define WOLFRAMALPHA_APPID "DEMO"
 #endif
 
@@ -16,11 +16,9 @@ class WolframAlphaWindow: public TextWindow
 	public:
 	WolframAlphaWindow();
 	~WolframAlphaWindow();
-	Bitset2D update_window();
-	void create_menu();
-	bool handle_key_down(KeyPress keypress);
 
 	private:
+	void on_return_key() override;
 	void request(std::string query);
 	const std::string _base_url = "https://api.wolframalpha.com";
 	const std::string _endpoint = "/v1/result";
@@ -29,9 +27,6 @@ class WolframAlphaWindow: public TextWindow
 		{ "appid", _app_id },
 		{ "units", "metric" }
 	};
-	std::string _input;
-	uint64_t _last_blink_time = 0;
-	bool _show_cursor = false;
 #ifdef PICO
 	PicoHttpClient _client;
 #else

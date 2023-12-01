@@ -57,4 +57,10 @@ class TextWindow: public Window
 	void remove_chars();
 
 	private:
+	uint64_t _last_blink_time = 0;
+	bool _show_cursor = false;
+
+	protected:
+	std::string _input;
+	virtual void on_return_key();
 };
