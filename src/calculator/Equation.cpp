@@ -16,6 +16,17 @@ Equation::~Equation()
 	delete _equation_root;
 }
 
+void Equation::set_variable_list(std::vector<Number>* variables)
+{
+	_variables = variables;
+}
+
+void Equation::set_frame_size(uint32_t width, uint32_t height)
+{
+	_frame_width = width;
+	_frame_height = height;
+}
+
 Bitset2D Equation::get_rendered_equation(bool complete)
 {
 	// change _show_cursor every 500ms
@@ -25,7 +36,7 @@ Bitset2D Equation::get_rendered_equation(bool complete)
 	}
 
 	if (complete) return _show_cursor ? _rendered_equation_cursor : _rendered_equation;
-	else
+	else return _show_cursor ? _rendered_equation_cursor_frame : _rendered_equation_frame;
 }
 
 void Equation::render_equation()
@@ -47,6 +58,9 @@ void Equation::render_equation()
 		_rendered_equation_cursor = _rendered_equation;
 		cursor_data.y += y_origin;
 		_rendered_equation_cursor.set(cursor_data.x, cursor_data.y, Bitset2D(2, cursor_data.size, true), true);
+
+		_rendered_equation_cursor.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor_frame);
+		_rendered_equation.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor);
 	}
 }
 
@@ -348,6 +362,11 @@ Bitset2D Equation::render_equation_part(const std::vector<EquationNode*>& equati
 	y_origin_ref = y_origin;
 	if (cursor_data_new.size != 0) cursor_data = cursor_data_new;
 	return equation_part;
+}
+
+void set_frame_position()
+{
+	// TODO
 }
 
 void Equation::extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, const Bitset2D& bitset_new, int32_t y_origin_new)

@@ -101,13 +101,13 @@ bool Bitset2D::get_bit(uint32_t coord_x, uint32_t coord_y) const
 	return _plane.at(coord_x).at(coord_y);
 }
 
-Bitset2D Bitset2D::copy(uint32_t x_start, uint32_t y_start, uint32_t width, uint32_t height) const
+Bitset2D& Bitset2D::copy(uint32_t x_start, uint32_t y_start, uint32_t width, uint32_t height, Bitset2D& destination) const
 {
-	Bitset2D res = Bitset2D();
-	res._width = width;
-	res._height = _height;
-	std::copy(_plane.begin() + x_start, _plane.begin() + x_start + width, res._plane.begin());
-	return res;
+	destination.clear();
+	for (uint32_t i = x_start; i < width + x_start; i++) destination.push_back(_plane[i].copy(y_start, height));
+	destination._width = width;
+	destination._height = height;
+	return destination;
 }
 
 

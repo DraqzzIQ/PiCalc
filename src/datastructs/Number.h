@@ -120,6 +120,7 @@ class Number
 		}
 	};
 	NumberNode* _root;
+	double _rounded;
 
 	uint8_t _state = 0;
 	uint16_t _periodic = 0;

@@ -24,6 +24,17 @@ class Equation
 	/// </summary>
 	~Equation();
 	/// <summary>
+	/// links another variable list to this equation, so that it also can be changed in this equation
+	/// </summary>
+	/// <param name="variables"></param>
+	void set_variable_list(std::vector<Number>* variables);
+	/// <summary>
+	/// set the size of the frame the equation is rendered in
+	/// </summary>
+	/// <param name="height"></param>
+	/// <param name="width"></param>
+	void set_frame_size(uint32_t width, uint32_t height);
+	/// <summary>
 	/// return the rendered equation
 	/// </summary>
 	Bitset2D get_rendered_equation(bool complete = false);
@@ -124,6 +135,8 @@ class Equation
 	/// the rendered equation with the Cursor
 	/// </summary>
 	Bitset2D _rendered_equation_cursor;
+	Bitset2D _rendered_equation_frame;
+	Bitset2D _rendered_equation_cursor_frame;
 	/// <summary>
 	/// bool keeping track of wether to show the cursor or not (in 0.5s intervals)
 	/// </summary>
@@ -134,6 +147,9 @@ class Equation
 	uint64_t _last_blink_time;
 	uint32_t _frame_x = 0;
 	uint32_t _frame_y = 0;
+	uint32_t _frame_width = SCREEN_WIDTH;
+	uint32_t _frame_height = SCREEN_HEIGHT;
+	std::vector<Number>* _variables = nullptr;
 
 	/// <summary>
 	/// render the equation

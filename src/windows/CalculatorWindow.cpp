@@ -2,9 +2,11 @@
 
 CalculatorWindow::CalculatorWindow()
 {
+	_variables = std::vector<Number>(9);
 	calculated = false;
 	equations = std::vector<Equation>(1);
 	_equation_selected = &equations[0];
+	_equation_selected->set_variable_list(&_variables);
 }
 
 CalculatorWindow::~CalculatorWindow() {}
@@ -244,6 +246,7 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 
 void CalculatorWindow::set_menu(Menu menu)
 {
+	// TODO: change strings to keycode vectors
 	_menu = menu;
 	_menu_rendered = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
 	switch (menu) {
