@@ -116,7 +116,7 @@ const std::map<std::string, uint8_t> Chars::KEY_MAP = {
 	{ "x^2", 112 },
 	{ "x^n", 113 },
 	{ "log10", 114 },
-	{ "ln", 115 },
+	{ "ln", 15 },
 	{ "(-)", 116 },
 	{ "hyp", 117 },
 	{ "sin", 118 },
@@ -237,6 +237,8 @@ const std::map<std::string, uint8_t> Chars::KEY_MAP = {
 	{ "CONV39", 234 },
 	{ "CONV40", 235 },
 	{ "ON", 236 },
+	{ "nextVal", 237 },
+	{ "symbolEnd", 238 }
 };
 
 const std::map<uint8_t, uint8_t> Chars::KEY_MAP_SHIFT = {

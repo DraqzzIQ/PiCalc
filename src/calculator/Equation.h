@@ -86,20 +86,10 @@ class Equation
 	/// when these values are in front of an exponent, no empty-value is added
 	/// </summary>
 	static const std::vector<uint8_t> _values_before_exponent;
-
-
 	/// <summary>
-	/// Node for the tree representing the Equation
+	/// all symbols that need one or more children
 	/// </summary>
-	struct EquationNode {
-		uint8_t value = 95;
-		std::vector<EquationNode*> children = std::vector<EquationNode*>();
-
-		~EquationNode()
-		{
-			for (EquationNode* child : children) delete child;
-		}
-	};
+	static const std::vector<uint8_t> _symbols;
 
 	/// <summary>
 	/// Node Used for the Calculation
@@ -122,21 +112,22 @@ class Equation
 	/// <summary>
 	/// root Node for the equation, children contains the equation
 	/// </summary>
-	EquationNode* _equation_root;
+	std::vector<uint8_t> _equation;
 	/// <summary>
 	/// the current Position of the Cursor in the raw equation. Cursor is always displayed between the element it points to and the previous element
 	/// </summary>
-	std::vector<uint32_t> _cursor_index;
+	uint32_t _cursor_index;
 	/// <summary>
-	/// the rendered Equation without the Cursor
+	/// variables storing different variants of the rendered equation
 	/// </summary>
 	Bitset2D _rendered_equation;
-	/// <summary>
-	/// the rendered equation with the Cursor
-	/// </summary>
-	Bitset2D _rendered_equation_cursor;
 	Bitset2D _rendered_equation_frame;
+	Bitset2D _rendered_equation_cursor;
 	Bitset2D _rendered_equation_cursor_frame;
+	/// <summary>
+	/// the index of the symbol of the equation currently being rendered
+	/// </summary>
+	uint32_t _render_index;
 	/// <summary>
 	/// bool keeping track of wether to show the cursor or not (in 0.5s intervals)
 	/// </summary>
@@ -177,14 +168,18 @@ class Equation
 	/// <param name="i">(input + output)index of the equation to start rendering at</param>
 	/// <param name="stop_on_closed_bracket">if true, the rendering stops at the first closed bracket, with i being set to the last rendered index</param>
 	/// <returns>the rendered equation</returns>
-	Bitset2D render_equation_part(const std::vector<EquationNode*>& equation, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint32_t& i, bool stop_on_closed_bracket = false);
+	Bitset2D render_equation_part(FONT& table, CursorPositionData& cursor_data, uint32_t& y_origin_ref, bool top_level = false);
 	/// <summary>
 	/// calls render_equation_part and sets not neccesery variables, made for easier impelemtation of new symbols for rendering
 	/// </summary>
-	Bitset2D render_subequation(const std::vector<EquationNode*>& equation, uint8_t child_index, FONT& table, std::vector<uint32_t> render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint8_t& child_index_cursor, int32_t cursor_offset_x, int32_t cursor_offset_y);
+	Bitset2D render_subequation(const std::vector<EquationNode*>& equation, uint8_t child_index, FONT& table, std::vector<uint32_t> _render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint8_t& child_index_cursor, int32_t cursor_offset_x, int32_t cursor_offset_y);
 	/// <summary>
 	/// add a new child with the given value and amount of children to the equation at the cursor position
 	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child
 	/// </summary>
 	void add_value_raw(uint8_t value, uint8_t child_cnt, bool add_value_to_first_child = false, std::vector<uint8_t> first_child = {});
+	/// <summary>
+	/// returns true, if value is in vector
+	/// </summary>
+	bool in_vector(uint8_t value, const std::vector<uint8_t>& vector);
 };
