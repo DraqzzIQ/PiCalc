@@ -2,7 +2,7 @@
 #include "calculator/Equation.h"
 #include "constant/Error.h"
 #include "constant/Graphics.h"
-#include "datastructs/Number.h"
+// #include "datastructs/Number.h"
 #include "windows/Window.h"
 #include <iostream>
 
@@ -71,10 +71,10 @@ class CalculatorWindow: public Window
 
 	std::vector<Equation> equations;
 	Equation* _equation_selected;
-	Number _result;
-	Number _ans;
-	Number _prev_ans;
-	std::vector<Number> _variables;
+	// Number _result;
+	// Number _ans;
+	// Number _prev_ans;
+	// std::vector<Number> _variables;
 	Bitset2D result_rendered;
 	bool calculated;
 };

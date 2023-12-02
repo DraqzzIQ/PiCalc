@@ -1,7 +1,7 @@
 #pragma once
 #include "constant/Error.h"
 #include "constant/Graphics.h"
-#include "datastructs/Number.h"
+// #include "datastructs/Number.h"
 #include "keyboard/KeyPress.h"
 #include "utils/Utils.h"
 #include "windows/Window.h"
@@ -23,11 +23,13 @@ class Equation
 	/// delete the Equation and clear allocated Memory
 	/// </summary>
 	~Equation();
+
 	/// <summary>
 	/// links another variable list to this equation, so that it also can be changed in this equation
 	/// </summary>
 	/// <param name="variables"></param>
-	void set_variable_list(std::vector<Number>* variables);
+	// void set_variable_list(std::vector<Number>* variables);
+
 	/// <summary>
 	/// set the size of the frame the equation is rendered in
 	/// </summary>
@@ -43,11 +45,13 @@ class Equation
 	/// </summary>
 	/// <param name="keypress">Char to add</param>
 	void add_value(uint8_t keypress);
+
 	/// <summary>
 	/// calculate the equation
 	/// </summary>
 	/// <returns>result</returns>
-	Number calculate_equation(const std::vector<double> variables);
+	// Number calculate_equation(const std::vector<double> variables);
+
 	/// <summary>
 	/// delete the character before the Cursor
 	/// </summary>
@@ -94,11 +98,11 @@ class Equation
 	/// <summary>
 	/// Node Used for the Calculation
 	/// </summary>
-	struct CalculateNode {
-		Number value = Number();
-		uint8_t operation = 95;
-		int32_t equation_index = -1;
-	};
+	// struct CalculateNode {
+	//	Number value = Number();
+	//	uint8_t operation = 95;
+	//	int32_t equation_index = -1;
+	// };
 
 	/// <summary>
 	/// stores the position and size of the cursor
@@ -117,6 +121,10 @@ class Equation
 	/// the current Position of the Cursor in the raw equation. Cursor is always displayed between the element it points to and the previous element
 	/// </summary>
 	uint32_t _cursor_index;
+	/// <summary>
+	/// stores the position and size of the cursor
+	/// </summary>
+	CursorPositionData _cursor_data;
 	/// <summary>
 	/// variables storing different variants of the rendered equation
 	/// </summary>
@@ -140,7 +148,7 @@ class Equation
 	uint32_t _frame_y = 0;
 	uint32_t _frame_width = SCREEN_WIDTH;
 	uint32_t _frame_height = SCREEN_HEIGHT;
-	std::vector<Number>* _variables = nullptr;
+	// std::vector<Number>* _variables = nullptr;
 
 	/// <summary>
 	/// render the equation
@@ -150,29 +158,26 @@ class Equation
 	/// appenbds the second bitset to the first one with their y_origins aligned
 	/// </summary>
 	void extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, const Bitset2D& bitset_new, int32_t y_origin_new);
+
 	/// <summary>
 	/// calculates the result of a equation, made for recursion
 	/// </summary>
 	/// <param name="equation">the equation to be calculated</param>
 	/// <param name="error">set to an error type if any occur, else Fine</param>
 	/// <returns>Result</returns>
-	Number calculate_equation_part(std::vector<EquationNode*>& equation, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
+	// Number calculate_equation_part(std::vector<EquationNode*>& equation, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
+
 	/// <summary>
-	/// renders an equation with a leading and trailing free column
+	/// renders a subequation with a leading and trailing free column, starting at _render_index, stopping at a closed bracket, a next value char or an end symbol char, uses _render_index as counter
 	/// </summary>
-	/// <param name="equation">equation to be rendered</param>
-	/// <param name="table">the Keymap to be used</param>
-	/// <param name="render_index">absolute index of the equation in reference to equation_root</param>
-	/// <param name="cursor_data">(output) set to the new cursor Position in reference to the y_origin if the cursor is in the equation</param>
-	/// <param name="y_origin_ref">(output) y origin of the rendered equation</param>
-	/// <param name="i">(input + output)index of the equation to start rendering at</param>
-	/// <param name="stop_on_closed_bracket">if true, the rendering stops at the first closed bracket, with i being set to the last rendered index</param>
-	/// <returns>the rendered equation</returns>
-	Bitset2D render_equation_part(FONT& table, CursorPositionData& cursor_data, uint32_t& y_origin_ref, bool top_level = false);
-	/// <summary>
-	/// calls render_equation_part and sets not neccesery variables, made for easier impelemtation of new symbols for rendering
-	/// </summary>
-	Bitset2D render_subequation(const std::vector<EquationNode*>& equation, uint8_t child_index, FONT& table, std::vector<uint32_t> _render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint8_t& child_index_cursor, int32_t cursor_offset_x, int32_t cursor_offset_y);
+	/// <param name="table">Keymap to be used</param>
+	/// <param name="y_origin">set to the y origin of the rendered subequation</param>
+	/// <param name="cursor_offset_x">x offset applied to the cursor, if it's in this subequation</param>
+	/// <param name="cursor_offset_y">y offset applied to the cursor, if it's in this subequation</param>
+	/// <param name="cursor_alignment">0: in reference to y_origin; 1: in reference to the top; 2: in reference to the bottom</param>
+	/// <param name="top_level">if true, throws an error if a closed bracket is there without an opening bracket</param>
+	/// <returns>the rendered subequation</returns>
+	Bitset2D render_equation_part(FONT& table, int32_t& y_origin, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, bool top_level = false);
 	/// <summary>
 	/// add a new child with the given value and amount of children to the equation at the cursor position
 	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child
@@ -181,5 +186,5 @@ class Equation
 	/// <summary>
 	/// returns true, if value is in vector
 	/// </summary>
-	bool in_vector(uint8_t value, const std::vector<uint8_t>& vector);
+	static bool in_vector(uint8_t value, const std::vector<uint8_t>& vector);
 };

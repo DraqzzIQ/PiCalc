@@ -16,10 +16,10 @@ Equation::~Equation()
 {
 }
 
-void Equation::set_variable_list(std::vector<Number>* variables)
-{
-	_variables = variables;
-}
+// void Equation::set_variable_list(std::vector<Number>* variables)
+// {
+//	_variables = variables;
+// }
 
 void Equation::set_frame_size(uint32_t width, uint32_t height)
 {
@@ -51,33 +51,37 @@ void Equation::render_equation()
 		_rendered_equation_cursor = Bitset2D(2, 9, true);
 	} else {
 		// render the equation with and without the cursor
-		CursorPositionData cursor_data;
-		uint32_t y_origin = 0;
 		_render_index = 0;
-		_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, cursor_data, y_origin, true);
-		_rendered_equation_cursor = _rendered_equation;
-		cursor_data.y += y_origin;
-		_rendered_equation_cursor.set(cursor_data.x, cursor_data.y, Bitset2D(2, cursor_data.size, true), true);
+		_cursor_data = { 0, 0, 0 };
+		int32_t y_origin;
+		_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, 0, 0, 0, true);
 
+		// add the cursor to the equation
+		_rendered_equation_cursor = _rendered_equation;
+		_rendered_equation_cursor.set(_cursor_data.x, _cursor_data.y, Bitset2D(2, _cursor_data.size, true), true);
+
+		// get a part of the rendered equation with width frame_width and height frame_height
 		_rendered_equation_cursor.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor_frame);
 		_rendered_equation.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor);
 	}
 }
 
-Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_data, uint32_t& y_origin_ref, bool top_level)
+Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, bool top_level)
 {
 	uint8_t font_height = table.at(0).height();
-	int32_t y_origin = 0;
+	bool cursor_inside = false;
 	Bitset2D equation_part(1, font_height, false);
-	CursorPositionData cursor_data_new = { 0, 0, 0 };
 
 	for (; _render_index < _equation.size(); _render_index++) {
 		Bitset2D symbol_matrix;
 		uint8_t value = _equation.at(_render_index);
-		if (_render_index == _cursor_index) cursor_data_new = { equation_part.width() - 1, 0, font_height };
+		if (_render_index == _cursor_index) {
+			_cursor_data = { equation_part.width() - 1, 0, font_height };
+			cursor_inside = true;
+		}
 
 		// any symbol with an open bracket at the end
-		if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0 && value != 74) {
+		if (in_vector(value, _single_bracket_open_keys) && value != 74) {
 			// only render the text before the bracket, then change the value to 74 for the other case to render the actual bracket
 			std::vector<uint8_t> keys = Graphics::key_text.at(value);
 			for (uint8_t j = 0; j < keys.size(); j++) {
@@ -93,17 +97,10 @@ Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_
 		// open bracket
 		if (value == 74) {
 			// render everything until the closing bracket
-			CursorPositionData cursor_data_subequation = { 0, 0, 0 };
-			uint32_t new_y_origin = 0;
-			if (i != equation.size() - 1) {
-				_render_index.pop_back();
-				symbol_matrix = render_equation_part(equation, table, _render_index, cursor_data_subequation, new_y_origin, ++i, true);
-				symbol_matrix.erase_x(symbol_matrix.width() - 1);
-				if (cursor_data_subequation.size != 0) {
-					cursor_data_new = cursor_data_subequation;
-					cursor_data_new.x += equation_part.width() + 5;
-				}
-				_render_index.push_back(i);
+			int32_t new_y_origin = 0;
+			if (_render_index != _equation.size() - 1) {
+				symbol_matrix = render_equation_part(table, new_y_origin, equation_part.width() + 5);
+				symbol_matrix.pop_back_x();
 			} else symbol_matrix = Bitset2D(0, font_height, false);
 
 			// add opening bracket
@@ -146,16 +143,13 @@ Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_
 				bracket_right.set_bit(2, bracket_right.height() - 2, true);
 				equation_part.extend_right(bracket_right);
 			}
-			if (stop_on_closed_bracket) {
-				break;
-			}
+			break;
 		}
 
 		// Abs
 		else if (value == 106) {
-			uint32_t new_y_origin;
-			uint8_t subequation_cursor_index = -1;
-			symbol_matrix = render_subequation(current_symbol->children, 0, table, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width() + 5, 0);
+			int32_t new_y_origin;
+			symbol_matrix = render_equation_part(table, new_y_origin, equation_part.width() + 5);
 			symbol_matrix.extend_up(1, false);
 
 			Bitset2D abs_symbol = Bitset2D(5, symbol_matrix.height(), false);
@@ -175,15 +169,13 @@ Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_
 			symbol_matrix.extend_right(table.at(46));
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 
-			uint8_t subequation_cursor_index = -1;
-			uint32_t new_y_origin;
+			int32_t new_y_origin = 0;
+			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width() + 5, 0, 1);
 
 			// render the subequation
-			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
-			if (subequation_cursor_index == 0) cursor_data_new.y += new_y_origin + 5;
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, -5);
 
-			symbol_matrix = render_subequation(current_symbol->children, 1, table, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width() + 5, 0);
+			symbol_matrix = render_equation_part(table, new_y_origin, equation_part.width() + 5);
 
 			DynamicBitset bracket_raw(symbol_matrix.height() - 4, true);
 			bracket_raw.extend_left(2, false);
@@ -212,29 +204,26 @@ Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_
 		else if (value == 110 || value == 131) {
 			// render top and bottom
 			uint8_t fraction_line_height = (font_height == 9) ? 3 : 2;
-			uint32_t new_y_origin;
-			uint8_t subequation_cursor_index = -1;
+			int32_t new_y_origin = 0;
 			bool mixed = false;
 			if (value == 131) {
 				mixed = true;
-				auto front = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), fraction_line_height - 2);
+				auto front = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width(), fraction_line_height - 2);
 				extend_bitset_left_and_match_y_origin(equation_part, y_origin, front, -fraction_line_height + 2);
 			}
-			auto top = render_subequation(current_symbol->children, mixed ? 1 : 0, Graphics::SYMBOLS_6_HIGH, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
-			if (subequation_cursor_index == (mixed ? 1 : 0)) cursor_data_new.y += new_y_origin - top.height() + fraction_line_height;
-			auto bottom = render_subequation(current_symbol->children, mixed ? 2 : 1, Graphics::SYMBOLS_6_HIGH, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
-			if (subequation_cursor_index == (mixed ? 2 : 1)) cursor_data_new.y += new_y_origin + fraction_line_height + 3;
+			auto top = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width(), fraction_line_height, 2);
+			auto bottom = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width(), fraction_line_height + 3, 1);
 
 			// extend the top and bottom to the same width
 			int32_t diff = bottom.width() - top.width();
 			if (diff > 0) {
 				top.extend_right(diff / 2, false);
 				top.extend_left((diff + 1) / 2, false);
-				if (subequation_cursor_index == (mixed ? 1 : 0)) cursor_data_new.x += (diff + 1) / 2;
+				if (_cursor_data.y < 0) _cursor_data.x += (diff + 1) / 2;
 			} else if (diff < 0) {
 				bottom.extend_right(-diff / 2, false);
 				bottom.extend_left((-diff + 1) / 2, false);
-				if (subequation_cursor_index == (mixed ? 2 : 1)) cursor_data_new.x += (-diff + 1) / 2;
+				if (_cursor_data.y > 0) _cursor_data.x += (-diff + 1) / 2;
 			}
 			// combine top and bottom with a fraction line
 			for (uint32_t i = 0; i < top.width(); i++) {
@@ -251,9 +240,8 @@ Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_
 
 		// root2
 		else if (value == 111) {
-			uint32_t new_y_origin;
-			uint8_t subequation_cursor_index = -1;
-			symbol_matrix = render_subequation(current_symbol->children, 0, table, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width() + 4, 0);
+			int32_t new_y_origin = 0;
+			symbol_matrix = render_equation_part(table, new_y_origin, equation_part.width() + 4);
 			symbol_matrix.extend_right(1, false);
 			symbol_matrix.extend_up(1, false);
 			symbol_matrix.extend_up(1, true);
@@ -276,33 +264,29 @@ Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_
 
 		// x^n
 		else if (value == 113 || value == 135 || value == 136) {
-			uint32_t new_y_origin;
-			uint8_t subequation_cursor_index = -1;
-
+			int32_t new_y_origin = 0;
 			if (value == 135) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(135), 0);
 			else if (value == 136) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(165), 0);
 			else {
-				if (i == 0 || !(equation.at(i - 1)->value < 69 || std::count(_values_before_exponent.begin(), _values_before_exponent.end(), equation.at(i - 1)->value) != 0)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(Chars::KEY_MAP.at("empty")), 0);
+				if (_render_index == 0 || !(_equation.at(_render_index - 1) < 69 || in_vector(_equation.at(_render_index - 1), _values_before_exponent) != 0)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(95), 0);
 				else equation_part.pop_back_x();
 			}
-			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
-			if (subequation_cursor_index == 0) cursor_data_new.y += new_y_origin - symbol_matrix.height() + 4;
+			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width(), 4, 2);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, symbol_matrix.height() - 4);
 		}
 
 		// *10^n
 		else if (value == 127) {
-			symbol_matrix = table.at(Chars::KEY_MAP.at("*10^n"));
+			symbol_matrix = table.at(127);
 			symbol_matrix.extend_right(1, false);
-			symbol_matrix.extend_right(table.at(Chars::KEY_MAP.at("10^n")));
+			symbol_matrix.extend_right(table.at(135));
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
 		// periodic
 		else if (value == 133) {
-			uint32_t new_y_origin;
-			uint8_t subequation_cursor_index = -1;
-			symbol_matrix = render_subequation(current_symbol->children, 0, table, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
+			int32_t new_y_origin = 0;
+			symbol_matrix = render_equation_part(table, new_y_origin, equation_part.width(), 0);
 			symbol_matrix.extend_up(1, false);
 			symbol_matrix.extend_up(1, true);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 2);
@@ -310,15 +294,13 @@ Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_
 
 		// rootn
 		else if (value == 134) {
-			uint32_t new_y_origin;
-			uint8_t subequation_cursor_index = -1;
-			symbol_matrix = render_subequation(current_symbol->children, 0, Graphics::SYMBOLS_6_HIGH, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width(), 0);
-			if (subequation_cursor_index == 0) cursor_data_new.y += new_y_origin - symbol_matrix.height() + 2;
+			int32_t new_y_origin = 0;
+			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width(), 2, 2);
 			symbol_matrix.extend_down(7, false);
 			symbol_matrix.set_bit(symbol_matrix.width() - 2, symbol_matrix.height() - 3, true);
 			symbol_matrix.set_bit(symbol_matrix.width() - 1, symbol_matrix.height() - 2, true);
 
-			Bitset2D radicant = render_subequation(current_symbol->children, 1, table, _render_index, cursor_data_new, new_y_origin, subequation_cursor_index, equation_part.width() + symbol_matrix.width() + 2, 0);
+			Bitset2D radicant = render_equation_part(table, new_y_origin, equation_part.width() + symbol_matrix.width() + 2, 0);
 			radicant.extend_right(1, false);
 			radicant.extend_up(1, false);
 			radicant.extend_up(1, true);
@@ -350,12 +332,17 @@ Bitset2D Equation::render_equation_part(FONT& table, CursorPositionData& cursor_
 		equation_part.push_back(DynamicBitset(equation_part.height(), false));
 	}
 	// special case: cursor at the end of the equation
-	_render_index.back()++;
-	if (_render_index == _cursor_index) cursor_data_new = { equation_part.width() - 1, 0, font_height };
-
-	// cursor_data_new.y += y_origin;
-	y_origin_ref = y_origin;
-	if (cursor_data_new.size != 0) cursor_data = cursor_data_new;
+	_render_index++;
+	if (_render_index == _cursor_index) {
+		_cursor_data = { equation_part.width() - 1, 0, font_height };
+		cursor_inside = true;
+	}
+	if (cursor_inside) {
+		_cursor_data.x += cursor_offset_x;
+		_cursor_data.y += cursor_offset_y;
+		if (cursor_alignment == 1) _cursor_data.y -= y_origin;
+		else if (cursor_alignment == 2) _cursor_data.y += equation_part.height() - y_origin;
+	}
 	return equation_part;
 }
 
@@ -376,218 +363,202 @@ void Equation::extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& 
 	bitset.extend_right(bitset_new_copy);
 }
 
-Bitset2D Equation::render_subequation(const std::vector<EquationNode*>& equation, uint8_t child_index, FONT& table, std::vector<uint32_t> _render_index, CursorPositionData& cursor_data, uint32_t& y_origin_ref, uint8_t& child_index_cursor, int32_t cursor_offset_x, int32_t cursor_offset_y)
-{
-	uint32_t new_start_index = 0;
-	CursorPositionData cursor_data_new = { 0, 0, 0 };
-	_render_index.push_back(child_index);
-	auto rendered = render_equation_part(equation.at(child_index)->children, table, _render_index, cursor_data_new, y_origin_ref, new_start_index);
-	if (cursor_data_new.size != 0) {
-		cursor_data = cursor_data_new;
-		cursor_data.x += cursor_offset_x;
-		cursor_data.y += cursor_offset_y;
-		child_index_cursor = child_index;
-	}
-	_render_index.pop_back();
-	return rendered;
-}
+// Number Equation::calculate_equation(const std::vector<double> variables)
+//{
+//	//uint32_t i = 0;
+//	//Number res = calculate_equation_part(_equation_root->children, std::vector<uint32_t>(), i);
+//	//if (Error::error_thrown()) return Number();
+//	//render_equation();
+//	return res;
+// }
+//
+// Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
+//{
+//	calculate_index.push_back(i);
+//
+//	// equation is empty
+//	if (equation.size() == 0) {
+//		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+//		_cursor_index = calculate_index;
+//		return Number();
+//	}
+//
+//	// parse the equation to a 1D vector of numbers and operations
+//	std::vector<CalculateNode> calculation;
+//	bool numExpected = true;
+//	Number number = Number();
+//	for (; i < equation.size(); i++) {
+//		calculate_index.back() = i;
+//		uint8_t value = equation[i]->value;
+//
+//		if (value == 133) {
+//			number.add_digit(133);
+//			for (uint32_t j = 0; j < equation[i]->children.size(); j++) {
+//				number.add_digit(equation[i]->children[0]->children[j]->value);
+//			}
+//			number.add_digit(133);
+//		} else if (!number.add_digit(value)) {
+//			if (uint16_t length = number.finalize()) calculation.push_back(CalculateNode(number, 95, i - length));
+//
+//			if (equation[i]->children.size() != 0) {
+//				std::vector<Number> subEquations;
+//				for (EquationNode* node : equation[i]->children) {
+//					uint32_t new_i = 0;
+//					subEquations.push_back(calculate_equation_part(node->children, calculate_index, new_i));
+//				}
+//				switch (value) {
+//				case 95: Error::throw_error(Error::ErrorType::SYNTAX_ERROR); break;
+//				case 106: calculation.push_back(CalculateNode(subEquations[0].abs(), 95, i)); break;
+//				case 109: calculation.push_back(CalculateNode(subEquations[0].log(subEquations[1]), 95, i)); break;
+//				case 110: calculation.push_back(CalculateNode(subEquations[0] / subEquations[1], 95, i)); break;
+//				case 111: calculation.push_back(CalculateNode(subEquations[0].root(2), 95, i)); break;
+//				case 131: calculation.push_back(CalculateNode(subEquations[0] + (subEquations[1] / subEquations[2]), 95, i)); break;
+//				case 134: calculation.push_back(CalculateNode(subEquations[1].root(subEquations[0]), 95, i)); break;
+//				case 135: calculation.push_back(CalculateNode(Number(10).pow(subEquations[0]), 95, i)); break;
+//				case 136: calculation.push_back(CalculateNode(Number::euler.pow(subEquations[0]), 95, i)); break;
+//				default:
+//					if (calculation.size() == 0 || calculation.back().operation != 95) {
+//						Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+//					}
+//					switch (value) {
+//					case 113: calculation.back().value.pow(subEquations[0]); break;
+//					case 85: calculation.back().value.factorial(); break;
+//					case 98: calculation.back().value /= 100; break;
+//					}
+//				}
+//			} else if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0) {
+//				calculate_index.pop_back();
+//				Number result = calculate_equation_part(equation, calculate_index, ++i, true);
+//				Number result2;
+//				if (value == 152 || value == 153 || value == 160 || value == 161 || value == 164) result2 = calculate_equation_part(equation, calculate_index, ++i, true);
+//				calculate_index.push_back(i);
+//				switch (value) {
+//				case 74: calculation.push_back(CalculateNode(result, 95, i)); break;
+//				case 114: calculation.push_back(CalculateNode(result.log(), 95, i)); break;
+//				case 115: calculation.push_back(CalculateNode(result.ln(), 95, i)); break;
+//				case 118: calculation.push_back(CalculateNode(result.sin(), 95, i)); break;
+//				case 119: calculation.push_back(CalculateNode(result.cos(), 95, i)); break;
+//				case 120: calculation.push_back(CalculateNode(result.tan(), 95, i)); break;
+//				case 138: calculation.push_back(CalculateNode(result.asin(), 95, i)); break;
+//				case 139: calculation.push_back(CalculateNode(result.acos(), 95, i)); break;
+//				case 140: calculation.push_back(CalculateNode(result.atan(), 95, i)); break;
+//				case 152: calculation.push_back(CalculateNode(Number::pol(result, result2), 95, i)); break;
+//				case 153: calculation.push_back(CalculateNode(Number::rec(result, result2), 95, i)); break;
+//				case 154: calculation.push_back(CalculateNode(result.round(), 95, i)); break;
+//				case 160: calculation.push_back(CalculateNode(Number::gcd(result, result2), 95, i)); break;
+//				case 161: calculation.push_back(CalculateNode(Number::lcm(result, result2), 95, i)); break;
+//				case 162: calculation.push_back(CalculateNode(result.to_int(), 95, i)); break;
+//				case 163: calculation.push_back(CalculateNode(result.floor(), 95, i)); break;
+//				case 164: calculation.push_back(CalculateNode(Number::ran_int(result, result2), 95, i)); break;
+//				case 190: calculation.push_back(CalculateNode(result.sinh(), 95, i)); break;
+//				case 191: calculation.push_back(CalculateNode(result.cosh(), 95, i)); break;
+//				case 192: calculation.push_back(CalculateNode(result.tanh(), 95, i)); break;
+//				case 193: calculation.push_back(CalculateNode(result.asinh(), 95, i)); break;
+//				case 194: calculation.push_back(CalculateNode(result.acosh(), 95, i)); break;
+//				case 195: calculation.push_back(CalculateNode(result.atanh(), 95, i)); break;
+//				}
+//			} else if (value == 75 || value == 83) {
+//				if (stop_on_closed_bracket) break;
+//				else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+//			} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
+//				calculation.push_back(CalculateNode(Number(), value, i));
+//			} else {
+//				// constants
+//				switch (value) {
+//				case 10:;
+//				}
+//			}
+//			if (Error::error_thrown()) {
+//				_cursor_index = calculate_index;
+//				return Number();
+//			}
+//		}
+//	}
+//	if (uint16_t length = number.finalize()) calculation.push_back(CalculateNode(number, 95, i - length));
+//
+//	// handle negative numbers
+//	uint8_t add_i = 0;
+//	bool negative = false;
+//	bool operation = true;
+//	for (uint32_t j = 0; j < calculation.size(); j++) {
+//		calculate_index.back() = j;
+//		if (calculation.at(j).operation != 95) {
+//			if (!operation) operation = true;
+//			else {
+//				if (calculation.at(j).operation == 70 || calculation.at(j).operation == 116) {
+//					negative = !negative;
+//					calculation.erase(calculation.begin() + j--);
+//				} else if (calculation.at(j).operation != 69) {
+//					Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+//					_cursor_index = calculate_index;
+//					return Number();
+//				}
+//			}
+//		} else {
+//			if (negative) calculation.at(j).value *= -1;
+//			negative = false;
+//			operation = false;
+//		}
+//	}
+//
+//	// metric conversion
+//
+//	// multiplication without sign
+//	operation = true;
+//	for (uint32_t j = 0; j < calculation.size(); j++) {
+//		calculate_index.back() = j;
+//		if (calculation.at(j).operation != 95) {
+//			operation = true;
+//		} else {
+//			if (!operation) {
+//				if (j > 1 && calculation.at(j - 2).operation == 72) {
+//					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i + 1, new EquationNode{ 75 });
+//					equation.insert(equation.begin() + calculation.at(j - 1).equation_index + add_i++, new EquationNode{ 74 });
+//				}
+//				if (equation.at(calculation.at(j).equation_index + add_i)->value == 110) {
+//					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i + 1, new EquationNode{ 75 });
+//					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i++, new EquationNode{ 74 });
+//				}
+//				calculation.at(j - 1).value *= calculation.at(j).value;
+//				calculation.erase(calculation.begin() + j--);
+//			}
+//			operation = false;
+//		}
+//	}
+//
+//	// permutation and combination
+//
+//	// multiplication and division
+//	for (uint32_t j = 0; j < calculation.size(); j++) {
+//		calculate_index.back() = j;
+//		if (calculation.at(j).operation != 95) {
+//			if (calculation.at(j).operation == 71) calculation.at(j - 1).value *= calculation.at(j + 1).value;
+//			else if (calculation.at(j).operation == 72) calculation.at(j - 1).value /= calculation.at(j + 1).value;
+//			else if (calculation.at(j).operation == 130) calculation.at(j - 1).value %= calculation.at(j + 1).value;
+//			else continue;
+//			calculation.erase(calculation.begin() + j);
+//			calculation.erase(calculation.begin() + j--);
+//		}
+//	}
+//
+//	// addition and subtraction
+//	for (uint32_t j = 0; j < calculation.size(); j++) {
+//		calculate_index.back() = j;
+//		if (calculation.at(j).operation != 95) {
+//			if (calculation.at(j).operation == 69) calculation.at(j - 1).value += calculation.at(j + 1).value;
+//			else if (calculation.at(j).operation == 70) calculation.at(j - 1).value -= calculation.at(j + 1).value;
+//			else continue;
+//			calculation.erase(calculation.begin() + j);
+//			calculation.erase(calculation.begin() + j--);
+//		}
+//	}
+//
+//	// logic operators
+//
+//	return calculation.at(0).value;
+// }
 
-Number Equation::calculate_equation(const std::vector<double> variables)
-{
-	uint32_t i = 0;
-	Number res = calculate_equation_part(_equation_root->children, std::vector<uint32_t>(), i);
-	if (Error::error_thrown()) return Number();
-	render_equation();
-	return res;
-}
-
-Number Equation::calculate_equation_part(std::vector<EquationNode*>& equation, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket)
-{
-	calculate_index.push_back(i);
-
-	// equation is empty
-	if (equation.size() == 0) {
-		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-		_cursor_index = calculate_index;
-		return Number();
-	}
-
-	// parse the equation to a 1D vector of numbers and operations
-	std::vector<CalculateNode> calculation;
-	bool numExpected = true;
-	Number number = Number();
-	for (; i < equation.size(); i++) {
-		calculate_index.back() = i;
-		uint8_t value = equation[i]->value;
-
-		if (value == 133) {
-			number.add_digit(133);
-			for (uint32_t j = 0; j < equation[i]->children.size(); j++) {
-				number.add_digit(equation[i]->children[0]->children[j]->value);
-			}
-			number.add_digit(133);
-		} else if (!number.add_digit(value)) {
-			if (uint16_t length = number.finalize()) calculation.push_back(CalculateNode(number, 95, i - length));
-
-			if (equation[i]->children.size() != 0) {
-				std::vector<Number> subEquations;
-				for (EquationNode* node : equation[i]->children) {
-					uint32_t new_i = 0;
-					subEquations.push_back(calculate_equation_part(node->children, calculate_index, new_i));
-				}
-				switch (value) {
-				case 95: Error::throw_error(Error::ErrorType::SYNTAX_ERROR); break;
-				case 106: calculation.push_back(CalculateNode(subEquations[0].abs(), 95, i)); break;
-				case 109: calculation.push_back(CalculateNode(subEquations[0].log(subEquations[1]), 95, i)); break;
-				case 110: calculation.push_back(CalculateNode(subEquations[0] / subEquations[1], 95, i)); break;
-				case 111: calculation.push_back(CalculateNode(subEquations[0].root(2), 95, i)); break;
-				case 131: calculation.push_back(CalculateNode(subEquations[0] + (subEquations[1] / subEquations[2]), 95, i)); break;
-				case 134: calculation.push_back(CalculateNode(subEquations[1].root(subEquations[0]), 95, i)); break;
-				case 135: calculation.push_back(CalculateNode(Number(10).pow(subEquations[0]), 95, i)); break;
-				case 136: calculation.push_back(CalculateNode(Number::euler.pow(subEquations[0]), 95, i)); break;
-				default:
-					if (calculation.size() == 0 || calculation.back().operation != 95) {
-						Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-					}
-					switch (value) {
-					case 113: calculation.back().value.pow(subEquations[0]); break;
-					case 85: calculation.back().value.factorial(); break;
-					case 98: calculation.back().value /= 100; break;
-					}
-				}
-			} else if (std::count(_single_bracket_open_keys.begin(), _single_bracket_open_keys.end(), value) != 0) {
-				calculate_index.pop_back();
-				Number result = calculate_equation_part(equation, calculate_index, ++i, true);
-				Number result2;
-				if (value == 152 || value == 153 || value == 160 || value == 161 || value == 164) result2 = calculate_equation_part(equation, calculate_index, ++i, true);
-				calculate_index.push_back(i);
-				switch (value) {
-				case 74: calculation.push_back(CalculateNode(result, 95, i)); break;
-				case 114: calculation.push_back(CalculateNode(result.log(), 95, i)); break;
-				case 115: calculation.push_back(CalculateNode(result.ln(), 95, i)); break;
-				case 118: calculation.push_back(CalculateNode(result.sin(), 95, i)); break;
-				case 119: calculation.push_back(CalculateNode(result.cos(), 95, i)); break;
-				case 120: calculation.push_back(CalculateNode(result.tan(), 95, i)); break;
-				case 138: calculation.push_back(CalculateNode(result.asin(), 95, i)); break;
-				case 139: calculation.push_back(CalculateNode(result.acos(), 95, i)); break;
-				case 140: calculation.push_back(CalculateNode(result.atan(), 95, i)); break;
-				case 152: calculation.push_back(CalculateNode(Number::pol(result, result2), 95, i)); break;
-				case 153: calculation.push_back(CalculateNode(Number::rec(result, result2), 95, i)); break;
-				case 154: calculation.push_back(CalculateNode(result.round(), 95, i)); break;
-				case 160: calculation.push_back(CalculateNode(Number::gcd(result, result2), 95, i)); break;
-				case 161: calculation.push_back(CalculateNode(Number::lcm(result, result2), 95, i)); break;
-				case 162: calculation.push_back(CalculateNode(result.to_int(), 95, i)); break;
-				case 163: calculation.push_back(CalculateNode(result.floor(), 95, i)); break;
-				case 164: calculation.push_back(CalculateNode(Number::ran_int(result, result2), 95, i)); break;
-				case 190: calculation.push_back(CalculateNode(result.sinh(), 95, i)); break;
-				case 191: calculation.push_back(CalculateNode(result.cosh(), 95, i)); break;
-				case 192: calculation.push_back(CalculateNode(result.tanh(), 95, i)); break;
-				case 193: calculation.push_back(CalculateNode(result.asinh(), 95, i)); break;
-				case 194: calculation.push_back(CalculateNode(result.acosh(), 95, i)); break;
-				case 195: calculation.push_back(CalculateNode(result.atanh(), 95, i)); break;
-				}
-			} else if (value == 75 || value == 83) {
-				if (stop_on_closed_bracket) break;
-				else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			} else if (std::count(_allowed_calculate_operations.begin(), _allowed_calculate_operations.end(), value) || (value > 189 && value < 236)) {
-				calculation.push_back(CalculateNode(Number(), value, i));
-			} else {
-				// constants
-				switch (value) {
-				case 10:;
-				}
-			}
-			if (Error::error_thrown()) {
-				_cursor_index = calculate_index;
-				return Number();
-			}
-		}
-	}
-	if (uint16_t length = number.finalize()) calculation.push_back(CalculateNode(number, 95, i - length));
-
-	// handle negative numbers
-	uint8_t add_i = 0;
-	bool negative = false;
-	bool operation = true;
-	for (uint32_t j = 0; j < calculation.size(); j++) {
-		calculate_index.back() = j;
-		if (calculation.at(j).operation != 95) {
-			if (!operation) operation = true;
-			else {
-				if (calculation.at(j).operation == 70 || calculation.at(j).operation == 116) {
-					negative = !negative;
-					calculation.erase(calculation.begin() + j--);
-				} else if (calculation.at(j).operation != 69) {
-					Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-					_cursor_index = calculate_index;
-					return Number();
-				}
-			}
-		} else {
-			if (negative) calculation.at(j).value *= -1;
-			negative = false;
-			operation = false;
-		}
-	}
-
-	// metric conversion
-
-	// multiplication without sign
-	operation = true;
-	for (uint32_t j = 0; j < calculation.size(); j++) {
-		calculate_index.back() = j;
-		if (calculation.at(j).operation != 95) {
-			operation = true;
-		} else {
-			if (!operation) {
-				if (j > 1 && calculation.at(j - 2).operation == 72) {
-					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i + 1, new EquationNode{ 75 });
-					equation.insert(equation.begin() + calculation.at(j - 1).equation_index + add_i++, new EquationNode{ 74 });
-				}
-				if (equation.at(calculation.at(j).equation_index + add_i)->value == 110) {
-					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i + 1, new EquationNode{ 75 });
-					equation.insert(equation.begin() + calculation.at(j).equation_index + add_i++, new EquationNode{ 74 });
-				}
-				calculation.at(j - 1).value *= calculation.at(j).value;
-				calculation.erase(calculation.begin() + j--);
-			}
-			operation = false;
-		}
-	}
-
-	// permutation and combination
-
-	// multiplication and division
-	for (uint32_t j = 0; j < calculation.size(); j++) {
-		calculate_index.back() = j;
-		if (calculation.at(j).operation != 95) {
-			if (calculation.at(j).operation == 71) calculation.at(j - 1).value *= calculation.at(j + 1).value;
-			else if (calculation.at(j).operation == 72) calculation.at(j - 1).value /= calculation.at(j + 1).value;
-			else if (calculation.at(j).operation == 130) calculation.at(j - 1).value %= calculation.at(j + 1).value;
-			else continue;
-			calculation.erase(calculation.begin() + j);
-			calculation.erase(calculation.begin() + j--);
-		}
-	}
-
-	// addition and subtraction
-	for (uint32_t j = 0; j < calculation.size(); j++) {
-		calculate_index.back() = j;
-		if (calculation.at(j).operation != 95) {
-			if (calculation.at(j).operation == 69) calculation.at(j - 1).value += calculation.at(j + 1).value;
-			else if (calculation.at(j).operation == 70) calculation.at(j - 1).value -= calculation.at(j + 1).value;
-			else continue;
-			calculation.erase(calculation.begin() + j);
-			calculation.erase(calculation.begin() + j--);
-		}
-	}
-
-	// logic operators
-
-	return calculation.at(0).value;
-}
-
-bool in_vector(uint8_t value, std::vector<uint8_t>& vector)
+bool Equation::in_vector(uint8_t value, const std::vector<uint8_t>& vector)
 {
 	return std::count(vector.begin(), vector.end(), value);
 }
