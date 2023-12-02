@@ -174,11 +174,11 @@ start_type = input("start type? (1 = single width + height, 2 = import, 3 = mult
 
 if start_type == "1":
     name = input("name: ")
-    # width = int(input("width: "))
-    # height = int(input("height: "))
+    #width = int(input("width: "))
+    height = int(input("height: "))
 
     width = 5
-    height = 9
+    #height = 9
     start(width, height)
 
     root.bind("<Escape>", save)

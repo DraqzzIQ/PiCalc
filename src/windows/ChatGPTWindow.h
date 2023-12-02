@@ -23,14 +23,14 @@ class ChatGPTWindow: public TextWindow
 	"model": ")" + _model + R"(",
 	"messages": [{"role": "user", "content": ")";
 	const std::string _body2 = R"("}],
-	"temperature": "0.6"}"
+	"temperature": 0.6
 })";
 	const std::string _openai_api_key = OPENAI_API_KEY;
 	const Headers _default_headers{
 		{ "Content-Type", "application/json" },
 		{ "Authorization", "Bearer " + _openai_api_key }
 	};
-	const std::regex _response_pattern = std::regex(R"x("content":\s*"([^"]*)")x");
+	const std::regex _response_pattern = std::regex(R"x("content":\s*"([^"]*)",?\s*},)x");
 #ifdef PICO
 	PicoHttpClient _client;
 #else

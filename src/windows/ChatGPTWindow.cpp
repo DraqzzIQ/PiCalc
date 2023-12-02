@@ -25,6 +25,9 @@ void ChatGPTWindow::request(std::string query)
 		text.push_back("");
 		return;
 	}
+	std::cout << std::endl
+			  << std::endl
+			  << res.body << std::endl;
 
 	add_text(extract_answer(res.body), true, true, false);
 	text.push_back("");
@@ -43,5 +46,5 @@ std::string ChatGPTWindow::extract_answer(std::string response)
 	if (std::regex_search(response, match, _response_pattern))
 		return (match[1]);
 	else
-		return "Response string not found.";
+		return ("error: no match\n" + response);
 }
