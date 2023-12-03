@@ -36,7 +36,7 @@ void Window::add_to_window(const Bitset2D& graphic, int corner_x, int corner_y)
 
 void Window::clear_window()
 {
-	window = Bitset2D(SCREEN_WIDTH, DynamicBitset(SCREEN_HEIGHT, false));
+	window = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
 }
 
 void Window::clear_symbols()

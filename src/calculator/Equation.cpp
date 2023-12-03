@@ -45,6 +45,8 @@ void Equation::render_equation()
 	_last_blink_time = Utils::us_since_boot();
 	_show_cursor = true;
 
+	std::cout << to_string_simple();
+
 	// show nothing if the equation is empty
 	if (_equation.size() == 0) {
 		_rendered_equation = Bitset2D();
@@ -53,7 +55,7 @@ void Equation::render_equation()
 		// render the equation with and without the cursor
 		_render_index = 0;
 		_cursor_data = { 0, 0, 0 };
-		int32_t y_origin;
+		int32_t y_origin = 0;
 		_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, 0, 0, 0, true);
 
 		// add the cursor to the equation
@@ -61,12 +63,12 @@ void Equation::render_equation()
 		_rendered_equation_cursor.set(_cursor_data.x, _cursor_data.y, Bitset2D(2, _cursor_data.size, true), true);
 
 		// get a part of the rendered equation with width frame_width and height frame_height
-		_rendered_equation_cursor.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor_frame);
-		_rendered_equation.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor);
+		//_rendered_equation_cursor.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor_frame);
+		//_rendered_equation.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor);
 	}
 }
 
-Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, bool top_level)
+Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, bool bracket)
 {
 	uint8_t font_height = table.at(0).height();
 	bool cursor_inside = false;
@@ -124,7 +126,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t c
 
 		// closed bracket
 		else if (value == 75) {
-			if (top_level) {
+			if (!bracket) {
 				Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 				_cursor_index = _render_index;
 				return Bitset2D();
@@ -211,8 +213,10 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t c
 				auto front = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width(), fraction_line_height - 2);
 				extend_bitset_left_and_match_y_origin(equation_part, y_origin, front, -fraction_line_height + 2);
 			}
+			_render_index++;
 			auto top = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width(), fraction_line_height, 2);
 			auto bottom = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, equation_part.width(), fraction_line_height + 3, 1);
+			_render_index--;
 
 			// extend the top and bottom to the same width
 			int32_t diff = bottom.width() - top.width();
@@ -231,7 +235,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t c
 				column.push_back(false);
 				column.push_back(true);
 				column.push_back(false);
-				column.insert(column.size(), bottom[i]);
+				column.extend(bottom[i]);
 				symbol_matrix.push_back(column);
 			}
 
@@ -321,6 +325,16 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t c
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, new_y_origin + 2 + diff);
 		}
 
+		else if (value == 237 || value == 238) {
+			if (bracket) {
+				Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+				_cursor_index = _render_index;
+				return Bitset2D();
+			}
+			_render_index++;
+			break;
+		}
+
 		// any other symbol
 		else {
 			if (table.count(value) != 0) symbol_matrix = table.at(value);
@@ -332,7 +346,6 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t c
 		equation_part.push_back(DynamicBitset(equation_part.height(), false));
 	}
 	// special case: cursor at the end of the equation
-	_render_index++;
 	if (_render_index == _cursor_index) {
 		_cursor_data = { equation_part.width() - 1, 0, font_height };
 		cursor_inside = true;
@@ -343,12 +356,25 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, int8_t c
 		if (cursor_alignment == 1) _cursor_data.y -= y_origin;
 		else if (cursor_alignment == 2) _cursor_data.y += equation_part.height() - y_origin;
 	}
+	if (equation_part.width() == 1) {
+		equation_part.extend_right(table.at(95));
+		equation_part.extend_right(1, false);
+	}
 	return equation_part;
 }
 
 void set_frame_position()
 {
 	// TODO
+}
+
+std::string Equation::to_string_simple() const
+{
+	std::string res = "";
+	for (auto value : _equation) {
+		res += " " + std::to_string(value);
+	}
+	return res + "                                                                        ";
 }
 
 void Equation::extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, const Bitset2D& bitset_new, int32_t y_origin_new)
@@ -590,9 +616,9 @@ void Equation::add_value(uint8_t keypress)
 void Equation::add_value_raw(uint8_t value, uint8_t child_cnt, bool add_value_to_first_child, std::vector<uint8_t> first_child)
 {
 	if (add_value_to_first_child) {
-		uint32_t i = _cursor_index;
+		uint32_t i = _cursor_index++ - 1;
 		for (; i > 0; i--) {
-			uint8_t val = _equation.at(_cursor_index);
+			uint8_t val = _equation.at(i);
 			if (!(val < 10 || val == 82 || val == 127)) break;
 		}
 		_equation.insert(_equation.begin() + i, value);
@@ -608,14 +634,14 @@ void Equation::add_value_raw(uint8_t value, uint8_t child_cnt, bool add_value_to
 void Equation::move_cursor_left()
 {
 	if (_cursor_index == 0) _cursor_index = _equation.size();
-	_cursor_index--;
+	else _cursor_index--;
 	render_equation();
 }
 
 void Equation::move_cursor_right()
 {
-	_cursor_index++;
-	if (_cursor_index > _equation.size()) _cursor_index = 0;
+	if (_cursor_index == _equation.size()) _cursor_index = 0;
+	else _cursor_index++;
 	render_equation();
 }
 

@@ -150,6 +150,8 @@ class Equation
 	uint32_t _frame_height = SCREEN_HEIGHT;
 	// std::vector<Number>* _variables = nullptr;
 
+
+	std::string to_string_simple() const;
 	/// <summary>
 	/// render the equation
 	/// </summary>
@@ -177,7 +179,7 @@ class Equation
 	/// <param name="cursor_alignment">0: in reference to y_origin; 1: in reference to the top; 2: in reference to the bottom</param>
 	/// <param name="top_level">if true, throws an error if a closed bracket is there without an opening bracket</param>
 	/// <returns>the rendered subequation</returns>
-	Bitset2D render_equation_part(FONT& table, int32_t& y_origin, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, bool top_level = false);
+	Bitset2D render_equation_part(FONT& table, int32_t& y_origin, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, bool bracket = false);
 	/// <summary>
 	/// add a new child with the given value and amount of children to the equation at the cursor position
 	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child

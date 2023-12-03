@@ -8,13 +8,6 @@ DynamicBitset::DynamicBitset()
 	_bit_start = 0;
 }
 
-DynamicBitset::DynamicBitset(uint32_t count)
-{
-	_bits = std::vector<uint8_t>((count + 7) / 8);
-	_bit_count = count;
-	_bit_start = 0;
-}
-
 DynamicBitset::DynamicBitset(uint32_t count, bool value)
 {
 	_bits = std::vector<uint8_t>((count + 7) / 8, value ? 0xFF : 0x00);
@@ -79,14 +72,20 @@ bool DynamicBitset::operator[](uint32_t i) const
 
 bool DynamicBitset::operator==(const DynamicBitset& other) const
 {
-	// _bit_start
-	return _bits == other._bits;
+	if (_bit_count != other._bit_count) return false;
+	for (uint32_t i = 0; i < _bit_count; i++) {
+		if (at(i) != other.at(i)) return false;
+	}
+	return true;
 }
 
 bool DynamicBitset::operator!=(const DynamicBitset& other) const
 {
-	// _bit_start
-	return _bits != other._bits;
+	if (_bit_count != other._bit_count) return true;
+	for (uint32_t i = 0; i < _bit_count; i++) {
+		if (at(i) != other.at(i)) return true;
+	}
+	return false;
 }
 
 DynamicBitset& DynamicBitset::operator=(const DynamicBitset& other)
@@ -285,7 +284,9 @@ void DynamicBitset::extend_left(const DynamicBitset& other)
 
 void DynamicBitset::extend_left(uint32_t length, bool value)
 {
-	for (uint8_t i = 0; i < length; i++) { push_front(value); }
+	for (; length > 0; length--) {
+		push_front(value);
+	}
 }
 
 

@@ -16,10 +16,6 @@ class DynamicBitset
 	/// </summary>
 	DynamicBitset();
 	/// <summary>
-	/// Construct a DynamicBitset with n bits.
-	/// </summary>
-	DynamicBitset(uint32_t count);
-	/// <summary>
 	/// Construct a DynamicBitset with n bits, all bits set to value.
 	/// </summary>
 	DynamicBitset(uint32_t count, bool value);

@@ -249,7 +249,9 @@ void Bitset2D::extend_up(const Bitset2D& other)
 
 void Bitset2D::extend_up(uint32_t length, bool value)
 {
-	for (uint32_t i = 0; i < _width; i++) { _plane[i].extend_left(length, value); }
+	for (uint32_t i = 0; i < _width; i++) {
+		_plane[i].extend_left(length, value);
+	}
 	_height += length;
 }
 
