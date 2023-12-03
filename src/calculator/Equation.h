@@ -174,12 +174,13 @@ class Equation
 	/// </summary>
 	/// <param name="table">Keymap to be used</param>
 	/// <param name="y_origin">set to the y origin of the rendered subequation</param>
+	/// <param name="cursor_inside">set to true if the cursor is in this subequation, otherwise not changed</param>
 	/// <param name="cursor_offset_x">x offset applied to the cursor, if it's in this subequation</param>
 	/// <param name="cursor_offset_y">y offset applied to the cursor, if it's in this subequation</param>
 	/// <param name="cursor_alignment">0: in reference to y_origin; 1: in reference to the top; 2: in reference to the bottom</param>
 	/// <param name="top_level">if true, throws an error if a closed bracket is there without an opening bracket</param>
 	/// <returns>the rendered subequation</returns>
-	Bitset2D render_equation_part(FONT& table, int32_t& y_origin, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, bool bracket = false);
+	Bitset2D render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, bool bracket = false);
 	/// <summary>
 	/// add a new child with the given value and amount of children to the equation at the cursor position
 	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child

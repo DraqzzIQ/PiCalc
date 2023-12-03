@@ -225,11 +225,11 @@ void DynamicBitset::clear()
 void DynamicBitset::push_back(bool bit)
 {
 	// If the last byte is full, add a new one
-	if ((_bit_count + _bit_start) % 8 == 0) { _bits.push_back(0x00); }
-	if (bit) {
-		_bits[_bits.size() - 1] |= (1 << (7 - (_bit_count % 8)));
+	if ((_bit_count + _bit_start) % 8 == 0) {
+		_bits.push_back(bit ? 0x80 : 0x00);
 	} else {
-		_bits[_bits.size() - 1] &= ~(1 << (7 - (_bit_count % 8)));
+		if (bit) _bits[_bits.size() - 1] |= (1 << (7 - ((_bit_count + _bit_start) % 8)));
+		else _bits[_bits.size() - 1] &= ~(1 << (7 - ((_bit_count + _bit_start) % 8)));
 	}
 	_bit_count++;
 }
@@ -244,6 +244,7 @@ void DynamicBitset::push_front(bool bit)
 		if (bit) _bits[0] |= (1 << (7 - _bit_start));
 		else _bits[0] &= ~(1 << (7 - _bit_start));
 	}
+	_bit_count++;
 }
 
 void DynamicBitset::pop_back()
