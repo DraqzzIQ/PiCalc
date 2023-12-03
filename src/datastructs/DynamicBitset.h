@@ -72,6 +72,10 @@ class DynamicBitset
 	/// </summary>
 	uint32_t size() const;
 	/// <summary>
+	/// Returns a vector of uint8_t containing the bits.
+	/// </summary>
+	std::vector<uint8_t> get_bytes() const;
+	/// <summary>
 	/// copy width bits starting at start to another DynamicBitset
 	/// </summary>
 	/// <param name="start"></param>
@@ -85,20 +89,17 @@ class DynamicBitset
 	/// </summary>
 	void set(uint32_t index, bool value);
 	/// <summary>
-	// TODO: optimize this
 	/// Sets bits at index.
-	/// should be used carefully, as it is O(n).
 	/// </summary>
 	void set(uint32_t index, const DynamicBitset& bits);
 	/// <summary>
 	/// Inserts a bit at index.
-	/// should be used carefully, as it is O(n).
+	/// VERY INEFFICIENT
 	/// </summary>
 	void insert(uint32_t index, bool bit);
 	/// <summary>
-	// TODO: optimize this
 	/// Inserts bits at index.
-	/// should be used carefully, as it is O(n).
+	/// VERY INEFFICIENT
 	/// </summary>
 	void insert(uint32_t index, const DynamicBitset& bits);
 	/// <summary>
@@ -134,7 +135,7 @@ class DynamicBitset
 	void extend(const DynamicBitset& other);
 	/// <summary>
 	/// Appends length bits to the DynamicBitset, all set to value
-	/// TODO: optimize
+	/// VERY INEFFICIENT
 	/// </summary>
 	void extend(uint32_t length, bool value);
 	/// <summary>
@@ -144,6 +145,7 @@ class DynamicBitset
 	void extend_left(const DynamicBitset& other);
 	/// <summary>
 	/// Appends length bits to the start of the DynamicBitset, all set to value
+	/// VERY INEFFICIENT
 	/// </summary>
 	void extend_left(uint32_t length, bool value);
 
@@ -165,8 +167,4 @@ class DynamicBitset
 	/// The number of bits in the bitset.
 	/// </summary>
 	uint32_t _bit_count;
-	/// <summary>
-	/// saves a value from 0 to 7 indicating the location of the first bit in the bitset
-	/// </summary>
-	uint8_t _bit_start;
 };
