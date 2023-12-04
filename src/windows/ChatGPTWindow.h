@@ -30,7 +30,7 @@ class ChatGPTWindow: public TextWindow
 		{ "Content-Type", "application/json" },
 		{ "Authorization", "Bearer " + _openai_api_key }
 	};
-	const std::regex _response_pattern = std::regex(R"x("content":\s*"([^"]*)",?\s*},)x");
+	const std::regex _response_pattern = std::regex(R"x("content":\s*"([^"]*)",?\s*\},)x");
 #ifdef PICO
 	PicoHttpClient _client;
 #else

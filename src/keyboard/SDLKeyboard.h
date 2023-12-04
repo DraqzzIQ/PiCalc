@@ -30,6 +30,11 @@ class SDLKeyboard: public IKeyboard
 	/// </summary>
 	/// <returns>true if pressed else false</returns>
 	bool is_alpha_active();
+	/// <summary>
+	/// checks wether right alt is active
+	/// </summary>
+	/// <returns>true if pressed else false</returns>
+	bool is_ralt_active();
 
 	private:
 	/// <summary>
