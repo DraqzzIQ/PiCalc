@@ -10,7 +10,12 @@
 #include "lwip/dns.h"
 #define CERT 
 
-class PicoHttpClient: IHttpClient
+enum HttpMethod {
+    Get,
+    Post,
+};
+
+class PicoHttpClient: public IHttpClient
 {
 	public:
     PicoHttpClient(std::string baseUrl);
@@ -45,36 +50,35 @@ class PicoHttpClient: IHttpClient
     ///<param name='uri'> the URI of the request </param>
     ///<param name='method'> the method of the request </param>
     ///</summary>
-    std::string serialize(HttpRequest req, std::string uri, HttpMethod method);
+    std::string serialize(HttpRequest& req, std::string uri, HttpMethod& method);
     ///<summary>
     ///altcp receive callback, look at the altcp doc for more info
     ///</summary>
-    std::string recieve(void* arg, struct tcp_pcb* tpcb, struct pbuf* p, err_t err);
+    altcp_recv_fn receive;
     ///<summary>
     ///altcp connected callback
     ///</summary>
-    err_t connected(void *arg, struct tcp_pcb *tpcb, err_t err;
+    altcp_connected_fn connected_fn;
     ///<summary>
     ///altcp dns callback
     ///</summary>
-    err_t dn_found(const char* name, const ip_addr_t, void* callback_arg);
+    dns_found_callback dn_found;
     ///<sumamry>
     ///altcp client error callback
     ///</sumamry>
-    err_t client_error(void* arg, err_t err);
+    altcp_err_fn client_error;
     
     
+    
+    int content_l = 0;
     std::string bearer_auth_token;
     std::string base_url;
-    std::bool received = false;
-    std::bool connected = false;
-    const ip_addr_t* ip_addr;
-    u16_t port = 443:
+
+    int received = 0;
+    bool connected = false;
+    ip_addr_t* ip_addr;
+    u16_t port = 443;
     struct altcp_tls_config* tls_config = NULL;
     struct altcp_pcb* tls_client = NULL;
 };
 
-enum HttpMethod {
-    Get,
-    Post,
-};
