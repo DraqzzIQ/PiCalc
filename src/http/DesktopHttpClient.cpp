@@ -5,6 +5,9 @@ DesktopHttpClient::DesktopHttpClient(std::string _base_url):
 	IHttpClient(_base_url),
 	_client(_base_url)
 {
+	_client.set_connection_timeout(1, 0); // 1 second
+	_client.set_read_timeout(30, 0); // 30 seconds
+	_client.set_write_timeout(30, 0); // 30 seconds
 }
 
 HttpResponse DesktopHttpClient::get(std::string path, HttpRequest req)
