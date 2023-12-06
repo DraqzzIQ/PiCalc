@@ -44,6 +44,8 @@ Bitset2D CalculatorWindow::update_window()
 	case Mode::GRAPH:
 		add_to_window(Graphics::create_text("GRAPH"), 0, 0);
 		return window;
+	default:
+		return window;
 	}
 }
 
@@ -51,8 +53,8 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 {
 	switch (_menu) {
 	case Menu::None:
-		if (keypress.key_calculator == 129) _menu = Menu::Setup_Pg1;
-		else if (keypress.key_calculator == 105) _menu = Menu::Mode;
+		if (keypress.key_calculator == 129) set_menu(Menu::Setup_Pg1);
+		else if (keypress.key_calculator == 105) set_menu(Menu::Mode);
 		else {
 			switch (_mode) {
 			case Mode::COMP:
