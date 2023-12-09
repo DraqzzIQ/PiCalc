@@ -111,6 +111,26 @@ Bitset2D& Bitset2D::copy(uint32_t x_start, uint32_t y_start, uint32_t width, uin
 }
 
 
+void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<uint8_t, Bitset2D>& font, std::vector<uint8_t> text, bool resize_if_needed)
+{
+	uint32_t x = coord_x;
+	uint32_t y = coord_y;
+	for (uint32_t i = 0; i < text.size(); i++) {
+		if (text[i] == 239) {
+			y += font.at(0).height();
+			if (y >= _height) {
+				if (resize_if_needed) extend_down(y - _height + 1, false);
+				else return;
+			}
+			x = coord_x;
+		} else {
+			set(x, y, font.at(text[i]), resize_if_needed);
+			x += font.at(text[i]).width() + 1;
+			if (x >= _width) return;
+		}
+	}
+}
+
 void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bool resize_if_needed)
 {
 #ifdef IS_DEBUG_BUILD
@@ -120,6 +140,7 @@ void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bo
 		if (other._width + coord_x > _width) { extend_right(other._width + coord_x - _width, false); }
 		if (other._height + coord_y > _height) { extend_down(other._height + coord_y - _height, false); }
 	}
+	uint32_t len = other._width < _width - coord_x ? other._width : _width - coord_x;
 	for (uint32_t i = 0; i < other._width; i++) { _plane[i + coord_x].set(coord_y, other.at(i)); }
 }
 

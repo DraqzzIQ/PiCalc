@@ -266,14 +266,14 @@ void CalculatorWindow::set_menu(Menu menu)
 		_menu_rendered = Error::render_error();
 		break;
 	case Menu::Mode:
-		_menu_rendered.set(0, 1, Graphics::create_text("1:COMP", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 1, Graphics::create_text("2:STAT", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("3:TABLE", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("4:GRAPH", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 17, Graphics::create_text("5:DIST", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 17, Graphics::create_text("6:VERIF", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 25, Graphics::create_text("7:BASE-N", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 25, Graphics::create_text("8:EQ-SOLV", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 241, 12, 24, 22, 25 }, false);
+		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 242, 28, 29, 10, 29 }, false);
+		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 243, 29, 10, 11, 21, 14 }, false);
+		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 244, 16, 27, 10, 25, 17 }, false);
+		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 245, 13, 18, 28, 29 }, false);
+		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 246, 31, 14, 27, 18, 15 }, false);
+		_menu_rendered.put_chars(1, 24, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 247, 11, 10, 28, 14, 23 }, false);
+		_menu_rendered.put_chars(48, 24, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 248, 28, 24, 21, 31, 14 }, false);
 		break;
 	case Menu::Mode_Stat:
 		// TODO

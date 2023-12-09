@@ -1,6 +1,6 @@
 #include "Chars.h"
 
-const std::map<std::string, uint8_t> Chars::KEY_MAP = {
+const std::map<std::string, KEY> Chars::KEY_MAP = {
 	{ "0", 0 },
 	{ "1", 1 },
 	{ "2", 2 },
@@ -238,10 +238,21 @@ const std::map<std::string, uint8_t> Chars::KEY_MAP = {
 	{ "CONV40", 235 },
 	{ "ON", 236 },
 	{ "nextVal", 237 },
-	{ "symbolEnd", 238 }
+	{ "symbolEnd", 238 },
+	{ "newline", 239 },
+	{ "dark0", 240 },
+	{ "dark1", 241 },
+	{ "dark2", 242 },
+	{ "dark3", 243 },
+	{ "dark4", 244 },
+	{ "dark5", 245 },
+	{ "dark6", 246 },
+	{ "dark7", 247 },
+	{ "dark8", 248 },
+	{ "dark9", 249 },
 };
 
-const std::map<uint8_t, uint8_t> Chars::KEY_MAP_SHIFT = {
+const std::map<KEY, KEY> Chars::KEY_MAP_SHIFT = {
 	{ KEY_MAP.at("Abs"), KEY_MAP.at("/R") },
 	{ KEY_MAP.at("fraction"), KEY_MAP.at("mixedfraction") },
 	{ KEY_MAP.at("RCL"), KEY_MAP.at("STO") },
@@ -281,7 +292,7 @@ const std::map<uint8_t, uint8_t> Chars::KEY_MAP_SHIFT = {
 	{ KEY_MAP.at("unknown"), KEY_MAP.at("unknown") },
 };
 
-const std::map<uint8_t, uint8_t> Chars::KEY_MAP_ALPHA = {
+const std::map<KEY, KEY> Chars::KEY_MAP_ALPHA = {
 	{ KEY_MAP.at("(-)"), KEY_MAP.at("A") },
 	{ KEY_MAP.at("x^3"), KEY_MAP.at(":") },
 	{ KEY_MAP.at("time"), KEY_MAP.at("B") },

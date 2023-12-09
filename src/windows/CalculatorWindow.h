@@ -67,6 +67,7 @@ class CalculatorWindow: public Window
 		EQ_SOLV,
 		GRAPH,
 	};
+
 	Mode _mode = Mode::COMP;
 
 	std::vector<Equation> equations;

@@ -130,7 +130,8 @@ void DynamicBitset::set(uint32_t index, const DynamicBitset& other)
 #ifdef IS_DEBUG_BUILD
 	if (index + other._bit_count > _bit_count) { throw std::out_of_range("DynamicBitset::set"); }
 #endif
-	for (uint32_t i = 0; i < other.size(); i++) { set(index + i, other[i]); }
+	uint32_t len = other._bit_count < _bit_count - index ? other._bit_count : _bit_count - index;
+	for (uint32_t i = 0; i < len; i++) { set(index + i, other[i]); }
 }
 
 void DynamicBitset::insert(uint32_t index, bool bit)
