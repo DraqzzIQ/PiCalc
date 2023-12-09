@@ -56,14 +56,14 @@ void PicoKeyboard::check_for_keyboard_presses()
 	}
 }
 
-void PicoKeyboard::print_key(uint8_t key)
+void PicoKeyboard::print_key(KEY key)
 {
 	for (auto i = Chars::KEY_MAP.begin(); i != Chars::KEY_MAP.end(); i++) {
 		if (i->second == key) { printf(i->first.c_str()); }
 	}
 }
 
-uint8_t PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
+KEY PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
 {
 	switch (10 * x + y) {
 	case 0: return Chars::KEY_MAP.at("SHIFT");

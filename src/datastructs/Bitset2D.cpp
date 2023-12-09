@@ -111,7 +111,7 @@ Bitset2D& Bitset2D::copy(uint32_t x_start, uint32_t y_start, uint32_t width, uin
 }
 
 
-void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<uint8_t, Bitset2D>& font, std::vector<uint8_t> text, bool resize_if_needed)
+void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, KEY_SET text, bool resize_if_needed)
 {
 	uint32_t x = coord_x;
 	uint32_t y = coord_y;

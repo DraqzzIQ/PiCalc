@@ -462,7 +462,7 @@ FONT Graphics::SYMBOLS_6_HIGH = {
 
 const std::vector<std::string> Graphics::SCREEN_SYMBOLS = { "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT", "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp" };
 
-const std::map<uint8_t, std::vector<uint8_t>> Graphics::key_text{
+const std::map<KEY, KEY_SET> Graphics::key_text{
 	{ 74, {} },
 	{ 109, { 51, 54, 46 } },
 	{ 114, { 51, 54, 46 } },
@@ -503,7 +503,7 @@ Bitset2D Graphics::create_text(const std::string& text, FONT& table, const uint1
 	return rendered_text;
 }
 
-Bitset2D Graphics::create_text(const std::vector<uint8_t> text, FONT& table, const uint16_t spacing)
+Bitset2D Graphics::create_text(const KEY_SET text, FONT& table, const uint16_t spacing)
 {
 	std::string letter(1, text.at(0));
 	Bitset2D rendered_text = table.at(Chars::KEY_MAP.at(letter));

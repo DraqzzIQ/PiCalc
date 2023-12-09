@@ -89,7 +89,7 @@ class Number
 	static Number ran_int(const Number& first, const Number& second);
 
 	double get_value() const;
-	bool add_digit(const uint8_t digit);
+	bool add_digit(const KEY digit);
 	uint16_t finalize();
 	Bitset2D render() const;
 

@@ -4,10 +4,10 @@ TextWindow::~TextWindow() {}
 
 void TextWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == Chars::KEY_MAP.at("up")) scroll_up();
-	else if (keypress.key_raw == Chars::KEY_MAP.at("down")) scroll_down();
-	else if (keypress.key_raw == Chars::KEY_MAP.at("left")) scroll_left();
-	else if (keypress.key_raw == Chars::KEY_MAP.at("right")) scroll_right();
+	if (keypress.key_raw == 167) scroll_up();
+	else if (keypress.key_raw == 168) scroll_down();
+	else if (keypress.key_raw == 169) scroll_left();
+	else if (keypress.key_raw == 170) scroll_right();
 }
 
 Bitset2D TextWindow::update_window()

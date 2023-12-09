@@ -13,4 +13,5 @@ class Chars
 	static const std::map<std::string, KEY> KEY_MAP;
 	static const std::map<KEY, KEY> KEY_MAP_SHIFT;
 	static const std::map<KEY, KEY> KEY_MAP_ALPHA;
+	static bool in_key_set(KEY value, const KEY_SET& vector);
 };

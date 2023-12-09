@@ -1,13 +1,13 @@
 #include "calculator/Equation.h"
 
-const std::vector<uint8_t> Equation::_allowed_calculate_operations = { 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 116, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
-const std::vector<uint8_t> Equation::_single_bracket_open_keys = { 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
-const std::vector<uint8_t> Equation::_values_before_exponent = { 75, 85, 102, 106, 109, 110, 111, 127, 128, 131, 155, 156, 165, 186, 187, 188 };
-const std::vector<uint8_t> Equation::_symbols = { 106, 109, 110, 111, 113, 131, 133, 134, 135, 136 };
+const KEY_SET Equation::_allowed_calculate_operations = { 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 116, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
+const KEY_SET Equation::_single_bracket_open_keys = { 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
+const KEY_SET Equation::_values_before_exponent = { 75, 85, 102, 106, 109, 110, 111, 127, 128, 131, 155, 156, 165, 186, 187, 188 };
+const KEY_SET Equation::_symbols = { 106, 109, 110, 111, 113, 131, 133, 134, 135, 136 };
 
 Equation::Equation()
 {
-	_equation = std::vector<uint8_t>(0);
+	_equation = KEY_SET(0);
 	_cursor_index = 0;
 	render_equation();
 }
@@ -79,16 +79,16 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 
 	for (; _render_index < _equation.size(); _render_index++) {
 		Bitset2D symbol_matrix;
-		uint8_t value = _equation.at(_render_index);
+		KEY value = _equation.at(_render_index);
 		if (_render_index == _cursor_index) {
 			_cursor_data = { equation_part.width() - 1, 0, font_height };
 			cursor_inside = true;
 		}
 
 		// any symbol with an open bracket at the end
-		if (in_vector(value, _single_bracket_open_keys) && value != 74) {
+		if (Chars::in_key_set(value, _single_bracket_open_keys) && value != 74) {
 			// only render the text before the bracket, then change the value to 74 for the other case to render the actual bracket
-			std::vector<uint8_t> keys = Graphics::key_text.at(value);
+			KEY_SET keys = Graphics::key_text.at(value);
 			for (uint8_t j = 0; j < keys.size(); j++) {
 				symbol_matrix.extend_right(table.at(keys.at(j)));
 				symbol_matrix.extend_right(1, false);
@@ -266,7 +266,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			if (value == 135) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(135), 0);
 			else if (value == 136) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(165), 0);
 			else {
-				if (_render_index == 0 || !(_equation.at(_render_index - 1) < 69 || in_vector(_equation.at(_render_index - 1), _values_before_exponent) != 0)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(95), 0);
+				if (_render_index == 0 || !(_equation.at(_render_index - 1) < 69 || Chars::in_key_set(_equation.at(_render_index - 1), _values_before_exponent) != 0)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(95), 0);
 				else equation_part.pop_back_x();
 			}
 			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_inside, equation_part.width(), 4, 2);
@@ -573,22 +573,17 @@ void Equation::extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& 
 //	return calculation.at(0).value;
 // }
 
-bool Equation::in_vector(uint8_t value, const std::vector<uint8_t>& vector)
-{
-	return std::count(vector.begin(), vector.end(), value);
-}
-
-void Equation::add_value(uint8_t keypress)
+void Equation::add_value(KEY keypress)
 {
 	// TODO: restrictions
 	switch (keypress) {
 	case 106: add_value_raw(106, 1); break;
-	case 107: add_value_raw(113, 1, false, std::vector<uint8_t>{ 3 }); break;
-	case 108: add_value_raw(113, 1, false, std::vector<uint8_t>{ 116, 1 }); break;
+	case 107: add_value_raw(113, 1, false, KEY_SET{ 3 }); break;
+	case 108: add_value_raw(113, 1, false, KEY_SET{ 116, 1 }); break;
 	case 109: add_value_raw(109, 2, true); break;
 	case 110: add_value_raw(110, 2, true); break;
 	case 111: add_value_raw(111, 1); break;
-	case 112: add_value_raw(113, 1, false, std::vector<uint8_t>{ 2 }); break;
+	case 112: add_value_raw(113, 1, false, KEY_SET{ 2 }); break;
 	case 113: add_value_raw(113, 1); break;
 	case 131: add_value_raw(131, 3, true); break;
 	case 132: add_value_raw(134, 2, true); break;
@@ -601,7 +596,7 @@ void Equation::add_value(uint8_t keypress)
 	render_equation();
 }
 
-void Equation::add_value_raw(uint8_t value, uint8_t child_cnt, bool add_value_to_first_child, std::vector<uint8_t> first_child)
+void Equation::add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_first_child, KEY_SET first_child)
 {
 	if (add_value_to_first_child) {
 		add_value_to_first_child = false;
@@ -649,8 +644,8 @@ void Equation::move_cursor_down()
 void Equation::del()
 {
 	if (_cursor_index == 0) return;
-	uint8_t val = _equation.at(--_cursor_index);
-	if (in_vector(val, _symbols)) {
+	KEY val = _equation.at(--_cursor_index);
+	if (Chars::in_key_set(val, _symbols)) {
 		_equation.erase(_equation.begin() + _cursor_index);
 		while (true) {
 			val = _equation.at(_cursor_index);
@@ -658,7 +653,7 @@ void Equation::del()
 			else if (val == 238) {
 				_equation.erase(_equation.begin() + _cursor_index);
 				break;
-			} else if (in_vector(val, _symbols)) {
+			} else if (Chars::in_key_set(val, _symbols)) {
 				while (_equation.at(_cursor_index) != 238) _cursor_index++;
 			} else _cursor_index++;
 		}
@@ -670,7 +665,7 @@ void Equation::del()
 
 void Equation::ac()
 {
-	_equation = std::vector<uint8_t>(0);
+	_equation = KEY_SET(0);
 	_cursor_index = 0;
 	render_equation();
 }

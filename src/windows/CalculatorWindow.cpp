@@ -282,66 +282,66 @@ void CalculatorWindow::set_menu(Menu menu)
 		// TODO
 		break;
 	case Menu::Setup_Pg1:
-		_menu_rendered.set(0, 1, Graphics::create_text("1:Input", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 1, Graphics::create_text("2:Output", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("3:Deg", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("4:Rad", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 17, Graphics::create_text("5:Gra", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 17, Graphics::create_text("6:Fix", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 25, Graphics::create_text("7:Sci", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 25, Graphics::create_text("8:Norm", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 241, 84, 18, 53, 55, 60, 59 }, false);
+		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 242, 84, 24, 60, 59, 55, 60, 59 }, false);
+		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 243, 84, 13, 44, 46 }, false);
+		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 244, 84, 27, 40, 43 }, false);
+		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 245, 84, 16, 57, 40 }, false);
+		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 246, 84, 15, 48, 63 }, false);
+		_menu_rendered.put_chars(1, 24, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 247, 84, 28, 42, 48 }, false);
+		_menu_rendered.put_chars(48, 24, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 248, 84, 23, 54, 57, 52 }, false);
 		break;
 	case Menu::Setup_Pg2:
-		_menu_rendered.set(0, 1, Graphics::create_text("1:ab/c", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 1, Graphics::create_text("2:d/c", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("3:STAT", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("4:PerD", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 17, Graphics::create_text("5:AbAut", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 40, 41, 175, 42 }, false);
+		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 43, 175, 42 }, false);
+		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 28, 29, 10, 29 }, false);
+		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 25, 44, 57, 13 }, false);
+		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 10, 41, 10, 60, 59 }, false);
 		break;
 	case Menu::Setup_Input:
 	case Menu::Setup_Output:
-		_menu_rendered.set(0, 1, Graphics::create_text("1:2D", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 1, Graphics::create_text("2:Linear", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 2, 13 }, false);
+		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 21, 48, 53, 44, 40, 57 }, false);
 		break;
 	case Menu::Setup_Fix:
-		_menu_rendered.set(0, 1, Graphics::create_text("Fix 0~9", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 15, 48, 63, 80, 0, 180, 9 }, false);
 		break;
 	case Menu::Setup_Sci:
-		_menu_rendered.set(0, 1, Graphics::create_text("Sci 0~9", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 28, 42, 48, 80, 0, 180, 9 }, false);
 		break;
 	case Menu::Setup_Norm:
-		_menu_rendered.set(0, 1, Graphics::create_text("Norm 1~2", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 23, 54, 57, 52, 80, 1, 180, 2 }, false);
 		break;
 	case Menu::Setup_Stat:
-		_menu_rendered.set(0, 1, Graphics::create_text("Häufigkeit?", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("1:EIN", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("2:AUS", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 17, 66, 60, 45, 48, 46, 50, 44, 48, 59, 86 }, false);
+		_menu_rendered.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 14, 18, 23 }, false);
+		_menu_rendered.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 10, 30, 28 }, false);
 		break;
 	case Menu::Setup_PerD:
-		_menu_rendered.set(0, 1, Graphics::create_text("Period. Darst?", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("1:EIN", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("2:AUS", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 25, 44, 57, 48, 54, 43, 81, 80, 13, 40, 57, 58, 59, 86 }, false);
+		_menu_rendered.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 14, 18, 23 }, false);
+		_menu_rendered.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 10, 30, 28 }, false);
 		break;
 	case Menu::Setup_TurnOff:
-		_menu_rendered.set(0, 1, Graphics::create_text("Abschaltautomat.", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("1:10 Min.", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("2:60 Min.", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 10, 41, 58, 42, 47, 40, 51, 59, 40, 60, 59, 54, 52, 40, 59, 81 }, false);
+		_menu_rendered.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 1, 0, 80, 22, 48, 53, 81 }, false);
+		_menu_rendered.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 6, 0, 80, 22, 48, 53, 81 }, false);
 		break;
 	case Menu::Hyp:
-		_menu_rendered.set(0, 1, Graphics::create_text("1:sinh", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 1, Graphics::create_text("2:cosh", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("3:tanh", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("4:sinh-1", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 17, Graphics::create_text("5:cosh-1", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 17, Graphics::create_text("6:tanh-1", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 58, 48, 53, 47 }, false);
+		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 42, 54, 58, 47 }, false);
+		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 59, 40, 53, 47 }, false);
+		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 58, 48, 53, 47, 70, 1 }, false);
+		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 42, 54, 58, 47, 70, 1 }, false);
+		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 59, 40, 53, 47, 70, 1 }, false);
 		break;
 	case Menu::Verify:
-		_menu_rendered.set(0, 1, Graphics::create_text("1:=", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 1, Graphics::create_text(std::vector<uint8_t>{ 2, 84, 178 }, Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("3:>", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("4:<", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 17, Graphics::create_text(std::vector<uint8_t>{ 5, 84, 176 }, Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 17, Graphics::create_text(std::vector<uint8_t>{ 6, 84, 177 }, Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 73 }, false);
+		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 178 }, false);
+		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 88 }, false);
+		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 89 }, false);
+		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 176 }, false);
+		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 177 }, false);
 		break;
 	case Menu::Stat:
 		// TODO
@@ -350,17 +350,17 @@ void CalculatorWindow::set_menu(Menu menu)
 		// TODO
 		break;
 	case Menu::Base:
-		_menu_rendered.set(0, 1, Graphics::create_text("1:and", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 1, Graphics::create_text("2:or", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text("3:xor", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 9, Graphics::create_text("4:xnor", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 17, Graphics::create_text("5:not", Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 17, Graphics::create_text("6:neg", Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 40, 53, 43 }, false);
+		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 54, 57 }, false);
+		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 63, 54, 57 }, false);
+		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 63, 53, 54, 57 }, false);
+		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 53, 54, 59 }, false);
+		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 53, 44, 46 }, false);
 		break;
 	case Menu::Drg:
-		_menu_rendered.set(0, 1, Graphics::create_text(std::vector<uint8_t>{ 1, 84, 187 }, Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(48, 1, Graphics::create_text(std::vector<uint8_t>{ 2, 84, 188 }, Graphics::SYMBOLS_6_HIGH), false);
-		_menu_rendered.set(0, 9, Graphics::create_text(std::vector<uint8_t>{ 3, 84, 186 }, Graphics::SYMBOLS_6_HIGH), false);
+		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 187 }, false);
+		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 188 }, false);
+		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 186 }, false);
 		break;
 	default:
 		break;

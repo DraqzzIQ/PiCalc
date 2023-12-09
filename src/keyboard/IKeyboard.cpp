@@ -5,7 +5,7 @@ IKeyboard::IKeyboard()
 	_window_manager = WindowManager::get_instance();
 }
 
-uint8_t IKeyboard::raw_key_to_calculator_key(uint8_t raw_key, bool shift, bool alpha)
+KEY IKeyboard::raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha)
 {
 	if (shift) {
 		if (!Chars::KEY_MAP_SHIFT.contains(raw_key)) return Chars::KEY_MAP_SHIFT.at(Chars::KEY_MAP.at("unknown"));
@@ -18,7 +18,7 @@ uint8_t IKeyboard::raw_key_to_calculator_key(uint8_t raw_key, bool shift, bool a
 	}
 }
 
-uint8_t IKeyboard::raw_key_to_keyboard_key(uint8_t raw_key, bool shift, bool alpha)
+KEY IKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
 {
 	return 0;
 }

@@ -312,3 +312,8 @@ const std::map<KEY, KEY> Chars::KEY_MAP_ALPHA = {
 	{ KEY_MAP.at("M+"), KEY_MAP.at("M") },
 	{ KEY_MAP.at("unknown"), KEY_MAP.at("unknown") },
 };
+
+bool Chars::in_key_set(KEY value, const KEY_SET& vector)
+{
+	return std::count(vector.begin(), vector.end(), value);
+}

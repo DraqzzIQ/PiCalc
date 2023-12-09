@@ -44,7 +44,7 @@ class Equation
 	/// add a Value to the equation at the current Cursor position
 	/// </summary>
 	/// <param name="keypress">Char to add</param>
-	void add_value(uint8_t keypress);
+	void add_value(KEY keypress);
 
 	/// <summary>
 	/// calculate the equation
@@ -81,19 +81,19 @@ class Equation
 	/// <summary>
 	/// all the operations that have to be between two values to be evaluated
 	/// </summary>
-	static const std::vector<uint8_t> _allowed_calculate_operations;
+	static const KEY_SET _allowed_calculate_operations;
 	/// <summary>
 	/// all Keys that end with an open rounded bracket
 	/// </summary>
-	static const std::vector<uint8_t> _single_bracket_open_keys;
+	static const KEY_SET _single_bracket_open_keys;
 	/// <summary>
 	/// when these values are in front of an exponent, no empty-value is added
 	/// </summary>
-	static const std::vector<uint8_t> _values_before_exponent;
+	static const KEY_SET _values_before_exponent;
 	/// <summary>
 	/// all symbols that need one or more children
 	/// </summary>
-	static const std::vector<uint8_t> _symbols;
+	static const KEY_SET _symbols;
 
 	/// <summary>
 	/// Node Used for the Calculation
@@ -116,7 +116,7 @@ class Equation
 	/// <summary>
 	/// root Node for the equation, children contains the equation
 	/// </summary>
-	std::vector<uint8_t> _equation;
+	KEY_SET _equation;
 	/// <summary>
 	/// the current Position of the Cursor in the raw equation. Cursor is always displayed between the element it points to and the previous element
 	/// </summary>
@@ -185,9 +185,5 @@ class Equation
 	/// add a new child with the given value and amount of children to the equation at the cursor position
 	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child
 	/// </summary>
-	void add_value_raw(uint8_t value, uint8_t child_cnt, bool add_value_to_first_child = false, std::vector<uint8_t> first_child = {});
-	/// <summary>
-	/// returns true, if value is in vector
-	/// </summary>
-	static bool in_vector(uint8_t value, const std::vector<uint8_t>& vector);
+	void add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_first_child = false, KEY_SET first_child = {});
 };

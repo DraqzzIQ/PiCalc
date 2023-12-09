@@ -60,7 +60,7 @@ KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event)
 	return keypress;
 }
 
-uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
+KEY SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 {
 	if (is_shift_active()) {
 		switch (_event->key.keysym.scancode) {
@@ -173,7 +173,7 @@ uint8_t SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 	}
 }
 
-uint8_t SDLKeyboard::scancode_to_key_raw(SDL_Event* _event)
+KEY SDLKeyboard::scancode_to_key_raw(SDL_Event* _event)
 {
 	switch (_event->key.keysym.scancode) {
 	case SDL_SCANCODE_RSHIFT: return Chars::KEY_MAP.at("SHIFT");

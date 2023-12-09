@@ -1,5 +1,6 @@
 #pragma once
 #include "datastructs/DynamicBitset.h"
+#include <constant/Chars.h>
 #include <cstdint>
 #include <map>
 #include <vector>
@@ -81,7 +82,7 @@ class Bitset2D
 	/// <summary>
 	/// put a string (vector of Keys) on the Bitset2D starting at coord_x, coord_y
 	/// </summary>
-	void put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<uint8_t, Bitset2D>& font, std::vector<uint8_t> text, bool resize_if_needed);
+	void put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, KEY_SET text, bool resize_if_needed);
 	/// <summary>
 	/// Overwrite the Bitset2D with other placed on the position coord_x, coord_y
 	/// </summary>
