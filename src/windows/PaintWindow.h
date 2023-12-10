@@ -15,10 +15,13 @@ class PaintWindow: public Window
 
 	private:
 	void draw(int x, int y, bool value);
+	void draw_line(int x1, int y1, int x2, int y2, bool value);
 	Bitset2D painted;
 	Bitset2D _rendered;
 	int _cursor[2] = {0, 0};
 	bool _pen_down = false;
 	int _brush_size = 1;
 	bool erase = false;
+    bool line = false;
+	int _line_start[2] = {0, 0};
 };
