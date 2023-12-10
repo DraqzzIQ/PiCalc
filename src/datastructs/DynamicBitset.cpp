@@ -111,8 +111,8 @@ DynamicBitset DynamicBitset::copy(uint32_t start, uint32_t width) const
 	if (start + width >= _bit_count) { throw std::out_of_range("DynamicBitset::copy"); }
 #endif
 	DynamicBitset res;
-	res._bit_count = width;
-	std::copy(_bits.begin() + start / 8, _bits.begin() + (start + width) / 8, res._bits.begin());
+	width += start;
+	for (; start < width; start++) res.push_back(at(start));
 	return res;
 }
 

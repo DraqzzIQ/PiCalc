@@ -7,7 +7,7 @@ ConsoleRenderer::ConsoleRenderer()
 	RECT r;
 	GetWindowRect(console, &r);
 
-	MoveWindow(console, r.left, r.top, 1600, 600, TRUE);
+	MoveWindow(console, r.left, r.top, 1600, 605, TRUE);
 
 	// Windows exe fix
 	DWORD consoleMode;

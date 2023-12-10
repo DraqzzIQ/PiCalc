@@ -14,13 +14,12 @@ CalculatorWindow::~CalculatorWindow() {}
 
 Bitset2D CalculatorWindow::update_window()
 {
-	if (_menu != Menu::None) {
-		return _menu_rendered;
-	}
+	if (_menu != Menu::None) return _menu_rendered;
+
 	switch (_mode) {
 	case Mode::COMP:
 		clear_window();
-		add_to_window(_equation_selected->get_rendered_equation(true), 0, 0);
+		add_to_window(_equation_selected->get_rendered_equation(), 0, 0);
 		if (calculated) add_to_window(result_rendered, SCREEN_WIDTH - result_rendered.width(), SCREEN_HEIGHT - result_rendered.height());
 		return window;
 	case Mode::STAT:
@@ -131,14 +130,14 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 		}
 		break;
 	case Menu::Error:
-		if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) {
+		if (keypress.key_calculator == 126) {
 			_menu = Menu::None;
 			calculated = false;
 			_equation_selected->ac();
-		} else if (keypress.key_calculator == Chars::KEY_MAP.at("right")) {
+		} else if (keypress.key_calculator == 170) {
 			_menu = Menu::None;
 			calculated = false;
-		} else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) {
+		} else if (keypress.key_calculator == 169) {
 			_menu = Menu::None;
 			calculated = false;
 		}
@@ -194,7 +193,7 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 		// TODO
 		break;
 	case Menu::Setup_Pg1:
-		if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) {
+		if (keypress.key_calculator == 126) {
 			set_menu(Menu::None);
 			calculated = false;
 		}
@@ -208,14 +207,17 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 		case 3:
 			_setup |= 1 << 2;
 			_setup &= ~(1 << 3);
+			_menu = Menu::None;
 			break;
 		case 4:
 			_setup &= ~(1 << 2);
 			_setup &= ~(1 << 3);
+			_menu = Menu::None;
 			break;
 		case 5:
 			_setup &= ~(1 << 2);
 			_setup |= 1 << 3;
+			_menu = Menu::None;
 			break;
 		case 6:
 			set_menu(Menu::Setup_Fix);
@@ -231,7 +233,7 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 		}
 		break;
 	case Menu::Setup_Pg2:
-		if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) {
+		if (keypress.key_calculator == 126) {
 			set_menu(Menu::None);
 			calculated = false;
 		}
