@@ -3,6 +3,7 @@
 #include "windows/CalculatorWindow.h"
 #include "windows/MenuWindow.h"
 #include "windows/SettingsWindow.h"
+#include "windows/PaintWindow.h"
 
 class MainMenuWindow: public MenuWindow
 {
