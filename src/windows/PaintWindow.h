@@ -1,6 +1,8 @@
 #pragma once
 #include "constant/Graphics.h"
 #include "windows/Window.h"
+#include "constant/Chars.h"
+#include "constant/Constants.h"
 #include <iostream>
 
 class PaintWindow: public Window
