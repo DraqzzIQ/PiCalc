@@ -14,8 +14,10 @@ class PaintWindow: public Window
 	void handle_key_down(KeyPress keypress);
 
 	private:
+	void brush(int x, int y);
 	Bitset2D painted;
 	Bitset2D _rendered;
 	int _cursor[2] = {0, 0};
 	bool _pen_down = false;
+	int _brush_size = 1;
 };
