@@ -377,3 +377,5 @@ CppProperties.json
 /cmake-build-debug/
 
 poetry.lock
+
+.idea
