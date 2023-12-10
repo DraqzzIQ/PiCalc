@@ -49,6 +49,7 @@
     <ClInclude Include="src\windows\TextWindow.h" />
     <ClInclude Include="src\windows\Window.h" />
     <ClInclude Include="src\windows\WindowManager.h" />
+    <ClInclude Include="src\windows\PaintWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
@@ -78,6 +79,7 @@
     <ClCompile Include="src\windows\TextWindow.cpp" />
     <ClCompile Include="src\windows\Window.cpp" />
     <ClCompile Include="src\windows\WindowManager.cpp" />
+    <ClCompile Include="src\windows\PaintWindow.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
