@@ -1,6 +1,5 @@
 #include "windows/PaintWindow.h"
 
-// TODO: eraser tool
 // TODO: line tool (hold shift to draw straight lines)
 // TODO: rectangle tool
 // TODO: circle tool
@@ -24,11 +23,11 @@ Bitset2D PaintWindow::update_window()
 	return _rendered;
 }
 
-void PaintWindow::brush(int x, int y)
+void PaintWindow::draw(int x, int y, bool value)
 {
     for (int i = 0; i < _brush_size; i++) {
         for (int j = 0; j < _brush_size; j++) {
-            painted.set_bit(x + i, y + j, true);
+            painted.set_bit(x + i, y + j, value);
         }
     }
 }
@@ -65,7 +64,10 @@ void PaintWindow::handle_key_down(KeyPress keypress)
         _brush_size--;
         if (_brush_size < 1) _brush_size = 1;
     }
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) {
+        erase = !erase;
+    }
 	if (_pen_down) {
-        brush(_cursor[0], _cursor[1]);
+        draw(_cursor[0], _cursor[1], !erase);
     }
 }
