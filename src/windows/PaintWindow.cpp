@@ -1,5 +1,13 @@
 #include "windows/PaintWindow.h"
 
+// TODO: brush size
+// TODO: eraser tool
+// TODO: line tool (hold shift to draw straight lines)
+// TODO: rectangle tool
+// TODO: save/load
+// TODO: brightness
+
+
 PaintWindow::PaintWindow()
 {
     painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
