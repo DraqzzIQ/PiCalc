@@ -1,8 +1,8 @@
 #pragma once
 #include "constant/Graphics.h"
 #include "windows/Window.h"
-#include "constant/Chars.h"
 #include "constant/Constants.h"
+#include "constant/Chars.h"
 #include <iostream>
 
 class PaintWindow: public Window
@@ -14,6 +14,7 @@ class PaintWindow: public Window
 	void handle_key_down(KeyPress keypress);
 
 	private:
+	Bitset2D painted;
 	Bitset2D _rendered;
 	int _cursor[2] = {0, 0};
 	bool _pen_down = false;
