@@ -379,3 +379,4 @@ CppProperties.json
 poetry.lock
 
 .idea
+.idea/*
