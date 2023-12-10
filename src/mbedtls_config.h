@@ -1,6 +1,7 @@
 /* Workaround for some mbedtls source files using INT_MAX without including limits.h */
 #include <limits.h>
 
+#undef MBEDTLS_HAVE_ASM
 #define MBEDTLS_NO_PLATFORM_ENTROPY
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
 

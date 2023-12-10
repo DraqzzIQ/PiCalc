@@ -29,6 +29,24 @@ class PicoHttpClient: public IHttpClient
         this->bearer_auth_token = token;
 
     };
+
+    static err_t recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p, err_t err){
+        return static_cast<PicoHttpClient*>(arg)->recieve(tpcb, p, err);
+    }
+
+    static err_t err_callback(void* arg, err_t err){
+        return static_cast<PicoHttpClient*>(arg)->client_error(err);
+    }
+
+    static err_t connected_callback(void* arg, struct tcp_pcb* tpcb, err_t err){
+        return static_cast<PicoHttpClient*>(arg)->connected_fn(tpcb, err);
+    }
+
+
+    static err_t dns_callback(const char* name, const ip_addr_t* addr, void* callback_arg){
+        return static_cast<PicoHttpClient*>(callback_arg)->dn_found(name, addr);
+    }
+
     ~PicoHttpClient();
 
 	private:
@@ -54,19 +72,21 @@ class PicoHttpClient: public IHttpClient
     ///<summary>
     ///altcp receive callback, look at the altcp doc for more info
     ///</summary>
-    altcp_recv_fn receive;
+    
+    err_t recieve(struct tcp_pcb* tpcb, struct pbuf* p, err_t err);
     ///<summary>
     ///altcp connected callback
     ///</summary>
-    altcp_connected_fn connected_fn;
+    err_t connected_fn(struct tcp_pcb* tpcb, err_t err);
     ///<summary>
     ///altcp dns callback
     ///</summary>
-    dns_found_callback dn_found;
+    
+    err_t dn_found(const char* name, const ip_addr_t* addr);
     ///<sumamry>
     ///altcp client error callback
     ///</sumamry>
-    altcp_err_fn client_error;
+    err_t client_error(err_t err);
     
     
     
