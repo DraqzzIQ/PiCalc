@@ -19,6 +19,7 @@ class PaintWindow: public Window
 	void draw_line(int x1, int y1, int x2, int y2, bool value, int size, Bitset2D& bitset);
 	void draw_rectangle(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
     void draw_ellipse(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
+	void fill(int x, int y, bool value, Bitset2D& bitset);
 	Bitset2D draw_preview(Bitset2D& _rendered);
 	Bitset2D painted;
 	Bitset2D _rendered;
