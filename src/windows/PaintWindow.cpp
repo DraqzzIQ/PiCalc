@@ -3,6 +3,7 @@
 // TODO: better preview (blinking cursor in the correct size; empty when eraser is selected, blinking line when line tool is selected)
 // TODO: rectangle tool
 // TODO: circle tool
+// TODO: fill tool
 // TODO: save/load
 // TODO: brightness
 
@@ -12,7 +13,7 @@ PaintWindow::PaintWindow()
     painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
 	_cursor[0] = SCREEN_WIDTH / 2;
 	_cursor[1] = SCREEN_HEIGHT / 2;
-	blink_timer = Utils::us_since_boot();
+	_blink_timer = Utils::us_since_boot();
 }
 
 PaintWindow::~PaintWindow() {}
@@ -24,23 +25,26 @@ Bitset2D PaintWindow::update_window()
 	return _rendered;
 }
 
-Bitset2D PaintWindow::draw_preview(Bitset2D& _rendered)  // TODO: fix this
+Bitset2D PaintWindow::draw_preview(Bitset2D& _rendered)
 {
-    if (Utils::us_since_boot() > blink_timer + 500000) {
-		blink_timer += 500000;
+    if (Utils::us_since_boot() > _blink_timer + 500000) {
+		_blink_timer += 500000;
 	    preview = !preview;
     }
     if (line) {
-        draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], preview, _rendered);
-    } else {
-        draw(_cursor[0], _cursor[1], preview, _rendered);
+        draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
+    } else if (erase) {
+        draw_rectangle(_cursor[0]-_brush_size/2, _cursor[1]-_brush_size/2, _cursor[0]+_brush_size/2, _cursor[1]+_brush_size/2, preview, 1, _rendered);
+    }
+	else {
+        draw(_cursor[0], _cursor[1], preview, _brush_size, _rendered);
     }
     return _rendered;
 }
 
-void PaintWindow::draw(int x, int y, bool value, Bitset2D& bitset)
+void PaintWindow::draw(int x, int y, bool value, int size, Bitset2D& bitset)
 {
-    int half_brush = _brush_size / 2;
+    int half_brush = size / 2;
     for (int i = -half_brush; i <= half_brush; i++) {
         for (int j = -half_brush; j <= half_brush; j++) {
             if (x + i >= 0 && x + i < SCREEN_WIDTH && y + j >= 0 && y + j < SCREEN_HEIGHT) {
@@ -50,7 +54,7 @@ void PaintWindow::draw(int x, int y, bool value, Bitset2D& bitset)
     }
 }
 
-void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value, Bitset2D& bitset)
+void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value, int size, Bitset2D& bitset)
 {
     int dx = abs(x2 - x1);
     int dy = abs(y2 - y1);
@@ -60,7 +64,7 @@ void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value, Bitset2D
     int e2;
 
     while (true) {
-        draw(x1, y1, value, bitset);
+        draw(x1, y1, value, size, bitset);
         if (x1 == x2 && y1 == y2) break;
         e2 = 2 * err;
         if (e2 > -dy) {
@@ -72,6 +76,14 @@ void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value, Bitset2D
             y1 += sy;
         }
     }
+}
+
+void PaintWindow::draw_rectangle(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset)
+{
+    draw_line(x0, y0, x1, y0, value, size, bitset); // Top edge
+    draw_line(x0, y1, x1, y1, value, size, bitset); // Bottom edge
+    draw_line(x0, y0, x0, y1, value, size, bitset); // Left edge
+    draw_line(x1, y0, x1, y1, value, size, bitset); // Right edge
 }
 
 void PaintWindow::handle_key_down(KeyPress keypress)
@@ -114,11 +126,11 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 			_line_start[0] = _cursor[0];
             _line_start[1] = _cursor[1];
         } else {
-            draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], true, painted);
+            draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
         }
 	    line = !line;
     }
 	if (_pen_down && !line) {
-        draw(_cursor[0], _cursor[1], !erase, painted);
+        draw(_cursor[0], _cursor[1], !erase, _brush_size, painted);
     }
 }
