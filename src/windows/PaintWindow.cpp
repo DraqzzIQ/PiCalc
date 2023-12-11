@@ -183,8 +183,7 @@ void PaintWindow::handle_key_down(KeyPress keypress)
         }
         circle = !circle;
     }
-    else
-	if (_pen_down && !line) {
+	if (_pen_down && !line && !rectangle && !circle) {
         draw(_cursor[0], _cursor[1], !erase, _brush_size, painted);
     }
 }
