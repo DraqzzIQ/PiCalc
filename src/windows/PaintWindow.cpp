@@ -1,6 +1,5 @@
 #include "windows/PaintWindow.h"
 
-// TODO: insead of bool for each tool, use enum
 // TODO: add round brush
 // TODO: undo/redo
 // TODO: save/load
@@ -30,15 +29,15 @@ Bitset2D PaintWindow::draw_preview(Bitset2D& _rendered)
 		_blink_timer += 500000;
 	    preview = !preview;
     }
-    if (line) {
-        draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
+    if (_tool == Tool::LINE) {
+        draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
+    } else if (_tool == Tool::RECTANGLE) {
+        draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
+    } else if (_tool == Tool::CIRCLE) {
+        draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
     } else if (erase) {
         draw_rectangle(_cursor[0]-_brush_size/2, _cursor[1]-_brush_size/2, _cursor[0]+_brush_size/2, _cursor[1]+_brush_size/2, preview, 1, _rendered);
-    } else if (rectangle) {
-        draw_rectangle(_rectangle_start[0], _rectangle_start[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
-    } else if (circle) {
-        draw_ellipse(_circle_start[0], _circle_start[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
-    }
+	}
 	else {
         draw(_cursor[0], _cursor[1], preview, _brush_size, _rendered);
     }
@@ -170,42 +169,39 @@ void PaintWindow::handle_key_down(KeyPress keypress)
         erase = !erase;
     }
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("1")) {
-        if (!line) {
-			_line_start[0] = _cursor[0];
-            _line_start[1] = _cursor[1];
-			rectangle = false;
-			circle = false;
+        if (_tool == Tool::NONE) {
+			_start_pos[0] = _cursor[0];
+            _start_pos[1] = _cursor[1];
+			_tool = Tool::LINE;
         } else {
-            draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
+            draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
+			_tool = Tool::NONE;
         }
-	    line = !line;
     }
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("2")) {
-		if (!rectangle) {
-			_rectangle_start[0] = _cursor[0];
-            _rectangle_start[1] = _cursor[1];
-			line = false;
-			circle = false;
+		if (_tool == Tool::NONE) {
+			_start_pos[0] = _cursor[0];
+            _start_pos[1] = _cursor[1];
+			_tool = Tool::RECTANGLE;
         } else {
-            draw_rectangle(_rectangle_start[0], _rectangle_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
+            draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
+			_tool = Tool::NONE;
         }
-        rectangle = !rectangle;
 	}
 	else if (keypress.key_calculator == Chars::KEY_MAP.at("3")) {
-        if (!circle) {
-            _circle_start[0] = _cursor[0];
-            _circle_start[1] = _cursor[1];
-			rectangle = false;
-			line = false;
+        if (_tool == Tool::NONE) {
+            _start_pos[0] = _cursor[0];
+            _start_pos[1] = _cursor[1];
+			_tool = Tool::CIRCLE;
         } else {
-            draw_ellipse(_circle_start[0], _circle_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
+            draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
+			_tool = Tool::NONE;
         }
-        circle = !circle;
     }
     else if (keypress.key_calculator == Chars::KEY_MAP.at("4")) {
         fill(_cursor[0], _cursor[1], !erase, painted);
     }
-	if (_pen_down && !line && !rectangle && !circle) {
+	if (_pen_down && _tool == Tool::NONE) {
         draw(_cursor[0], _cursor[1], !erase, _brush_size, painted);
     }
 }
