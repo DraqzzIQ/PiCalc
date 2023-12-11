@@ -1,7 +1,5 @@
 #include "windows/PaintWindow.h"
 
-// TODO: better preview (blinking cursor in the correct size; empty when eraser is selected, blinking line when line tool is selected)
-// TODO: rectangle tool
 // TODO: circle tool
 // TODO: fill tool
 // TODO: save/load
@@ -35,6 +33,8 @@ Bitset2D PaintWindow::draw_preview(Bitset2D& _rendered)
         draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
     } else if (erase) {
         draw_rectangle(_cursor[0]-_brush_size/2, _cursor[1]-_brush_size/2, _cursor[0]+_brush_size/2, _cursor[1]+_brush_size/2, preview, 1, _rendered);
+    } else if (rectangle) {
+        draw_rectangle(_rectangle_start[0], _rectangle_start[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
     }
 	else {
         draw(_cursor[0], _cursor[1], preview, _brush_size, _rendered);
@@ -130,6 +130,15 @@ void PaintWindow::handle_key_down(KeyPress keypress)
         }
 	    line = !line;
     }
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("2")) {
+		if (!rectangle) {
+			_rectangle_start[0] = _cursor[0];
+            _rectangle_start[1] = _cursor[1];
+        } else {
+            draw_rectangle(_rectangle_start[0], _rectangle_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
+        }
+        rectangle = !rectangle;
+	}
 	if (_pen_down && !line) {
         draw(_cursor[0], _cursor[1], !erase, _brush_size, painted);
     }
