@@ -1,6 +1,5 @@
 #include "windows/PaintWindow.h"
 
-// TODO: circle tool
 // TODO: fill tool
 // TODO: save/load
 // TODO: brightness
@@ -35,6 +34,8 @@ Bitset2D PaintWindow::draw_preview(Bitset2D& _rendered)
         draw_rectangle(_cursor[0]-_brush_size/2, _cursor[1]-_brush_size/2, _cursor[0]+_brush_size/2, _cursor[1]+_brush_size/2, preview, 1, _rendered);
     } else if (rectangle) {
         draw_rectangle(_rectangle_start[0], _rectangle_start[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
+    } else if (circle) {
+        draw_ellipse(_circle_start[0], _circle_start[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
     }
 	else {
         draw(_cursor[0], _cursor[1], preview, _brush_size, _rendered);
@@ -84,6 +85,40 @@ void PaintWindow::draw_rectangle(int x0, int y0, int x1, int y1, bool value, int
     draw_line(x0, y1, x1, y1, value, size, bitset); // Bottom edge
     draw_line(x0, y0, x0, y1, value, size, bitset); // Left edge
     draw_line(x1, y0, x1, y1, value, size, bitset); // Right edge
+}
+
+void PaintWindow::draw_ellipse(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset)
+{
+    int a = abs(x1 - x0);
+    int b = abs(y1 - y0);
+    int b1 = b & 1;
+    long dx = 4 * (1 - a) * b * b;
+    long dy = 4 * (b1 + 1) * a * a;
+    long err = dx + dy + b1 * a * a;
+
+    if (x0 > x1) { x0 = x1; x1 += a; }
+    if (y0 > y1) y0 = y1;
+    y0 += (b + 1) / 2;
+    y1 = y0 - b1;
+    a *= 8 * a;
+    b1 = 8 * b * b;
+
+    do {
+        draw(x1, y0, value, size, bitset);
+        draw(x0, y0, value, size, bitset);
+        draw(x0, y1, value, size, bitset);
+        draw(x1, y1, value, size, bitset);
+        int e2 = 2 * err;
+        if (e2 <= dy) { y0++; y1--; err += dy += a; }
+        if (e2 >= dx || 2 * err > dy) { x0++; x1--; err += dx += b1; }
+    } while (x0 <= x1);
+
+    while (y0 - y1 <= b) {
+        draw(x0 - 1, y0, value, size, bitset);
+        draw(x1 + 1, y0++, value, size, bitset);
+        draw(x0 - 1, y1, value, size, bitset);
+        draw(x1 + 1, y1--, value, size, bitset);
+    }
 }
 
 void PaintWindow::handle_key_down(KeyPress keypress)
@@ -139,6 +174,16 @@ void PaintWindow::handle_key_down(KeyPress keypress)
         }
         rectangle = !rectangle;
 	}
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("3")) {
+        if (!circle) {
+            _circle_start[0] = _cursor[0];
+            _circle_start[1] = _cursor[1];
+        } else {
+            draw_ellipse(_circle_start[0], _circle_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
+        }
+        circle = !circle;
+    }
+    else
 	if (_pen_down && !line) {
         draw(_cursor[0], _cursor[1], !erase, _brush_size, painted);
     }
