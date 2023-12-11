@@ -1,6 +1,5 @@
 #include "windows/PaintWindow.h"
 
-// TODO: line tool (hold shift to draw straight lines)
 // TODO: better preview (blinking cursor in the correct size; empty when eraser is selected, blinking line when line tool is selected)
 // TODO: rectangle tool
 // TODO: circle tool
@@ -13,6 +12,7 @@ PaintWindow::PaintWindow()
     painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
 	_cursor[0] = SCREEN_WIDTH / 2;
 	_cursor[1] = SCREEN_HEIGHT / 2;
+	blink_timer = Utils::us_since_boot();
 }
 
 PaintWindow::~PaintWindow() {}
@@ -20,20 +20,37 @@ PaintWindow::~PaintWindow() {}
 Bitset2D PaintWindow::update_window()
 {
 	Bitset2D _rendered = painted;
-	_rendered.set_bit(_cursor[0], _cursor[1], true);
+	_rendered = draw_preview(_rendered);
 	return _rendered;
 }
 
-void PaintWindow::draw(int x, int y, bool value)
+Bitset2D PaintWindow::draw_preview(Bitset2D& _rendered)  // TODO: fix this
 {
-    for (int i = 0; i < _brush_size; i++) {
-        for (int j = 0; j < _brush_size; j++) {
-            painted.set_bit(x + i, y + j, value);
+    if (Utils::us_since_boot() > blink_timer + 500000) {
+		blink_timer += 500000;
+	    preview = !preview;
+    }
+    if (line) {
+        draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], preview, _rendered);
+    } else {
+        draw(_cursor[0], _cursor[1], preview, _rendered);
+    }
+    return _rendered;
+}
+
+void PaintWindow::draw(int x, int y, bool value, Bitset2D& bitset)
+{
+    int half_brush = _brush_size / 2;
+    for (int i = -half_brush; i <= half_brush; i++) {
+        for (int j = -half_brush; j <= half_brush; j++) {
+            if (x + i >= 0 && x + i < SCREEN_WIDTH && y + j >= 0 && y + j < SCREEN_HEIGHT) {
+                bitset.set_bit(x + i, y + j, value);
+            }
         }
     }
 }
 
-void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value)
+void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value, Bitset2D& bitset)
 {
     int dx = abs(x2 - x1);
     int dy = abs(y2 - y1);
@@ -43,7 +60,7 @@ void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value)
     int e2;
 
     while (true) {
-        draw(x1, y1, value);
+        draw(x1, y1, value, bitset);
         if (x1 == x2 && y1 == y2) break;
         e2 = 2 * err;
         if (e2 > -dy) {
@@ -97,11 +114,11 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 			_line_start[0] = _cursor[0];
             _line_start[1] = _cursor[1];
         } else {
-            draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], true);
+            draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], true, painted);
         }
 	    line = !line;
     }
 	if (_pen_down && !line) {
-        draw(_cursor[0], _cursor[1], !erase);
+        draw(_cursor[0], _cursor[1], !erase, painted);
     }
 }
