@@ -15,6 +15,13 @@ class PaintWindow: public Window
 	void handle_key_down(KeyPress keypress);
 
 	private:
+	enum class Tool {
+    	LINE,
+    	RECTANGLE,
+    	CIRCLE,
+    	NONE
+	};
+
 	void draw(int x, int y, bool value, int size, Bitset2D& bitset);
 	void draw_line(int x1, int y1, int x2, int y2, bool value, int size, Bitset2D& bitset);
 	void draw_rectangle(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
@@ -27,12 +34,8 @@ class PaintWindow: public Window
 	bool _pen_down = false;
 	int _brush_size = 1;
 	bool erase = false;
-    bool line = false;
-	bool rectangle = false;
-	bool circle = false;
-	int _line_start[2] = {0, 0};
-	int _rectangle_start[2] = {0, 0};
-	int _circle_start[2] = {0, 0};
+	int _start_pos[2] = {0, 0};
 	int _blink_timer = 0;
 	bool preview = true;
+	Tool _tool = Tool::NONE;
 };
