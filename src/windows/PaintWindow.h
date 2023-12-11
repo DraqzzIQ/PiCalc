@@ -26,7 +26,9 @@ class PaintWindow: public Window
 	int _brush_size = 1;
 	bool erase = false;
     bool line = false;
+	bool rectangle = false;
 	int _line_start[2] = {0, 0};
+	int _rectangle_start[2] = {0, 0};
 	int _blink_timer = 0;
 	bool preview = true;
 };
