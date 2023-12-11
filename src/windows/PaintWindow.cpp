@@ -1,6 +1,7 @@
 #include "windows/PaintWindow.h"
 
-// TODO: fill tool
+// TODO: insead of bool for each tool, use enum
+// TODO: undo/redo
 // TODO: save/load
 // TODO: brightness
 
@@ -121,6 +122,17 @@ void PaintWindow::draw_ellipse(int x0, int y0, int x1, int y1, bool value, int s
     }
 }
 
+void PaintWindow::fill(int x, int y, bool value, Bitset2D& bitset)
+{
+    if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT) return;
+    if (bitset.get_bit(x, y) == value) return;
+    bitset.set_bit(x, y, value);
+    fill(x + 1, y, value, bitset);
+    fill(x - 1, y, value, bitset);
+    fill(x, y + 1, value, bitset);
+    fill(x, y - 1, value, bitset);
+}
+
 void PaintWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_calculator == Chars::KEY_MAP.at("up")) {
@@ -160,6 +172,8 @@ void PaintWindow::handle_key_down(KeyPress keypress)
         if (!line) {
 			_line_start[0] = _cursor[0];
             _line_start[1] = _cursor[1];
+			rectangle = false;
+			circle = false;
         } else {
             draw_line(_line_start[0], _line_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
         }
@@ -169,6 +183,8 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 		if (!rectangle) {
 			_rectangle_start[0] = _cursor[0];
             _rectangle_start[1] = _cursor[1];
+			line = false;
+			circle = false;
         } else {
             draw_rectangle(_rectangle_start[0], _rectangle_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
         }
@@ -178,10 +194,15 @@ void PaintWindow::handle_key_down(KeyPress keypress)
         if (!circle) {
             _circle_start[0] = _cursor[0];
             _circle_start[1] = _cursor[1];
+			rectangle = false;
+			line = false;
         } else {
             draw_ellipse(_circle_start[0], _circle_start[1], _cursor[0], _cursor[1], true, _brush_size, painted);
         }
         circle = !circle;
+    }
+    else if (keypress.key_calculator == Chars::KEY_MAP.at("4")) {
+        fill(_cursor[0], _cursor[1], !erase, painted);
     }
 	if (_pen_down && !line && !rectangle && !circle) {
         draw(_cursor[0], _cursor[1], !erase, _brush_size, painted);
