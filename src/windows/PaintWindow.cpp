@@ -1,6 +1,7 @@
 #include "windows/PaintWindow.h"
 
 // TODO: insead of bool for each tool, use enum
+// TODO: add round brush
 // TODO: undo/redo
 // TODO: save/load
 // TODO: brightness
