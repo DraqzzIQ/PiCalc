@@ -5,6 +5,7 @@
 #include "constant/Chars.h"
 #include "utils/Utils.h"
 #include <iostream>
+#include <stack>
 
 class PaintWindow: public Window
 {
@@ -38,4 +39,7 @@ class PaintWindow: public Window
 	int _blink_timer = 0;
 	bool preview = true;
 	Tool _tool = Tool::NONE;
+	Bitset2D history[20];
+	int current_history_index = 0;
+	std::stack<Bitset2D> redo_stack;
 };
