@@ -1,7 +1,6 @@
 #include "windows/PaintWindow.h"
 
 // TODO: add round brush
-// TODO: undo/redo
 // TODO: save/load
 // TODO: brightness
 
@@ -201,7 +200,45 @@ void PaintWindow::handle_key_down(KeyPress keypress)
     else if (keypress.key_calculator == Chars::KEY_MAP.at("4")) {
         fill(_cursor[0], _cursor[1], !erase, painted);
     }
+
+
 	if (_pen_down && _tool == Tool::NONE) {
         draw(_cursor[0], _cursor[1], !erase, _brush_size, painted);
     }
+
+
+	if (keypress.key_calculator == Chars::KEY_MAP.at("4") ||
+        keypress.key_calculator == Chars::KEY_MAP.at("3") ||
+        keypress.key_calculator == Chars::KEY_MAP.at("2") ||
+        keypress.key_calculator == Chars::KEY_MAP.at("1") ||
+        keypress.key_calculator == Chars::KEY_MAP.at("DEL") ||
+        keypress.key_calculator == Chars::KEY_MAP.at("AC") ||
+        keypress.key_calculator == Chars::KEY_MAP.at("=")) {
+		if (current_history_index < 1 || painted != history[current_history_index - 1]) {
+            if (current_history_index < 20) {
+                history[current_history_index++] = painted;
+		    	std::stack<Bitset2D>().swap(redo_stack);
+            }  else {
+                for (int i = 0; i < 18; i++) {
+                    history[i] = history[i + 1];
+                }
+                history[19] = painted;
+		    	std::stack<Bitset2D>().swap(redo_stack);
+            }
+		}
+    }
+	else if (keypress.key_calculator == Chars::KEY_MAP.at("multiply")) { // Undo operation
+        if (current_history_index > 1) {
+            redo_stack.push(history[--current_history_index]);
+            painted = history[current_history_index - 1];
+        }
+    }
+    else if (keypress.key_calculator == Chars::KEY_MAP.at("divide")) { // Redo operation
+        if (!redo_stack.empty()) {
+            history[current_history_index++] = redo_stack.top();
+            painted = redo_stack.top();
+            redo_stack.pop();
+        }
+    }
+
 }
