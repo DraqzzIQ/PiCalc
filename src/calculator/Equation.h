@@ -33,6 +33,10 @@ class Equation
 	/// </summary>
 	/// <param name="complete">if true returns the whole equation, otherwise a bitset of the size set by set_frame_size(), containing the part of the equation that the cursor is in</param>
 	Bitset2D get_rendered_equation(bool complete = false);
+	/// <summary>
+	/// returns the equation formatted as a readable string, for example to be put into Wolfram Alpha
+	/// </summary>
+	std::string to_string() const;
 
 	/// <summary>
 	/// delete the character before the Cursor
@@ -73,14 +77,7 @@ class Equation
 	/// calculate the equation
 	/// </summary>
 	/// <returns>result</returns>
-	// Number calculate_equation(const std::vector<double> variables);
-	/// <summary>
-	/// calculates the result of a equation, made for recursion
-	/// </summary>
-	/// <param name="equation">the equation to be calculated</param>
-	/// <param name="error">set to an error type if any occur, else Fine</param>
-	/// <returns>Result</returns>
-	// Number to_number(std::vector<EquationNode*>& equation, std::vector<uint32_t> calculate_index, uint32_t& i, bool stop_on_closed_bracket = false);
+	Number to_number();
 
 	private:
 	/// <summary>
@@ -166,15 +163,45 @@ class Equation
 	/// </summary>
 	uint32_t _frame_height = SCREEN_HEIGHT;
 
+	/// <summary>
+	/// exponent of the decimal currently being converted
+	/// </summary>
+	int16_t _number_exp;
+	/// <summary>
+	/// value of the decimal currently being converted
+	/// </summary>
+	int64_t _number_val;
+	/// <summary>
+	/// right to left:
+	/// 0-4: number of periodic digits
+	/// 5: periodic active
+	/// 6: comma placed
+	/// 7: exp placed
+	/// </summary>
+	uint8_t _number_state = 0;
+	/// <summary>
+	/// right to left:
+	/// 0-5: number of symbols placed
+	/// 6: digits placed before comma?
+	/// 7: digits placed after exp?
+	/// </summary>
+	uint8_t _value_cnt = 0;
+	/// <summary>
+	/// index of the equation currently converted to a number
+	/// </summary>
+	uint32_t _calculate_index;
+	/// <summary>
+	/// pointer to the list of variables used in the equation
+	/// </summary>
 	std::vector<Number>* _variables = nullptr;
 	/// <summary>
 	/// Node Used for the Calculation
 	/// </summary>
-	// struct CalculateNode {
-	//	Number value = Number();
-	//	uint8_t operation = 95;
-	//	int32_t equation_index = -1;
-	// };
+	struct CalculateNode {
+		Number value = Number();
+		uint8_t operation = 95;
+		int32_t equation_index = -1;
+	};
 
 	/// <summary>
 	/// render the equation
@@ -197,7 +224,7 @@ class Equation
 	/// </summary>
 	void extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, const Bitset2D& bitset_new, int32_t y_origin_new);
 	/// <summary>
-	/// returns the equation as a simple string, showing the cursor position and all values of the equation unformatted
+	/// returns the equation as a simple string, showing the cursor position and all values of the equation as numbers (KEYs)
 	/// </summary>
 	std::string to_string_simple() const;
 
@@ -206,4 +233,12 @@ class Equation
 	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child
 	/// </summary>
 	void add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_first_child = false, KEY_SET first_child = {});
+
+	/// <summary>
+	/// converts a part of the equation to a number, starting at _calculate_index, stopping at a closed bracket, a next value char or an end symbol char, uses _calculate_index as counter
+	/// </summary>
+	Number to_number_part(KEY expected_ending);
+	void clear_number();
+	bool add_digit(const KEY digit);
+	Number get_number();
 };

@@ -292,6 +292,7 @@ const std::map<KEY, KEY> Chars::KEY_MAP_SHIFT = {
 	{ KEY_MAP.at("unknown"), KEY_MAP.at("unknown") },
 };
 
+
 const std::map<KEY, KEY> Chars::KEY_MAP_ALPHA = {
 	{ KEY_MAP.at("(-)"), KEY_MAP.at("A") },
 	{ KEY_MAP.at("x^3"), KEY_MAP.at(":") },

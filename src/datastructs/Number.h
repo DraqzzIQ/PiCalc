@@ -13,7 +13,7 @@ class Number
 {
 	public:
 	Number();
-	Number(const double value, const uint16_t exp);
+	Number(const int64_t value, const int16_t exp);
 	Number(const Number& other);
 	~Number();
 
@@ -89,8 +89,6 @@ class Number
 	static Number ran_int(const Number& first, const Number& second);
 
 	double get_value() const;
-	bool add_digit(const KEY digit);
-	uint16_t finalize();
 	Bitset2D render() const;
 
 	private:
@@ -98,7 +96,7 @@ class Number
 	/// tries to simplyfy the Number as much as possible (e.g. reduce fraction)
 	/// </summary>
 	/// <returns>true if any simlification was made</returns>
-	bool _simplyfy();
+	bool _simplify();
 
 	struct NumberNode {
 		double value;
@@ -121,8 +119,4 @@ class Number
 	};
 	NumberNode* _root;
 	double _rounded;
-
-	uint8_t _state = 0;
-	uint16_t _periodic = 0;
-	uint16_t _value_cnt = 0;
 };

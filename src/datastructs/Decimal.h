@@ -1,5 +1,3 @@
-#if false
-
 #pragma once
 #include "constant/Error.h"
 #include <cmath>
@@ -103,7 +101,5 @@ class Decimal
 		1000000000000000000,
 	};
 	int64_t _value;
-	int16_t _exp;
+	int16_t _number_exp;
 };
-
-#endif
