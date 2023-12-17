@@ -5,20 +5,15 @@ Number::Number()
 	_root = nullptr;
 }
 
-
-Number::Number(const double value, const uint16_t exp)
+Number::Number(const int64_t value, const int16_t exp)
 {
 	_root = new NumberNode();
-	_root->value = value;
+	_root->value = value * std::pow(10, exp);
 }
 
 Number::Number(const Number& other)
 {
 	_root = other._root->clone();
-
-	_state = other._state;
-	_periodic = other._periodic;
-	_value_cnt = other._value_cnt;
 }
 
 Number::~Number()
@@ -26,125 +21,60 @@ Number::~Number()
 	delete _root;
 }
 
-Number Number::operator+(const Number& other)
+Number& Number::operator+=(Number& other)
 {
-	Number result;
-
-	result._root->value = _root->value + other._root->value;
-	if (other._root->operation != 95 || _root->operation != 95) {
-		result._root->first = _root->clone();
-		result._root->second = other._root->clone();
+	if (_root->operation == 95 && other._root->operation == 95) {
+		_root->value += other._root->value;
+	} else if (_root->operation == 69 && other._root->operation == 69) {
+		std::copy(other._root->children.begin(), other._root->children.end(), _root->children.end());
+	} else if (_root->operation == 69) {
+		_root->children.push_back(other._root);
+	} else if (other._root->operation == 69) {
+		other._root->children.push_back(_root);
+		_root = other._root;
+	} else {
+		_root = new NumberNode{ 0, 69, std::vector<NumberNode*>{ _root, other._root } };
 	}
-	if (!_simplify()) {
-		result._root->value = _root->value + other._root->value;
+	return *this;
+}
+
+Number& Number::operator-=(Number& other)
+{
+	other.negate();
+	*this += other;
+	return *this;
+}
+
+Number& Number::operator*=(Number& other)
+{
+	if (_root->operation == 95 && other._root->operation == 95) {
+		_root->value *= other._root->value;
+	} else if (_root->operation == 71 && other._root->operation == 71) {
+		std::copy(other._root->children.begin(), other._root->children.end(), _root->children.end());
+	} else if (_root->operation == 71) {
+		_root->children.push_back(other._root);
+	} else if (other._root->operation == 71) {
+		other._root->children.push_back(_root);
+		_root = other._root;
+	} else {
+		_root = new NumberNode{ 0, 71, std::vector<NumberNode*>{ _root, other._root } };
 	}
-
-	return result;
-}
-
-Number Number::operator-(const Number& other)
-{
-	Number result = Number(_rounded - other._rounded);
-	return result;
-}
-
-Number Number::operator*(const Number& other)
-{
-	Number result = Number(_rounded * other._rounded);
-	return result;
-}
-
-Number Number::operator/(const Number& other)
-{
-	Number result = Number(_rounded / other._rounded);
-	return result;
-}
-
-Number Number::operator%(const Number& other)
-{
-	Number result = Number(std::fmod(_rounded, other._rounded));
-	return result;
-}
-
-Number Number::operator^(const Number& other)
-{
-	Number result = Number(std::pow(_rounded, other._rounded));
-	return result;
-}
-
-Number Number::operator+(const double& other)
-{
-	Number result = Number(_rounded + other);
-	return result;
-}
-
-Number Number::operator-(const double& other)
-{
-	Number result = Number(_rounded - other);
-	return result;
-}
-
-Number Number::operator*(const double& other)
-{
-	Number result = Number(_rounded * other);
-	return result;
-}
-
-Number Number::operator/(const double& other)
-{
-	Number result = Number(_rounded / other);
-	return result;
-}
-
-Number Number::operator%(const double& other)
-{
-	Number result = Number(std::fmod(_rounded, other));
-	return result;
-}
-
-Number Number::operator^(const double& other)
-{
-	Number result = Number(std::pow(_rounded, other));
-	return result;
-}
-
-Number Number::operator-()
-{
-	Number result = Number(-_rounded);
-	return result;
-}
-
-Number& Number::operator+=(const Number& other)
-{
-	_rounded += other._rounded;
 	return *this;
 }
 
-Number& Number::operator-=(const Number& other)
-{
-	_rounded -= other._rounded;
-	return *this;
-}
-
-Number& Number::operator*=(const Number& other)
-{
-	_rounded *= other._rounded;
-	return *this;
-}
-
-Number& Number::operator/=(const Number& other)
+Number& Number::operator/=(Number& other)
 {
 	_rounded /= other._rounded;
 	return *this;
 }
 
-Number& Number::operator%=(const Number& other)
+Number& Number::operator%=(Number& other)
 {
 	_rounded = std::fmod(_rounded, other._rounded);
 	return *this;
 }
 
-Number& Number::operator^=(const Number& other)
+Number& Number::operator^=(Number& other)
 {
 	_rounded = std::pow(_rounded, other._rounded);
 	return *this;
@@ -152,52 +82,7 @@ Number& Number::operator^=(const Number& other)
 
 Number& Number::operator=(const Number& other)
 {
-	_rounded_str = other._rounded_str;
-	_rounded = other._rounded;
-	_state = other._state;
 	_root = other._root->clone();
-	return *this;
-}
-
-Number& Number::operator+=(const double& other)
-{
-	_rounded += other;
-	return *this;
-}
-
-Number& Number::operator-=(const double& other)
-{
-	_rounded -= other;
-	return *this;
-}
-
-Number& Number::operator*=(const double& other)
-{
-	_rounded *= other;
-	return *this;
-}
-
-Number& Number::operator/=(const double& other)
-{
-	_rounded /= other;
-	return *this;
-}
-
-Number& Number::operator%=(const double& other)
-{
-	_rounded = std::fmod(_rounded, other);
-	return *this;
-}
-
-Number& Number::operator^=(const double& other)
-{
-	_rounded = std::pow(_rounded, other);
-	return *this;
-}
-
-Number& Number::operator=(const double& other)
-{
-	_rounded = other;
 	return *this;
 }
 
@@ -206,14 +91,6 @@ Number& Number::log()
 	_rounded = std::log10(_rounded);
 	return *this;
 }
-
-
-Number& Number::log(const double& other)
-{
-	_rounded = std::log10(_rounded) / std::log10(other);
-	return *this;
-}
-
 
 Number& Number::log(const Number& other)
 {
@@ -226,6 +103,7 @@ Number& Number::ln()
 	_rounded = std::log(_rounded);
 	return *this;
 }
+
 
 Number& Number::sin()
 {
@@ -401,18 +279,17 @@ Number Number::ran_int(const Number& first, const Number& second)
 	return Number();
 }
 
-double Number::get_value() const
+double Number::simplify()
+{
+	return false;
+}
+
+double Number::to_value() const
 {
 	return _rounded;
 }
 
-Bitset2D Number::render() const
+std::vector<KEY_SET> Number::to_key_set() const
 {
-	return Graphics::create_text(std::to_string(_root));
-}
-
-bool Number::_simplify()
-{
-	// TODO
-	return false;
+	return std::vector<KEY_SET>();
 }

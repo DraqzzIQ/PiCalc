@@ -67,12 +67,12 @@ Bitset2D& Bitset2D::operator=(const Bitset2D& other)
 	return *this;
 }
 
-Bitset2D Bitset2D::operator+(const Bitset2D& other)
-{
-	Bitset2D res(*this);
-	res.extend_right(other);
-	return res;
-}
+// Bitset2D Bitset2D::operator+(const Bitset2D& other)
+// {
+//	Bitset2D res(*this);
+//	res.extend_right(other);
+//	return res;
+// }
 
 
 const DynamicBitset& Bitset2D::at(uint32_t index) const

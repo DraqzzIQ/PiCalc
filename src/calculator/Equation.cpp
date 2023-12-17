@@ -12,6 +12,13 @@ Equation::Equation()
 	render_equation();
 }
 
+Equation::Equation(KEY_SET& equation)
+{
+	_equation = equation;
+	_cursor_index = 0;
+	render_equation();
+}
+
 Equation::~Equation()
 {
 }
@@ -533,17 +540,17 @@ Number Equation::to_number_part(KEY expected_ending)
 				case 106: calculation.push_back(CalculateNode(to_number_part(238).abs(), 95, _calculate_index)); break;
 				case 109: calculation.push_back(CalculateNode(to_number_part(238).log(to_number_part(237)), 95, _calculate_index)); break;
 				case 110: calculation.push_back(CalculateNode(to_number_part(237) / to_number_part(238), 95, _calculate_index)); break;                         //!
-				case 111: calculation.push_back(CalculateNode(to_number_part(238).root(Number(2, 1)), 95, _calculate_index)); break;
+				case 111: calculation.push_back(CalculateNode(to_number_part(238).root(Number(2, 0)), 95, _calculate_index)); break;
 				case 131: calculation.push_back(CalculateNode(to_number_part(237) + (to_number_part(237) / to_number_part(238)), 95, _calculate_index)); break; //!
 				case 134: calculation.push_back(CalculateNode(to_number_part(238).root(to_number_part(237)), 95, _calculate_index)); break;
-				case 135: calculation.push_back(CalculateNode(Number(10, 1).pow(to_number_part(238)), 95, _calculate_index)); break;
+				case 135: calculation.push_back(CalculateNode(Number(1, 1).pow(to_number_part(238)), 95, _calculate_index)); break;
 				case 136: calculation.push_back(CalculateNode(Number(2718281828459045235, -18).pow(to_number_part(238)), 95, _calculate_index)); break;
 				default:
 					if (calculation.size() == 0 || calculation.back().operation != 95) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 					switch (value) {
 					case 113: calculation.back().value.pow(to_number_part(238)); break;
 					case 85: calculation.back().value.factorial(); break;
-					case 98: calculation.back().value /= 100; break;
+					case 98: calculation.back().value /= Number(1, 2); break;
 					}
 				}
 			} else if (Chars::in_key_set(value, _single_bracket_open_keys)) {
@@ -612,7 +619,7 @@ Number Equation::to_number_part(KEY expected_ending)
 				}
 			}
 		} else {
-			if (negative) calculation.at(i).value *= -1;
+			if (negative) calculation.at(i).value.negate();
 			negative = false;
 			operation = false;
 		}

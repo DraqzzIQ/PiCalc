@@ -20,6 +20,10 @@ class Equation
 	/// </summary>
 	Equation();
 	/// <summary>
+	/// create a new Equation from a KEY_SET
+	/// </summary>
+	Equation(KEY_SET& equation);
+	/// <summary>
 	/// delete the Equation and clear allocated Memory
 	/// </summary>
 	~Equation();
