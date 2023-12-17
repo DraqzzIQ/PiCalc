@@ -1,5 +1,6 @@
 #include "windows/PaintWindow.h"
 
+// TODO: make paint window scrollable
 // TODO: add round brush
 // TODO: save/load
 // TODO: brightness
@@ -13,11 +14,12 @@ PaintWindow::PaintWindow()
 	_blink_timer = Utils::us_since_boot();
 }
 
-PaintWindow::~PaintWindow() {}
+PaintWindow::~PaintWindow() = default;
 
 Bitset2D PaintWindow::update_window()
 {
-	Bitset2D _rendered = painted;
+	_rendered = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+	painted.copy(corner_x, corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
 	_rendered = draw_preview(_rendered);
 	return _rendered;
 }
@@ -134,40 +136,45 @@ void PaintWindow::fill(int x, int y, bool value, Bitset2D& bitset)
 
 void PaintWindow::handle_key_down(KeyPress keypress)
 {
+	if (keypress.key_calculator == Chars::KEY_MAP.at("left") && keypress.alpha) {
+		corner_x -= 1;
+		return;
+	} else if (keypress.key_calculator == Chars::KEY_MAP.at("right") && keypress.alpha) {
+		corner_x += 1;
+		return;
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("up") && keypress.alpha) {
+		corner_y -= 1;
+		return;
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("down") && keypress.alpha) {
+		corner_y += 1;
+		return;
+    }
+
 	if (keypress.key_calculator == Chars::KEY_MAP.at("up")) {
         _cursor[1]--;
         if (_cursor[1] < 0) _cursor[1] = 0;
-    }
-    else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) {
         _cursor[1]++;
         if (_cursor[1] >= SCREEN_HEIGHT) _cursor[1] = SCREEN_HEIGHT - 1;
-    }
-    else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) {
         _cursor[0]--;
         if (_cursor[0] < 0) _cursor[0] = 0;
-    }
-    else if (keypress.key_calculator == Chars::KEY_MAP.at("right")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("right")) {
         _cursor[0]++;
-        if (_cursor[0] >= SCREEN_WIDTH) _cursor[0] = SCREEN_WIDTH - 1;
-    }
-    else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
+        // if (_cursor[0] >= SCREEN_WIDTH) _cursor[0] = SCREEN_WIDTH - 1;
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
         _pen_down = !_pen_down;
-    }
-    else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) {
         painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
-    }
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("+")) {
-	        _brush_size++;
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("+")) {
+		_brush_size++;
         if (_brush_size > 5) _brush_size = 5;
-    }
-    else if (keypress.key_calculator == Chars::KEY_MAP.at("-")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("-")) {
         _brush_size--;
         if (_brush_size < 1) _brush_size = 1;
-    }
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) {
         erase = !erase;
-    }
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("1")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("1")) {
         if (_tool == Tool::NONE) {
 			_start_pos[0] = _cursor[0];
             _start_pos[1] = _cursor[1];
@@ -176,8 +183,7 @@ void PaintWindow::handle_key_down(KeyPress keypress)
             draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
 			_tool = Tool::NONE;
         }
-    }
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("2")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("2")) {
 		if (_tool == Tool::NONE) {
 			_start_pos[0] = _cursor[0];
             _start_pos[1] = _cursor[1];
@@ -186,8 +192,7 @@ void PaintWindow::handle_key_down(KeyPress keypress)
             draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
 			_tool = Tool::NONE;
         }
-	}
-	else if (keypress.key_calculator == Chars::KEY_MAP.at("3")) {
+	} else if (keypress.key_calculator == Chars::KEY_MAP.at("3")) {
         if (_tool == Tool::NONE) {
             _start_pos[0] = _cursor[0];
             _start_pos[1] = _cursor[1];
@@ -196,8 +201,7 @@ void PaintWindow::handle_key_down(KeyPress keypress)
             draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
 			_tool = Tool::NONE;
         }
-    }
-    else if (keypress.key_calculator == Chars::KEY_MAP.at("4")) {
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("4")) {
         fill(_cursor[0], _cursor[1], !erase, painted);
     }
 
@@ -232,13 +236,11 @@ void PaintWindow::handle_key_down(KeyPress keypress)
             redo_stack.push(history[--current_history_index]);
             painted = history[current_history_index - 1];
         }
-    }
-    else if (keypress.key_calculator == Chars::KEY_MAP.at("divide")) { // Redo operation
+    } else if (keypress.key_calculator == Chars::KEY_MAP.at("divide")) { // Redo operation
         if (!redo_stack.empty()) {
             history[current_history_index++] = redo_stack.top();
             painted = redo_stack.top();
             redo_stack.pop();
         }
     }
-
 }
