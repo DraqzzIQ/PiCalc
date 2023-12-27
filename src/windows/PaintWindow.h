@@ -28,9 +28,10 @@ class PaintWindow: public Window
 	static void draw_rectangle(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
     static void draw_ellipse(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
 	void fill(int x, int y, bool value, Bitset2D& bitset);
-	Bitset2D draw_preview(Bitset2D& _rendered);
+	Bitset2D draw_preview(Bitset2D& target);
 
 	Bitset2D painted;
+	Bitset2D _rendered_preview;
 	Bitset2D _rendered;
 
 	int _cursor[2] = {0, 0};
@@ -38,7 +39,7 @@ class PaintWindow: public Window
 	int _brush_size = 1;
 	bool erase = false;
 	int _start_pos[2] = {0, 0};
-	int _blink_timer = 0;
+	int _blink_timer;
 	bool preview = true;
 
 	Tool _tool = Tool::NONE;

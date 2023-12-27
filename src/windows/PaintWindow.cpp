@@ -18,30 +18,31 @@ PaintWindow::~PaintWindow() = default;
 
 Bitset2D PaintWindow::update_window()
 {
-	//_rendered = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
-	painted.copy(corner_x, corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
-	_rendered = draw_preview(_rendered);
+	_rendered_preview = painted;
+	_rendered_preview = draw_preview(_rendered_preview);
+	_rendered_preview.copy(corner_x, corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
 	return _rendered;
 }
 
-Bitset2D PaintWindow::draw_preview(Bitset2D& _rendered)
+Bitset2D PaintWindow::draw_preview(Bitset2D& target)
 {
+	using enum PaintWindow::Tool;
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
 		_blink_timer += 500000;
 		preview = !preview;
 	}
-	if (_tool == Tool::LINE) {
-		draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
-	} else if (_tool == Tool::RECTANGLE) {
-		draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
-	} else if (_tool == Tool::CIRCLE) {
-		draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
+	if (_tool == LINE) {
+		draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target);
+	} else if (_tool == RECTANGLE) {
+		draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target);
+	} else if (_tool == CIRCLE) {
+		draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target);
 	} else if (erase) {
-		draw_rectangle(_cursor[0] - _brush_size / 2, _cursor[1] - _brush_size / 2, _cursor[0] + _brush_size / 2, _cursor[1] + _brush_size / 2, preview, 1, _rendered);
+		draw_rectangle(_cursor[0] - _brush_size / 2, _cursor[1] - _brush_size / 2, _cursor[0] + _brush_size / 2, _cursor[1] + _brush_size / 2, preview, 1, target);
 	} else {
-		draw(_cursor[0], _cursor[1], preview, _brush_size, _rendered);
+		draw(_cursor[0], _cursor[1], preview, _brush_size, target);
 	}
-	return _rendered;
+	return target;
 }
 
 void PaintWindow::draw(int x, int y, bool value, int size, Bitset2D& bitset)
@@ -146,32 +147,69 @@ void PaintWindow::fill(int x, int y, bool value, Bitset2D& bitset)
 
 void PaintWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_calculator == Chars::KEY_MAP.at("left") && keypress.alpha) {
-		corner_x -= 1;
+	if (keypress.key_calculator == Chars::KEY_MAP.at("0")) {
+		corner_x = 0;
+		corner_y = 0;
 		return;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("right") && keypress.alpha) {
-		corner_x += 1;
+	}
+
+	if (keypress.key_raw == 169 && keypress.alpha) {
+		if (corner_x > 0) {
+			painted.extend_left(SCREEN_WIDTH, false);
+			corner_x--;
+			printf("corner_x: %d\n", corner_x);
+		}
 		return;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("up") && keypress.alpha) {
-		corner_y -= 1;
+	}
+	if (keypress.key_raw == 170 && keypress.alpha) {
+		painted.extend_right(SCREEN_WIDTH, false);
+		corner_x++;
+		printf("corner_x: %d\n", corner_x);
 		return;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("down") && keypress.alpha) {
-		corner_y += 1;
+	}
+	if (keypress.key_raw == 167 && keypress.alpha) {
+		if (corner_y > 0) {
+			painted.extend_up(SCREEN_HEIGHT, false);
+			corner_y--;
+			printf("corner_y: %d\n", corner_y);
+		}
+		return;
+	}
+	if (keypress.key_raw == 168 && keypress.alpha) {
+		painted.extend_down(SCREEN_HEIGHT, false);
+		corner_y++;
+		printf("corner_y: %d\n", corner_y);
 		return;
 	}
 
 	if (keypress.key_calculator == Chars::KEY_MAP.at("up")) {
-		_cursor[1]--;
-		if (_cursor[1] < 0) _cursor[1] = 0;
+		if (_cursor[1] > 0) {
+			_cursor[1]--;
+		}
+		if (_cursor[1] < 0 && corner_y > 0) {
+			painted.extend_up(SCREEN_HEIGHT, false);
+			corner_y--;
+		}
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) {
 		_cursor[1]++;
-		if (_cursor[1] >= SCREEN_HEIGHT) _cursor[1] = SCREEN_HEIGHT - 1;
+		if (_cursor[1] >= SCREEN_HEIGHT) {
+			painted.extend_down(SCREEN_HEIGHT, false);
+			corner_y++;
+		}
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) {
-		_cursor[0]--;
-		if (_cursor[0] < 0) _cursor[0] = 0;
+		if (_cursor[0] > 0) {
+			_cursor[0]--;
+		}
+		if (_cursor[0] < 0 && corner_x > 0) {
+			painted.extend_left(SCREEN_WIDTH, false);
+			corner_x--;
+		}
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("right")) {
 		_cursor[0]++;
-		// if (_cursor[0] >= SCREEN_WIDTH) _cursor[0] = SCREEN_WIDTH - 1;
+		if (_cursor[0] >= SCREEN_WIDTH) {
+			painted.extend_right(SCREEN_WIDTH, false);
+			corner_x++;
+		}
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
 		_pen_down = !_pen_down;
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) {
@@ -185,31 +223,34 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) {
 		erase = !erase;
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("1")) {
-		if (_tool == Tool::NONE) {
+		using enum PaintWindow::Tool;
+		if (_tool == NONE) {
 			_start_pos[0] = _cursor[0];
 			_start_pos[1] = _cursor[1];
-			_tool = Tool::LINE;
+			_tool = LINE;
 		} else {
 			draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
-			_tool = Tool::NONE;
+			_tool = NONE;
 		}
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("2")) {
-		if (_tool == Tool::NONE) {
+		using enum PaintWindow::Tool;
+		if (_tool == NONE) {
 			_start_pos[0] = _cursor[0];
 			_start_pos[1] = _cursor[1];
-			_tool = Tool::RECTANGLE;
+			_tool = RECTANGLE;
 		} else {
 			draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
-			_tool = Tool::NONE;
+			_tool = NONE;
 		}
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("3")) {
-		if (_tool == Tool::NONE) {
+		using enum PaintWindow::Tool;
+		if (_tool == NONE) {
 			_start_pos[0] = _cursor[0];
 			_start_pos[1] = _cursor[1];
-			_tool = Tool::CIRCLE;
+			_tool = CIRCLE;
 		} else {
 			draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
-			_tool = Tool::NONE;
+			_tool = NONE;
 		}
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("4")) {
 		fill(_cursor[0], _cursor[1], !erase, painted);
