@@ -155,7 +155,6 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 
 	if (keypress.key_raw == 169 && keypress.alpha) {
 		if (corner_x > 0) {
-			painted.extend_left(SCREEN_WIDTH, false);
 			corner_x--;
 			printf("corner_x: %d\n", corner_x);
 		}
@@ -169,7 +168,6 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 	}
 	if (keypress.key_raw == 167 && keypress.alpha) {
 		if (corner_y > 0) {
-			painted.extend_up(SCREEN_HEIGHT, false);
 			corner_y--;
 			printf("corner_y: %d\n", corner_y);
 		}
@@ -186,31 +184,34 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 		if (_cursor[1] > 0) {
 			_cursor[1]--;
 		}
-		if (_cursor[1] < 0 && corner_y > 0) {
-			painted.extend_up(SCREEN_HEIGHT, false);
+		if (_cursor[1] < corner_y && corner_y > 0) {
 			corner_y--;
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) {
+	}
+	if (keypress.key_calculator == Chars::KEY_MAP.at("down")) {
 		_cursor[1]++;
 		if (_cursor[1] >= SCREEN_HEIGHT) {
 			painted.extend_down(SCREEN_HEIGHT, false);
 			corner_y++;
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) {
+	}
+	if (keypress.key_calculator == Chars::KEY_MAP.at("left")) {
 		if (_cursor[0] > 0) {
 			_cursor[0]--;
 		}
-		if (_cursor[0] < 0 && corner_x > 0) {
-			painted.extend_left(SCREEN_WIDTH, false);
+		if (_cursor[0] < corner_x && corner_x > 0) {
 			corner_x--;
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("right")) {
+	}
+	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) {
 		_cursor[0]++;
 		if (_cursor[0] >= SCREEN_WIDTH) {
 			painted.extend_right(SCREEN_WIDTH, false);
 			corner_x++;
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
+	}
+
+	if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
 		_pen_down = !_pen_down;
 	} else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) {
 		painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
