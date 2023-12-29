@@ -156,27 +156,21 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 	if (keypress.key_raw == 169 && keypress.alpha) {
 		if (corner_x > 0) {
 			corner_x--;
-			printf("corner_x: %d\n", corner_x);
 		}
 		return;
 	}
 	if (keypress.key_raw == 170 && keypress.alpha) {
-		painted.extend_right(SCREEN_WIDTH, false);
 		corner_x++;
-		printf("corner_x: %d\n", corner_x);
 		return;
 	}
 	if (keypress.key_raw == 167 && keypress.alpha) {
 		if (corner_y > 0) {
 			corner_y--;
-			printf("corner_y: %d\n", corner_y);
 		}
 		return;
 	}
 	if (keypress.key_raw == 168 && keypress.alpha) {
-		painted.extend_down(SCREEN_HEIGHT, false);
 		corner_y++;
-		printf("corner_y: %d\n", corner_y);
 		return;
 	}
 
@@ -191,7 +185,6 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 	if (keypress.key_calculator == Chars::KEY_MAP.at("down")) {
 		_cursor[1]++;
 		if (_cursor[1] >= SCREEN_HEIGHT) {
-			painted.extend_down(SCREEN_HEIGHT, false);
 			corner_y++;
 		}
 	}
@@ -206,9 +199,15 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) {
 		_cursor[0]++;
 		if (_cursor[0] >= SCREEN_WIDTH) {
-			painted.extend_right(SCREEN_WIDTH, false);
 			corner_x++;
 		}
+	}
+
+	if (corner_x+SCREEN_WIDTH > painted.width()) {
+		painted.extend_right(corner_x+SCREEN_WIDTH - painted.width(), false);
+	}
+	if (corner_y+SCREEN_HEIGHT > painted.height()) {
+		painted.extend_down(corner_y+SCREEN_HEIGHT - painted.height(), false);
 	}
 
 	if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
@@ -294,4 +293,5 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 			redo_stack.pop();
 		}
 	}
+	printf("Bitset size: %d x %d\n", painted.width(), painted.height());
 }
