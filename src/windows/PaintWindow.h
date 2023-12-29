@@ -12,8 +12,8 @@ class PaintWindow: public Window
 	public:
 	PaintWindow();
 	~PaintWindow();
-	Bitset2D update_window();
-	void handle_key_down(KeyPress keypress);
+	Bitset2D update_window() override;
+	void handle_key_down(KeyPress keypress) override;
 
 	private:
 	enum class Tool {
