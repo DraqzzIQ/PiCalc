@@ -142,7 +142,7 @@ void Equation::add_value(KEY keypress)
 }
 
 
-void Equation::set_variable_list(std::vector<Number>* variables)
+void Equation::set_variable_list(std::vector<Number*> variables)
 {
 	_variables = variables;
 }
@@ -522,9 +522,9 @@ void Equation::add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_fir
 }
 
 
-Number Equation::to_number_part(KEY expected_ending)
+Number* Equation::to_number_part(KEY expected_ending)
 {
-	if (expected_ending == 95) _calculate_index++;
+	if (expected_ending != 95) _calculate_index++;
 	std::vector<CalculateNode> calculation;
 	bool numExpected = true;
 	clear_number();
@@ -532,60 +532,68 @@ Number Equation::to_number_part(KEY expected_ending)
 		uint8_t value = _equation.at(_calculate_index);
 
 		if (!add_digit(value)) {
-			if (_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _value_cnt & 0b00111111));
+			if (_number_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _number_value_cnt & 0b00111111));
 
 			if (Chars::in_key_set(value, _symbols)) {
 				switch (value) {
 				case 95: Error::throw_error(Error::ErrorType::SYNTAX_ERROR); break;
-				case 106: calculation.push_back(CalculateNode(to_number_part(238).abs(), 95, _calculate_index)); break;
-				case 109: calculation.push_back(CalculateNode(to_number_part(238).log(to_number_part(237)), 95, _calculate_index)); break;
-				case 110: calculation.push_back(CalculateNode(to_number_part(237) / to_number_part(238), 95, _calculate_index)); break;                         //!
-				case 111: calculation.push_back(CalculateNode(to_number_part(238).root(Number(2, 0)), 95, _calculate_index)); break;
-				case 131: calculation.push_back(CalculateNode(to_number_part(237) + (to_number_part(237) / to_number_part(238)), 95, _calculate_index)); break; //!
-				case 134: calculation.push_back(CalculateNode(to_number_part(238).root(to_number_part(237)), 95, _calculate_index)); break;
-				case 135: calculation.push_back(CalculateNode(Number(1, 1).pow(to_number_part(238)), 95, _calculate_index)); break;
-				case 136: calculation.push_back(CalculateNode(Number(2718281828459045235, -18).pow(to_number_part(238)), 95, _calculate_index)); break;
+				case 106: calculation.push_back(CalculateNode(to_number_part(238)->abs(), 95, _calculate_index)); break;
+				case 109: {
+					Number* result = to_number_part(237);
+					calculation.push_back(CalculateNode(to_number_part(238)->log(result), 95, _calculate_index));
+					break;
+				}
+				case 110: calculation.push_back(CalculateNode(to_number_part(237)->divide(to_number_part(238)), 95, _calculate_index)); break;
+				case 111: calculation.push_back(CalculateNode(to_number_part(238)->sqrt(), 95, _calculate_index)); break;
+				case 131: calculation.push_back(CalculateNode(to_number_part(237)->add(to_number_part(237)->divide(to_number_part(238))), 95, _calculate_index)); break;
+				case 134: {
+					Number* result = to_number_part(237);
+					calculation.push_back(CalculateNode(to_number_part(238)->root(result), 95, _calculate_index));
+					break; //!
+				}
+				case 135: calculation.push_back(CalculateNode(to_number_part(238)->pow10(), 95, _calculate_index)); break;
+				case 136: calculation.push_back(CalculateNode(to_number_part(238)->exp(), 95, _calculate_index)); break;
 				default:
 					if (calculation.size() == 0 || calculation.back().operation != 95) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 					switch (value) {
-					case 113: calculation.back().value.pow(to_number_part(238)); break;
-					case 85: calculation.back().value.factorial(); break;
-					case 98: calculation.back().value /= Number(1, 2); break;
+					case 113: calculation.back().value->pow(to_number_part(238)); break;
+					case 85: calculation.back().value->factorial(); break;
+					case 98: calculation.back().value->percent(); break;
 					}
 				}
 			} else if (Chars::in_key_set(value, _single_bracket_open_keys)) {
 				switch (value) {
 				case 74: calculation.push_back(CalculateNode(to_number_part(75), 95, _calculate_index)); break;
-				case 114: calculation.push_back(CalculateNode(to_number_part(75).log(), 95, _calculate_index)); break;
-				case 115: calculation.push_back(CalculateNode(to_number_part(75).ln(), 95, _calculate_index)); break;
-				case 118: calculation.push_back(CalculateNode(to_number_part(75).sin(), 95, _calculate_index)); break;
-				case 119: calculation.push_back(CalculateNode(to_number_part(75).cos(), 95, _calculate_index)); break;
-				case 120: calculation.push_back(CalculateNode(to_number_part(75).tan(), 95, _calculate_index)); break;
-				case 138: calculation.push_back(CalculateNode(to_number_part(75).asin(), 95, _calculate_index)); break;
-				case 139: calculation.push_back(CalculateNode(to_number_part(75).acos(), 95, _calculate_index)); break;
-				case 140: calculation.push_back(CalculateNode(to_number_part(75).atan(), 95, _calculate_index)); break;
-				case 152: calculation.push_back(CalculateNode(Number::pol(to_number_part(83), to_number_part(75)), 95, _calculate_index)); break;
-				case 153: calculation.push_back(CalculateNode(Number::rec(to_number_part(83), to_number_part(75)), 95, _calculate_index)); break;
-				case 154: calculation.push_back(CalculateNode(to_number_part(75).round(), 95, _calculate_index)); break;
-				case 160: calculation.push_back(CalculateNode(Number::gcd(to_number_part(83), to_number_part(75)), 95, _calculate_index)); break;
-				case 161: calculation.push_back(CalculateNode(Number::lcm(to_number_part(83), to_number_part(75)), 95, _calculate_index)); break;
-				case 162: calculation.push_back(CalculateNode(to_number_part(75).to_int(), 95, _calculate_index)); break;
-				case 163: calculation.push_back(CalculateNode(to_number_part(75).floor(), 95, _calculate_index)); break;
-				case 164: calculation.push_back(CalculateNode(Number::ran_int(to_number_part(83), to_number_part(75)), 95, _calculate_index)); break;
-				case 190: calculation.push_back(CalculateNode(to_number_part(75).sinh(), 95, _calculate_index)); break;
-				case 191: calculation.push_back(CalculateNode(to_number_part(75).cosh(), 95, _calculate_index)); break;
-				case 192: calculation.push_back(CalculateNode(to_number_part(75).tanh(), 95, _calculate_index)); break;
-				case 193: calculation.push_back(CalculateNode(to_number_part(75).asinh(), 95, _calculate_index)); break;
-				case 194: calculation.push_back(CalculateNode(to_number_part(75).acosh(), 95, _calculate_index)); break;
-				case 195: calculation.push_back(CalculateNode(to_number_part(75).atanh(), 95, _calculate_index)); break;
+				case 114: calculation.push_back(CalculateNode(to_number_part(75)->log(), 95, _calculate_index)); break;
+				case 115: calculation.push_back(CalculateNode(to_number_part(75)->ln(), 95, _calculate_index)); break;
+				case 118: calculation.push_back(CalculateNode(to_number_part(75)->sin(), 95, _calculate_index)); break;
+				case 119: calculation.push_back(CalculateNode(to_number_part(75)->cos(), 95, _calculate_index)); break;
+				case 120: calculation.push_back(CalculateNode(to_number_part(75)->tan(), 95, _calculate_index)); break;
+				case 138: calculation.push_back(CalculateNode(to_number_part(75)->asin(), 95, _calculate_index)); break;
+				case 139: calculation.push_back(CalculateNode(to_number_part(75)->acos(), 95, _calculate_index)); break;
+				case 140: calculation.push_back(CalculateNode(to_number_part(75)->atan(), 95, _calculate_index)); break;
+				case 152: calculation.push_back(CalculateNode(to_number_part(83)->pol(to_number_part(75)), 95, _calculate_index)); break;
+				case 153: calculation.push_back(CalculateNode(to_number_part(83)->rec(to_number_part(75)), 95, _calculate_index)); break;
+				case 154: calculation.push_back(CalculateNode(to_number_part(75)->round(), 95, _calculate_index)); break;
+				case 160: calculation.push_back(CalculateNode(to_number_part(83)->gcd(to_number_part(75)), 95, _calculate_index)); break;
+				case 161: calculation.push_back(CalculateNode(to_number_part(83)->lcm(to_number_part(75)), 95, _calculate_index)); break;
+				case 162: calculation.push_back(CalculateNode(to_number_part(75)->to_int(), 95, _calculate_index)); break;
+				case 163: calculation.push_back(CalculateNode(to_number_part(75)->floor(), 95, _calculate_index)); break;
+				case 164: calculation.push_back(CalculateNode(to_number_part(83)->ran_int(to_number_part(75)), 95, _calculate_index)); break;
+				case 190: calculation.push_back(CalculateNode(to_number_part(75)->sinh(), 95, _calculate_index)); break;
+				case 191: calculation.push_back(CalculateNode(to_number_part(75)->cosh(), 95, _calculate_index)); break;
+				case 192: calculation.push_back(CalculateNode(to_number_part(75)->tanh(), 95, _calculate_index)); break;
+				case 193: calculation.push_back(CalculateNode(to_number_part(75)->asinh(), 95, _calculate_index)); break;
+				case 194: calculation.push_back(CalculateNode(to_number_part(75)->acosh(), 95, _calculate_index)); break;
+				case 195: calculation.push_back(CalculateNode(to_number_part(75)->atanh(), 95, _calculate_index)); break;
 				}
 			} else if (value == expected_ending) {
 				break;
-			} else if (value == 75 || value == 83 || value == 238 || value == 239) {
+			} else if (value == 75 || value == 83 || value == 237 || value == 238) {
 				Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-				return Number();
+				return new Number();
 			} else if (Chars::in_key_set(value, _allowed_calculate_operations) || (value > 189 && value < 236)) {
-				calculation.push_back(CalculateNode(Number(), value, _calculate_index));
+				calculation.push_back(CalculateNode(new Number(), value, _calculate_index));
 			} else {
 				// constants
 				switch (value) {
@@ -594,11 +602,11 @@ Number Equation::to_number_part(KEY expected_ending)
 			}
 			if (Error::error_thrown()) {
 				_cursor_index = _calculate_index;
-				return Number();
+				return new Number();
 			}
 		}
 	}
-	if (_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _calculate_index + (_value_cnt & 0b00111111)));
+	if (_number_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _calculate_index + (_number_value_cnt & 0b00111111)));
 
 	// handle negative numbers
 	uint8_t add_i = 0;
@@ -615,11 +623,11 @@ Number Equation::to_number_part(KEY expected_ending)
 				} else if (op != 69) {
 					Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 					_cursor_index = i;
-					return Number();
+					return new Number();
 				}
 			}
 		} else {
-			if (negative) calculation.at(i).value.negate();
+			if (negative) calculation.at(i).value->negate();
 			negative = false;
 			operation = false;
 		}
@@ -643,7 +651,7 @@ Number Equation::to_number_part(KEY expected_ending)
 				//	equation.insert(equation.begin() + calculation.at(i).equation_index + add_i + 1, new EquationNode{ 75 });
 				//	equation.insert(equation.begin() + calculation.at(i).equation_index + add_i++, new EquationNode{ 74 });
 				//}
-				calculation.at(i - 1).value *= calculation.at(i).value;
+				calculation.at(i - 1).value->multiply(calculation.at(i).value);
 				calculation.erase(calculation.begin() + i--);
 			}
 			operation = false;
@@ -655,9 +663,9 @@ Number Equation::to_number_part(KEY expected_ending)
 	// multiplication and division
 	for (uint32_t i = 0; i < calculation.size(); i++) {
 		if (calculation.at(i).operation != 95) {
-			if (calculation.at(i).operation == 71) calculation.at(i - 1).value *= calculation.at(i + 1).value;
-			else if (calculation.at(i).operation == 72) calculation.at(i - 1).value /= calculation.at(i + 1).value;
-			else if (calculation.at(i).operation == 130) calculation.at(i - 1).value %= calculation.at(i + 1).value;
+			if (calculation.at(i).operation == 71) calculation.at(i - 1).value->multiply(calculation.at(i + 1).value);
+			else if (calculation.at(i).operation == 72) calculation.at(i - 1).value->divide(calculation.at(i + 1).value);
+			else if (calculation.at(i).operation == 130) calculation.at(i - 1).value->mod(calculation.at(i + 1).value);
 			else continue;
 			calculation.erase(calculation.begin() + i);
 			calculation.erase(calculation.begin() + i--);
@@ -667,8 +675,8 @@ Number Equation::to_number_part(KEY expected_ending)
 	// addition and subtraction
 	for (uint32_t i = 0; i < calculation.size(); i++) {
 		if (calculation.at(i).operation != 95) {
-			if (calculation.at(i).operation == 69) calculation.at(i - 1).value += calculation.at(i + 1).value;
-			else if (calculation.at(i).operation == 70) calculation.at(i - 1).value -= calculation.at(i + 1).value;
+			if (calculation.at(i).operation == 69) calculation.at(i - 1).value->add(calculation.at(i + 1).value);
+			else if (calculation.at(i).operation == 70) calculation.at(i - 1).value->subtract(calculation.at(i + 1).value);
 			else continue;
 			calculation.erase(calculation.begin() + i);
 			calculation.erase(calculation.begin() + i--);
@@ -685,7 +693,7 @@ void Equation::clear_number()
 	_number_val = 0;
 	_number_exp = 0;
 	_number_state = 0;
-	_value_cnt = 0;
+	_number_value_cnt = 0;
 }
 
 bool Equation::add_digit(const KEY digit)
@@ -701,11 +709,11 @@ bool Equation::add_digit(const KEY digit)
 		if (digit < 10) { // key is digit
 			if (_number_state & 0b10000000) {
 				_number_exp = _number_exp * 10 + digit;
-				_value_cnt |= 0b10000000;
+				_number_value_cnt |= 0b10000000;
 			} else {
 				if (_number_state & 0b01000000) _number_exp--;
 				_number_val = _number_val * 10 + digit;
-				_value_cnt |= 0b01000000;
+				_number_value_cnt |= 0b01000000;
 			}
 			//} else if (digit == 69) { // key is +
 			//	if (!(_number_state & 0b10000000)) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
@@ -715,7 +723,7 @@ bool Equation::add_digit(const KEY digit)
 		} else if (digit == 82) { // key is comma
 			if (_number_state & 0b11000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			_number_state |= 0b01000000;
-			//_value_cnt |= 0b01000000;
+			//_number_value_cnt |= 0b01000000;
 		} else if (digit == 127) { // key is exp
 			if (_number_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			_number_state |= 0b10000000;
@@ -730,24 +738,26 @@ bool Equation::add_digit(const KEY digit)
 		}
 	}
 
-	_value_cnt++;
-	if ((_value_cnt & 0b00111111) == 0b00111111) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+	_number_value_cnt++;
+	if ((_number_value_cnt & 0b00111111) == 0b00111111) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 
 	return true;
 }
 
-Number Equation::get_number()
+Number* Equation::get_number()
 {
-	Number num = Number();
-	if (_number_state & 0b00100000 || _value_cnt == 0) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-	else if (_number_state & 0b00011111) {
+	Number* num;
+	if (_number_state & 0b00100000 || _number_value_cnt == 0) {
+		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		num = new Number();
+	} else if (_number_state & 0b00011111) {
 		uint8_t periodic_digits = _number_state & 0b00011111;
 		_number_exp += periodic_digits;
 		_number_val -= _number_val / std::pow(10, periodic_digits);
-		num = Number(_number_val, _number_exp);
-		num /= Number(std::pow(10, periodic_digits) - 1, 1);
+		num = new Number(_number_val, _number_exp);
+		num->divide(new Number(std::pow(10, periodic_digits) - 1, 1));
 	} else {
-		num = Number(_number_val, _number_exp);
+		num = new Number(_number_val, _number_exp);
 	}
 
 	clear_number();

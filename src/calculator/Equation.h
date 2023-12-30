@@ -76,7 +76,7 @@ class Equation
 	/// links another variable list to this equation, so that it also can be changed in this equation
 	/// </summary>
 	/// <param name="variables"></param>
-	void set_variable_list(std::vector<Number>* variables);
+	void set_variable_list(std::vector<Number*> variables);
 	/// <summary>
 	/// calculate the equation
 	/// </summary>
@@ -189,7 +189,7 @@ class Equation
 	/// 6: digits placed before comma?
 	/// 7: digits placed after exp?
 	/// </summary>
-	uint8_t _value_cnt = 0;
+	uint8_t _number_value_cnt = 0;
 	/// <summary>
 	/// index of the equation currently converted to a number
 	/// </summary>
@@ -197,12 +197,12 @@ class Equation
 	/// <summary>
 	/// pointer to the list of variables used in the equation
 	/// </summary>
-	std::vector<Number>* _variables = nullptr;
+	std::vector<Number*> _variables;
 	/// <summary>
 	/// Node Used for the Calculation
 	/// </summary>
 	struct CalculateNode {
-		Number value = Number();
+		Number* value = nullptr;
 		uint8_t operation = 95;
 		int32_t equation_index = -1;
 	};
@@ -241,8 +241,8 @@ class Equation
 	/// <summary>
 	/// converts a part of the equation to a number, starting at _calculate_index, stopping at a closed bracket, a next value char or an end symbol char, uses _calculate_index as counter
 	/// </summary>
-	Number to_number_part(KEY expected_ending);
+	Number* to_number_part(KEY expected_ending);
 	void clear_number();
 	bool add_digit(const KEY digit);
-	Number get_number();
+	Number* get_number();
 };

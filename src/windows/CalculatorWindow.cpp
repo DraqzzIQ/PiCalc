@@ -6,8 +6,8 @@ CalculatorWindow::CalculatorWindow()
 	equations = std::vector<Equation>(1);
 	_equation_selected = &equations[0];
 
-	//_variables = std::vector<Number>(9);
-	//_equation_selected->set_variable_list(&_variables);
+	_variables = std::vector<Number*>(9);
+	_equation_selected->set_variable_list(_variables);
 }
 
 CalculatorWindow::~CalculatorWindow() {}
@@ -20,7 +20,7 @@ Bitset2D CalculatorWindow::update_window()
 	case Mode::COMP:
 		clear_window();
 		add_to_window(_equation_selected->get_rendered_equation(), 0, 0);
-		if (calculated) add_to_window(result_rendered, SCREEN_WIDTH - result_rendered.width(), SCREEN_HEIGHT - result_rendered.height());
+		if (calculated) add_to_window(_result_rendered, SCREEN_WIDTH - _result_rendered.width(), SCREEN_HEIGHT - _result_rendered.height());
 		return window;
 	case Mode::STAT:
 		add_to_window(Graphics::create_text("STAT"), 0, 0);
@@ -63,18 +63,19 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 				else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) _equation_selected->move_cursor_down();
 				else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) _equation_selected->del();
 				else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) _equation_selected->ac();
-				// else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
-				//	// TODO: output with , instead of .
-				//	result = _equation_selected->calculate_equation(variables);
-				//	if (Error::error_thrown()) {
-				//		result_rendered = Error::render_error();
-				//		Error::error_handled();
-				//		calculated = true;
-				//	} else {
-				//		result_rendered = result.render();
-				//		calculated = true;
-				//	}
-				//	// result_rendered = Graphics::create_text(std::to_string(result));
+				else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
+					_result = _equation_selected->to_number();
+					if (Error::error_thrown()) {
+						set_menu(Menu::Error);
+						Error::error_handled();
+						calculated = false;
+					} else {
+						_result_equation = Equation(_result.to_key_set().at(0));
+						_result_rendered = _result_equation.get_rendered_equation();
+						calculated = true;
+					}
+				}
+				// result_rendered = Graphics::create_text(std::to_string(result));
 				else if (keypress.key_calculator == Chars::KEY_MAP.at("unknown"))
 					;
 				else if (keypress.key_calculator == Chars::KEY_MAP.at("SHIFT"))

@@ -4,7 +4,6 @@
 #include "constant/Graphics.h"
 #include "datastructs/Bitset2D.h"
 // #include "datastructs/Decimal.h"
-#include "calculator/equation.h"
 #include <cmath>
 #include <string>
 #include <vector>
@@ -23,167 +22,184 @@ class Number
 	/// <summary>
 	/// create a Number by copying another
 	/// </summary>
-	Number(const Number& other);
+	Number(const Number* other);
 	/// <summary>
 	/// create a Number from a Decimal
 	/// </summary>
 	/// <param name="value"></param>
-	// Number(const Decimal value);
+	Number(double value);
 	/// <summary>
-	/// destroy the Number and  clear allocated Memory
+	/// destroy the Number and clear allocated Memory
 	/// </summary>
 	~Number();
-
-	/// <summary>
-	/// add other to this
-	/// </summary>
-	Number& operator+=(Number& other);
-	/// <summary>
-	/// subtract other from this
-	/// </summary>
-	Number& operator-=(Number& other);
-	/// <summary>
-	/// multiply this with other
-	/// </summary>
-	Number& operator*=(Number& other);
-	/// <summary>
-	/// divide this by other
-	/// </summary>
-	Number& operator/=(Number& other);
-	/// <summary>
-	/// calculate the remainder of this divided by other
-	/// </summary>
-	Number& operator%=(Number& other);
-	/// <summary>
-	/// raise this to the power of other
-	/// </summary>
-	Number& operator^=(Number& other);
 	/// <summary>
 	/// copy other to this
 	/// </summary>
-	Number& operator=(const Number& other);
+	Number* operator=(const Number* other);
+
+	/// <summary>
+	/// add other to this
+	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// </summary>
+	Number* add(Number* other);
+	/// <summary>
+	/// subtract other from this
+	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// </summary>
+	Number* subtract(Number* other);
+	/// <summary>
+	/// multiply this with other
+	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// </summary>
+	Number* multiply(Number* other);
+	/// <summary>
+	/// divide this by other
+	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// </summary>
+	Number* divide(Number* other);
+	/// <summary>
+	/// calculate the remainder of this divided by other
+	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// </summary>
+	Number* mod(Number* other);
 
 	/// <summary>
 	/// logarithm base 10 of this
 	/// </summary>
-	Number& log();
+	Number* log();
 	/// <summary>
 	/// logarithm base other of this
 	/// </summary>
-	Number& log(const Number& other);
+	Number* log(Number* other);
 	/// <summary>
 	/// natural logarithm of this
 	/// </summary>
-	Number& ln();
+	Number* ln();
 
 	/// <summary>
 	/// sin of this
 	/// </summary>
-	Number& sin();
+	Number* sin();
 	/// <summary>
 	/// cos of this
 	/// </summary>
-	Number& cos();
+	Number* cos();
 	/// <summary>
 	/// tan of this
 	/// </summary>
-	Number& tan();
+	Number* tan();
 	/// <summary>
 	/// asin of this
 	/// </summary>
-	Number& asin();
+	Number* asin();
 	/// <summary>
 	/// acos of this
 	/// </summary>
-	Number& acos();
+	Number* acos();
 	/// <summary>
 	/// atan of this
 	/// </summary>
-	Number& atan();
+	Number* atan();
 	/// <summary>
 	/// sinh of this
 	/// </summary>
-	Number& sinh();
+	Number* sinh();
 	/// <summary>
 	/// cosh of this
 	/// </summary>
-	Number& cosh();
+	Number* cosh();
 	/// <summary>
 	/// tanh of this
 	/// </summary>
-	Number& tanh();
+	Number* tanh();
 	/// <summary>
 	/// asinh of this
 	/// </summary>
-	Number& asinh();
+	Number* asinh();
 	/// <summary>
 	/// acosh of this
 	/// </summary>
-	Number& acosh();
+	Number* acosh();
 	/// <summary>
 	/// atanh of this
 	/// </summary>
-	Number& atanh();
+	Number* atanh();
 
 	/// <summary>
 	/// round this to the nearest integer
 	/// </summary>
-	Number& round();
+	Number* round();
 	/// <summary>
 	/// round this down to the nearest integer
 	/// </summary>
-	Number& floor();
+	Number* floor();
 	/// <summary>
 	/// round this up to the nearest integer
 	/// </summary>
-	Number& ceil();
+	Number* ceil();
 	/// <summary>
 	/// absolute value of this
 	/// </summary>
-	Number& abs();
+	Number* abs();
 	/// <summary>
 	/// cuts off the decimal part of this
 	/// </summary>
-	Number& to_int();
+	Number* to_int();
 	/// <summary>
 	/// changes the sign of this
 	/// </summary>
-	Number& negate();
+	Number* negate();
+	/// <summary>
+	/// divides this by 100
+	/// </summary>
+	Number* percent();
 
 	/// <summary>
 	/// raises this to the power of other
 	/// </summary>
-	Number& pow(const Number& other);
+	Number* pow(Number* other);
+	/// <summary>
+	/// raises 10 to the power of this
+	/// </summary>
+	Number* pow10();
+	/// <summary>
+	/// raises e to the power of this
+	/// </summary>
+	Number* exp();
 	/// <summary>
 	/// calculates the factorial of this
 	/// </summary>
-	Number& factorial();
+	Number* factorial();
 
 	/// <summary>
 	/// calculates the other root of this
 	/// </summary>
-	Number& root(const Number& other);
+	Number* root(Number* other);
+	/// <summary>
+	/// calculates the square root of this
+	/// </summary>
+	Number* sqrt();
 
 	/// <summary>
-	/// rectangulat to polar coordinates
+	/// rectangular to polar coordinates (this = x, other = y)
 	/// </summary>
-	static Number pol(const Number& first, const Number& second);
+	Number* pol(Number* other);
 	/// <summary>
-	/// polar to rectangular coordinates
+	/// polar to rectangular coordinates (this = r, other = theta)
 	/// </summary>
-	static Number rec(const Number& first, const Number& second);
+	Number* rec(Number* other);
 	/// <summary>
 	/// greatest common divisor
 	/// </summary>
-	static Number gcd(const Number& first, const Number& second);
+	Number* gcd(Number* other);
 	/// <summary>
 	/// least common multiple
 	/// </summary>
-	static Number lcm(const Number& first, const Number& second);
+	Number* lcm(Number* other);
 	/// <summary>
-	/// random integer between first and second (both inclusive)
+	/// random integer between this and other (both inclusive)
 	/// </summary>
-	static Number ran_int(const Number& first, const Number& second);
+	Number* ran_int(Number* other);
 
 	/// <summary>
 	/// simplyfiy this as much as possible without losing any precision
@@ -199,30 +215,16 @@ class Number
 	std::vector<KEY_SET> to_key_set() const;
 
 	private:
-	struct NumberNode {
-		double value;
-		KEY operation;
-		std::vector<NumberNode*> children;
+	/// <summary>
+	/// clones this number without cloning its children
+	/// </summary>
+	Number* clone() const;
+	/// <summary>
+	/// clone this Number recursively
+	/// </summary>
+	Number* deep_clone() const;
 
-		/// <summary>
-		/// delete this NumberNode recursively
-		/// </summary>
-		~NumberNode()
-		{
-			for (NumberNode* child : children) delete child;
-		}
-
-		/// <summary>
-		/// clone this NumberNode recursively
-		/// </summary>
-		NumberNode* clone()
-		{
-			if (this) {
-				NumberNode* clone = new NumberNode{ value, operation, {} };
-				for (NumberNode* child : children) clone->children.push_back(child->clone());
-				return clone;
-			} else return nullptr;
-		}
-	};
-	NumberNode* _root;
+	double _value;
+	KEY _operation;
+	std::vector<Number*> _children;
 };
