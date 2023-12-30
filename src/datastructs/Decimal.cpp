@@ -53,7 +53,7 @@ bool Decimal::operator!=(Decimal& other)
 	if (is_key()) Error::throw_error(Error::ErrorType::MATH_ERROR);
 	maximize_exp();
 	other.maximize_exp();
-	return _value == other._value;
+	return _value != other._value;
 }
 
 bool Decimal::operator<(Decimal& other)

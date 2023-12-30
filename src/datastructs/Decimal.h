@@ -19,6 +19,17 @@ class Decimal
 	Decimal(KEY value);
 	Decimal(int64_t value, int16_t exp);
 
+	void set_key(KEY value);
+	void set_value(int64_t value, int16_t exp);
+
+	inline bool is_zero() const;
+	inline bool is_negative() const;
+	inline bool is_key() const;
+
+	KEY get_key() const;
+	int64_t get_value() const;
+	int16_t get_exp() const;
+
 	bool operator==(Decimal& other);
 	bool operator!=(Decimal& other);
 	bool operator<(Decimal& other);
@@ -76,12 +87,6 @@ class Decimal
 	Decimal& root(const Decimal& other);
 	Decimal& root(const double& other);
 
-	bool is_zero() const;
-
-	bool is_key() const;
-	KEY get_key() const;
-	void set_key(KEY value);
-
 	private:
 	static const uint64_t move_comma[DECIMAL_VALUE_PRECISION];
 	/// <summary>
@@ -96,9 +101,9 @@ class Decimal
 	void change_accuracy(int8_t shift);
 
 	/// <summary>
-	/// right to left: 0-50: value; 51-61: exponent; 62: sign; 63: is KEY? <para/>
+	/// right to left: 0-51: value (52 bits); 52-62: exponent (11 bits); 63: is KEY? <para/>
 	/// normally: value = value * 10 ^ exponent<para/>
-	/// if bit 63 is 1: this represents a KEY, so bit 48-63 is a uint16_t
+	/// if bit 63 is 1: this represents a KEY, so bits 0-15 represent a uint16_t
 	/// </summary>
 	uint64_t _value;
 };
