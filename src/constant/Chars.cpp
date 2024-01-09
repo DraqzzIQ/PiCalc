@@ -116,7 +116,7 @@ const std::map<std::string, KEY> Chars::KEY_MAP = {
 	{ "x^2", 112 },
 	{ "x^n", 113 },
 	{ "log10", 114 },
-	{ "ln", 15 },
+	{ "ln", 115 },
 	{ "(-)", 116 },
 	{ "hyp", 117 },
 	{ "sin", 118 },
@@ -250,6 +250,7 @@ const std::map<std::string, KEY> Chars::KEY_MAP = {
 	{ "dark7", 247 },
 	{ "dark8", 248 },
 	{ "dark9", 249 },
+	{ "ceil", 250 },
 };
 
 const std::map<KEY, KEY> Chars::KEY_MAP_SHIFT = {

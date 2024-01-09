@@ -22,6 +22,9 @@ const int64_t Decimal::powers_of_ten[] = {
 	1000000000000000000
 };
 
+const Decimal Decimal::PI(314159265358979323, -17);
+const Decimal Decimal::EULER(271828182845904523, -17);
+
 
 Decimal::Decimal()
 {
@@ -54,6 +57,7 @@ Decimal::Decimal(const Decimal& other)
 void Decimal::set_key(KEY value)
 {
 	_exp = value;
+	_val = 0xffffffffffffffff;
 }
 
 void Decimal::set_value(int64_t value, int16_t exp)
@@ -65,8 +69,15 @@ void Decimal::set_value(int64_t value, int16_t exp)
 }
 
 
+bool Decimal::is_key() const
+{
+	return _val == 0xffffffffffffffff;
+}
+
+
 KEY Decimal::get_key() const
 {
+	if (_val != 0xffffffffffffffff) return 95;
 	return (KEY)_exp;
 }
 
@@ -433,22 +444,12 @@ Decimal& Decimal::ln()
 	return *this;
 }
 
-Decimal& Decimal::log10()
-{
-	return *this;
-}
-
 Decimal& Decimal::log(const Decimal& other)
 {
 	return *this;
 }
 
 Decimal& Decimal::exp()
-{
-	return *this;
-}
-
-Decimal& Decimal::pow10()
 {
 	return *this;
 }
@@ -552,9 +553,57 @@ Decimal& Decimal::negate()
 	return *this;
 }
 
-std::string Decimal::to_string() const
+Decimal& Decimal::ran()
 {
-	return std::to_string(_val) + 'E' + std::to_string(_exp);
+	_exp = -3;
+	_val = Utils::us_since_boot() % 1000;
+}
+
+Decimal& Decimal::ran_int(Decimal start, Decimal end)
+{
+	return *this;
+}
+
+KEY_SET Decimal::to_key_set_fix(uint8_t fix) const
+{
+}
+
+KEY_SET Decimal::to_key_set_sci(uint8_t sci) const
+{
+	uint8_t shift = count_digits(_val);
+	if (shift > sci) {
+		shift -= sci;
+		shift_right(_val, shift);
+		_exp += shift;
+	} else if (shift < sci) {
+		shift = sci - shift;
+		_val *= powers_of_ten[shift];
+		_exp -= shift;
+	}
+	_exp += sci - 1;
+
+	KEY_SET res;
+
+	int16_t exp_copy = std::abs(_exp);
+	while (exp_copy != 0) {
+		res.push_back((KEY)(exp_copy % 10));
+		exp_copy /= 10;
+	}
+	if (_exp < 0) res.push_back(116);
+	res.push_back(127);
+
+	int64_t val_copy = std::abs(_val);
+	while (val_copy != 0) {
+		res.push_back((KEY)(val_copy % 10));
+		val_copy /= 10;
+	}
+	if (_val < 0) res.push_back(116);
+	std::reverse(res.begin(), res.end());
+	res.insert(res.begin() + 1, 82);
+}
+
+KEY_SET Decimal::to_key_set_norm(uint8_t norm) const
+{
 }
 
 void Decimal::maximize_exp() const

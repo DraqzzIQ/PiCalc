@@ -3,14 +3,12 @@
 Number::Number()
 {
 	_value = 0;
-	_operation = 95;
 	_children = std::vector<Number*>();
 }
 
-Number::Number(const int64_t value, const int16_t exp)
+Number::Number(int64_t value, int16_t exp)
 {
-	_value = value * std::pow(10, exp);
-	_operation = 95;
+	_value = Decimal(value, exp);
 	_children = std::vector<Number*>();
 }
 
@@ -19,10 +17,9 @@ Number::Number(const Number* other)
 	operator=(other);
 }
 
-Number::Number(double value)
+Number::Number(Decimal value)
 {
 	_value = value;
-	_operation = 95;
 	_children = std::vector<Number*>();
 }
 
@@ -34,7 +31,6 @@ Number::~Number()
 Number* Number::operator=(const Number* other)
 {
 	_value = other->_value;
-	_operation = other->_operation;
 	_children = std::vector<Number*>();
 	for (Number* child : other->_children) _children.push_back(child->deep_clone());
 	return this;
@@ -42,65 +38,72 @@ Number* Number::operator=(const Number* other)
 
 Number* Number::add(Number* other)
 {
-	if (_operation == 69 && other->_operation == 69) {
+	if (_value.get_key() == 69 && other->_value.get_key() == 69) {
 		for (Number* child : other->_children) _children.push_back(child);
-	} else if (_operation == 69) {
+	} else if (_value.get_key() == 69) {
+		other->simplify();
 		_children.push_back(other);
-	} else if (other->_operation == 69) {
+	} else if (other->_value.get_key() == 69) {
+		simplify();
 		_children = std::vector<Number*>{ clone() };
 		for (Number* child : other->_children) _children.push_back(child);
-		_value = 0;
-		_operation = 69;
+		_value.set_key(69);
 	} else {
+		simplify();
+		other->simplify();
 		_children = std::vector<Number*>{ clone(), other->clone() };
-		_value = 0;
-		_operation = 69;
+		_value.set_key(69);
 	}
-	other = nullptr;
+	delete other;
 	return this;
 }
 
 Number* Number::subtract(Number* other)
 {
 	add(other->negate());
-	other = nullptr;
+	delete other;
 	return this;
 }
 
 Number* Number::multiply(Number* other)
 {
-	if (_operation == 71 && other->_operation == 71) {
+	if (_value.get_key() == 71 && other->_value.get_key() == 71) {
 		for (Number* child : other->_children) _children.push_back(child);
-	} else if (_operation == 71) {
+	} else if (_value.get_key() == 71) {
 		_children.push_back(other);
-	} else if (other->_operation == 71) {
+	} else if (other->_value.get_key() == 71) {
 		_children = std::vector<Number*>{ clone() };
 		for (Number* child : other->_children) _children.push_back(child);
-		_value = 0;
-		_operation = 71;
+		_value.set_key(71);
 	} else {
 		_children = std::vector<Number*>{ clone(), other->clone() };
-		_value = 0;
-		_operation = 71;
+		_value.set_key(71);
 	}
-	other = nullptr;
+	delete other;
 	return this;
 }
 
 Number* Number::divide(Number* other)
 {
-	_children = std::vector<Number*>{ clone(), other->clone() };
-	_value = 0;
-	_operation = 72;
-	other = nullptr;
+	other->reciprocal();
+	multiply(other);
+	delete other;
 	return this;
 }
 
 Number* Number::mod(Number* other)
 {
+	_children = std::vector<Number*>{ clone(), other->clone() };
+	_value.set_key(130);
+	delete other;
 	return this;
 }
 
+
+Number* Number::ln()
+{
+	return this;
+}
 
 Number* Number::log()
 {
@@ -112,8 +115,35 @@ Number* Number::log(Number* other)
 	return this;
 }
 
-Number* Number::ln()
+Number* Number::exp()
 {
+	return this;
+}
+
+Number* Number::pow10()
+{
+	return this;
+}
+
+Number* Number::pow(Number* other)
+{
+	return this;
+}
+
+Number* Number::sqrt()
+{
+	return this;
+}
+
+Number* Number::root(Number* other)
+{
+	return this;
+}
+
+Number* Number::factorial()
+{
+	_children = std::vector<Number*>{ clone() };
+	_value.set_key(85);
 	return this;
 }
 
@@ -181,69 +211,49 @@ Number* Number::atanh()
 
 Number* Number::round()
 {
+	_children = std::vector<Number*>{ clone() };
+	_value.set_key(154);
 	return this;
 }
 
 Number* Number::floor()
 {
+	_children = std::vector<Number*>{ clone() };
+	_value.set_key(163);
 	return this;
 }
 
 Number* Number::ceil()
 {
+	_children = std::vector<Number*>{ clone() };
+	_value.set_key(251);
 	return this;
 }
 
 Number* Number::abs()
 {
+	_children = std::vector<Number*>{ clone() };
+	_value.set_key(106);
 	return this;
 }
 
 Number* Number::to_int()
 {
+	_children = std::vector<Number*>{ clone() };
+	_value.set_key(162);
 	return this;
 }
 
 Number* Number::negate()
 {
+	_children = std::vector<Number*>{ clone(), new Number(-1, 0) };
+	_value.set_key(72);
 	return this;
 }
 
 Number* Number::percent()
 {
-	return this;
-}
-
-
-Number* Number::pow(Number* other)
-{
-	return this;
-}
-
-Number* Number::pow10()
-{
-	return this;
-}
-
-Number* Number::exp()
-{
-	return this;
-}
-
-Number* Number::factorial()
-{
-	return this;
-}
-
-
-Number* Number::root(Number* other)
-{
-	return this;
-}
-
-Number* Number::sqrt()
-{
-	return this;
+	multiply(new Number(1, -2));
 }
 
 
@@ -277,9 +287,114 @@ void Number::simplify()
 	return;
 }
 
-double Number::to_value() const
+Decimal Number::to_value() const
 {
-	return 0;
+	if (_value.is_key()) {
+		Decimal res;
+		switch (_value.get_key()) {
+		case 69:
+			res = 0;
+			for (Number* child : _children) res += child->to_value();
+			break;
+		case 71:
+			res = 1;
+			for (Number* child : _children) res *= child->to_value();
+			break;
+		case 85:
+			res = _children[0]->to_value().factorial();
+			break;
+		case 106:
+			res = _children[0]->to_value().abs();
+			break;
+		case 109:
+			res = _children[0]->to_value().log(_children[1]->to_value());
+			break;
+		case 111:
+			res = _children[0]->to_value().sqrt();
+			break;
+		case 113:
+			res = _children[0]->to_value().pow(_children[1]->to_value());
+			break;
+		case 115:
+			res = _children[0]->to_value().ln();
+			break;
+		case 118:
+			res = _children[0]->to_value().sin();
+			break;
+		case 119:
+			res = _children[0]->to_value().cos();
+			break;
+		case 120:
+			res = _children[0]->to_value().tan();
+			break;
+		case 134:
+			res = _children[0]->to_value().root(_children[1]->to_value());
+			break;
+		case 136:
+			res = _children[0]->to_value().exp();
+			break;
+		case 138:
+			res = _children[0]->to_value().asin();
+			break;
+		case 139:
+			res = _children[0]->to_value().acos();
+			break;
+		case 140:
+			res = _children[0]->to_value().atan();
+			break;
+		case 152:
+			res = 0;
+			break;
+		case 153:
+			res = 0;
+			break;
+		case 154:
+			res = _children[0]->to_value().round();
+			break;
+		case 155:
+			res.ran();
+			break;
+		case 156:
+			res = Decimal::PI;
+		case 160:
+			res = 0;
+			break;
+		case 161:
+			res = 0;
+			break;
+		case 162:
+			res = _children[0]->to_value().to_int();
+			break;
+		case 163:
+			res = _children[0]->to_value().floor();
+			break;
+		case 164:
+			res.ran_int(_children[0]->to_value(), _children[1]->to_value());
+			break;
+		case 165:
+			res = Decimal::EULER;
+			break;
+		case 190:
+			res = _children[0]->to_value().sinh();
+			break;
+		case 191:
+			res = _children[0]->to_value().cosh();
+			break;
+		case 192:
+			res = _children[0]->to_value().tanh();
+			break;
+		case 193:
+			res = _children[0]->to_value().asinh();
+			break;
+		case 194:
+			res = _children[0]->to_value().acosh();
+			break;
+		case 195:
+			res = _children[0]->to_value().atanh();
+			break;
+		}
+		return res;
+	} else return _value;
 }
 
 std::vector<KEY_SET> Number::to_key_set() const
@@ -290,20 +405,17 @@ std::vector<KEY_SET> Number::to_key_set() const
 
 Number* Number::clone() const
 {
-	Number* clone = new Number();
-	clone->_value = _value;
-	clone->_operation = _operation;
+	Number* clone = new Number(_value);
 	for (Number* child : _children) clone->_children.push_back(child);
 	return clone;
 }
 
 Number* Number::deep_clone() const
 {
-	if (_operation) {
+	if (_value.is_key()) {
 		Number* clone = new Number();
 		clone->_value = _value;
-		clone->_operation = _operation;
 		for (Number* child : _children) clone->_children.push_back(child->deep_clone());
 		return clone;
-	} else return nullptr;
+	} else return new Number(_value);
 }

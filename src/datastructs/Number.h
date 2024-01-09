@@ -3,7 +3,7 @@
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Bitset2D.h"
-// #include "datastructs/Decimal.h"
+#include "datastructs/Decimal.h"
 #include <cmath>
 #include <string>
 #include <vector>
@@ -18,7 +18,7 @@ class Number
 	/// <summary>
 	/// create a Number with given value and exponent
 	/// </summary>
-	Number(const int64_t value, const int16_t exp);
+	Number(int64_t value, int16_t exp);
 	/// <summary>
 	/// create a Number by copying another
 	/// </summary>
@@ -27,7 +27,7 @@ class Number
 	/// create a Number from a Decimal
 	/// </summary>
 	/// <param name="value"></param>
-	Number(double value);
+	Number(Decimal value);
 	/// <summary>
 	/// destroy the Number and clear allocated Memory
 	/// </summary>
@@ -39,30 +39,34 @@ class Number
 
 	/// <summary>
 	/// add other to this
-	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// IMPORTANT: does not clone => other is deleted after this operation
 	/// </summary>
 	Number* add(Number* other);
 	/// <summary>
 	/// subtract other from this
-	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// IMPORTANT: does not clone => other is deleted after this operation
 	/// </summary>
 	Number* subtract(Number* other);
 	/// <summary>
 	/// multiply this with other
-	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// IMPORTANT: does not clone => other is deleted after this operation
 	/// </summary>
 	Number* multiply(Number* other);
 	/// <summary>
 	/// divide this by other
-	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// IMPORTANT: does not clone => other is deleted after this operation
 	/// </summary>
 	Number* divide(Number* other);
 	/// <summary>
 	/// calculate the remainder of this divided by other
-	/// IMPORTANT: does not clone => other is nullptr after this operation
+	/// IMPORTANT: does not clone => other is deleted after this operation
 	/// </summary>
 	Number* mod(Number* other);
 
+	/// <summary>
+	/// natural logarithm of this
+	/// </summary>
+	Number* ln();
 	/// <summary>
 	/// logarithm base 10 of this
 	/// </summary>
@@ -72,9 +76,29 @@ class Number
 	/// </summary>
 	Number* log(Number* other);
 	/// <summary>
-	/// natural logarithm of this
+	/// raises e to the power of this
 	/// </summary>
-	Number* ln();
+	Number* exp();
+	/// <summary>
+	/// raises 10 to the power of this
+	/// </summary>
+	Number* pow10();
+	/// <summary>
+	/// raises this to the power of other
+	/// </summary>
+	Number* pow(Number* other);
+	/// <summary>
+	/// calculates the square root of this
+	/// </summary>
+	Number* sqrt();
+	/// <summary>
+	/// calculates the other root of this
+	/// </summary>
+	Number* root(Number* other);
+	/// <summary>
+	/// calculates the factorial of this
+	/// </summary>
+	Number* factorial();
 
 	/// <summary>
 	/// sin of this
@@ -153,32 +177,10 @@ class Number
 	/// divides this by 100
 	/// </summary>
 	Number* percent();
-
 	/// <summary>
-	/// raises this to the power of other
+	/// reciprocal of this
 	/// </summary>
-	Number* pow(Number* other);
-	/// <summary>
-	/// raises 10 to the power of this
-	/// </summary>
-	Number* pow10();
-	/// <summary>
-	/// raises e to the power of this
-	/// </summary>
-	Number* exp();
-	/// <summary>
-	/// calculates the factorial of this
-	/// </summary>
-	Number* factorial();
-
-	/// <summary>
-	/// calculates the other root of this
-	/// </summary>
-	Number* root(Number* other);
-	/// <summary>
-	/// calculates the square root of this
-	/// </summary>
-	Number* sqrt();
+	Number* reciprocal();
 
 	/// <summary>
 	/// rectangular to polar coordinates (this = x, other = y)
@@ -208,7 +210,7 @@ class Number
 	/// <summary>
 	/// return a single decimal representing this (often looses precision)
 	/// </summary>
-	double to_value() const;
+	Decimal to_value() const;
 	/// <summary>
 	/// returns all possible representations of this as a KEY_SET
 	/// </summary>
@@ -216,7 +218,7 @@ class Number
 
 	private:
 	/// <summary>
-	/// clones this number without cloning its children
+	/// clones this number without cloning its children (only adresses of Numbers in children are copied)
 	/// </summary>
 	Number* clone() const;
 	/// <summary>
@@ -224,7 +226,6 @@ class Number
 	/// </summary>
 	Number* deep_clone() const;
 
-	double _value;
-	KEY _operation;
+	Decimal _value;
 	std::vector<Number*> _children;
 };

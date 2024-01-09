@@ -1,5 +1,6 @@
 #pragma once
 #include "constant/Error.h"
+#include "utils/Utils.h"
 #include <cmath>
 #include <string>
 #include <vector>
@@ -27,6 +28,7 @@ class Decimal
 	void set_key(KEY value);
 	void set_value(int64_t value, int16_t exp);
 
+	bool is_key() const;
 	KEY get_key() const;
 	int64_t get_value() const;
 	int16_t get_exp() const;
@@ -56,11 +58,16 @@ class Decimal
 	Decimal& operator%=(Decimal other);
 	Decimal& operator^=(Decimal other);
 
+	bool add_if_exact(Decimal other);
+	bool subtract_if_exact(Decimal other);
+	bool multiply_if_exact(Decimal other);
+	bool divide_if_exact(Decimal other);
+	bool mod_if_exact(Decimal other);
+	bool pow_if_exact(Decimal other);
+
 	Decimal& ln();
-	Decimal& log10();
 	Decimal& log(const Decimal& other);
 	Decimal& exp();
-	Decimal& pow10();
 	Decimal& pow(const Decimal& other);
 	Decimal& sqrt();
 	Decimal& root(const Decimal& other);
@@ -85,8 +92,15 @@ class Decimal
 	Decimal& to_int();
 	Decimal& abs();
 	Decimal& negate();
+	Decimal& ran();
+	Decimal& ran_int(Decimal start, Decimal end);
 
-	std::string to_string() const;
+	KEY_SET to_key_set_fix(uint8_t fix) const;
+	KEY_SET to_key_set_sci(uint8_t sci) const;
+	KEY_SET to_key_set_norm(uint8_t norm) const;
+
+	static const Decimal PI;
+	static const Decimal EULER;
 
 	private:
 	/// <summary>
