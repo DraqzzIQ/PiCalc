@@ -21,4 +21,8 @@ if(NOT RPI_PICO)
     )
 
     target_link_libraries(${PROJECT_NAME} Threads::Threads ${SDL2_LIBRARIES} OpenSSL::SSL OpenSSL::Crypto)
+else()
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/no-OS-FatFS-SD-SPI-RPi-Pico/FatFs_SPI build)
+
+    target_link_libraries(${PROJECT_NAME}  FatFs_SPI)
 endif()
