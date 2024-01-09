@@ -47,13 +47,10 @@ if(RPI_PICO)
     # pico_cyw43_arch_none is nessessary for accessing the CYW4343W WiFi chip and it's LED
     target_link_libraries(${PROJECT_NAME} pico_stdlib 
                 pico_cyw43_arch
-                pico_cyw43_arch_lwip_poll
                 hardware_i2c 
                 pico_lwip_mbedtls 
                 pico_mbedtls
-                pico_lwip_arch
-                pico_lwip_core
-
+                pico_cyw43_arch_lwip_threadsafe_background
                 )
 
     # create map/bin/hex/uf2 file in addition to ELF.

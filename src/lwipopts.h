@@ -10,5 +10,6 @@
 #define LWIP_TCP 1
 #define LWIP_RAW 1
 #define LWIP_DNS 1
+#define NO_SYS 1
 
 #endif

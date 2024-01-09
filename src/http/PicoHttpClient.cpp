@@ -1,6 +1,5 @@
 #include "http/PicoHttpClient.h"
 #include "cyw43_ll.h"
-#include "lwip/init.h"
 #include "lwip/netif.h"
 #include "lwip/dns.h"
 #include "mbedtls/ssl.h"
@@ -24,7 +23,6 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl): IHttpClient(baseUrl){
     cyw43_arch_init();
     cyw43_arch_wifi_connect_timeout_ms(PICO_WIFI_SSID, PICO_WIFI_PASSWD, PICO_WIFI_AUTH, PICO_WIFI_TIMEOUT);
     cyw43_arch_lwip_begin();
-    lwip_init();
     cyw43_arch_lwip_end();
     baseUrl = baseUrl;
     cyw43_arch_lwip_begin();
