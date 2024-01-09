@@ -7,7 +7,6 @@
 
 #define DECIMAL_VALUE_PRECISION 18
 #define DECIMAL_EXP_PRECISION 4
-// int64_t needs to be able to represent at least double the value of DECIMAL_VALUE_MAX
 #define DECIMAL_VALUE_MAX 999999999999999999
 #define DECIMAL_EXP_MAX 9999
 
@@ -62,7 +61,6 @@ class Decimal
 	bool subtract_if_exact(Decimal other);
 	bool multiply_if_exact(Decimal other);
 	bool divide_if_exact(Decimal other);
-	bool mod_if_exact(Decimal other);
 	bool pow_if_exact(Decimal other);
 
 	Decimal& ln();
@@ -104,7 +102,7 @@ class Decimal
 
 	private:
 	/// <summary>
-	/// contains all values for 10^n with n from 0 to DECIMAL_VALUE_PRECISION-1
+	/// contains all values for 10^n with n from 0 to 18
 	/// </summary>
 	static const int64_t powers_of_ten[19];
 	/// <summary>

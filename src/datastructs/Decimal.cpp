@@ -283,7 +283,7 @@ Decimal& Decimal::operator*=(Decimal other)
 			shift_right_one(_val);
 		} else if (std::abs(_exp) > DECIMAL_EXP_MAX) {
 			// check how many zeros are before _val (when in base 10)
-			uint8_t shift = DECIMAL_EXP_MAX - count_digits(_val);
+			uint8_t shift = DECIMAL_VALUE_PRECISION - count_digits(_val);
 			// check if, when shifting the value to the left, the exponent would be still too big
 			if (_exp > DECIMAL_EXP_MAX + shift) Error::throw_error(Error::ErrorType::MATH_ERROR);
 			else {
@@ -360,9 +360,6 @@ Decimal& Decimal::operator/=(Decimal other)
 		other._exp++;
 	}
 
-	// not used yet
-	bool exact = false;
-
 	// res stores the result, every step it is shifted to the left, until all 18 digits are occupied
 	int64_t res = _val / other._val;
 	_val %= other._val;
@@ -377,7 +374,6 @@ Decimal& Decimal::operator/=(Decimal other)
 			// try shifting the result to the left by shift, if it is not possible, shift it as much as possible and break the loop
 			uint8_t max_shift = DECIMAL_VALUE_PRECISION - count_digits(res);
 			if (shift > max_shift) {
-				if (_val == 0 && div % powers_of_ten[shift - max_shift] == 0) exact = true;
 				shift_right(div, shift - max_shift);
 				res *= powers_of_ten[max_shift];
 				res += div;
@@ -390,10 +386,7 @@ Decimal& Decimal::operator/=(Decimal other)
 			// decrease the exponent by shift
 			_exp -= shift;
 			// if the remainder is zero, the result is exact, break the loop
-			if (_val == 0) {
-				exact = true;
-				break;
-			}
+			if (_val == 0) break;
 		}
 	}
 
@@ -438,9 +431,114 @@ Decimal& Decimal::operator^=(Decimal other)
 	return *this;
 }
 
+bool Decimal::add_if_exact(Decimal other)
+{
+	if (_val == 0) {
+		_val = other._val;
+		_exp = other._exp;
+		return true;
+	}
+	if (other._val == 0) return true;
+
+	maximize_exp();
+	other.maximize_exp();
+	if (other._exp > _exp) {
+		other._exp -= _exp;
+		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(other._val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
+			other._val *= powers_of_ten[other._exp];
+		} else return false;
+	} else if (other._exp < _exp) {
+		other._exp = _exp - other._exp;
+		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(_val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
+			_val *= powers_of_ten[other._exp];
+			_exp -= other._exp;
+		} else return false;
+	}
+
+	_val += other._val;
+	maximize_exp();
+	if (std::abs(_val) > DECIMAL_VALUE_MAX) {
+		_val -= other._val;
+		return false;
+	}
+	return true;
+}
+
+bool Decimal::subtract_if_exact(Decimal other)
+{
+	return add_if_exact(other.negate());
+}
+
+bool Decimal::multiply_if_exact(Decimal other)
+{
+	maximize_exp();
+	other.maximize_exp();
+
+	// test if the value can be multiplied without overflow
+	int64_t test = _val * other._val;
+	if (test / other._val != _val) return false;
+	if (std::abs(test) > DECIMAL_VALUE_MAX) {
+		_exp++;
+		if (std::abs(_exp) > DECIMAL_EXP_MAX) return false;
+		if (test % 10 != 0) return false;
+		test /= 10;
+	} else if (std::abs(_exp) > DECIMAL_EXP_MAX) {
+		uint8_t shift = DECIMAL_EXP_PRECISION - count_digits(_val);
+		if (_exp > DECIMAL_EXP_MAX + shift) return false;
+		shift_right(_val, _exp - DECIMAL_EXP_MAX);
+		_exp = DECIMAL_EXP_MAX;
+	}
+	_val = test;
+	_exp += other._exp;
+	return true;
+}
+
+bool Decimal::divide_if_exact(Decimal other)
+{
+	if (other._val == 0) {
+		Error::throw_error(Error::ErrorType::MATH_ERROR);
+		return false;
+	}
+	if (other._val >= powers_of_ten[17]) {
+		shift_right_one(other._val);
+		other._exp++;
+	}
+
+	int64_t res = _val / other._val;
+	_val %= other._val;
+	if (_val != 0) {
+		while (true) {
+			uint8_t shift = DECIMAL_VALUE_PRECISION - count_digits(_val);
+			_val *= powers_of_ten[shift];
+			int64_t div = _val / other._val;
+			_val %= other._val;
+			uint8_t max_shift = DECIMAL_VALUE_PRECISION - count_digits(res);
+			if (shift > max_shift) {
+				if (_val != 0 || div % powers_of_ten[shift - max_shift] != 0) return false;
+				div /= shift - max_shift;
+				res *= powers_of_ten[max_shift];
+				res += div;
+				_exp -= max_shift;
+				break;
+			}
+			res *= powers_of_ten[shift];
+			res += div;
+			_exp -= shift;
+			if (_val == 0) break;
+		}
+	}
+	_val = res;
+	_exp -= other._exp;
+	return true;
+}
+
+bool Decimal::pow_if_exact(Decimal other)
+{
+	return false;
+}
+
 Decimal& Decimal::ln()
 {
-	const Decimal ln10(230258509299404568, -17);
 	return *this;
 }
 
@@ -566,6 +664,8 @@ Decimal& Decimal::ran_int(Decimal start, Decimal end)
 
 KEY_SET Decimal::to_key_set_fix(uint8_t fix) const
 {
+	// TODO
+	return to_key_set_sci(fix - _exp);
 }
 
 KEY_SET Decimal::to_key_set_sci(uint8_t sci) const
@@ -604,6 +704,8 @@ KEY_SET Decimal::to_key_set_sci(uint8_t sci) const
 
 KEY_SET Decimal::to_key_set_norm(uint8_t norm) const
 {
+	// TODO
+	return to_key_set_sci(10);
 }
 
 void Decimal::maximize_exp() const
