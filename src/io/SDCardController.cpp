@@ -18,13 +18,39 @@ bool SDCardController::save_file(std::string dir, std::string filename, std::vec
 
 	if (bytes_written == bytes->size()) return true;
 
-	std::cout << "f_write error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
+	std::cout << "f_write error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl
+			  << "Wrote " << bytes_written << " bytes instead of " << bytes->size() << std::endl;
 	return false;
 }
 
 bool SDCardController::read_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes)
 {
 	if (!ready() || !set_directory(dir)) return false;
+	FIL file;
+	FRESULT fr = f_open(&file, filename.c_str(), FA_READ);
+	if (FR_OK != fr) {
+		std::cout << "f_open error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
+		return false;
+	}
+
+	// get the size of the file
+	FILINFO fno;
+	fr = f_stat(filename.c_str(), &fno);
+	if (FR_OK != fr) {
+		std::cout << "f_stat error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
+		return false;
+	}
+
+	// resize the vector to fit the file
+	bytes->resize(fno.fsize);
+
+	UINT bytes_read;
+	fr = f_read(&file, bytes->data(), bytes->size(), &bytes_read);
+
+	if (bytes_read == bytes->size()) return true;
+
+	std::cout << "f_read error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl
+			  << "Read " << bytes_read << " bytes instead of " << bytes->size() << std::endl;
 	return false;
 }
 
