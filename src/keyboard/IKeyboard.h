@@ -26,11 +26,11 @@ class IKeyboard
 	/// <summary>
 	/// converts raw keycodes to calculator keycodes using the calculator key-layout
 	/// </summary>
-	static uint8_t raw_key_to_calculator_key(uint8_t raw_key, bool shift, bool alpha);
+	static KEY raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha);
 	/// <summary>
 	/// converts raw keycodes to calculator keycodes using the normal keyboard key-layout
 	/// </summary>
-	static uint8_t raw_key_to_keyboard_key(uint8_t raw_key, bool shift, bool alpha);
+	static KEY raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha);
 	/// <summary>
 	/// window manager handles the inputs
 	/// </summary>

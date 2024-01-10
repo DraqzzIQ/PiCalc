@@ -99,6 +99,12 @@
     <ClInclude Include="src\datastructs\Number.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\constant\Error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\datastructs\Decimal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp">
@@ -174,6 +180,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\datastructs\Number.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\constant\Error.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\datastructs\Decimal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

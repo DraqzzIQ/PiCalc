@@ -82,11 +82,11 @@ class PicoKeyboard: public IKeyboard
 	/// <param name="x">x coordinate (0-5) of the key action</param>
 	/// <param name="y">y coordinate (0-8) of the key action</param>
 	/// <returns>keycode</returns>
-	uint8_t coords_to_key_raw(uint8_t x, uint8_t y);
+	KEY coords_to_key_raw(uint8_t x, uint8_t y);
 	/// <summary>
 	/// prints the name of the key being input, used for debugging
 	/// </summary>
 	/// <param name="key">keycode of the key being printed</param>
-	void print_key(uint8_t key);
+	void print_key(KEY key);
 };
 #endif

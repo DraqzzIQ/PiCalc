@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClInclude Include="src\constant\Chars.h" />
     <ClInclude Include="src\constant\Constants.h" />
+    <ClInclude Include="src\constant\Error.h" />
     <ClInclude Include="src\datastructs\Bitset2D.h" />
+    <ClInclude Include="src\datastructs\Decimal.h" />
     <ClInclude Include="src\datastructs\DynamicBitset.h" />
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
@@ -52,7 +54,9 @@
     <ClCompile Include="src\CasioOS.cpp" />
     <ClCompile Include="src\constant\Chars.cpp" />
     <ClCompile Include="src\constant\Constants.cpp" />
+    <ClCompile Include="src\constant\Error.cpp" />
     <ClCompile Include="src\datastructs\Bitset2D.cpp" />
+    <ClCompile Include="src\datastructs\Decimal.cpp" />
     <ClCompile Include="src\datastructs\DynamicBitset.cpp" />
     <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />

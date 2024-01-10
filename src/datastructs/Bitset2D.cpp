@@ -101,15 +101,38 @@ bool Bitset2D::get_bit(uint32_t coord_x, uint32_t coord_y) const
 	return _plane.at(coord_x).at(coord_y);
 }
 
-Bitset2D Bitset2D::copy(uint32_t start, uint32_t end) const
+Bitset2D& Bitset2D::copy(uint32_t x_start, uint32_t y_start, uint32_t width, uint32_t height, Bitset2D& destination) const
 {
-	Bitset2D res = Bitset2D();
-	res._width = end - start;
-	res._height = _height;
-	std::copy(_plane.begin() + start, _plane.begin() + end, res._plane.begin());
-	return res;
+	destination.clear();
+	if (x_start >= _width || y_start >= _height) return destination;
+	width += x_start;
+	if (width > _width) width = _width;
+	if (y_start + height > _height) height = _height - y_start;
+	destination._height = height;
+	for (; x_start < width; x_start++) destination.push_back(_plane[x_start].copy(y_start, height));
+	return destination;
 }
 
+
+void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, KEY_SET text, bool resize_if_needed)
+{
+	uint32_t x = coord_x;
+	uint32_t y = coord_y;
+	for (uint32_t i = 0; i < text.size(); i++) {
+		if (text[i] == 239) {
+			y += font.at(0).height();
+			if (y >= _height) {
+				if (resize_if_needed) extend_down(y - _height + 1, false);
+				else return;
+			}
+			x = coord_x;
+		} else {
+			set(x, y, font.at(text[i]), resize_if_needed);
+			x += font.at(text[i]).width() + 1;
+			if (x >= _width) return;
+		}
+	}
+}
 
 void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bool resize_if_needed)
 {
@@ -120,7 +143,8 @@ void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bo
 		if (other._width + coord_x > _width) { extend_right(other._width + coord_x - _width, false); }
 		if (other._height + coord_y > _height) { extend_down(other._height + coord_y - _height, false); }
 	}
-	for (uint32_t i = 0; i < other._width; i++) { _plane[i + coord_x].set(coord_y, other.at(i)); }
+	uint32_t len = other._width < _width - coord_x ? other._width : _width - coord_x;
+	for (uint32_t i = 0; i < len; i++) { _plane[i + coord_x].set(coord_y, other.at(i)); }
 }
 
 void Bitset2D::set_column(uint32_t coord_x, const DynamicBitset& other)
@@ -249,7 +273,9 @@ void Bitset2D::extend_up(const Bitset2D& other)
 
 void Bitset2D::extend_up(uint32_t length, bool value)
 {
-	for (uint32_t i = 0; i < _width; i++) { _plane[i].extend_left(length, value); }
+	for (uint32_t i = 0; i < _width; i++) {
+		_plane[i].extend_left(length, value);
+	}
 	_height += length;
 }
 
