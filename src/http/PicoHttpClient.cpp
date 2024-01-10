@@ -1,13 +1,12 @@
+#pragma once
 #include "http/PicoHttpClient.h"
-#include "cyw43_ll.h"
-#include "lwip/netif.h"
-#include "lwip/dns.h"
+//#include "lwip/dns.h"
 #include "mbedtls/ssl.h"
-#include "lwip/altcp.h"
-#include "lwip/altcp_tcp.h"
-#include "lwip/altcp_tls.h"
-#include "lwip/pbuf.h"
-#include "pico/cyw43_arch.h"
+#include "lwip/init.h"
+//#include "lwip/altcp.h"
+//#include "lwip/altcp_tcp.h"
+//#include "lwip/altcp_tls.h"
+//#include "lwip/pbuf.h"
 #include <sstream>
 
 #define PICO_WIFI_SSID "G-W0815"
@@ -17,12 +16,14 @@
 
 #define HTTP_METHOD_GET 0
 #define HTTP_METHOD_POST 1
-using namespace std;
 
 PicoHttpClient::PicoHttpClient(std::string baseUrl): IHttpClient(baseUrl){
     cyw43_arch_init();
-    cyw43_arch_wifi_connect_timeout_ms(PICO_WIFI_SSID, PICO_WIFI_PASSWD, PICO_WIFI_AUTH, PICO_WIFI_TIMEOUT);
     cyw43_arch_lwip_begin();
+    cyw43_arch_wifi_connect_timeout_ms(PICO_WIFI_SSID, PICO_WIFI_PASSWD, PICO_WIFI_AUTH, PICO_WIFI_TIMEOUT);
+    cyw43_arch_lwip_end();
+    cyw43_arch_lwip_begin();
+    lwip_init();
     cyw43_arch_lwip_end();
     baseUrl = baseUrl;
     cyw43_arch_lwip_begin();
@@ -128,10 +129,10 @@ err_t PicoHttpClient::recieve(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 
 		// Print packet buffer
 		while (buf->len != buf->tot_len) {
-			data.append(string((char*)buf->payload));
+			data.append(std::string((char*)buf->payload));
 			buf = buf->next;
 		}
-		data.append(string((char*)buf->payload));
+		data.append(std::string((char*)buf->payload));
 
 		// Advertise data reception
         cyw43_arch_lwip_begin();

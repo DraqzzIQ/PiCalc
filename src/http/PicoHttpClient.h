@@ -1,13 +1,15 @@
+#pragma once
 #include "http/HttpRequest.h"
 #include "http/HttpResponse.h"
 #include "http/IHttpClient.h"
-#include <string>
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 #include "lwip/pbuf.h"
+#include "lwip/altcp.h"
 #include "lwip/altcp_tcp.h"
 #include "lwip/altcp_tls.h"
 #include "lwip/dns.h"
+#include <string>
 #define CERT 
 
 enum HttpMethod {
