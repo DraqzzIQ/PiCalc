@@ -1,6 +1,8 @@
 #include "io/SDCardController.h"
 #ifdef PICO
 
+sd_card_t* SDCardController::_sd_card = sd_get_by_num(0);
+
 bool SDCardController::save_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes)
 {
 	if (!ready() || !set_directory(dir)) return false;
@@ -28,8 +30,6 @@ bool SDCardController::read_file(std::string dir, std::string filename, std::vec
 
 void SDCardController::init()
 {
-	_sd_card = &sd_card;
-
 	if (_sd_card->use_card_detect) {
 		// Set up an interrupt on Card Detect to detect removal of the card when it happens:
 		gpio_set_irq_enabled_with_callback(

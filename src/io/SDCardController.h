@@ -3,6 +3,10 @@
 ///
 #include <f_util.h>
 ///
+#include <ff.h> /* Obtains integer types */
+///
+#include <diskio.h> /* Declarations of disk functions */
+//
 #include <hw_config.h>
 #include <iostream>
 #include <string>
