@@ -1,4 +1,10 @@
 #pragma once
+#ifdef PICO
+#include <http/PicoHttpClient.h>
+#else
+#include <http/DesktopHttpClient.h>
+#endif
+
 #include "windows/TextWindow.h"
 #include <regex>
 #ifdef PICO

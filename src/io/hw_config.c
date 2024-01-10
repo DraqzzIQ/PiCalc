@@ -11,9 +11,13 @@ under the License is distributed on an AS IS BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 */
+#include <hw_config.h>
 
-#include "io/SDCardHWConfig.h"
-
+///
+///
+#include <ff.h> /* Obtains integer types */
+//
+#include <diskio.h> /* Declarations of disk functions */
 
 /*
 Hardware configuration:
@@ -31,7 +35,7 @@ Hardware configuration:
 */
 
 // Hardware Configuration of SPI
-spi_t SDCardHWConfig::spi = {
+static spi_t spi = {
 	.hw_inst = spi0, // SPI component
 	.miso_gpio = 16, // GPIO number (not Pico pin number)
 	.mosi_gpio = 19,
@@ -42,7 +46,7 @@ spi_t SDCardHWConfig::spi = {
 };
 
 // Hardware Configuration of the SD Card
-sd_card_t SDCardHWConfig::sd_card = {
+static sd_card_t sd_card = {
 	.pcName = "0:",         // Name used to mount device
 	.spi = &spi,            // Pointer to the SPI driving this card
 	.ss_gpio = 17,          // The SPI slave select GPIO for this SD card
@@ -50,3 +54,20 @@ sd_card_t SDCardHWConfig::sd_card = {
 	.card_detect_gpio = 1,  // Card detect
 	.card_detected_true = 1 // What the GPIO read returns when a card is present.
 };
+
+size_t sd_get_num()
+{
+	return 1;
+}
+sd_card_t* sd_get_by_num(size_t num)
+{
+	return &sd_card;
+}
+size_t spi_get_num()
+{
+	return 1;
+}
+spi_t* spi_get_by_num(size_t num)
+{
+	return &spi;
+}

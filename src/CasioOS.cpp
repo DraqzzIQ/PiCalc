@@ -9,6 +9,7 @@
 #include <vector>
 
 #ifdef PICO
+#include "io/SDCardController.h"
 #include "keyboard/PicoKeyboard.h"
 #include "pico/stdlib.h"
 #include "renderers/DisplayRenderer.h"
@@ -46,6 +47,7 @@ int main(int argc, char* argv[])
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
 	if (!I2CUtils::device_availible(DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
+	SDCardController::init();
 	new DisplayRenderer();
 #else
 	new ConsoleRenderer();
