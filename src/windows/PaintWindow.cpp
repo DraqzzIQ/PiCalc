@@ -293,7 +293,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			redo_stack.pop();
 		}
 	}
-	printf("Bitset size: %d x %d\n", painted.width(), painted.height());
+	std::cout << "Bitset size: " << painted.width() << " x " << painted.height() << std::endl;
 
 	return true;
 }
