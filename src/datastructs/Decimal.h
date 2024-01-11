@@ -100,11 +100,12 @@ class Decimal
 	static const Decimal PI;
 	static const Decimal EULER;
 
-	private:
 	/// <summary>
 	/// contains all values for 10^n with n from 0 to 18
 	/// </summary>
-	static const int64_t powers_of_ten[19];
+	static const uint64_t powers_of_ten[19];
+
+	private:
 	/// <summary>
 	/// count the number of digits after the first non-zero digit (base 10)
 	/// </summary>

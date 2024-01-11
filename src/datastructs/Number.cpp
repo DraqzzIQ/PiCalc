@@ -12,6 +12,17 @@ Number::Number(int64_t value, int16_t exp)
 	_children = std::vector<Number*>();
 }
 
+Number::Number(int64_t value, int16_t exp, uint8_t periodic)
+{
+	exp += periodic;
+	value -= value / Decimal::powers_of_ten[periodic];
+	Number* top = new Number(value, exp);
+	Number* bottom = new Number(Decimal::powers_of_ten[periodic] - 1, 0);
+
+	_value = 72;
+	_children = std::vector<Number*>{ top, bottom };
+}
+
 Number::Number(const Number* other)
 {
 	operator=(other);

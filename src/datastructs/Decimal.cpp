@@ -1,6 +1,6 @@
 #include "Decimal.h"
 
-const int64_t Decimal::powers_of_ten[] = {
+const uint64_t Decimal::powers_of_ten[] = {
 	1,
 	10,
 	100,
@@ -204,39 +204,38 @@ Decimal& Decimal::operator+=(Decimal other)
 	// if the exponents are not equal: make them equal by shifting the commas and changing the exponents
 	// this is done by shifting the bigger value to the left until the exponents are equal, if no more
 	// shifting is possible, shift the smaller value to the right until the exponents are equal
-	// other._exp is used to store the difference between the exponents as it is not needed anymore
 	if (other._exp > _exp) {
-		other._exp -= _exp;
+		uint16_t diff = other._exp - _exp;
 
 		// test if the the bigger value can be shifted enough to the left to compensate the difference in exponents
-		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(other._val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
-			other._val *= powers_of_ten[other._exp];
+		if (diff < DECIMAL_VALUE_PRECISION && std::abs(other._val) < powers_of_ten[DECIMAL_VALUE_PRECISION - diff]) {
+			other._val *= powers_of_ten[diff];
 		} else {
 			// when it can't be shifted enough, shift it as much as possible and shift the smaller value to the right
 			uint8_t max_shift = DECIMAL_VALUE_PRECISION - count_digits(other._val);
 			other._val *= powers_of_ten[max_shift];
-			other._exp -= max_shift;
+			diff -= max_shift;
 
-			if (other._exp > DECIMAL_VALUE_PRECISION) _val = 0;
-			else shift_right(_val, other._exp);
-			_exp += other._exp;
+			if (diff > DECIMAL_VALUE_PRECISION) _val = 0;
+			else shift_right(_val, diff);
+			_exp += diff;
 		}
 	} else if (other._exp < _exp) {
-		other._exp = _exp - other._exp;
+		uint16_t diff = _exp - other._exp;
 
 		// test if the the bigger value can be shifted enough to the left to compensate the difference in exponents
-		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(_val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
-			_val *= powers_of_ten[other._exp];
-			_exp -= other._exp;
+		if (diff < DECIMAL_VALUE_PRECISION && std::abs(_val) < powers_of_ten[DECIMAL_VALUE_PRECISION - diff]) {
+			_val *= powers_of_ten[diff];
+			_exp -= diff;
 		} else {
 			// when it can't be shifted enough, shift it as much as possible and shift the smaller value to the right
 			uint8_t shift = DECIMAL_VALUE_PRECISION - count_digits(_val);
 			_val *= powers_of_ten[shift];
 			_exp -= shift;
 
-			other._exp -= shift;
-			if (other._exp > DECIMAL_VALUE_PRECISION) other._val = 0;
-			else shift_right(other._val, other._exp);
+			diff -= shift;
+			if (diff > DECIMAL_VALUE_PRECISION) other._val = 0;
+			else shift_right(other._val, diff);
 		}
 	}
 
@@ -747,12 +746,15 @@ KEY_SET Decimal::to_key_set_sci(uint8_t sci) const
 
 	KEY_SET res;
 
-	int16_t exp_copy = std::abs(_exp);
-	while (exp_copy != 0) {
-		res.push_back((KEY)(exp_copy % 10));
-		exp_copy /= 10;
+	if (_exp == 0) res.push_back(0);
+	else {
+		int16_t exp_copy = std::abs(_exp);
+		while (exp_copy != 0) {
+			res.push_back((KEY)(exp_copy % 10));
+			exp_copy /= 10;
+		}
+		if (_exp < 0) res.push_back(116);
 	}
-	if (_exp < 0) res.push_back(116);
 	res.push_back(127);
 
 	int64_t val_copy = std::abs(_val);

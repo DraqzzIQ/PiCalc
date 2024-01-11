@@ -510,7 +510,7 @@ void Equation::add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_fir
 		add_value_to_first_child = false;
 		uint32_t i = _cursor_index++;
 		for (; i > 0; i--) {
-			uint8_t val = _equation.at(i - 1);
+			KEY val = _equation.at(i - 1);
 			if (!(val < 10 || val == 82 || val == 127)) break;
 			add_value_to_first_child = true;
 		}
@@ -533,7 +533,7 @@ Number* Equation::to_number_part(KEY expected_ending)
 	bool numExpected = true;
 	clear_number();
 	for (; _calculate_index < _equation.size(); _calculate_index++) {
-		uint8_t value = _equation.at(_calculate_index);
+		KEY value = _equation.at(_calculate_index);
 
 		if (!add_digit(value)) {
 			if (_number_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _number_value_cnt & 0b00111111));
@@ -755,11 +755,7 @@ Number* Equation::get_number()
 		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 		num = new Number();
 	} else if (_number_state & 0b00011111) {
-		uint8_t periodic_digits = _number_state & 0b00011111;
-		_number_exp += periodic_digits;
-		_number_val -= _number_val / std::pow(10, periodic_digits);
-		num = new Number(_number_val, _number_exp);
-		num->divide(new Number(std::pow(10, periodic_digits) - 1, 1));
+		num = new Number(_number_val, _number_exp, _number_state & 0b00011111);
 	} else {
 		num = new Number(_number_val, _number_exp);
 	}
