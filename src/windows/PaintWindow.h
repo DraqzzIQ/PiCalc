@@ -17,38 +17,38 @@ class PaintWindow: public Window
 
 	private:
 	enum class Tool {
+		PEN,
 		LINE,
 		RECTANGLE,
 		CIRCLE,
 		NONE
 	};
 	using Tool = PaintWindow::Tool;
+	Tool _tool = Tool::NONE;
+	bool _erase = false;
 
 	static void draw(int x, int y, bool value, int size, Bitset2D& bitset);
 	static void draw_line(int x1, int y1, int x2, int y2, bool value, int size, Bitset2D& bitset);
 	static void draw_rectangle(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
 	static void draw_ellipse(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
 	void fill(int x, int y, bool value, Bitset2D& bitset);
-	Bitset2D draw_preview(Bitset2D& target);
+	bool set_tool(Tool tool);
+	void save_to_hist();
+	Bitset2D draw_preview(Bitset2D target);
 
-	Bitset2D painted;
-	Bitset2D _rendered_preview;
+	Bitset2D _painted;
 	Bitset2D _rendered;
 
-	int _cursor[2] = { 0, 0 };
-	bool _pen_down = false;
-	int _brush_size = 1;
-	bool erase = false;
-	int _start_pos[2] = { 0, 0 };
-	int _blink_timer;
+	uint32_t corner_x = 0;
+	uint32_t corner_y = 0;
+	uint32_t _cursor[2] = { 0, 0 };
+	uint32_t _start_pos[2] = { 0, 0 };
+	uint8_t _brush_size = 1;
+	uint64_t _blink_timer;
 	bool preview = true;
 
-	Tool _tool = Tool::NONE;
-
+	uint8_t current_history_index = 0;
 	Bitset2D history[20];
-	int current_history_index = 0;
-	std::stack<Bitset2D> redo_stack{};
 
-	int corner_x = 0;
-	int corner_y = 0;
+	std::stack<Bitset2D> redo_stack{};
 };
