@@ -6,7 +6,7 @@ class InstanceSelectionWindow: public Window
 	public:
 	InstanceSelectionWindow();
 	Bitset2D update_window();
-	void handle_key_down(KeyPress keypress);
+	bool handle_key_down(KeyPress keypress);
 	void setup(std::vector<Window*> instances);
 
 	private:

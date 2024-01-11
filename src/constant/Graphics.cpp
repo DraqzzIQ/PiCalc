@@ -410,7 +410,7 @@ FONT Graphics::SYMBOLS_6_HIGH = {
 	{ 77, Bitset2D(5, 6, { { 0b00000000 }, { 0b10000100 }, { 0b11111100 }, { 0b00000000 }, { 0b00000000 } }) }, //?
 	{ 78, Bitset2D(5, 6, { { 0b00000000 }, { 0b00110000 }, { 0b11001100 }, { 0b10000100 }, { 0b00000000 } }) }, //?
 	{ 79, Bitset2D(5, 6, { { 0b00000000 }, { 0b10000100 }, { 0b11001100 }, { 0b00110000 }, { 0b00000000 } }) }, //?
-	{ 80, Bitset2D(3, 6, { { 0b00000000 }, { 0b00000000 }, { 0b00000000 } }) },
+	{ 80, Bitset2D(2, 6, { { 0b00000000 }, { 0b00000000 } }) },
 	{ 81, Bitset2D(5, 6, { { 0b00000000 }, { 0b00001100 }, { 0b00001100 }, { 0b00000000 }, { 0b00000000 } }) },
 	{ 82, Bitset2D(5, 6, { { 0b00000000 }, { 0b00010100 }, { 0b00011000 }, { 0b00000000 }, { 0b00000000 } }) },
 	{ 83, Bitset2D(5, 6, { { 0b00000000 }, { 0b11010100 }, { 0b11011000 }, { 0b00000000 }, { 0b00000000 } }) },
@@ -492,13 +492,23 @@ const std::map<KEY, KEY_SET> Graphics::key_text{
 
 Bitset2D Graphics::create_text(const std::string& text, FONT& table, const uint16_t spacing)
 {
+	if (text.empty()) {
+		return Bitset2D(0, 0, false);
+	}
 	std::string letter(1, text.at(0));
-	Bitset2D rendered_text = table.at(Chars::KEY_MAP.at(letter));
+	if (!Chars::CHAR_TO_KEYCODE.contains(letter)) {
+		letter = "?";
+	}
+	Bitset2D rendered_text = table.at(Chars::CHAR_TO_KEYCODE.at(letter));
 	Bitset2D space(spacing, rendered_text[0].size(), false);
 	for (size_t i = 1; i < text.length(); i++) {
 		rendered_text.extend_right(space);
 		letter = std::string(1, text.at(i));
-		rendered_text.extend_right(table.at(Chars::KEY_MAP.at(letter)));
+
+		if (!Chars::CHAR_TO_KEYCODE.contains(letter)) {
+			letter = "?";
+		}
+		rendered_text.extend_right(table.at(Chars::CHAR_TO_KEYCODE.at(letter)));
 	}
 	return rendered_text;
 }
@@ -506,12 +516,12 @@ Bitset2D Graphics::create_text(const std::string& text, FONT& table, const uint1
 Bitset2D Graphics::create_text(const KEY_SET text, FONT& table, const uint16_t spacing)
 {
 	std::string letter(1, text.at(0));
-	Bitset2D rendered_text = table.at(Chars::KEY_MAP.at(letter));
+	Bitset2D rendered_text = table.at(Chars::CHAR_TO_KEYCODE.at(letter));
 	Bitset2D space(spacing, rendered_text[0].size(), false);
 	for (uint8_t key : text) {
 		rendered_text.extend_right(space);
 		letter = std::string(1, key);
-		rendered_text.extend_right(table.at(Chars::KEY_MAP.at(letter)));
+		rendered_text.extend_right(table.at(Chars::CHAR_TO_KEYCODE.at(letter)));
 	}
 	return rendered_text;
 }

@@ -3,11 +3,7 @@
 #include "constant/Chars.h"
 #include "keyboard/IKeyboard.h"
 #include "windows/WindowManager.h"
-#ifdef _WIN32
-#include "SDL.h"
-#else
 #include <SDL2/SDL.h>
-#endif
 #include <iostream>
 
 /// <summary>
@@ -34,6 +30,11 @@ class SDLKeyboard: public IKeyboard
 	/// </summary>
 	/// <returns>true if pressed else false</returns>
 	bool is_alpha_active();
+	/// <summary>
+	/// checks wether right alt is active
+	/// </summary>
+	/// <returns>true if pressed else false</returns>
+	bool is_ralt_active();
 
 	private:
 	/// <summary>
@@ -43,7 +44,7 @@ class SDLKeyboard: public IKeyboard
 	/// <summary>
 	/// SDL event
 	/// </summary>
-	SDL_Event* _event;
+	SDL_Event _event;
 	/// <summary>
 	/// initializes SDL
 	/// </summary>

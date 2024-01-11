@@ -48,7 +48,7 @@ Bitset2D CalculatorWindow::update_window()
 	}
 }
 
-void CalculatorWindow::handle_key_down(KeyPress keypress)
+bool CalculatorWindow::handle_key_down(KeyPress keypress)
 {
 	switch (_menu) {
 	case Menu::None:
@@ -57,13 +57,13 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 		else {
 			switch (_mode) {
 			case Mode::COMP:
-				if (keypress.key_calculator == Chars::KEY_MAP.at("right")) _equation_selected->move_cursor_right();
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("left")) _equation_selected->move_cursor_left();
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("up")) _equation_selected->move_cursor_up();
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("down")) _equation_selected->move_cursor_down();
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) _equation_selected->del();
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) _equation_selected->ac();
-				// else if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
+				if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("right")) _equation_selected->move_cursor_right();
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("left")) _equation_selected->move_cursor_left();
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("up")) _equation_selected->move_cursor_up();
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("down")) _equation_selected->move_cursor_down();
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("DEL")) _equation_selected->del();
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("AC")) _equation_selected->ac();
+				// else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("=")) {
 				//	// TODO: output with , instead of .
 				//	result = _equation_selected->calculate_equation(variables);
 				//	if (Error::error_thrown()) {
@@ -75,55 +75,55 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 				//		calculated = true;
 				//	}
 				//	// result_rendered = Graphics::create_text(std::to_string(result));
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("unknown"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("unknown"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("SHIFT"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("SHIFT"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("ALPHA"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("ALPHA"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("MODE"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("MODE"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("SETUP"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("SETUP"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("STO"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("STO"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("RCL"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("RCL"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("CONST"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("CONST"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("STAT/DIST"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("STAT/DIST"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at(":"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at(":"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("FACT"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("FACT"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("ENG"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("ENG"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("<-"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("<-"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("CONV"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("CONV"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("Conv"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("Conv"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("hyp"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("hyp"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("CLR"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("CLR"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("VERIFY"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("VERIFY"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("BASE"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("BASE"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("INS"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("INS"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("DRG"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("DRG"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("M+"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("M+"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("M-"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("M-"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("OFF"))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("OFF"))
 					;
-				else if (keypress.key_calculator == Chars::KEY_MAP.at("wav="))
+				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("wav="))
 					;
 				else _equation_selected->add_value(keypress.key_calculator);
 			}
@@ -256,6 +256,7 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 		}
 		break;
 	}
+	return true;
 }
 
 void CalculatorWindow::set_menu(Menu menu)

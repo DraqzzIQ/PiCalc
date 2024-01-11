@@ -64,7 +64,6 @@ int main(int argc, char* argv[])
 	Utils::set_time_start_point();
 #endif
 
-
 	window_manager->add_window(main_menu);
 
 	// start main thread
