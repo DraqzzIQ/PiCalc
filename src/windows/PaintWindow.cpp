@@ -24,24 +24,25 @@ Bitset2D PaintWindow::update_window()
 	return _rendered;
 }
 
-Bitset2D PaintWindow::draw_preview(Bitset2D& _rendered)
+Bitset2D PaintWindow::draw_preview(Bitset2D& rendered)
 {
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
 		_blink_timer += 500000;
 		preview = !preview;
 	}
-	if (_tool == Tool::LINE) {
-		draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
-	} else if (_tool == Tool::RECTANGLE) {
-		draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
-	} else if (_tool == Tool::CIRCLE) {
-		draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, _rendered);
-	} else if (erase) {
-		draw_rectangle(_cursor[0] - _brush_size / 2, _cursor[1] - _brush_size / 2, _cursor[0] + _brush_size / 2, _cursor[1] + _brush_size / 2, preview, 1, _rendered);
-	} else {
-		draw(_cursor[0], _cursor[1], preview, _brush_size, _rendered);
+
+	switch (_tool) {
+	case Tool::LINE:
+		draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, rendered);
+	case Tool::RECTANGLE:
+		draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, rendered);
+	case Tool::CIRCLE:
+		draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, rendered);
+	default:
+		if (erase) draw_rectangle(_cursor[0] - _brush_size / 2, _cursor[1] - _brush_size / 2, _cursor[0] + _brush_size / 2, _cursor[1] + _brush_size / 2, preview, 1, rendered);
+		else draw(_cursor[0], _cursor[1], preview, _brush_size, rendered);
 	}
-	return _rendered;
+	return rendered;
 }
 
 void PaintWindow::draw(int x, int y, bool value, int size, Bitset2D& bitset)
@@ -146,18 +147,21 @@ void PaintWindow::fill(int x, int y, bool value, Bitset2D& bitset)
 
 void PaintWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_calculator == Chars::KEY_MAP.at("left") && keypress.alpha) {
-		corner_x -= 1;
-		return;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("right") && keypress.alpha) {
-		corner_x += 1;
-		return;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("up") && keypress.alpha) {
-		corner_y -= 1;
-		return;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("down") && keypress.alpha) {
-		corner_y += 1;
-		return;
+	if (keypress.alpha) {
+		switch (keypress.key_calculator) {
+		case 169: // left
+			corner_x -= 1;
+			return;
+		case 170: // right
+			corner_x += 1;
+			return;
+		case 167: // up
+			corner_y -= 1;
+			return;
+		case 168: // down
+			corner_y += 1;
+			return;
+		}
 	}
 
 	if (keypress.key_calculator == Chars::KEY_MAP.at("up")) {
