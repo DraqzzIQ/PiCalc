@@ -50,7 +50,7 @@ Bitset2D CalculatorWindow::update_window()
 	}
 }
 
-void CalculatorWindow::handle_key_down(KeyPress keypress)
+bool CalculatorWindow::handle_key_down(KeyPress keypress)
 {
 	switch (_menu) {
 	case Menu::None:
@@ -233,6 +233,7 @@ void CalculatorWindow::handle_key_down(KeyPress keypress)
 		}
 		break;
 	}
+	return true;
 }
 
 void CalculatorWindow::set_menu(Menu menu)

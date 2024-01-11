@@ -22,14 +22,15 @@ class Window
 	virtual Bitset2D update_window();
 	/// <summary>
 	/// handles keydown events
+	/// returns true, if the keypress was handled
 	/// </summary>
 	/// <param name="key">key that got pressed</param>
-	virtual void handle_key_down(KeyPress keypress);
+	virtual bool handle_key_down(KeyPress keypress);
 	/// <summary>
 	/// handles keyup events
 	/// </summary>
 	/// <param name="key">key that got released</param>
-	virtual void handle_key_up(KeyPress keypress);
+	virtual bool handle_key_up(KeyPress keypress);
 	/// <summary>
 	/// calles when window is displayed
 	/// </summary>

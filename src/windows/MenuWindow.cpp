@@ -23,19 +23,22 @@ void MenuWindow::create_menu()
 	for (size_t i = 0; i < options.size(); i++) { add_to_window(Graphics::create_text(std::to_string(i) + ":" + options[i]->get_display_name(), Graphics::SYMBOLS_6_HIGH, 1), 1, 1 + i * line_height); }
 }
 
-const int MenuWindow::pages_count()
+int MenuWindow::pages_count() const
 {
 	return static_cast<int>(ceil(static_cast<double>(options.size()) / 4));
 }
 
-void MenuWindow::handle_key_down(KeyPress keypress)
+bool MenuWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == 167) scroll_up();
-	else if (keypress.key_raw == 168) scroll_down();
-	else if (keypress.key_raw == 169) scroll_left();
-	else if (keypress.key_raw == 170) scroll_right();
+	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) scroll_up();
+	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) scroll_down();
+	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("left")) scroll_left();
+	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) scroll_right();
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size() && keypress.shift) options[keypress.key_raw]->on_shift_select();
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size()) options[keypress.key_raw]->on_select();
+	else return false;
+
+	return true;
 }
 
 void MenuWindow::scroll_up()

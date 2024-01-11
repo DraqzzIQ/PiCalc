@@ -12,7 +12,7 @@ class CalculatorWindow: public Window
 	CalculatorWindow();
 	~CalculatorWindow();
 	Bitset2D update_window();
-	void handle_key_down(KeyPress keypress);
+	bool handle_key_down(KeyPress keypress);
 
 	private:
 	enum class Menu {

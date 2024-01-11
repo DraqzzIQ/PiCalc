@@ -1,13 +1,13 @@
 #include "windows/WindowManager.h"
 
-WindowManager* WindowManager::instance = nullptr;
+WindowManager* WindowManager::_instance = nullptr;
 
 WindowManager* WindowManager::get_instance()
 {
-	if (!instance)
-		instance = new WindowManager();
+	if (!_instance)
+		_instance = new WindowManager();
 
-	return instance;
+	return _instance;
 }
 
 WindowManager::WindowManager()
@@ -49,9 +49,9 @@ void WindowManager::update(bool force_rerender)
 
 void WindowManager::handle_key_down(KeyPress keypress)
 {
-	if (keypress.alpha && keypress.key_raw == 126) {
+	if (keypress.shift && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("AC")) {
 		if (_windows.size() > 1) minimize_window();
-	} else if (keypress.alpha && keypress.key_raw == 125) {
+	} else if (keypress.shift && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("DEL")) {
 		if (_windows.size() > 1) close_window();
 	} else if (_windows.size() > 0) _windows.top()->handle_key_down(keypress);
 }

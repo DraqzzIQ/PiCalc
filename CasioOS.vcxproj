@@ -28,6 +28,7 @@
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
     <ClInclude Include="src\datastructs\Number.h" />
+    <ClInclude Include="src\http\HttpParams.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />
@@ -49,6 +50,14 @@
     <ClInclude Include="src\windows\TextWindow.h" />
     <ClInclude Include="src\windows\Window.h" />
     <ClInclude Include="src\windows\WindowManager.h" />
+    <ClInclude Include="src\http\IHttpClient.h" />
+    <ClInclude Include="src\http\DesktopHttpClient.h" />
+    <ClInclude Include="src\http\HttpHeaders.h" />
+    <ClInclude Include="src\http\HttpRequest.h" />
+    <ClInclude Include="src\http\HttpResponse.h" />
+    <ClInclude Include="src\windows\WolframAlphaWindow.h" />
+    <ClInclude Include="src\windows\ChatGPTWindow.h" />
+
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
@@ -61,6 +70,7 @@
     <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />
     <ClCompile Include="src\datastructs\Number.cpp" />
+    <ClCompile Include="src\http\IHttpClient.cpp" />
     <ClCompile Include="src\keyboard\IKeyboard.cpp" />
     <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
     <ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
@@ -78,6 +88,10 @@
     <ClCompile Include="src\windows\TextWindow.cpp" />
     <ClCompile Include="src\windows\Window.cpp" />
     <ClCompile Include="src\windows\WindowManager.cpp" />
+    <ClCompile Include="src\http\DesktopHttpClient.cpp" />
+    <ClCompile Include="src\windows\WolframAlphaWindow.cpp" />
+    <ClCompile Include="src\windows\ChatGPTWindow.cpp" />
+
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -132,12 +146,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>lib\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>lib\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>lib\SDL2\include;lib\openssh\include\openssl;$(IncludePath)</IncludePath>
+    <LibraryPath>lib\SDL2\lib\x64;lib\openssh;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>lib\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>lib\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>lib\SDL2\include;lib\openssh\include\openssl;$(IncludePath)</IncludePath>
+    <LibraryPath>lib\SDL2\lib\x64;lib\openssh;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -171,17 +185,18 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libcrypto_static.lib;libssl_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -194,19 +209,19 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libcrypto_static.lib;libssl_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
