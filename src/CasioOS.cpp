@@ -18,6 +18,7 @@
 #include "keyboard/SDLKeyboard.h"
 #endif
 
+
 IKeyboard* keyboard;
 WindowManager* window_manager;
 MenuWindow* main_menu;
@@ -46,7 +47,8 @@ int main(int argc, char* argv[])
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
 	if (!I2CUtils::device_availible(DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
-	new DisplayRenderer();
+	else
+		new DisplayRenderer();
 #else
 	new ConsoleRenderer();
 #endif
@@ -63,7 +65,6 @@ int main(int argc, char* argv[])
 	keyboard = new SDLKeyboard();
 	Utils::set_time_start_point();
 #endif
-
 
 	window_manager->add_window(main_menu);
 
