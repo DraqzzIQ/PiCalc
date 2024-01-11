@@ -85,7 +85,7 @@ class WindowManager
 	/// <summary>
 	/// the instance
 	/// </summary>
-	static WindowManager* instance;
+	static WindowManager* _instance;
 	/// <summary>
 	/// the window stack
 	/// </summary>

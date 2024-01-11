@@ -24,7 +24,7 @@ class MenuWindow: public Window
 	/// handles keydown events
 	/// </summary>
 	/// <param name="key">key that got pressed</param>
-	void handle_key_down(KeyPress keypress);
+	bool handle_key_down(KeyPress keypress);
 	/// <summary>
 	/// window manager to add windows to
 	/// </summary>
@@ -52,7 +52,7 @@ class MenuWindow: public Window
 	/// <summary>
 	/// number of pages
 	/// </summary>
-	const int pages_count();
+	int pages_count() const;
 	/// <summary>
 	/// scrolls the menu up
 	/// </summary>

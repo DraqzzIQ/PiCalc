@@ -109,8 +109,7 @@ Bitset2D& Bitset2D::copy(uint32_t x_start, uint32_t y_start, uint32_t width, uin
 	if (width > _width) width = _width;
 	if (y_start + height > _height) height = _height - y_start;
 	destination._height = height;
-	for (; x_start < width; x_start++)
-		destination.push_back(_plane[x_start].copy(y_start, height));
+	for (; x_start < width; x_start++) destination.push_back(_plane[x_start].copy(y_start, height));
 	return destination;
 }
 
@@ -145,7 +144,7 @@ void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bo
 		if (other._height + coord_y > _height) { extend_down(other._height + coord_y - _height, false); }
 	}
 	uint32_t len = other._width < _width - coord_x ? other._width : _width - coord_x;
-	for (uint32_t i = 0; i < other._width; i++) { _plane[i + coord_x].set(coord_y, other.at(i)); }
+	for (uint32_t i = 0; i < len; i++) { _plane[i + coord_x].set(coord_y, other.at(i)); }
 }
 
 void Bitset2D::set_column(uint32_t coord_x, const DynamicBitset& other)

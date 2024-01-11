@@ -1,4 +1,5 @@
 #pragma once
+#include "utils/Utils.h"
 #include "windows/Window.h"
 #include <math.h>
 
@@ -9,7 +10,7 @@ class TextWindow: public Window
 {
 	public:
 	~TextWindow();
-	void handle_key_down(KeyPress keypress);
+	bool handle_key_down(KeyPress keypress);
 	Bitset2D update_window();
 	/// <summary>
 	/// container for all text lines
@@ -34,7 +35,7 @@ class TextWindow: public Window
 	/// <summary>
 	/// number of pages
 	/// </summary>
-	const int pages_count();
+	int pages_count() const;
 	/// <summary>
 	/// index of currently selected page
 	/// </summary>
@@ -43,6 +44,23 @@ class TextWindow: public Window
 	/// height of a text line
 	/// </summary>
 	const int line_height = 8;
+	/// <summary>
+	/// splits a string into multiple lines fitting the screen
+	/// </summary>
+	/// <param name="text_to_add">text to add to the screen</param>
+	/// <param name="keep_words">if true will try to not split words</param>
+	/// <param name="newline"if a newline should be inserted</param>
+	void add_text(std::string text_to_add, bool keep_words = true, bool newline = false, bool leading_space = false);
+	/// <summary>
+	/// removes the last character of the text
+	/// </summary>
+	void remove_chars();
 
 	private:
+	uint64_t _last_blink_time = 0;
+	bool _show_cursor = false;
+
+	protected:
+	std::string _input;
+	virtual void on_return_key();
 };

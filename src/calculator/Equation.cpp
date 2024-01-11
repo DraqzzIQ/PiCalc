@@ -45,28 +45,30 @@ void Equation::render_equation()
 	_last_blink_time = Utils::us_since_boot();
 	_show_cursor = true;
 
+	// print the equation below the screen to the console for debugging
 	std::cout << to_string_simple();
 
-	// show nothing if the equation is empty
-	if (_equation.size() == 0) {
-		_rendered_equation = Bitset2D();
-		_rendered_equation_cursor = Bitset2D(2, 9, true);
-	} else {
-		// render the equation with and without the cursor
-		_render_index = 0;
-		_cursor_data = { 0, 0, 0 };
-		int32_t y_origin = 0;
-		bool cursor_in_equation = false;
-		_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, cursor_in_equation, 0, 0, 1, true);
+	// render the equation without the cursor
+	_render_index = 0;
+	_cursor_data = { 0, 0, 0 };
+	int32_t y_origin = 0;
+	bool cursor_in_equation = false;
+	_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, cursor_in_equation, 0, 0, 1, true);
+	_rendered_equation.extend_right(1, false);
 
-		// add the cursor to the equation
-		_rendered_equation_cursor = _rendered_equation;
-		_rendered_equation_cursor.set(_cursor_data.x, _cursor_data.y, Bitset2D(2, _cursor_data.size, true), true);
+	// add the cursor to the equation
+	_rendered_equation_cursor = _rendered_equation;
+	_rendered_equation_cursor.set(_cursor_data.x, _cursor_data.y, Bitset2D(2, _cursor_data.size, true), false);
 
-		// get a part of the rendered equation with width frame_width and height frame_height
-		//_rendered_equation_cursor.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor_frame);
-		//_rendered_equation.copy(_frame_x, _frame_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered_equation_cursor);
-	}
+	// recalculate frame position
+	if (_cursor_data.x < _frame_x + 3) _frame_x = _cursor_data.x < 3 ? 0 : _cursor_data.x - 3;
+	else if (_cursor_data.x > _frame_x + _frame_width - 4) _frame_x = _cursor_data.x - _frame_width + 4;
+	if (_cursor_data.y < _frame_y + 3) _frame_y = _cursor_data.y < 3 ? 0 : _cursor_data.y - 3;
+	else if (_cursor_data.y + _cursor_data.size > _frame_y + _frame_height - 2) _frame_y = _cursor_data.y - _frame_height + 2 + _cursor_data.size;
+
+	// get a part of the rendered equation with width frame_width and height frame_height
+	_rendered_equation.copy(_frame_x, _frame_y, _frame_width, _frame_height, _rendered_equation_frame);
+	_rendered_equation_cursor.copy(_frame_x, _frame_y, _frame_width, _frame_height, _rendered_equation_cursor_frame);
 }
 
 Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, bool bracket)
@@ -326,7 +328,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		// any other symbol
 		else {
 			if (table.count(value) != 0) symbol_matrix = table.at(value);
-			else symbol_matrix = table.at(Chars::KEY_MAP.at("?"));
+			else symbol_matrix = table.at(86);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
@@ -359,11 +361,12 @@ void set_frame_position()
 
 std::string Equation::to_string_simple() const
 {
-	std::string res = "";
-	for (auto value : _equation) {
-		res += " " + std::to_string(value);
+	std::string res = std::to_string(_cursor_index) + " -";
+	for (uint32_t i = 0; i < _equation.size(); i++) {
+		res += (_cursor_index == i ? "|" : " ") + std::to_string(_equation[i]);
 	}
-	return res + "                                                                        ";
+	if (_cursor_index == _equation.size()) res += "|";
+	return res + "                                                                                                   ";
 }
 
 void Equation::extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, const Bitset2D& bitset_new, int32_t y_origin_new)

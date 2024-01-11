@@ -59,8 +59,14 @@ void Window::scroll_right()
 	if (corner_x + SCREEN_WIDTH < window.width()) corner_x += SCREEN_WIDTH;
 }
 
-void Window::handle_key_down(KeyPress keypress) {}
-void Window::handle_key_up(KeyPress keypress) {}
+bool Window::handle_key_down(KeyPress keypress)
+{
+	return false;
+}
+bool Window::handle_key_up(KeyPress keypress)
+{
+	return false;
+}
 
 void Window::got_focus() {}
 

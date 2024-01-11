@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0"
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -105,6 +106,30 @@
     <ClInclude Include="src\datastructs\Decimal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\http\DesktopHttpClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http\HttpHeaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http\HttpRequest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http\HttpResponse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http\IHttpClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\WolframAlphaWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http\HttpParams.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\ChatGPTWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\windows\PaintWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -189,6 +214,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\datastructs\Decimal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http\DesktopHttpClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http\IHttpClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\WolframAlphaWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\ChatGPTWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\PaintWindow.cpp">

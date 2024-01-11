@@ -380,3 +380,6 @@ poetry.lock
 
 .idea
 .idea/*
+
+secrets
+Graphics Designer/result.txt

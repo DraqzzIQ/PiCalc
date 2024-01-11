@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build"
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -28,6 +29,7 @@
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
     <ClInclude Include="src\datastructs\Number.h" />
+    <ClInclude Include="src\http\HttpParams.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />
@@ -49,6 +51,14 @@
     <ClInclude Include="src\windows\TextWindow.h" />
     <ClInclude Include="src\windows\Window.h" />
     <ClInclude Include="src\windows\WindowManager.h" />
+    <ClInclude Include="src\http\IHttpClient.h" />
+    <ClInclude Include="src\http\DesktopHttpClient.h" />
+    <ClInclude Include="src\http\HttpHeaders.h" />
+    <ClInclude Include="src\http\HttpRequest.h" />
+    <ClInclude Include="src\http\HttpResponse.h" />
+    <ClInclude Include="src\windows\WolframAlphaWindow.h" />
+    <ClInclude Include="src\windows\ChatGPTWindow.h" />
+
     <ClInclude Include="src\windows\PaintWindow.h" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +72,7 @@
     <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />
     <ClCompile Include="src\datastructs\Number.cpp" />
+    <ClCompile Include="src\http\IHttpClient.cpp" />
     <ClCompile Include="src\keyboard\IKeyboard.cpp" />
     <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
     <ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
@@ -79,6 +90,10 @@
     <ClCompile Include="src\windows\TextWindow.cpp" />
     <ClCompile Include="src\windows\Window.cpp" />
     <ClCompile Include="src\windows\WindowManager.cpp" />
+    <ClCompile Include="src\http\DesktopHttpClient.cpp" />
+    <ClCompile Include="src\windows\WolframAlphaWindow.cpp" />
+    <ClCompile Include="src\windows\ChatGPTWindow.cpp" />
+
     <ClCompile Include="src\windows\PaintWindow.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -89,26 +104,30 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"
+    Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"
+    Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"
+    Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'"
+    Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -120,26 +139,38 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  <ImportGroup Label="PropertySheets"
+    Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+      Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
+      Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  <ImportGroup Label="PropertySheets"
+    Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+      Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
+      Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  <ImportGroup Label="PropertySheets"
+    Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+      Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
+      Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  <ImportGroup Label="PropertySheets"
+    Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+      Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
+      Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>lib\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>lib\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>lib\SDL2\include;lib\openssh\include\openssl;$(IncludePath)</IncludePath>
+    <LibraryPath>lib\SDL2\lib\x64;lib\openssh;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>lib\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>lib\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>lib\SDL2\include;lib\openssh\include\openssl;$(IncludePath)</IncludePath>
+    <LibraryPath>lib\SDL2\lib\x64;lib\openssh;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -173,17 +204,18 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libcrypto_static.lib;libssl_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -196,19 +228,19 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libcrypto_static.lib;libssl_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

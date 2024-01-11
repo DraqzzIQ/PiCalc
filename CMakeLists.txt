@@ -37,6 +37,36 @@ add_subdirectory(src)
 add_subdirectory(lib)
 # Linux, (Windows)
 
+
+# SECRETS
+#check if file exists
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/secrets")
+    # Read from file
+    file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/secrets" SECRETS_LIST)
+
+    # Set during configuration
+    list(GET SECRETS_LIST 0 WOLFRAMALPHA_APPID)
+    list(GET SECRETS_LIST 1 OPENAI_API_KEY)
+
+    # Extract values after the equal sign
+    string(REGEX REPLACE "WOLFRAMALPHA_APPID=(.*)" "\\1" WOLFRAMALPHA_APPID "${WOLFRAMALPHA_APPID}")
+    string(REGEX REPLACE "OPENAI_API_KEY=(.*)" "\\1" OPENAI_API_KEY "${OPENAI_API_KEY}")
+    # Replace new line and other unwanted chars
+    string(STRIP "${WOLFRAMALPHA_APPID}" WOLFRAMALPHA_APPID)
+    string(STRIP "${OPENAI_API_KEY}" OPENAI_API_KEY)
+
+    message(STATUS "Secrets have been loaded from file.")
+else()
+    # Use default values if the file is not found
+    message(WARNING "Secrets file not found, using default values.")
+    set(WOLFRAMALPHA_APPID "DEMO")
+    set(OPENAI_API_KEY "DEMO")
+endif()
+# Define secrets compile time
+add_compile_definitions(WOLFRAMALPHA_APPID="${WOLFRAMALPHA_APPID}")
+add_compile_definitions(OPENAI_API_KEY="${OPENAI_API_KEY}")
+
+
 # Pico
 # cmake -DRPI_PICO=ON to compile
 if(RPI_PICO)
