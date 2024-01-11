@@ -58,12 +58,12 @@ class SDLKeyboard: public IKeyboard
 	/// </summary>
 	/// <param name="key">scancode</param>
 	/// <returns>keycode</returns>
-	uint8_t scancode_to_key_keyboard(SDL_Event* _event);
+	KEY scancode_to_key_keyboard(SDL_Event* _event);
 	/// <summary>
 	/// converts SDL scancodes to calculator keycodes using the calculator key-layout, but ignores shift + alpha
 	/// </summary>
 	/// <param name="key">scancode</param>
 	/// <returns>keycode</returns>
-	uint8_t scancode_to_key_raw(SDL_Event* _event);
+	KEY scancode_to_key_raw(SDL_Event* _event);
 };
 #endif

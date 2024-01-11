@@ -133,6 +133,7 @@ def reopen(event):
 
     print("name: " + str(name))
 
+
 def close_multiple():
     reopen(0)
     root.destroy()
@@ -174,11 +175,11 @@ start_type = input("start type? (1 = single width + height, 2 = import, 3 = mult
 
 if start_type == "1":
     name = input("name: ")
-    #width = int(input("width: "))
+    width = int(input("width: "))
     height = int(input("height: "))
 
-    width = 5
-    #height = 9
+    # width = 5
+    # height = 9
     start(width, height)
 
     root.bind("<Escape>", save)
@@ -189,7 +190,6 @@ elif start_type == "2":
     importList = [["black" if b == "1" else "white" for b in l.split(", ")] for l in importListRaw[2:-2].split("}, {")]
     width = len(importList)
     height = len(importList[0])
-
 
     fields = []
     for x in range(width):
@@ -202,12 +202,12 @@ elif start_type == "2":
 
 elif start_type == "3":
     name = int(input("start name: "))
-    # width = int(input("width: "))
-    # height = int(input("height: "))
+    width = int(input("width: "))
+    height = int(input("height: "))
 
     # name = 16
-    width = 5
-    height = 9
+    # width = 5
+    # height = 9
 
     start(width, height)
 

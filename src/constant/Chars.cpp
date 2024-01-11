@@ -1,6 +1,6 @@
 #include "Chars.h"
 
-const std::map<std::string, uint8_t> Chars::CHAR_TO_KEYCODE = {
+const std::map<std::string, KEY> Chars::CHAR_TO_KEYCODE = {
 	{ "0", 0 },
 	{ "1", 1 },
 	{ "2", 2 },
@@ -116,7 +116,7 @@ const std::map<std::string, uint8_t> Chars::CHAR_TO_KEYCODE = {
 	{ "x^2", 112 },
 	{ "x^n", 113 },
 	{ "log10", 114 },
-	{ "ln", 115 },
+	{ "ln", 15 },
 	{ "(-)", 116 },
 	{ "hyp", 117 },
 	{ "sin", 118 },
@@ -237,7 +237,20 @@ const std::map<std::string, uint8_t> Chars::CHAR_TO_KEYCODE = {
 	{ "CONV39", 234 },
 	{ "CONV40", 235 },
 	{ "ON", 236 },
-	{ "RETURN", 237 },
+	{ "nextVal", 237 },
+	{ "symbolEnd", 238 },
+	{ "newline", 239 },
+	{ "dark0", 240 },
+	{ "dark1", 241 },
+	{ "dark2", 242 },
+	{ "dark3", 243 },
+	{ "dark4", 244 },
+	{ "dark5", 245 },
+	{ "dark6", 246 },
+	{ "dark7", 247 },
+	{ "dark8", 248 },
+	{ "dark9", 249 },
+	{ "RETURN", 250 },
 };
 
 const std::vector<std::string> Chars::KEY_MAP = {
@@ -481,7 +494,7 @@ const std::vector<std::string> Chars::KEY_MAP = {
 	"RETURN",
 };
 
-const std::map<uint8_t, uint8_t> Chars::KEY_MAP_SHIFT = {
+const std::map<KEY, KEY> Chars::KEY_MAP_SHIFT = {
 	{ CHAR_TO_KEYCODE.at("Abs"), CHAR_TO_KEYCODE.at("/R") },
 	{ CHAR_TO_KEYCODE.at("fraction"), CHAR_TO_KEYCODE.at("mixedfraction") },
 	{ CHAR_TO_KEYCODE.at("RCL"), CHAR_TO_KEYCODE.at("STO") },
@@ -521,7 +534,7 @@ const std::map<uint8_t, uint8_t> Chars::KEY_MAP_SHIFT = {
 	{ CHAR_TO_KEYCODE.at("unknown"), CHAR_TO_KEYCODE.at("unknown") },
 };
 
-const std::map<uint8_t, uint8_t> Chars::KEY_MAP_ALPHA = {
+const std::map<KEY, KEY> Chars::KEY_MAP_ALPHA = {
 	{ CHAR_TO_KEYCODE.at("(-)"), CHAR_TO_KEYCODE.at("A") },
 	{ CHAR_TO_KEYCODE.at("x^3"), CHAR_TO_KEYCODE.at(":") },
 	{ CHAR_TO_KEYCODE.at("time"), CHAR_TO_KEYCODE.at("B") },
@@ -541,3 +554,8 @@ const std::map<uint8_t, uint8_t> Chars::KEY_MAP_ALPHA = {
 	{ CHAR_TO_KEYCODE.at("M+"), CHAR_TO_KEYCODE.at("M") },
 	{ CHAR_TO_KEYCODE.at("unknown"), CHAR_TO_KEYCODE.at("unknown") },
 };
+
+bool Chars::in_key_set(KEY value, const KEY_SET& vector)
+{
+	return std::count(vector.begin(), vector.end(), value);
+}

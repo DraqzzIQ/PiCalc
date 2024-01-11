@@ -16,10 +16,6 @@ class DynamicBitset
 	/// </summary>
 	DynamicBitset();
 	/// <summary>
-	/// Construct a DynamicBitset with n bits.
-	/// </summary>
-	DynamicBitset(uint32_t count);
-	/// <summary>
 	/// Construct a DynamicBitset with n bits, all bits set to value.
 	/// </summary>
 	DynamicBitset(uint32_t count, bool value);
@@ -79,6 +75,13 @@ class DynamicBitset
 	/// Returns a vector of uint8_t containing the bits.
 	/// </summary>
 	std::vector<uint8_t> get_bytes() const;
+	/// <summary>
+	/// copy width bits starting at start to another DynamicBitset
+	/// </summary>
+	/// <param name="start"></param>
+	/// <param name="width"></param>
+	/// <returns></returns>
+	DynamicBitset copy(uint32_t start, uint32_t width) const;
 
 	/// <summary>
 	/// Sets the bit at index to value.
@@ -86,26 +89,19 @@ class DynamicBitset
 	/// </summary>
 	void set(uint32_t index, bool value);
 	/// <summary>
-	// TODO: optimize this
 	/// Sets bits at index.
-	/// should be used carefully, as it is O(n).
 	/// </summary>
 	void set(uint32_t index, const DynamicBitset& bits);
 	/// <summary>
 	/// Inserts a bit at index.
-	/// should be used carefully, as it is O(n).
+	/// VERY INEFFICIENT
 	/// </summary>
 	void insert(uint32_t index, bool bit);
 	/// <summary>
-	// TODO: optimize this
 	/// Inserts bits at index.
-	/// should be used carefully, as it is O(n).
+	/// VERY INEFFICIENT
 	/// </summary>
 	void insert(uint32_t index, const DynamicBitset& bits);
-	/// <summary>
-	/// Resizes the bitset to n bits.
-	/// </summary>
-	void resize(uint32_t count);
 	/// <summary>
 	/// Erases the bit at index.
 	/// should be used carefully, as it is O(n).
@@ -121,9 +117,17 @@ class DynamicBitset
 	/// </summary>
 	void push_back(bool bit);
 	/// <summary>
+	/// Appends a bit to the start of the bitset.
+	/// </summary>
+	void push_front(bool bit);
+	/// <summary>
 	/// Removes the last bit from the bitset.
 	/// </summary>
 	void pop_back();
+	/// <summary>
+	/// Removes the first bit from the bitset.
+	/// </summary>
+	void pop_front();
 	/// <summary>
 	/// Appends another bitset to the end of this one.
 	/// should be used carefully, as it is O(n).
@@ -131,7 +135,7 @@ class DynamicBitset
 	void extend(const DynamicBitset& other);
 	/// <summary>
 	/// Appends length bits to the DynamicBitset, all set to value
-	/// TODO: optimize
+	/// VERY INEFFICIENT
 	/// </summary>
 	void extend(uint32_t length, bool value);
 	/// <summary>
@@ -141,6 +145,7 @@ class DynamicBitset
 	void extend_left(const DynamicBitset& other);
 	/// <summary>
 	/// Appends length bits to the start of the DynamicBitset, all set to value
+	/// VERY INEFFICIENT
 	/// </summary>
 	void extend_left(uint32_t length, bool value);
 

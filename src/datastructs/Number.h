@@ -1,7 +1,9 @@
 #pragma once
 #include "constant/Chars.h"
+#include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Bitset2D.h"
+// #include "datastructs/Decimal.h"
 #include <cmath>
 #include <string>
 #include <vector>
@@ -11,8 +13,7 @@ class Number
 {
 	public:
 	Number();
-	Number(const double value);
-	Number(const std::string value);
+	Number(const double value, const uint16_t exp);
 	Number(const Number& other);
 	~Number();
 
@@ -88,11 +89,21 @@ class Number
 	static Number ran_int(const Number& first, const Number& second);
 
 	double get_value() const;
+	bool add_digit(const KEY digit);
+	uint16_t finalize();
 	Bitset2D render() const;
 
 	private:
+	/// <summary>
+	/// tries to simplyfy the Number as much as possible (e.g. reduce fraction)
+	/// </summary>
+	/// <returns>true if any simlification was made</returns>
+	bool _simplyfy();
+
 	struct NumberNode {
-		double value = 0;
+		double value;
+
+		uint8_t operation = 0;
 		NumberNode* first = nullptr;
 		NumberNode* second = nullptr;
 
@@ -101,9 +112,17 @@ class Number
 			if (first != nullptr) delete first;
 			if (second != nullptr) delete second;
 		}
+
+		NumberNode* clone()
+		{
+			if (this) return new NumberNode{ value, operation, first->clone(), second->clone() };
+			else return nullptr;
+		}
 	};
-
 	NumberNode* _root;
-
 	double _rounded;
+
+	uint8_t _state = 0;
+	uint16_t _periodic = 0;
+	uint16_t _value_cnt = 0;
 };

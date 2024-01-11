@@ -29,6 +29,7 @@ void start_main_thread()
 {
 	while (1) {
 		keyboard->check_for_keyboard_presses();
+		// TODO: option to only update on keypress
 		window_manager->update();
 	}
 }
@@ -70,3 +71,8 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+
+// adding a new WIndow:
+// 1. create a new class that inherits from Window
+// 2. add a new MenuOption to MainMenuWindow.cpp and change size of options vector
+// 3. add all needed virtual functions to the new class
