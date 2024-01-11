@@ -581,6 +581,68 @@ Decimal& Decimal::factorial()
 	return *this;
 }
 
+
+Decimal& Decimal::sin()
+{
+	return *this;
+}
+
+Decimal& Decimal::cos()
+{
+	return *this;
+}
+
+Decimal& Decimal::tan()
+{
+	return *this;
+}
+
+Decimal& Decimal::asin()
+{
+	return *this;
+}
+
+Decimal& Decimal::acos()
+{
+	return *this;
+}
+
+Decimal& Decimal::atan()
+{
+	return *this;
+}
+
+Decimal& Decimal::sinh()
+{
+	return *this;
+}
+
+Decimal& Decimal::cosh()
+{
+	return *this;
+}
+
+Decimal& Decimal::tanh()
+{
+	return *this;
+}
+
+Decimal& Decimal::asinh()
+{
+	return *this;
+}
+
+Decimal& Decimal::acosh()
+{
+	return *this;
+}
+
+Decimal& Decimal::atanh()
+{
+	return *this;
+}
+
+
 Decimal& Decimal::round()
 {
 	if (_exp < 0) {
@@ -655,6 +717,7 @@ Decimal& Decimal::ran()
 {
 	_exp = -3;
 	_val = Utils::us_since_boot() % 1000;
+	return *this;
 }
 
 Decimal& Decimal::ran_int(Decimal start, Decimal end)
@@ -700,6 +763,7 @@ KEY_SET Decimal::to_key_set_sci(uint8_t sci) const
 	if (_val < 0) res.push_back(116);
 	std::reverse(res.begin(), res.end());
 	res.insert(res.begin() + 1, 82);
+	return res;
 }
 
 KEY_SET Decimal::to_key_set_norm(uint8_t norm) const

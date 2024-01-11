@@ -33,6 +33,11 @@ class Equation
 	/// </summary>
 	void set_frame_size(uint32_t width, uint32_t height);
 	/// <summary>
+	/// false: cursor is not shown
+	/// true: cursor is blinking
+	/// </summary>
+	void set_cursor_state(bool active);
+	/// <summary>
 	/// return the rendered equation
 	/// </summary>
 	/// <param name="complete">if true returns the whole equation, otherwise a bitset of the size set by set_frame_size(), containing the part of the equation that the cursor is in</param>
@@ -146,6 +151,10 @@ class Equation
 	/// bool keeping track of wether to show the cursor or not (in 0.5s intervals)
 	/// </summary>
 	bool _show_cursor;
+	/// <summary>
+	/// stores wether the cursor is blinking or not
+	/// </summary>
+	bool _cursor_active;
 	/// <summary>
 	/// time since boot at which the cursor last changed its state
 	/// </summary>

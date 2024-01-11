@@ -38,19 +38,17 @@ Number* Number::operator=(const Number* other)
 
 Number* Number::add(Number* other)
 {
-	if (_value.get_key() == 69 && other->_value.get_key() == 69) {
+	if (!_value.is_key() && !other->_value.is_key()) {
+		_value += other->_value;
+	} else if (_value.get_key() == 69 && other->_value.get_key() == 69) {
 		for (Number* child : other->_children) _children.push_back(child);
 	} else if (_value.get_key() == 69) {
-		other->simplify();
 		_children.push_back(other);
 	} else if (other->_value.get_key() == 69) {
-		simplify();
 		_children = std::vector<Number*>{ clone() };
 		for (Number* child : other->_children) _children.push_back(child);
 		_value.set_key(69);
 	} else {
-		simplify();
-		other->simplify();
 		_children = std::vector<Number*>{ clone(), other->clone() };
 		_value.set_key(69);
 	}
@@ -67,7 +65,9 @@ Number* Number::subtract(Number* other)
 
 Number* Number::multiply(Number* other)
 {
-	if (_value.get_key() == 71 && other->_value.get_key() == 71) {
+	if (!_value.is_key() && !other->_value.is_key()) {
+		_value *= other->_value;
+	} else if (_value.get_key() == 71 && other->_value.get_key() == 71) {
 		for (Number* child : other->_children) _children.push_back(child);
 	} else if (_value.get_key() == 71) {
 		_children.push_back(other);
@@ -85,8 +85,8 @@ Number* Number::multiply(Number* other)
 
 Number* Number::divide(Number* other)
 {
-	other->reciprocal();
-	multiply(other);
+	_children = std::vector<Number*>{ clone(), other->clone() };
+	_value.set_key(72);
 	delete other;
 	return this;
 }
@@ -246,14 +246,20 @@ Number* Number::to_int()
 
 Number* Number::negate()
 {
-	_children = std::vector<Number*>{ clone(), new Number(-1, 0) };
-	_value.set_key(72);
-	return this;
+	if (_value.is_key()) {
+		_children = std::vector<Number*>{ clone(), new Number(-1, 0) };
+		_value.set_key(72);
+		return this;
+	} else {
+		_value.negate();
+		return this;
+	}
 }
 
 Number* Number::percent()
 {
 	multiply(new Number(1, -2));
+	return this;
 }
 
 
@@ -356,6 +362,7 @@ Decimal Number::to_value() const
 			break;
 		case 156:
 			res = Decimal::PI;
+			break;
 		case 160:
 			res = 0;
 			break;
@@ -399,7 +406,8 @@ Decimal Number::to_value() const
 
 std::vector<KEY_SET> Number::to_key_set() const
 {
-	return std::vector<KEY_SET>();
+	to_value();
+	return std::vector<KEY_SET>{ _value.to_key_set_sci(9) };
 }
 
 

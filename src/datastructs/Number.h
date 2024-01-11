@@ -177,10 +177,6 @@ class Number
 	/// divides this by 100
 	/// </summary>
 	Number* percent();
-	/// <summary>
-	/// reciprocal of this
-	/// </summary>
-	Number* reciprocal();
 
 	/// <summary>
 	/// rectangular to polar coordinates (this = x, other = y)

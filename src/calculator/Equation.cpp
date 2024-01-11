@@ -30,10 +30,16 @@ void Equation::set_frame_size(uint32_t width, uint32_t height)
 	_frame_height = height;
 }
 
+void Equation::set_cursor_state(bool active)
+{
+	_cursor_active = active;
+}
+
 Bitset2D Equation::get_rendered_equation(bool complete)
 {
-	// change _show_cursor every 500ms
-	if (Utils::us_since_boot() > _last_blink_time + 500000) {
+	// change _show_cursor every 500ms if cursor is active
+	if (!_cursor_active) _show_cursor = false;
+	else if (Utils::us_since_boot() > _last_blink_time + 500000) {
 		_last_blink_time += 500000;
 		_show_cursor = !_show_cursor;
 	}
@@ -401,8 +407,6 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		// *10^n
 		else if (value == 127) {
 			symbol_matrix = table.at(127);
-			symbol_matrix.extend_right(1, false);
-			symbol_matrix.extend_right(table.at(135));
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
