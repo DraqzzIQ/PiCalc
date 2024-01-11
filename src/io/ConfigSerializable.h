@@ -1,11 +1,15 @@
 #pragma once
 #include "io/ISerializable.h"
 
+/// <summary>
+/// This class is used to store some configuration data.
+/// </summary>
 class ConfigSerializable: public ISerializable
 {
 	public:
 	ConfigSerializable(std::string openai_api_key, std::string wolframalpha_api_key);
 	ConfigSerializable();
+
 	std::string get_openai_api_key()
 	{
 		return _openai_api_key;
