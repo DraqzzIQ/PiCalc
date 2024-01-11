@@ -121,7 +121,7 @@ class Equation
 	struct CursorPositionData {
 		int64_t x = 0;
 		int64_t y = 0;
-		uint8_t size = 0;
+		KEY size = 0;
 	};
 	/// <summary>
 	/// stores the position and size of the cursor

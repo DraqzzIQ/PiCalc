@@ -1,6 +1,6 @@
 #include "Decimal.h"
 
-const uint64_t Decimal::powers_of_ten[] = {
+const int64_t Decimal::powers_of_ten[] = {
 	1,
 	10,
 	100,
