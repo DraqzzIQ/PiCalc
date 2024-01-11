@@ -145,36 +145,36 @@ void PaintWindow::fill(int x, int y, bool value, Bitset2D& bitset)
 	fill(x, y - 1, value, bitset);
 }
 
-void PaintWindow::handle_key_down(KeyPress keypress)
+bool PaintWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_calculator == Chars::KEY_MAP.at("0")) {
+	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("0")) {
 		corner_x = 0;
 		corner_y = 0;
-		return;
+		return true;
 	}
 
 	if (keypress.key_raw == 169 && keypress.alpha) {
 		if (corner_x > 0) {
 			corner_x--;
 		}
-		return;
+		return true;
 	}
 	if (keypress.key_raw == 170 && keypress.alpha) {
 		corner_x++;
-		return;
+		return true;
 	}
 	if (keypress.key_raw == 167 && keypress.alpha) {
 		if (corner_y > 0) {
 			corner_y--;
 		}
-		return;
+		return true;
 	}
 	if (keypress.key_raw == 168 && keypress.alpha) {
 		corner_y++;
-		return;
+		return true;
 	}
 
-	if (keypress.key_calculator == Chars::KEY_MAP.at("up")) {
+	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("up")) {
 		if (_cursor[1] > 0) {
 			_cursor[1]--;
 		}
@@ -182,13 +182,13 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 			corner_y--;
 		}
 	}
-	if (keypress.key_calculator == Chars::KEY_MAP.at("down")) {
+	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("down")) {
 		_cursor[1]++;
 		if (_cursor[1] >= SCREEN_HEIGHT) {
 			corner_y++;
 		}
 	}
-	if (keypress.key_calculator == Chars::KEY_MAP.at("left")) {
+	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("left")) {
 		if (_cursor[0] > 0) {
 			_cursor[0]--;
 		}
@@ -196,33 +196,33 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 			corner_x--;
 		}
 	}
-	if (keypress.key_calculator == Chars::KEY_MAP.at("right")) {
+	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("right")) {
 		_cursor[0]++;
 		if (_cursor[0] >= SCREEN_WIDTH) {
 			corner_x++;
 		}
 	}
 
-	if (corner_x+SCREEN_WIDTH > painted.width()) {
-		painted.extend_right(corner_x+SCREEN_WIDTH - painted.width(), false);
+	if (corner_x + SCREEN_WIDTH > painted.width()) {
+		painted.extend_right(corner_x + SCREEN_WIDTH - painted.width(), false);
 	}
-	if (corner_y+SCREEN_HEIGHT > painted.height()) {
-		painted.extend_down(corner_y+SCREEN_HEIGHT - painted.height(), false);
+	if (corner_y + SCREEN_HEIGHT > painted.height()) {
+		painted.extend_down(corner_y + SCREEN_HEIGHT - painted.height(), false);
 	}
 
-	if (keypress.key_calculator == Chars::KEY_MAP.at("=")) {
+	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("=")) {
 		_pen_down = !_pen_down;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("AC")) {
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("AC")) {
 		painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("+")) {
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("+")) {
 		_brush_size++;
 		if (_brush_size > 5) _brush_size = 5;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("-")) {
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("-")) {
 		_brush_size--;
 		if (_brush_size < 1) _brush_size = 1;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("DEL")) {
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("DEL")) {
 		erase = !erase;
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("1")) {
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("1")) {
 		using enum PaintWindow::Tool;
 		if (_tool == NONE) {
 			_start_pos[0] = _cursor[0];
@@ -232,7 +232,7 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 			draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
 			_tool = NONE;
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("2")) {
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("2")) {
 		using enum PaintWindow::Tool;
 		if (_tool == NONE) {
 			_start_pos[0] = _cursor[0];
@@ -242,7 +242,7 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 			draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
 			_tool = NONE;
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("3")) {
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("3")) {
 		using enum PaintWindow::Tool;
 		if (_tool == NONE) {
 			_start_pos[0] = _cursor[0];
@@ -252,7 +252,7 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 			draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
 			_tool = NONE;
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("4")) {
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("4")) {
 		fill(_cursor[0], _cursor[1], !erase, painted);
 	}
 
@@ -262,13 +262,13 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 	}
 
 
-	if (keypress.key_calculator == Chars::KEY_MAP.at("4") ||
-	    keypress.key_calculator == Chars::KEY_MAP.at("3") ||
-	    keypress.key_calculator == Chars::KEY_MAP.at("2") ||
-	    keypress.key_calculator == Chars::KEY_MAP.at("1") ||
-	    keypress.key_calculator == Chars::KEY_MAP.at("DEL") ||
-	    keypress.key_calculator == Chars::KEY_MAP.at("AC") ||
-	    keypress.key_calculator == Chars::KEY_MAP.at("=")) {
+	if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("4") ||
+	    keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("3") ||
+	    keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("2") ||
+	    keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("1") ||
+	    keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("DEL") ||
+	    keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("AC") ||
+	    keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("=")) {
 		if (current_history_index < 1 || painted != history[current_history_index - 1]) {
 			if (current_history_index < 20) {
 				history[current_history_index++] = painted;
@@ -281,12 +281,12 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 				std::stack<Bitset2D>().swap(redo_stack);
 			}
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("multiply")) { // Undo operation
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("multiply")) { // Undo operation
 		if (current_history_index > 1) {
 			redo_stack.push(history[--current_history_index]);
 			painted = history[current_history_index - 1];
 		}
-	} else if (keypress.key_calculator == Chars::KEY_MAP.at("divide")) { // Redo operation
+	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("divide")) { // Redo operation
 		if (!redo_stack.empty()) {
 			history[current_history_index++] = redo_stack.top();
 			painted = redo_stack.top();
@@ -294,4 +294,6 @@ void PaintWindow::handle_key_down(KeyPress keypress)
 		}
 	}
 	printf("Bitset size: %d x %d\n", painted.width(), painted.height());
+
+	return true;
 }
