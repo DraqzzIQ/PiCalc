@@ -22,6 +22,7 @@ class PaintWindow: public Window
 		CIRCLE,
 		NONE
 	};
+	using Tool = PaintWindow::Tool;
 
 	static void draw(int x, int y, bool value, int size, Bitset2D& bitset);
 	static void draw_line(int x1, int y1, int x2, int y2, bool value, int size, Bitset2D& bitset);

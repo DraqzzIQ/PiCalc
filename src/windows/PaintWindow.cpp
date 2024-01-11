@@ -26,16 +26,15 @@ Bitset2D PaintWindow::update_window()
 
 Bitset2D PaintWindow::draw_preview(Bitset2D& target)
 {
-	using enum PaintWindow::Tool;
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
 		_blink_timer += 500000;
 		preview = !preview;
 	}
-	if (_tool == LINE) {
+	if (_tool == Tool::LINE) {
 		draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target);
-	} else if (_tool == RECTANGLE) {
+	} else if (_tool == Tool::RECTANGLE) {
 		draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target);
-	} else if (_tool == CIRCLE) {
+	} else if (_tool == Tool::CIRCLE) {
 		draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target);
 	} else if (erase) {
 		draw_rectangle(_cursor[0] - _brush_size / 2, _cursor[1] - _brush_size / 2, _cursor[0] + _brush_size / 2, _cursor[1] + _brush_size / 2, preview, 1, target);
@@ -223,34 +222,31 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("DEL")) {
 		erase = !erase;
 	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("1")) {
-		using enum PaintWindow::Tool;
-		if (_tool == NONE) {
+		if (_tool == Tool::NONE) {
 			_start_pos[0] = _cursor[0];
 			_start_pos[1] = _cursor[1];
-			_tool = LINE;
+			_tool = Tool::LINE;
 		} else {
 			draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
-			_tool = NONE;
+			_tool = Tool::NONE;
 		}
 	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("2")) {
-		using enum PaintWindow::Tool;
-		if (_tool == NONE) {
+		if (_tool == Tool::NONE) {
 			_start_pos[0] = _cursor[0];
 			_start_pos[1] = _cursor[1];
-			_tool = RECTANGLE;
+			_tool = Tool::RECTANGLE;
 		} else {
 			draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
-			_tool = NONE;
+			_tool = Tool::NONE;
 		}
 	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("3")) {
-		using enum PaintWindow::Tool;
-		if (_tool == NONE) {
+		if (_tool == Tool::NONE) {
 			_start_pos[0] = _cursor[0];
 			_start_pos[1] = _cursor[1];
-			_tool = CIRCLE;
+			_tool = Tool::CIRCLE;
 		} else {
 			draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, painted);
-			_tool = NONE;
+			_tool = Tool::NONE;
 		}
 	} else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("4")) {
 		fill(_cursor[0], _cursor[1], !erase, painted);
