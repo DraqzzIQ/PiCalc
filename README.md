@@ -9,6 +9,7 @@ Create a file called `secrets` in the project root folder
 and add your secrets in the following format:
 ```
 WOLFRAMALPHA_APPID=DEMO
+OPENAI_API_KEY=DEMO
 ```
 
 ### JetBrains Fleet or CLion
