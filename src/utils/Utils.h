@@ -6,7 +6,6 @@
 #include "pico/stdlib.h"
 #include <malloc.h>
 #else
-#include "http/DesktopHttpClient.h"
 #include <chrono>
 #include <thread>
 #endif
