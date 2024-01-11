@@ -58,8 +58,8 @@ void PicoKeyboard::check_for_keyboard_presses()
 
 void PicoKeyboard::print_key(KEY key)
 {
-	for (auto i = Chars::KEY_MAP.begin(); i != Chars::KEY_MAP.end(); i++) {
-		if (i->second == key) { printf(i->first.c_str()); }
+	for (int i = 0; i < Chars::KEY_MAP.size(); i++) {
+		if (i == key) { printf(Chars::KEY_MAP[i].c_str()); }
 	}
 }
 

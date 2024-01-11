@@ -3,7 +3,6 @@
 #include <iostream>
 #include <vector>
 #ifdef PICO
-#include "http/PicoHttpClient.h"
 #include "pico/stdlib.h"
 #include <malloc.h>
 #else

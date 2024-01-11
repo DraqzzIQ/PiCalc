@@ -1,5 +1,12 @@
+#pragma once
 #include "windows/TextWindow.h"
 #include <regex>
+#ifdef PICO
+#include <http/PicoHttpClient.h>
+#else
+#include <http/DesktopHttpClient.h>
+#endif
+#include "windows/TextWindow.h"
 
 #ifndef OPENAI_API_KEY
 #pragma message("warning: OPENAI_API_KEY not defined")
