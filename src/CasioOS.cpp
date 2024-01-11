@@ -18,7 +18,6 @@
 #include "keyboard/SDLKeyboard.h"
 #endif
 
-#include "io/ConfigSerializable.h"
 
 IKeyboard* keyboard;
 WindowManager* window_manager;
