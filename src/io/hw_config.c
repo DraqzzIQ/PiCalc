@@ -11,8 +11,6 @@ under the License is distributed on an AS IS BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 */
-#include <hw_config.h>
-
 /*
 Hardware configuration:
 
@@ -22,12 +20,13 @@ Hardware configuration:
 | MOSI  | TX    | 19    | 25    | DI        | DI        | Master Out, Slave In   |
 | SCK   | SCK   | 18    | 24    | SCLK      | CLK       | SPI clock              |
 | CS0   | CSn   | 17    | 22    | SS or CS  | CS        | Slave (or Chip) Select |
-| DET   |       | 1     | 2     |           | CD        | Card Detect            |
+| DET   |       |       |       |           | CD        | Card Detect            |
 | GND   |       |       | 18,23 |           | GND       | Ground                 |
 | 3v3   |       |       | 36    |           | 3v3       | 3.3 volt power         |
 
 */
-
+#ifdef PICO
+#include <hw_config.h>
 // Hardware Configuration of SPI
 static spi_t spis[] = {  // One for each SPI.
 	{
@@ -36,7 +35,7 @@ static spi_t spis[] = {  // One for each SPI.
 		.mosi_gpio = 19,
 		.sck_gpio = 18,
 
-		// .baud_rate = 1000 * 1000
+		//.baud_rate = 1000 * 1000
 		.baud_rate = 12500 * 1000
 		// .baud_rate = 25 * 1000 * 1000 // Actual frequency: 20833333.
 	}
@@ -48,8 +47,8 @@ static sd_card_t sd_cards[] = { // One for each SD card
 		.pcName = "0:",         // Name used to mount device
 		.spi = &spis[0],        // Pointer to the SPI driving this card
 		.ss_gpio = 17,          // The SPI slave select GPIO for this SD card
-		.use_card_detect = true,
-		.card_detect_gpio = 1, // Card detect
+		.use_card_detect = false,
+		.card_detect_gpio = 1,  // Card detect
 		.card_detected_true = 1 // What the GPIO read returns when a card is present.
 	}
 };
@@ -81,3 +80,4 @@ spi_t* spi_get_by_num(size_t num)
 		return NULL;
 	}
 }
+#endif

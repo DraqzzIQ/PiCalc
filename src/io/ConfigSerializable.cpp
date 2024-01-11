@@ -1,10 +1,17 @@
 #include "io/ConfigSerializable.h"
+#include "ConfigSerializable.h"
 #include <string.h>
+
+ConfigSerializable::ConfigSerializable(std::string openai_api_key, std::string wolframalpha_api_key):
+	_openai_api_key(openai_api_key),
+	_wolframalpha_api_key(wolframalpha_api_key)
+{
+}
+
 
 ConfigSerializable::ConfigSerializable()
 {
 }
-
 std::vector<uint8_t> ConfigSerializable::searialize()
 {
 	std::vector<uint8_t> bytes = std::vector<uint8_t>(get_total_serialized_size());
