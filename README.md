@@ -20,3 +20,7 @@ OPENAI_API_KEY=DEMO
 [SDL2](https://github.com/libsdl-org/SDL)
 
 [cpp-httplib](https://github.com/yhirose/cpp-httplib)
+
+[no-OS-FatFS-SD-SPI-RPi-Pico](https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico)
+
+openssh
