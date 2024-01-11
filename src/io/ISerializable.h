@@ -8,6 +8,10 @@
 #include <filesystem>
 #endif
 
+#ifdef _WIN32
+#pragma warning(disable: 4996)
+#endif
+
 class ISerializable
 {
 	public:
