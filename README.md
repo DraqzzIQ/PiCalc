@@ -13,8 +13,8 @@ OPENAI_API_KEY=DEMO
 ```
 
 ### JetBrains Fleet or CLion
-- Click on the Start button
 - Select Run config (e.g.: "Run CasioOS")
+- Click on the Start button
 
 ## Dependencies
 [SDL2](https://github.com/libsdl-org/SDL)
