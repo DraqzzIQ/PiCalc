@@ -1,6 +1,5 @@
 #include "windows/PaintWindow.h"
 
-// TODO: make paint window scrollable
 // TODO: add round brush
 // TODO: save/load
 // TODO: brightness
@@ -42,16 +41,19 @@ Bitset2D PaintWindow::draw_preview(Bitset2D target)
 
 void PaintWindow::draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset)
 {
-	uint32_t x_end = x + size;
-	uint32_t y_end = y + size;
-	if (x_end > bitset.width()) x_end = bitset.width() - 1;
-	if (x >= bitset.width()) x = bitset.width() - 1;
-	if (y_end > bitset.height()) y_end = bitset.height() - 1;
-	if (y >= bitset.height()) y = bitset.height() - 1;
+	int32_t x_start = x - size / 2;
+	int32_t y_start = y - size / 2;
+	uint32_t x_end = x + (size + 1) / 2; // Adjusted calculation
+	uint32_t y_end = y + (size + 1) / 2; // Adjusted calculation
 
-	for (; x < x_end; x++) {
-		for (uint32_t i = y; i < y_end; i++) {
-			bitset.set_bit(x, i, value);
+	if (x_start < 0) x_start = 0;
+	if (y_start < 0) y_start = 0;
+	if (x_end > bitset.width()) x_end = bitset.width() - 1;
+	if (y_end > bitset.height()) y_end = bitset.height() - 1;
+
+	for (; x_start < x_end; x_start++) {
+		for (uint32_t i = y_start; i < y_end; i++) {
+			bitset.set_bit(x_start, i, value);
 		}
 	}
 }
@@ -133,15 +135,16 @@ void PaintWindow::draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y
 	}
 }
 
-void PaintWindow::fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset)
+void PaintWindow::fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset, int limit)
 {
-	if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT) return;
+	if (limit <= 0) return;
+	if (x >= bitset.width() || y >= bitset.height()) return;
 	if (bitset.get_bit(x, y) == value) return;
 	bitset.set_bit(x, y, value);
-	fill(x + 1, y, value, bitset);
-	fill(x - 1, y, value, bitset);
-	fill(x, y + 1, value, bitset);
-	fill(x, y - 1, value, bitset);
+	fill(x + 1, y, value, bitset, limit - 1);
+	fill(x - 1, y, value, bitset, limit - 1);
+	fill(x, y + 1, value, bitset, limit - 1);
+	fill(x, y - 1, value, bitset, limit - 1);
 }
 
 bool PaintWindow::set_tool(Tool tool)
@@ -172,57 +175,65 @@ void PaintWindow::save_to_hist()
 	}
 }
 
+void PaintWindow::scroll_left()
+{
+	if (_corner_x > 0) _corner_x--;
+	if (_cursor_x >= corner_x + SCREEN_WIDTH - 1) _cursor_x = _corner_x + SCREEN_WIDTH - 1;
+}
+
+void PaintWindow::scroll_right()
+{
+	if (_corner_x < _painted.width()) _painted.extend_right(1, false);
+	_corner_x++;
+	if (_cursor_x <= _corner_x) _cursor_x = _corner_x;
+}
+
+void PaintWindow::scroll_up()
+{
+	if (_corner_y > 0) _corner_y--;
+	if (_cursor_y >= _corner_y + SCREEN_HEIGHT - 1) _cursor_y = _corner_y + SCREEN_HEIGHT - 1;
+}
+
+void PaintWindow::scroll_down()
+{
+	if (_corner_y + SCREEN_HEIGHT >= _painted.height()) _painted.extend_down(1, false);
+	_corner_y++;
+	if (_cursor_y <= _corner_y) _cursor_y = _corner_y;
+}
+
 bool PaintWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.alpha) {
 		switch (keypress.key_raw) {
 		case 167: // up
-			if (_corner_y > 0) _corner_y--;
-			else _painted.extend_up(1, false);
+			scroll_up();
 			break;
 		case 168: // down
-			if (_corner_y < _painted.height() - 1) _corner_y++;
-			else {
-				_painted.extend_down(1, false);
-				_corner_y++;
-			}
+			scroll_down();
 			break;
 		case 169: // left
-			if (_corner_x > 0) _corner_x--;
-			else _painted.extend_right(1, false);
+			scroll_left();
 			break;
 		case 170: // right
-			if (_corner_x < _painted.height() - 1) _corner_x++;
-			else {
-				_painted.extend_left(1, false);
-				_corner_x++;
-			}
+			scroll_right();
 			break;
 		}
 	} else if (!keypress.shift) {
 		switch (keypress.key_raw) {
 		case 167: // up
-			if (_cursor_y == 0) _painted.extend_up(1, false);
-			else {
-				if (_cursor_y == _corner_y) _corner_y--;
-				_cursor_y--;
-			}
+			if (_cursor_y == corner_y) scroll_up();
+			if (_cursor_y > 0) _cursor_y--;
 			break;
 		case 168: // down
-			if (_cursor_y == _painted.height() - 1) _painted.extend_down(1, false);
-			if (_cursor_y == _corner_y + SCREEN_HEIGHT - 1) _corner_y++;
+			if (_cursor_y == _corner_y + SCREEN_HEIGHT - 1) scroll_down();
 			_cursor_y++;
 			break;
 		case 169: // left
-			if (_cursor_x == 0) _painted.extend_left(1, false);
-			else {
-				if (_cursor_x == _corner_x) _corner_x--;
-				_cursor_x--;
-			}
+			if (_cursor_x == _corner_x) scroll_left();
+			if (_cursor_x > 0) _cursor_x--;
 			break;
 		case 170: // right
-			if (_cursor_x == _painted.width() - 1) _painted.extend_right(1, false);
-			if (_cursor_x == _corner_x + SCREEN_WIDTH - 1) _corner_x++;
+			if (_cursor_x == _corner_x + SCREEN_WIDTH - 1) scroll_right();
 			_cursor_x++;
 			break;
 		case 73: // =
@@ -261,7 +272,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			if (_brush_size < 5) _brush_size++;
 			break;
 		case 70: // -
-			if (_brush_size > 0) _brush_size--;
+			if (_brush_size > 1) _brush_size--;
 			break;
 		case 71: // multiply
 			if (current_history_index > 1) {
@@ -276,11 +287,16 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 				redo_stack.pop();
 			}
 			break;
+		case 128: // ans
+			_cursor_x = SCREEN_WIDTH / 2 + corner_x;
+			_cursor_y = SCREEN_HEIGHT / 2 + corner_y;
+			break;
 		}
 	}
 
 	if (_tool == Tool::PEN)
 		draw(_cursor_x, _cursor_y, !_erase, _brush_size, _painted);
 
+	// std::cout << "Cursor x" << _cursor_x << " y" << _cursor_y << " corner x" << _corner_x << " y" << _corner_y << " tool" << (int)_tool << " erase" << _erase << " brush size" << _brush_size << " history index" << current_history_index << " redo stack size" << redo_stack.size() << " _painted size width" << _painted.width() << " _painted size height" << _painted.height() << std::endl;
 	return true;
 }

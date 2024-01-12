@@ -31,9 +31,15 @@ class PaintWindow: public Window
 	static void draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);
 	static void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
 	static void draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
-	void fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset);
+	void fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset, int limit = 1000);
+
 	bool set_tool(Tool tool);
 	void save_to_hist();
+	void scroll_left();
+	void scroll_right();
+	void scroll_up();
+	void scroll_down();
+
 	Bitset2D draw_preview(Bitset2D target);
 
 	Bitset2D _painted;
