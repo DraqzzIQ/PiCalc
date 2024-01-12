@@ -177,6 +177,8 @@ class Bitset2D
 	/// </summary>
 	std::string to_string_formatted();
 
+	std::vector<uint8_t> to_bmp();
+
 	private:
 	/// <summary>
 	/// The underlying storage type storing the bits.

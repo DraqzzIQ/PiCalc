@@ -307,3 +307,41 @@ std::string Bitset2D::to_string_formatted()
 	}
 	return s;
 }
+std::vector<uint8_t> Bitset2D::to_bmp()
+{
+	std::vector<uint8_t> bmp;
+	uint32_t width = _width;
+	uint32_t height = _height;
+	uint32_t row_size = (width * 3 + 3) & (~3);
+	uint32_t size = row_size * height + 54;
+	bmp.resize(size);
+	bmp[0] = 'B';
+	bmp[1] = 'M';
+	bmp[2] = size;
+	bmp[3] = size >> 8;
+	bmp[4] = size >> 16;
+	bmp[5] = size >> 24;
+	bmp[10] = 54;
+	bmp[14] = 40;
+	bmp[18] = width;
+	bmp[19] = width >> 8;
+	bmp[20] = width >> 16;
+	bmp[21] = width >> 24;
+	bmp[22] = height;
+	bmp[23] = height >> 8;
+	bmp[24] = height >> 16;
+	bmp[25] = height >> 24;
+	bmp[26] = 1;
+	bmp[28] = 24;
+
+	for (uint32_t i = 0; i < height; i++) {
+		for (uint32_t j = 0; j < width; j++) {
+			uint32_t index = 54 + (height - 1 - i) * row_size + j * 3;
+			bmp[index] = _plane[j][i] ? 0 : 255;
+			bmp[index + 1] = _plane[j][i] ? 0 : 255;
+			bmp[index + 2] = _plane[j][i] ? 0 : 255;
+		}
+	}
+
+	return bmp;
+}

@@ -1,7 +1,7 @@
 #include "windows/PaintWindow.h"
 
-// TODO: add round brush
 // TODO: save/load
+// TODO: add round brush
 // TODO: brightness
 
 
@@ -43,8 +43,8 @@ void PaintWindow::draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2
 {
 	int32_t x_start = x - size / 2;
 	int32_t y_start = y - size / 2;
-	uint32_t x_end = x + (size + 1) / 2; // Adjusted calculation
-	uint32_t y_end = y + (size + 1) / 2; // Adjusted calculation
+	uint32_t x_end = x + (size + 1) / 2;
+	uint32_t y_end = y + (size + 1) / 2;
 
 	if (x_start < 0) x_start = 0;
 	if (y_start < 0) y_start = 0;
@@ -291,12 +291,27 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			_cursor_x = SCREEN_WIDTH / 2 + corner_x;
 			_cursor_y = SCREEN_HEIGHT / 2 + corner_y;
 			break;
+		case 121: // RCL
+			std::vector<uint8_t> bytes;
+			bytes = _painted.to_bmp();
+			#ifdef PICO
+				SDCardController::write_file("paint", "test.bmp", &bytes);
+			#else
+				std::cout << "Writing to file on desktop" << std::endl;
+				std::ofstream file("test.bmp", std::ios::binary);
+				if (file.is_open()) {
+					file.write((char*)bytes.data(), bytes.size());
+					file.close();
+				} else {
+					std::cout << "Failed to open file" << std::endl;
+				}
+			#endif
+			break;
 		}
 	}
 
 	if (_tool == Tool::PEN)
 		draw(_cursor_x, _cursor_y, !_erase, _brush_size, _painted);
 
-	// std::cout << "Cursor x" << _cursor_x << " y" << _cursor_y << " corner x" << _corner_x << " y" << _corner_y << " tool" << (int)_tool << " erase" << _erase << " brush size" << _brush_size << " history index" << current_history_index << " redo stack size" << redo_stack.size() << " _painted size width" << _painted.width() << " _painted size height" << _painted.height() << std::endl;
 	return true;
 }

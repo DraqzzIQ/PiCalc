@@ -6,6 +6,9 @@
 #include "windows/Window.h"
 #include <iostream>
 #include <stack>
+#include <vector>
+#include <fstream>
+#include "io/SDCardController.h"
 
 class PaintWindow: public Window
 {
