@@ -27,11 +27,11 @@ class PaintWindow: public Window
 	Tool _tool = Tool::NONE;
 	bool _erase = false;
 
-	static void draw(int x, int y, bool value, int size, Bitset2D& bitset);
-	static void draw_line(int x1, int y1, int x2, int y2, bool value, int size, Bitset2D& bitset);
-	static void draw_rectangle(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
-	static void draw_ellipse(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset);
-	void fill(int x, int y, bool value, Bitset2D& bitset);
+	static void draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset);
+	static void draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);
+	static void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
+	static void draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
+	void fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset);
 	bool set_tool(Tool tool);
 	void save_to_hist();
 	Bitset2D draw_preview(Bitset2D target);
@@ -39,10 +39,12 @@ class PaintWindow: public Window
 	Bitset2D _painted;
 	Bitset2D _rendered;
 
-	uint32_t corner_x = 0;
-	uint32_t corner_y = 0;
-	uint32_t _cursor[2] = { 0, 0 };
-	uint32_t _start_pos[2] = { 0, 0 };
+	uint32_t _corner_x = 0;
+	uint32_t _corner_y = 0;
+	uint32_t _cursor_x = 0;
+	uint32_t _cursor_y = 0;
+	uint32_t _start_pos_x = 0;
+	uint32_t _start_pos_y = 0;
 	uint8_t _brush_size = 1;
 	uint64_t _blink_timer;
 	bool preview = true;

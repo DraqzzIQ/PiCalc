@@ -9,8 +9,8 @@
 PaintWindow::PaintWindow()
 {
 	_painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
-	_cursor[0] = SCREEN_WIDTH / 2;
-	_cursor[1] = SCREEN_HEIGHT / 2;
+	_cursor_x = SCREEN_WIDTH / 2;
+	_cursor_y = SCREEN_HEIGHT / 2;
 	_blink_timer = Utils::us_since_boot();
 }
 
@@ -18,48 +18,50 @@ PaintWindow::~PaintWindow() = default;
 
 Bitset2D PaintWindow::update_window()
 {
-	draw_preview(_painted).copy(corner_x, corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
+	draw_preview(_painted).copy(_corner_x, _corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
 	return _rendered;
 }
 
 Bitset2D PaintWindow::draw_preview(Bitset2D target)
 {
-	if (Utils::us_since_boot() > _blink_timer + 200000) {
-		_blink_timer += 200000;
+	if (Utils::us_since_boot() > _blink_timer + 500000) {
+		_blink_timer += 500000;
 		preview = !preview;
 	}
 
 	switch (_tool) {
-	case Tool::PEN:
-		if (_erase) draw_rectangle(_cursor[0] - _brush_size / 2, _cursor[1] - _brush_size / 2, _cursor[0] + _brush_size / 2, _cursor[1] + _brush_size / 2, preview, 1, target);
-		else draw(_cursor[0], _cursor[1], preview, _brush_size, target);
-		break;
-	case Tool::LINE: draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target); break;
-	case Tool::RECTANGLE: draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target); break;
-	case Tool::CIRCLE: draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], preview, _brush_size, target); break;
-	default: draw(_cursor[0], _cursor[1], preview, 1, target);
+	case Tool::LINE: draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, preview, _brush_size, target); break;
+	case Tool::RECTANGLE: draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, preview, _brush_size, target); break;
+	case Tool::CIRCLE: draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, preview, _brush_size, target); break;
+	default:
+		if (_erase) draw_rectangle(_cursor_x - _brush_size / 2, _cursor_y - _brush_size / 2, _cursor_x + _brush_size / 2, _cursor_y + _brush_size / 2, preview, 1, target);
+		else draw(_cursor_x, _cursor_y, preview, _brush_size, target);
 	}
 	return target;
 }
 
-void PaintWindow::draw(int x, int y, bool value, int size, Bitset2D& bitset)
+void PaintWindow::draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset)
 {
-	int half_brush = size / 2;
-	for (int i = -half_brush; i <= half_brush; i++) {
-		for (int j = -half_brush; j <= half_brush; j++) {
-			if (x + i >= 0 && x + i < SCREEN_WIDTH && y + j >= 0 && y + j < SCREEN_HEIGHT) {
-				bitset.set_bit(x + i, y + j, value);
-			}
+	uint32_t x_end = x + size;
+	uint32_t y_end = y + size;
+	if (x_end > bitset.width()) x_end = bitset.width() - 1;
+	if (x >= bitset.width()) x = bitset.width() - 1;
+	if (y_end > bitset.height()) y_end = bitset.height() - 1;
+	if (y >= bitset.height()) y = bitset.height() - 1;
+
+	for (; x < x_end; x++) {
+		for (uint32_t i = y; i < y_end; i++) {
+			bitset.set_bit(x, i, value);
 		}
 	}
 }
 
-void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value, int size, Bitset2D& bitset)
+void PaintWindow::draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset)
 {
-	int dx = abs(x2 - x1);
-	int dy = abs(y2 - y1);
-	int sx = (x1 < x2) ? 1 : -1;
-	int sy = (y1 < y2) ? 1 : -1;
+	int dx = x2 > x1 ? x2 - x1 : x1 - x2;
+	int dy = y2 > y1 ? y2 - y1 : y1 - y2;
+	int8_t sx = (x1 < x2) ? 1 : -1;
+	int8_t sy = (y1 < y2) ? 1 : -1;
 	int err = dx - dy;
 	int e2;
 
@@ -78,7 +80,7 @@ void PaintWindow::draw_line(int x1, int y1, int x2, int y2, bool value, int size
 	}
 }
 
-void PaintWindow::draw_rectangle(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset)
+void PaintWindow::draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset)
 {
 	draw_line(x0, y0, x1, y0, value, size, bitset); // Top edge
 	draw_line(x0, y1, x1, y1, value, size, bitset); // Bottom edge
@@ -86,10 +88,10 @@ void PaintWindow::draw_rectangle(int x0, int y0, int x1, int y1, bool value, int
 	draw_line(x1, y0, x1, y1, value, size, bitset); // Right edge
 }
 
-void PaintWindow::draw_ellipse(int x0, int y0, int x1, int y1, bool value, int size, Bitset2D& bitset)
+void PaintWindow::draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset)
 {
-	int a = abs(x1 - x0);
-	int b = abs(y1 - y0);
+	uint32_t a = x1 > x0 ? x1 - x0 : x0 - x1;
+	uint32_t b = y1 > y0 ? y1 - y0 : y0 - y1;
 	int b1 = b & 1;
 	long dx = 4 * (1 - a) * b * b;
 	long dy = 4 * (b1 + 1) * a * a;
@@ -131,7 +133,7 @@ void PaintWindow::draw_ellipse(int x0, int y0, int x1, int y1, bool value, int s
 	}
 }
 
-void PaintWindow::fill(int x, int y, bool value, Bitset2D& bitset)
+void PaintWindow::fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset)
 {
 	if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT) return;
 	if (bitset.get_bit(x, y) == value) return;
@@ -145,8 +147,8 @@ void PaintWindow::fill(int x, int y, bool value, Bitset2D& bitset)
 bool PaintWindow::set_tool(Tool tool)
 {
 	if (_tool == Tool::NONE) {
-		_start_pos[0] = _cursor[0];
-		_start_pos[1] = _cursor[1];
+		_start_pos_x = _cursor_x;
+		_start_pos_y = _cursor_y;
 		_tool = tool;
 		return false;
 	}
@@ -175,54 +177,72 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 	if (keypress.alpha) {
 		switch (keypress.key_raw) {
 		case 167: // up
-			if (corner_y > 0) corner_y--;
+			if (_corner_y > 0) _corner_y--;
+			else _painted.extend_up(1, false);
 			break;
 		case 168: // down
-			corner_y++;
+			if (_corner_y < _painted.height() - 1) _corner_y++;
+			else {
+				_painted.extend_down(1, false);
+				_corner_y++;
+			}
 			break;
 		case 169: // left
-			if (corner_x > 0) corner_x--;
+			if (_corner_x > 0) _corner_x--;
+			else _painted.extend_right(1, false);
 			break;
 		case 170: // right
-			corner_x++;
+			if (_corner_x < _painted.height() - 1) _corner_x++;
+			else {
+				_painted.extend_left(1, false);
+				_corner_x++;
+			}
 			break;
 		}
 	} else if (!keypress.shift) {
 		switch (keypress.key_raw) {
 		case 167: // up
-			if (_cursor[1] > 0) _cursor[1]--;
-			if (_cursor[1] < corner_y && corner_y > 0) corner_y--;
+			if (_cursor_y == 0) _painted.extend_up(1, false);
+			else {
+				if (_cursor_y == _corner_y) _corner_y--;
+				_cursor_y--;
+			}
 			break;
 		case 168: // down
-			_cursor[1]++;
-			if (_cursor[1] >= SCREEN_HEIGHT) corner_y++;
+			if (_cursor_y == _painted.height() - 1) _painted.extend_down(1, false);
+			if (_cursor_y == _corner_y + SCREEN_HEIGHT - 1) _corner_y++;
+			_cursor_y++;
 			break;
 		case 169: // left
-			if (_cursor[0] > 0) _cursor[0]--;
-			if (_cursor[0] < corner_x && corner_x > 0) corner_x--;
+			if (_cursor_x == 0) _painted.extend_left(1, false);
+			else {
+				if (_cursor_x == _corner_x) _corner_x--;
+				_cursor_x--;
+			}
 			break;
 		case 170: // right
-			_cursor[0]++;
-			if (_cursor[0] >= SCREEN_WIDTH) corner_x++;
+			if (_cursor_x == _painted.width() - 1) _painted.extend_right(1, false);
+			if (_cursor_x == _corner_x + SCREEN_WIDTH - 1) _corner_x++;
+			_cursor_x++;
 			break;
 		case 73: // =
 			set_tool(Tool::PEN);
 			save_to_hist();
 			break;
 		case 1: // 1
-			if (set_tool(Tool::LINE)) draw_line(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, _painted);
+			if (set_tool(Tool::LINE)) draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
 			save_to_hist();
 			break;
 		case 2: // 2
-			if (set_tool(Tool::RECTANGLE)) draw_rectangle(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, _painted);
+			if (set_tool(Tool::RECTANGLE)) draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
 			save_to_hist();
 			break;
 		case 3: // 3
-			if (set_tool(Tool::CIRCLE)) draw_ellipse(_start_pos[0], _start_pos[1], _cursor[0], _cursor[1], true, _brush_size, _painted);
+			if (set_tool(Tool::CIRCLE)) draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
 			save_to_hist();
 			break;
 		case 4: // 4
-			if (_tool == Tool::NONE) fill(_cursor[0], _cursor[1], !_erase, _painted);
+			if (_tool == Tool::NONE) fill(_cursor_x, _cursor_y, !_erase, _painted);
 			save_to_hist();
 			break;
 		case 126: // AC
@@ -234,8 +254,8 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			save_to_hist();
 			break;
 		case 0: // 0
-			corner_x = 0;
-			corner_y = 0;
+			_corner_x = 0;
+			_corner_y = 0;
 			break;
 		case 69: // +
 			if (_brush_size < 5) _brush_size++;
@@ -259,12 +279,8 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 		}
 	}
 
-	if (corner_x + SCREEN_WIDTH > _painted.width())
-		_painted.extend_right(corner_x + SCREEN_WIDTH - _painted.width(), false);
-	if (corner_y + SCREEN_HEIGHT > _painted.height())
-		_painted.extend_down(corner_y + SCREEN_HEIGHT - _painted.height(), false);
 	if (_tool == Tool::PEN)
-		draw(_cursor[0], _cursor[1], !_erase, _brush_size, _painted);
+		draw(_cursor_x, _cursor_y, !_erase, _brush_size, _painted);
 
 	return true;
 }
