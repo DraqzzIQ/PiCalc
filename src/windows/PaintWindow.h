@@ -30,6 +30,8 @@ class PaintWindow: public Window
 	Tool _tool = Tool::NONE;
 	bool _erase = false;
 
+	std::vector<uint8_t> bytes;
+
 	static void draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset);
 	static void draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);
 	static void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);

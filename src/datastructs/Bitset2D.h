@@ -176,8 +176,15 @@ class Bitset2D
 	/// Converts a 2D bitset to a string with formatting
 	/// </summary>
 	std::string to_string_formatted();
-
+	/// <summary>
+	/// Converts a 2D bitset to a vector of uint8_ts of a bmp file
+	/// </summary>
 	std::vector<uint8_t> to_bmp();
+
+	/// <summary>
+	/// Converts bytes of a bmp file to a 2D bitset
+	/// </summary>
+	static Bitset2D from_bmp(std::vector<uint8_t> bytes);
 
 	private:
 	/// <summary>

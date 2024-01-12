@@ -292,20 +292,42 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			_cursor_y = SCREEN_HEIGHT / 2 + corner_y;
 			break;
 		case 121: // RCL
-			std::vector<uint8_t> bytes;
 			bytes = _painted.to_bmp();
 			#ifdef PICO
 				SDCardController::write_file("paint", "test.bmp", &bytes);
 			#else
 				std::cout << "Writing to file on desktop" << std::endl;
-				std::ofstream file("test.bmp", std::ios::binary);
-				if (file.is_open()) {
-					file.write((char*)bytes.data(), bytes.size());
-					file.close();
+				{
+				std::ofstream out_file("test.bmp", std::ios::binary);
+				if (out_file.is_open()) {
+					out_file.write((char*)bytes.data(), bytes.size());
+					out_file.close();
 				} else {
 					std::cout << "Failed to open file" << std::endl;
 				}
+				}
 			#endif
+			break;
+		case 122: // ENG
+			bytes.clear();
+			#ifdef PICO
+			SDCardController::read_file("paint", "test.bmp", &bytes);
+			#else
+			std::cout << "Reading from file on desktop" << std::endl;
+			std::ifstream in_file("test.bmp", std::ios::binary);
+			{
+			if (in_file.is_open()) {
+				in_file.seekg(0, std::ios::end);
+				bytes.resize(in_file.tellg());
+				in_file.seekg(0, std::ios::beg);
+				in_file.read((char*)bytes.data(), bytes.size());
+				in_file.close();
+			} else {
+				std::cout << "Failed to open file" << std::endl;
+			}
+			}
+			#endif
+			_painted = Bitset2D::from_bmp(bytes);
 			break;
 		}
 	}

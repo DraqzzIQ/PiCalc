@@ -345,3 +345,24 @@ std::vector<uint8_t> Bitset2D::to_bmp()
 
 	return bmp;
 }
+
+Bitset2D Bitset2D::from_bmp(std::vector<uint8_t> bytes) {
+    if (bytes.empty()) {
+        return Bitset2D();
+    }
+
+    uint32_t width = bytes[18] | (bytes[19] << 8) | (bytes[20] << 16) | (bytes[21] << 24);
+    uint32_t height = bytes[22] | (bytes[23] << 8) | (bytes[24] << 16) | (bytes[25] << 24);
+
+    Bitset2D bitset(width, height, false);
+
+    for (uint32_t i = 0; i < height; i++) {
+        for (uint32_t j = 0; j < width; j++) {
+            uint32_t index = 54 + (height - 1 - i) * ((width * 3 + 3) & (~3)) + j * 3;
+            bool value = !(bytes[index] == 255 && bytes[index + 1] == 255 && bytes[index + 2] == 255);
+            bitset.set_bit(j, i, value);
+        }
+    }
+
+    return bitset;
+}
