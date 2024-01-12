@@ -293,6 +293,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			break;
 		case 121: // RCL
 			bytes = _painted.to_bmp();
+			// TODO: open window to name file
 			#ifdef PICO
 				SDCardController::write_file("paint", "test.bmp", &bytes);
 			#else
@@ -309,13 +310,29 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			#endif
 			break;
 		case 122: // ENG
-			bytes.clear();
-			#ifdef PICO
-			SDCardController::read_file("paint", "test.bmp", &bytes);
-			#else
-			std::cout << "Reading from file on desktop" << std::endl;
-			std::ifstream in_file("test.bmp", std::ios::binary);
-			{
+			openSavesMenu();
+			break;
+		}
+	}
+
+	if (_tool == Tool::PEN)
+		draw(_cursor_x, _cursor_y, !_erase, _brush_size, _painted);
+
+	return true;
+}
+std::string PaintWindow::openSavesMenu()
+{
+	std::cout << "Opening saves menu" << std::endl;
+	std::function<void(std::string)> callback = [this](std::string filename)
+	{
+		std::cout << "Opening file: " << filename << std::endl;
+		bytes.clear();
+		#ifdef PICO
+		SDCardController::read_file("paint", filename, &bytes);
+		#else
+		std::cout << "Reading from file on desktop" << std::endl;
+		std::ifstream in_file(filename, std::ios::binary);
+		{
 			if (in_file.is_open()) {
 				in_file.seekg(0, std::ios::end);
 				bytes.resize(in_file.tellg());
@@ -325,15 +342,20 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			} else {
 				std::cout << "Failed to open file" << std::endl;
 			}
-			}
-			#endif
-			_painted = Bitset2D::from_bmp(bytes);
-			break;
 		}
+		#endif
+		_painted = Bitset2D::from_bmp(bytes);
+		WindowManager::get_instance()->close_window();
+	};
+	{
+		std::cout << "Creating saves menu" << std::endl;
+		saves_menu.options = std::vector<MenuOptionBase*>(5);
+		saves_menu.options[0] = new ValueMenuOption<std::string>("Save 1", "test.bmp", callback);
+		saves_menu.options[1] = new ValueMenuOption<std::string>("Save 2", "test1.bmp", callback);
+		saves_menu.options[2] = new ValueMenuOption<std::string>("Save 3", "test2.bmp", callback);
+		saves_menu.options[3] = new ValueMenuOption<std::string>("Save 4", "test3.bmp", callback);
+		saves_menu.options[4] = new ValueMenuOption<std::string>("Save 5", "test4.bmp", callback);
+		saves_menu.create_menu();
+		WindowManager::get_instance()->add_window(&saves_menu);
 	}
-
-	if (_tool == Tool::PEN)
-		draw(_cursor_x, _cursor_y, !_erase, _brush_size, _painted);
-
-	return true;
 }

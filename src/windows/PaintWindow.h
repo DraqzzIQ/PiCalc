@@ -1,14 +1,18 @@
 #pragma once
+#include "MenuWindow.h"
 #include "constant/Chars.h"
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
+#include "io/SDCardController.h"
 #include "utils/Utils.h"
 #include "windows/Window.h"
+#include <fstream>
 #include <iostream>
 #include <stack>
 #include <vector>
-#include <fstream>
-#include "io/SDCardController.h"
+#include <string>
+#include "options/ValueMenuOption.h"
+#include <functional>
 
 class PaintWindow: public Window
 {
@@ -31,6 +35,9 @@ class PaintWindow: public Window
 	bool _erase = false;
 
 	std::vector<uint8_t> bytes;
+	MenuWindow saves_menu = MenuWindow();
+
+	std::string openSavesMenu();
 
 	static void draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset);
 	static void draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);
