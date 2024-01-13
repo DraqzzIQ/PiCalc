@@ -86,7 +86,7 @@ class Equation
 	/// calculate the equation
 	/// </summary>
 	/// <returns>result</returns>
-	Number to_number();
+	Number* to_number();
 
 	private:
 	/// <summary>

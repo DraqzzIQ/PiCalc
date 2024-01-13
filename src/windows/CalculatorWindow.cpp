@@ -73,7 +73,7 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 						Error::error_handled();
 						calculated = false;
 					} else {
-						_result_equation = Equation(_result.to_key_set().at(0));
+						_result_equation = Equation(_result.get_all_representations().at(0));
 						_result_rendered = _result_equation.get_rendered_equation();
 						calculated = true;
 					}

@@ -57,7 +57,7 @@ Decimal::Decimal(const Decimal& other)
 void Decimal::set_key(KEY value)
 {
 	_exp = value;
-	_val = 0xffffffffffffffff;
+	_val = 0x7fffffffffffffff;
 }
 
 void Decimal::set_value(int64_t value, int16_t exp)
@@ -71,13 +71,13 @@ void Decimal::set_value(int64_t value, int16_t exp)
 
 bool Decimal::is_key() const
 {
-	return _val == 0xffffffffffffffff;
+	return _val == 0x7fffffffffffffff;
 }
 
 
 KEY Decimal::get_key() const
 {
-	if (_val != 0xffffffffffffffff) return 95;
+	if (_val != 0x7fffffffffffffff) return 95;
 	return (KEY)_exp;
 }
 
@@ -724,6 +724,37 @@ Decimal& Decimal::ran_int(Decimal start, Decimal end)
 	return *this;
 }
 
+
+void Decimal::value_to_key_set(KEY_SET& res) const
+{
+	if (_val == 0) {
+		res.push_back(0);
+		return;
+	}
+	int64_t val_copy = std::abs(_val);
+	uint8_t size = res.size();
+	while (val_copy != 0) {
+		res.push_back((KEY)(val_copy % 10));
+		val_copy /= 10;
+	}
+	std::reverse(res.begin() + size, res.end());
+}
+
+void Decimal::exp_to_key_set(KEY_SET& res) const
+{
+	if (_exp == 0) {
+		res.push_back(0);
+		return;
+	}
+	int64_t exp_copy = std::abs(_exp);
+	auto begin = res.end();
+	while (exp_copy != 0) {
+		res.push_back((KEY)(exp_copy % 10));
+		exp_copy /= 10;
+	}
+	std::reverse(begin, res.end());
+}
+
 KEY_SET Decimal::to_key_set_fix(uint8_t fix) const
 {
 	// TODO
@@ -732,46 +763,69 @@ KEY_SET Decimal::to_key_set_fix(uint8_t fix) const
 
 KEY_SET Decimal::to_key_set_sci(uint8_t sci) const
 {
-	uint8_t shift = count_digits(_val);
-	if (shift > sci) {
-		shift -= sci;
-		shift_right(_val, shift);
-		_exp += shift;
-	} else if (shift < sci) {
-		shift = sci - shift;
-		_val *= powers_of_ten[shift];
-		_exp -= shift;
-	}
-	_exp += sci - 1;
-
 	KEY_SET res;
+	uint8_t shift = count_digits(_val);
 
-	if (_exp == 0) res.push_back(0);
-	else {
-		int16_t exp_copy = std::abs(_exp);
-		while (exp_copy != 0) {
-			res.push_back((KEY)(exp_copy % 10));
-			exp_copy /= 10;
-		}
-		if (_exp < 0) res.push_back(116);
-	}
-	res.push_back(127);
 
-	int64_t val_copy = std::abs(_val);
-	while (val_copy != 0) {
-		res.push_back((KEY)(val_copy % 10));
-		val_copy /= 10;
-	}
-	if (_val < 0) res.push_back(116);
-	std::reverse(res.begin(), res.end());
-	res.insert(res.begin() + 1, 82);
 	return res;
 }
 
-KEY_SET Decimal::to_key_set_norm(uint8_t norm) const
+KEY_SET Decimal::to_key_set(uint8_t max_size) const
 {
-	// TODO
-	return to_key_set_sci(10);
+	KEY_SET res;
+	maximize_exp();
+	uint8_t digits = count_digits(_val);
+	uint8_t comma_pos = _exp + digits;
+	if (_val < 0) max_size--;
+	// TODO: sometimes scientific notation shows less di gits than normal notation, both show less than count
+
+	if (comma_pos > max_size || -_exp + 1 + digits - max_size > max_size - exp_count_digits() - (_exp < 0)) {
+		// decimal can't be represented without scientific notation while satisfying the max_size and count
+		if (_exp == 0) res.push_back(0);
+		else {
+			int64_t exp_copy = std::abs(_exp);
+			while (exp_copy != 0) {
+				res.push_back((KEY)(exp_copy % 10));
+				exp_copy /= 10;
+			}
+			if (_exp < 0) res.push_back(116);
+		}
+		res.push_back(127);
+		max_size--;
+		max_size -= res.size();
+
+		if (digits > max_size) shift_right(_val, digits - max_size);
+		if (_val < 10) res.push_back((KEY)_val);
+		else {
+			int64_t val_copy = std::abs(_val);
+			while (val_copy != 0) {
+				res.push_back((KEY)(val_copy % 10));
+				val_copy /= 10;
+			}
+			res.insert(res.end() - 1, 82);
+		}
+		if (_val < 0) res.push_back(116);
+		std::reverse(res.begin(), res.end());
+	} else if (_exp >= 0) {
+		// no comma needed
+		if (_val < 0) res.push_back(116);
+		value_to_key_set(res);
+		for (uint8_t i = 0; i < _exp; i++) res.push_back(0);
+	} else {
+		// comma needed
+		int64_t val_copy = std::abs(_val);
+		while (val_copy != 0) {
+			res.push_back((KEY)(val_copy % 10));
+			val_copy /= 10;
+		}
+		for (uint8_t i = 0; i < -_exp; i++) res.push_back(0);
+		res.push_back(82);
+		res.push_back(0);
+		if (_val < 0) res.push_back(116);
+		std::reverse(res.begin(), res.end());
+	}
+
+	return res;
 }
 
 void Decimal::maximize_exp() const
@@ -783,6 +837,20 @@ void Decimal::maximize_exp() const
 	while (_val % 10 == 0) {
 		_val /= 10;
 		_exp++;
+	}
+}
+
+uint8_t Decimal::exp_count_digits() const
+{
+	int16_t exp_abs = std::abs(_exp);
+	if (exp_abs > powers_of_ten[2]) {
+		if (exp_abs == 0) return 0;
+		if (exp_abs < powers_of_ten[1]) return 1;
+		else return 2;
+	} else {
+		if (exp_abs < powers_of_ten[3]) return 3;
+		if (exp_abs < powers_of_ten[4]) return 4;
+		else return 5;
 	}
 }
 

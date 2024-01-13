@@ -153,16 +153,16 @@ void Equation::set_variable_list(std::vector<Number*> variables)
 	_variables = variables;
 }
 
-Number Equation::to_number()
+Number* Equation::to_number()
 {
 	if (_equation.size() == 0) {
 		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 		_cursor_index = 0;
-		return Number();
+		return new Number();
 	}
 	_calculate_index = 0;
-	Number res = to_number_part(95);
-	if (Error::error_thrown()) return Number();
+	Number* res = to_number_part(95);
+	if (Error::error_thrown()) return new Number();
 	render_equation();
 	return res;
 }
@@ -175,7 +175,7 @@ void Equation::render_equation()
 	_show_cursor = true;
 
 	// print the equation below the screen to the console for debugging
-	// std::cout << to_string_simple();
+	std::cout << to_string_simple();
 
 	// render the equation without the cursor
 	_render_index = 0;
@@ -734,9 +734,8 @@ bool Equation::add_digit(const KEY digit)
 		} else if (digit == 133) { // key is periodic
 			if (!(_number_state & 0b01000000) || _number_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			else _number_state |= 0b00100000;
-		} else if (digit == 238) {
-			if (_number_state & 0b00100000) _number_state ^= 0b00100000;
-			else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		} else if (digit == 238 && _number_state & 0b00100000) {
+			_number_state ^= 0b00100000;
 		} else {
 			return false;
 		}
