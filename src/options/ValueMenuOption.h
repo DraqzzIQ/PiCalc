@@ -18,6 +18,7 @@ class ValueMenuOption: public MenuOptionBase
 
 	void on_select() {
 		_callback(_value);
+		delete this;
 	}
 
 	void on_shift_select() {

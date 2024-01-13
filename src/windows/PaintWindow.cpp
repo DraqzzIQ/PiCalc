@@ -350,7 +350,7 @@ std::string PaintWindow::openSavesMenu()
 		_corner_y = 0;
 		_cursor_x = SCREEN_WIDTH / 2;
 		_cursor_y = SCREEN_HEIGHT / 2;
-		// TODO: close menu
+		WindowManager::get_instance()->minimize_window();
 	};
 	{
 		std::cout << "Creating saves menu" << std::endl;
