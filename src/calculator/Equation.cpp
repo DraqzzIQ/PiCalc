@@ -35,6 +35,13 @@ void Equation::set_cursor_state(bool active)
 	_cursor_active = active;
 }
 
+void Equation::set_key_set(KEY_SET& equation)
+{
+	_equation = equation;
+	_cursor_index = 0;
+	render_equation();
+}
+
 Bitset2D Equation::get_rendered_equation(bool complete)
 {
 	// change _show_cursor every 500ms if cursor is active
@@ -702,12 +709,14 @@ void Equation::clear_number()
 
 bool Equation::add_digit(const KEY digit)
 {
+	// TODO: numbers with more than 18 digits
 	if (_number_state & 0b00100000) {
 		if (digit < 10) {
-			_number_exp++;
+			_number_exp--;
 			_number_state++;
 			_number_val = _number_val * 10 + digit;
-		} else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		} else if (digit == 238) _number_state ^= 0b00100000;
+		else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 	} else {
 		if (_number_state & 0b00011111) return false;
 		if (digit < 10) { // key is digit
@@ -734,8 +743,6 @@ bool Equation::add_digit(const KEY digit)
 		} else if (digit == 133) { // key is periodic
 			if (!(_number_state & 0b01000000) || _number_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			else _number_state |= 0b00100000;
-		} else if (digit == 238 && _number_state & 0b00100000) {
-			_number_state ^= 0b00100000;
 		} else {
 			return false;
 		}

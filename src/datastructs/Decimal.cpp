@@ -775,12 +775,14 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 	KEY_SET res;
 	maximize_exp();
 	uint8_t digits = count_digits(_val);
-	uint8_t comma_pos = _exp + digits;
+	int16_t comma_pos = _exp + digits;
+	int16_t missing_digits = (digits > -_exp ? digits + 1 : -_exp + 2) - max_size;
 	if (_val < 0) max_size--;
 	// TODO: sometimes scientific notation shows less di gits than normal notation, both show less than count
 
-	if (comma_pos > max_size || -_exp + 1 + digits - max_size > max_size - exp_count_digits() - (_exp < 0)) {
+	if (comma_pos > max_size || missing_digits > max_size - (exp_count_digits() + (_exp < 0) + 3)) {
 		// decimal can't be represented without scientific notation while satisfying the max_size and count
+		_exp += digits - 1;
 		if (_exp == 0) res.push_back(0);
 		else {
 			int64_t exp_copy = std::abs(_exp);
@@ -791,8 +793,7 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 			if (_exp < 0) res.push_back(116);
 		}
 		res.push_back(127);
-		max_size--;
-		max_size -= res.size();
+		max_size -= res.size() + 2;
 
 		if (digits > max_size) shift_right(_val, digits - max_size);
 		if (_val < 10) res.push_back((KEY)_val);
@@ -812,13 +813,18 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 		value_to_key_set(res);
 		for (uint8_t i = 0; i < _exp; i++) res.push_back(0);
 	} else {
+		if (missing_digits > 0) {
+			// comma needed
+			shift_right(_val, missing_digits);
+			_exp += missing_digits;
+		}
 		// comma needed
 		int64_t val_copy = std::abs(_val);
 		while (val_copy != 0) {
 			res.push_back((KEY)(val_copy % 10));
 			val_copy /= 10;
 		}
-		for (uint8_t i = 0; i < -_exp; i++) res.push_back(0);
+		for (uint8_t i = res.size(); i < -_exp; i++) res.push_back(0);
 		res.push_back(82);
 		res.push_back(0);
 		if (_val < 0) res.push_back(116);

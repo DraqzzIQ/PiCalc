@@ -38,6 +38,10 @@ class Equation
 	/// </summary>
 	void set_cursor_state(bool active);
 	/// <summary>
+	/// set the equation to the givcen KEY_SET
+	/// </summary>
+	void set_key_set(KEY_SET& equation);
+	/// <summary>
 	/// return the rendered equation
 	/// </summary>
 	/// <param name="complete">if true returns the whole equation, otherwise a bitset of the size set by set_frame_size(), containing the part of the equation that the cursor is in</param>
