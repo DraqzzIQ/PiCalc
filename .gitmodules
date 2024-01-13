@@ -1,3 +1,6 @@
 [submodule "lib/no-OS-FatFS-SD-SPI-RPi-Pico"]
 	path = lib/no-OS-FatFS-SD-SPI-RPi-Pico
 	url = https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico.git
+[submodule "lib/picowota"]
+	path = lib/picowota
+	url = https://github.com/DraqzzIQ/picowota
