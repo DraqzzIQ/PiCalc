@@ -1,4 +1,5 @@
 #include "io/SDCardController.h"
+#include "SDCardController.h"
 #ifdef PICO
 
 bool SDCardController::write_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes)
@@ -66,6 +67,61 @@ bool SDCardController::read_file(std::string dir, std::string filename, std::vec
 
 	unmount();
 	return true;
+}
+
+bool SDCardController::file_exists(std::string dir, std::string filename)
+{
+	if (!mount() || !set_directory(dir)) return false;
+	FILINFO fno;
+	FRESULT fr = f_stat(filename.c_str(), &fno);
+	if (FR_OK != fr) {
+		std::cout << "f_stat error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
+		unmount();
+		return false;
+	}
+	unmount();
+	return true;
+}
+
+bool SDCardController::dir_exists(std::string dir)
+{
+	if (!mount() || !set_directory(dir)) return false;
+	unmount();
+	return true;
+}
+
+std::vector<std::string> SDCardController::list_dir(std::string dir)
+{
+	std::vector<std::string> files;
+	if (!mount() || !set_directory(dir)) return files;
+	DIR dirp;
+	FRESULT fr = f_opendir(&dirp, dir.c_str());
+	if (FR_OK != fr) {
+		std::cout << "f_opendir error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
+		unmount();
+		return files;
+	}
+
+	FILINFO fno;
+	while (true) {
+		fr = f_readdir(&dirp, &fno);
+		if (FR_OK != fr) {
+			std::cout << "f_readdir error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
+			unmount();
+			return files;
+		}
+		if (fno.fname[0] == 0) break;
+		files.push_back(fno.fname);
+	}
+
+	fr = f_closedir(&dirp);
+	if (FR_OK != fr) {
+		std::cout << "f_closedir error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
+		unmount();
+		return files;
+	}
+	unmount();
+	return files;
 }
 
 bool SDCardController::set_directory(std::string dir)
