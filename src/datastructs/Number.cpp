@@ -419,20 +419,12 @@ void Number::to_key_set(KEY_SET& result) const
 {
 	if (_value.is_key()) {
 		KEY key = _value.get_key();
-		if (key == 69) result.push_back(74);
-		if (key == 72) {
-			result.push_back(110);
-			_children[0]->to_key_set(result);
-			result.push_back(237);
-			_children[1]->to_key_set(result);
-			result.push_back(238);
-		} else {
-			for (Number* child : _children) {
-				child->to_key_set(result);
-				result.push_back(_value.get_key());
-			}
+		if (key == 69 || key == 72) result.push_back(74);
+		for (Number* child : _children) {
+			child->to_key_set(result);
+			result.push_back(_value.get_key());
 		}
-		if (key == 69) result.back() = 75;
+		if (key == 69 || key == 72) result.back() = 75;
 		else result.pop_back();
 	} else {
 		KEY_SET val = _value.to_key_set(16);
@@ -446,7 +438,20 @@ std::vector<KEY_SET> Number::get_all_representations()
 	simplify();
 	if (_value.is_key()) {
 		KEY_SET result;
-		to_key_set(result);
+		KEY key = _value.get_key();
+		if (key == 72) {
+			result.push_back(110);
+			_children[0]->to_key_set(result);
+			result.push_back(237);
+			_children[1]->to_key_set(result);
+			result.push_back(238);
+		} else {
+			for (Number* child : _children) {
+				child->to_key_set(result);
+				result.push_back(_value.get_key());
+			}
+		}
+		result.pop_back();
 		results.push_back(result);
 	}
 

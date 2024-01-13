@@ -182,7 +182,7 @@ void Equation::render_equation()
 	_cursor_data = { 0, 0, 0 };
 	int32_t y_origin = 0;
 	bool cursor_in_equation = false;
-	_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, cursor_in_equation, 0, 0, 1, true);
+	_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, cursor_in_equation, 0, 0, 1, 0);
 	_rendered_equation.extend_right(1, false);
 
 	// add the cursor to the equation
@@ -200,13 +200,13 @@ void Equation::render_equation()
 	_rendered_equation_cursor.copy(_frame_x, _frame_y, _frame_width, _frame_height, _rendered_equation_cursor_frame);
 }
 
-Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, bool bracket)
+Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, uint8_t type)
 {
 	uint8_t font_height = table.at(0).height();
 	Bitset2D equation_part(1, font_height, false);
 	bool cursor_inside = false;
 	y_origin = 0;
-	if (!bracket) _render_index++;
+	if (type == 1) _render_index++;
 
 	for (; _render_index < _equation.size(); _render_index++) {
 		Bitset2D symbol_matrix;
@@ -235,7 +235,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			// render everything until the closing bracket
 			int32_t new_y_origin = 0;
 			_render_index++;
-			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 5, 0, 0, true);
+			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 5, 0, 0, 2);
 			symbol_matrix.pop_back_x();
 
 			// add opening bracket
@@ -273,7 +273,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 				bracket_right.set_bit(2, bracket_right.height() - 2, true);
 				equation_part.extend_right(bracket_right);
 			}
-			break;
+			if (type == 2) break;
 		}
 
 		// Abs
@@ -463,7 +463,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		equation_part.push_back(DynamicBitset(equation_part.height(), false));
 	}
 	// special case: cursor at the end of the equation
-	if (_render_index == _cursor_index) {
+	if (type != 2 && _render_index == _cursor_index) {
 		_cursor_data = { equation_part.width() - 1, 0, font_height };
 		cursor_inside = true;
 	}
@@ -474,7 +474,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		if (cursor_alignment == 1) _cursor_data.y += y_origin;
 		else if (cursor_alignment == 2) _cursor_data.y -= equation_part.height() - y_origin;
 	}
-	if (equation_part.width() == 1 && !bracket) {
+	if (equation_part.width() == 1 && type == 1) {
 		equation_part.extend_right(table.at(95));
 		equation_part.extend_right(1, false);
 	}
