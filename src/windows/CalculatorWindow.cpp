@@ -6,8 +6,10 @@ CalculatorWindow::CalculatorWindow()
 	equations = std::vector<Equation>(1);
 	_equation_selected = &equations[0];
 
-	//_variables = std::vector<Number>(9);
-	//_equation_selected->set_variable_list(&_variables);
+	_variables = std::vector<Number*>(9);
+	_equation_selected->set_variable_list(_variables);
+
+	_result_equation.set_cursor_state(false);
 }
 
 CalculatorWindow::~CalculatorWindow() {}
@@ -20,7 +22,7 @@ Bitset2D CalculatorWindow::update_window()
 	case Mode::COMP:
 		clear_window();
 		add_to_window(_equation_selected->get_rendered_equation(), 0, 0);
-		if (calculated) add_to_window(result_rendered, SCREEN_WIDTH - result_rendered.width(), SCREEN_HEIGHT - result_rendered.height());
+		if (calculated) add_to_window(_result_rendered, SCREEN_WIDTH - _result_rendered.width(), SCREEN_HEIGHT - _result_rendered.height());
 		return window;
 	case Mode::STAT:
 		add_to_window(Graphics::create_text("STAT"), 0, 0);
@@ -57,75 +59,50 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 		else {
 			switch (_mode) {
 			case Mode::COMP:
-				if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("right")) _equation_selected->move_cursor_right();
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("left")) _equation_selected->move_cursor_left();
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("up")) _equation_selected->move_cursor_up();
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("down")) _equation_selected->move_cursor_down();
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("DEL")) _equation_selected->del();
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("AC")) _equation_selected->ac();
-				// else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("=")) {
-				//	// TODO: output with , instead of .
-				//	result = _equation_selected->calculate_equation(variables);
-				//	if (Error::error_thrown()) {
-				//		result_rendered = Error::render_error();
-				//		Error::error_handled();
-				//		calculated = true;
-				//	} else {
-				//		result_rendered = result.render();
-				//		calculated = true;
-				//	}
-				//	// result_rendered = Graphics::create_text(std::to_string(result));
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("unknown"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("SHIFT"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("ALPHA"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("MODE"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("SETUP"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("STO"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("RCL"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("CONST"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("STAT/DIST"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at(":"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("FACT"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("ENG"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("<-"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("CONV"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("Conv"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("hyp"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("CLR"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("VERIFY"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("BASE"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("INS"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("DRG"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("M+"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("M-"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("OFF"))
-					;
-				else if (keypress.key_calculator == Chars::CHAR_TO_KEYCODE.at("wav="))
-					;
-				else _equation_selected->add_value(keypress.key_calculator);
+				switch (keypress.key_calculator) {
+				case 170: _equation_selected->move_cursor_right(); break;
+				case 169: _equation_selected->move_cursor_left(); break;
+				case 167: _equation_selected->move_cursor_up(); break;
+				case 168: _equation_selected->move_cursor_down(); break;
+				case 125: _equation_selected->del(); break;
+				case 126: _equation_selected->ac(); break;
+				case 73:
+					_result = _equation_selected->to_number();
+					if (Error::error_thrown()) {
+						set_menu(Menu::Error);
+						Error::error_handled();
+						calculated = false;
+					} else {
+						_result_equation = Equation(_result.to_key_set().at(0));
+						_result_rendered = _result_equation.get_rendered_equation();
+						calculated = true;
+					}
+					break;
+				case 95: break;  // unknown
+				case 103: break; // SHIFT
+				case 104: break; // ALPHA
+				case 141: break; // STO
+				case 121: break; // RCL
+				case 145: break; // CONST
+				case 173: break; // STAT/DIST
+				case 84: break;  // :
+				case 137: break; // FACT
+				case 222: break; // ENG
+				case 142: break; // <-
+				case 146: break; // CONV
+				case 159: break; // Conv
+				case 117: break; // hyp
+				case 147: break; // CLR
+				case 171: break; // VERIFY
+				case 172: break; // BASE
+				case 148: break; // INS
+				case 157: break; // DRG
+				case 124: break; // M+
+				case 144: break; // M-
+				case 149: break; // OFF
+				case 158: break; // wav=
+				default: _equation_selected->add_value(keypress.key_calculator);
+				}
 			}
 		}
 		break;

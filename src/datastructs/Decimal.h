@@ -1,53 +1,75 @@
-#if false
-
 #pragma once
 #include "constant/Error.h"
+#include "utils/Utils.h"
 #include <cmath>
 #include <string>
 #include <vector>
 
-#define DECIMAL_VALUE_PRECISION 19
+#define DECIMAL_VALUE_PRECISION 18
 #define DECIMAL_EXP_PRECISION 4
-#define DECIMAL_VALUE_MAX 9999999999999999999
+#define DECIMAL_VALUE_MAX 999999999999999999
 #define DECIMAL_EXP_MAX 9999
 
+using KEY = uint16_t;
+
+/// <summary>
+/// stores either a KEY or a decimal: value = _val * 10 ^ _exp<para/>
+/// IMPORTANT: don't use any operations if the decimal represents a KEY
+/// </summary>
 class Decimal
 {
 	public:
 	Decimal();
-	Decimal(double value);
+	Decimal(int64_t value);
 	Decimal(int64_t value, int16_t exp);
+	Decimal(const Decimal& other);
 
-	bool operator==(const Decimal& other) const;
-	bool operator!=(const Decimal& other) const;
-	bool operator<(const Decimal& other) const;
-	bool operator>(const Decimal& other) const;
-	bool operator<=(const Decimal& other) const;
-	bool operator>=(const Decimal& other) const;
+	void set_key(KEY value);
+	void set_value(int64_t value, int16_t exp);
 
-	Decimal operator-();
-	Decimal& operator=(const Decimal& other);
+	bool is_key() const;
+	KEY get_key() const;
+	int64_t get_value() const;
+	int16_t get_exp() const;
 
-	Decimal operator+(const Decimal& other) const;
-	Decimal operator-(const Decimal& other) const;
-	Decimal operator*(const Decimal& other) const;
-	Decimal operator/(const Decimal& other) const;
-	Decimal operator%(const Decimal& other) const;
-	Decimal operator^(const Decimal& other) const;
+	bool operator==(Decimal other) const;
+	bool operator!=(Decimal other) const;
+	bool operator<(Decimal other) const;
+	bool operator>(Decimal other) const;
+	bool operator<=(Decimal other) const;
+	bool operator>=(Decimal other) const;
 
-	Decimal& operator+=(const Decimal& other);
-	Decimal& operator-=(const Decimal& other);
-	Decimal& operator*=(const Decimal& other);
-	Decimal& operator/=(const Decimal& other);
-	Decimal& operator%=(const Decimal& other);
-	Decimal& operator^=(const Decimal& other);
+	Decimal operator-() const;
+	Decimal& operator=(Decimal other);
+	Decimal& operator=(int64_t other);
 
-	uint8_t sign() const;
+	Decimal operator+(Decimal other) const;
+	Decimal operator-(Decimal other) const;
+	Decimal operator*(Decimal other) const;
+	Decimal operator/(Decimal other) const;
+	Decimal operator%(Decimal other) const;
+	Decimal operator^(Decimal other) const;
 
-	Decimal& log();
-	Decimal& log(const double& other);
-	Decimal& log(const Decimal& other);
+	Decimal& operator+=(Decimal other);
+	Decimal& operator-=(Decimal other);
+	Decimal& operator*=(Decimal other);
+	Decimal& operator/=(Decimal other);
+	Decimal& operator%=(Decimal other);
+	Decimal& operator^=(Decimal other);
+
+	bool add_if_exact(Decimal other);
+	bool subtract_if_exact(Decimal other);
+	bool multiply_if_exact(Decimal other);
+	bool divide_if_exact(Decimal other);
+	bool pow_if_exact(Decimal other);
+
 	Decimal& ln();
+	Decimal& log(const Decimal& other);
+	Decimal& exp();
+	Decimal& pow(const Decimal& other);
+	Decimal& sqrt();
+	Decimal& root(const Decimal& other);
+	Decimal& factorial();
 
 	Decimal& sin();
 	Decimal& cos();
@@ -65,45 +87,59 @@ class Decimal
 	Decimal& round();
 	Decimal& floor();
 	Decimal& ceil();
-	Decimal& abs();
 	Decimal& to_int();
+	Decimal& abs();
 	Decimal& negate();
+	Decimal& ran();
+	Decimal& ran_int(Decimal start, Decimal end);
 
-	Decimal& pow(const Decimal& other);
-	Decimal& pow(const double& other);
-	Decimal& factorial();
+	KEY_SET to_key_set_fix(uint8_t fix) const;
+	KEY_SET to_key_set_sci(uint8_t sci) const;
+	KEY_SET to_key_set_norm(uint8_t norm) const;
 
-	Decimal& sqrt();
-	Decimal& root(const Decimal& other);
-	Decimal& root(const double& other);
+	static const Decimal PI;
+	static const Decimal EULER;
+
+	/// <summary>
+	/// contains all values for 10^n with n from 0 to 18
+	/// </summary>
+	static const int64_t powers_of_ten[19];
 
 	private:
-	void normalize();
-	void shift_comma(int8_t shift);
-	void change_accuracy(int8_t shift);
-	uint64_t move_comma[DECIMAL_VALUE_PRECISION] = {
-		1,
-		10,
-		100,
-		1000,
-		10000,
-		100000,
-		1000000,
-		10000000,
-		100000000,
-		1000000000,
-		10000000000,
-		100000000000,
-		1000000000000,
-		10000000000000,
-		100000000000000,
-		1000000000000000,
-		10000000000000000,
-		100000000000000000,
-		1000000000000000000,
-	};
-	int64_t _value;
-	int16_t _exp;
-};
+	/// <summary>
+	/// count the number of digits after the first non-zero digit (base 10)
+	/// </summary>
+	static uint8_t count_digits(int64_t value);
+	/// <summary>
+	/// count the number of digits after the first non-zero digit (base 10)
+	/// </summary>
+	static uint8_t count_digits_unsigned(uint64_t value);
+	/// <summary>
+	/// shifts the value to the right by shift and rounds the last digit
+	/// </summary>
+	/// <param name="shift">range: 1 to DECIMAL_VALUE_PRECISION (inclusive)</param>
+	static void shift_right(int64_t& value, uint8_t shift);
+	/// <summary>
+	/// shifts the value to the right by shift
+	/// </summary>
+	/// <param name="shift">range: 1 to DECIMAL_VALUE_PRECISION (inclusive)</param>
+	static void shift_right(uint64_t& value, uint8_t shift);
+	/// <summary>
+	/// shifts the value to the right by one and rounds the last digit
+	/// </summary>
+	/// <param name="value"></param>
+	static void shift_right_one(int64_t& value);
+	/// <summary>
+	/// maximize the exponent as much as possible without loosing precision
+	/// </summary>
+	void maximize_exp() const;
 
-#endif
+	/// <summary>
+	/// value of the decimal: value = _val * 10^_exp
+	/// </summary>
+	mutable int64_t _val;
+	/// <summary>
+	/// exponent of the decimal: value = _val * 10^_exp
+	/// </summary>
+	mutable int16_t _exp;
+};

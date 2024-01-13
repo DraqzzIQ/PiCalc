@@ -52,11 +52,11 @@ class Bitset2D
 	/// Assignment operator.
 	/// </summary>
 	Bitset2D& operator=(const Bitset2D& other);
-	/// <summary>
-	/// appends two bitset_2ds together
-	/// Very Inefficient due to return by value
-	/// </summary>
-	Bitset2D operator+(const Bitset2D& other);
+	///// <summary>
+	///// appends two bitset_2ds together
+	///// Very Inefficient due to return by value
+	///// </summary>
+	// Bitset2D operator+(const Bitset2D& other);
 
 	/// <summary>
 	/// Returns the bit at index.

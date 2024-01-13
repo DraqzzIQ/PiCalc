@@ -18,7 +18,6 @@
 class ISerializable
 {
 	public:
-	ISerializable(){};
 	/// <summary>
 	/// saves the result of searialize() to a file
 	/// either on the sd card or in the local filesystem
@@ -28,19 +27,7 @@ class ISerializable
 	/// </param>
 	/// <param name="filename">the name of the file</param>
 	/// </summary>
-	void save_file(std::string dir, std::string filename)
-	{
-		std::vector<uint8_t> bytes = searialize();
-#ifdef PICO
-		SDCardController::write_file(dir, filename, &bytes);
-#else
-		if (!std::filesystem::exists(dir))
-			std::filesystem::create_directory(dir);
-		FILE* file = fopen((dir + "/" + filename).c_str(), "wb");
-		fwrite(bytes.data(), sizeof(uint8_t), bytes.size(), file);
-		fclose(file);
-#endif
-	}
+	void save_file(std::string dir, std::string filename);
 	/// <summary>
 	/// uses the result of desearialize() to call desearialize()
 	/// <param name="dir">
@@ -48,22 +35,29 @@ class ISerializable
 	/// </param>
 	/// <param name="filename">the name of the file</param>
 	/// </summary>
-	void load_file(std::string dir, std::string filename)
-	{
-		std::vector<uint8_t> bytes;
-#ifdef PICO
-		SDCardController::read_file(dir, filename, &bytes);
-#else
-		FILE* file = fopen((dir + "/" + filename).c_str(), "rb");
-		fseek(file, 0, SEEK_END);
-		size_t size = ftell(file);
-		bytes.resize(size);
-		fseek(file, 0, SEEK_SET);
-		fread(bytes.data(), sizeof(uint8_t), size, file);
-		fclose(file);
-#endif
-		desearialize(bytes);
-	}
+	void load_file(std::string dir, std::string filename);
+	/// <summary>
+	/// returns true if the file exists
+	/// <param name="dir">
+	/// the directory containing the file
+	/// </param>
+	/// <param name="filename">the name of the file</param>
+	/// </summary>
+	bool file_exists(std::string dir, std::string filename);
+	/// <summary>
+	/// returns true if the directory exists
+	/// <param name="dir">
+	/// the directory to check
+	/// </param>
+	/// </summary>
+	bool dir_exists(std::string dir);
+	/// <summary>
+	/// returns all files in the directory
+	/// <param name="dir">
+	/// the directory to list
+	/// </param>
+	/// </summary>
+	std::vector<std::string> list_dir(std::string dir);
 
 	protected:
 	/// <summary>
