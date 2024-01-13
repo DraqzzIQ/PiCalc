@@ -26,6 +26,18 @@ class SDCardController
 	/// reads the given file in the given directory and returns the bytes
 	/// </summary>
 	static bool read_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes);
+	/// <summary>
+	/// returns true if the file exists
+	/// </summary>
+	static bool file_exists(std::string dir, std::string filename);
+	/// <summary>
+	/// returns true if the directory exists
+	/// </summary>
+	static bool dir_exists(std::string dir);
+	/// <summary>
+	/// returns all files in the directory
+	/// </summary>
+	static std::vector<std::string> list_dir(std::string dir);
 
 	private:
 	/// <summary>
