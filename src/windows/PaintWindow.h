@@ -35,9 +35,11 @@ class PaintWindow: public Window
 	bool _erase = false;
 
 	std::vector<uint8_t> bytes;
-	MenuWindow saves_menu = MenuWindow();
+	MenuWindow load_menu = MenuWindow();
+	Window save_menu = Window();
 
-	std::string openSavesMenu();
+	void openLoadMenu();
+	void openSaveMenu();
 
 	static void draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset);
 	static void draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);

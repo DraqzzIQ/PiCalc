@@ -310,7 +310,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			#endif
 			break;
 		case 122: // ENG
-			openSavesMenu();
+			openLoadMenu();
 			break;
 		}
 	}
@@ -320,12 +320,10 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 
 	return true;
 }
-std::string PaintWindow::openSavesMenu()
+void PaintWindow::openLoadMenu()
 {
-	std::cout << "Opening saves menu" << std::endl;
 	std::function<void(std::string)> callback = [this](std::string filename)
 	{
-		std::cout << "Opening file: " << filename << std::endl;
 		bytes.clear();
 		#ifdef PICO
 		SDCardController::read_file("paint", filename, &bytes);
@@ -353,14 +351,18 @@ std::string PaintWindow::openSavesMenu()
 		WindowManager::get_instance()->minimize_window();
 	};
 	{
-		std::cout << "Creating saves menu" << std::endl;
-		saves_menu.options = std::vector<MenuOptionBase*>(5);
-		saves_menu.options[0] = new ValueMenuOption<std::string>("Save 1", "test.bmp", callback);
-		saves_menu.options[1] = new ValueMenuOption<std::string>("Save 2", "test1.bmp", callback);
-		saves_menu.options[2] = new ValueMenuOption<std::string>("Save 3", "test2.bmp", callback);
-		saves_menu.options[3] = new ValueMenuOption<std::string>("Save 4", "test3.bmp", callback);
-		saves_menu.options[4] = new ValueMenuOption<std::string>("Save 5", "test4.bmp", callback);
-		WindowManager::get_instance()->add_window(&saves_menu);
-		saves_menu.create_menu();
+		// TODO: show all files in directory as menu options
+		load_menu.options = std::vector<MenuOptionBase*>(5);
+		load_menu.options[0] = new ValueMenuOption<std::string>("Save 1", "test.bmp", callback);
+		load_menu.options[1] = new ValueMenuOption<std::string>("Save 2", "test1.bmp", callback);
+		load_menu.options[2] = new ValueMenuOption<std::string>("Save 3", "test2.bmp", callback);
+		load_menu.options[3] = new ValueMenuOption<std::string>("Save 4", "test3.bmp", callback);
+		load_menu.options[4] = new ValueMenuOption<std::string>("Save 5", "test4.bmp", callback);
+		WindowManager::get_instance()->add_window(&load_menu);
+		load_menu.create_menu();
 	}
+}
+
+void PaintWindow::openSaveMenu()
+{
 }
