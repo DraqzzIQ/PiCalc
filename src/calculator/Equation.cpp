@@ -162,14 +162,8 @@ void Equation::set_variable_list(std::vector<Number*> variables)
 
 Number* Equation::to_number()
 {
-	if (_equation.size() == 0) {
-		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-		_cursor_index = 0;
-		return new Number();
-	}
 	_calculate_index = 0;
 	Number* res = to_number_part(95);
-	if (Error::error_thrown()) return new Number();
 	render_equation();
 	return res;
 }
@@ -618,6 +612,12 @@ Number* Equation::to_number_part(KEY expected_ending)
 		}
 	}
 	if (_number_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _calculate_index + (_number_value_cnt & 0b00111111)));
+
+	if (calculation.size() == 0) {
+		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		_cursor_index = _calculate_index;
+		return new Number();
+	}
 
 	// handle negative numbers
 	uint8_t add_i = 0;
