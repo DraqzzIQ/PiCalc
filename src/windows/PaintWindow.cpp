@@ -344,8 +344,13 @@ std::string PaintWindow::openSavesMenu()
 			}
 		}
 		#endif
+		if (bytes.size() == 0) return;
 		_painted = Bitset2D::from_bmp(bytes);
-		WindowManager::get_instance()->close_window();
+		_corner_x = 0;
+		_corner_y = 0;
+		_cursor_x = SCREEN_WIDTH / 2;
+		_cursor_y = SCREEN_HEIGHT / 2;
+		// TODO: close menu
 	};
 	{
 		std::cout << "Creating saves menu" << std::endl;
@@ -355,7 +360,7 @@ std::string PaintWindow::openSavesMenu()
 		saves_menu.options[2] = new ValueMenuOption<std::string>("Save 3", "test2.bmp", callback);
 		saves_menu.options[3] = new ValueMenuOption<std::string>("Save 4", "test3.bmp", callback);
 		saves_menu.options[4] = new ValueMenuOption<std::string>("Save 5", "test4.bmp", callback);
-		saves_menu.create_menu();
 		WindowManager::get_instance()->add_window(&saves_menu);
+		saves_menu.create_menu();
 	}
 }
