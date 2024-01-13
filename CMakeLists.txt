@@ -86,4 +86,7 @@ if(RPI_PICO)
 
     # preprocessor macro
     target_compile_definitions(${PROJECT_NAME} PRIVATE PICO)
+
+    #picowota_build_standalone(${PROJECT_NAME}) # for updating via picowota when already installed
+    picowota_build_combined(${PROJECT_NAME}) # combined libary conatining bootloader and app for first time flashing (also builds standalone version)
 endif()
