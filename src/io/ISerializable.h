@@ -27,7 +27,7 @@ class ISerializable
 	/// </param>
 	/// <param name="filename">the name of the file</param>
 	/// </summary>
-	void save_file(std::string dir, std::string filename);
+	bool save_file(std::string dir, std::string filename);
 	/// <summary>
 	/// uses the result of desearialize() to call desearialize()
 	/// <param name="dir">
@@ -35,7 +35,7 @@ class ISerializable
 	/// </param>
 	/// <param name="filename">the name of the file</param>
 	/// </summary>
-	void load_file(std::string dir, std::string filename);
+	bool load_file(std::string dir, std::string filename);
 	/// <summary>
 	/// returns true if the file exists
 	/// <param name="dir">
