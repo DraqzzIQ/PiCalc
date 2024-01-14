@@ -437,7 +437,7 @@ void Number::to_key_set(KEY_SET& result) const
 			}
 		}
 		if (key == 69) result.back() = 75;
-		else result.pop_back();
+		else if (key != 72) result.pop_back();
 	} else {
 		KEY_SET val = _value.to_key_set(16);
 		result.insert(result.end(), val.begin(), val.end());
