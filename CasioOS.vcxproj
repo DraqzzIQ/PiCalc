@@ -45,6 +45,7 @@
     <ClInclude Include="src\windows\InstanceSelectionWindow.h" />
     <ClInclude Include="src\windows\MainMenuWindow.h" />
     <ClInclude Include="src\windows\MenuWindow.h" />
+    <ClInclude Include="src\windows\PongWindow.h" />
     <ClInclude Include="src\windows\SettingsWindow.h" />
     <ClInclude Include="src\windows\SysInfoWindow.h" />
     <ClInclude Include="src\windows\TextWindow.h" />
@@ -57,7 +58,6 @@
     <ClInclude Include="src\http\HttpResponse.h" />
     <ClInclude Include="src\windows\WolframAlphaWindow.h" />
     <ClInclude Include="src\windows\ChatGPTWindow.h" />
-
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
@@ -83,6 +83,7 @@
     <ClCompile Include="src\windows\InstanceSelectionWindow.cpp" />
     <ClCompile Include="src\windows\MainMenuWindow.cpp" />
     <ClCompile Include="src\windows\MenuWindow.cpp" />
+    <ClCompile Include="src\windows\PongWindow.cpp" />
     <ClCompile Include="src\windows\SettingsWindow.cpp" />
     <ClCompile Include="src\windows\SysInfoWindow.cpp" />
     <ClCompile Include="src\windows\TextWindow.cpp" />
@@ -91,7 +92,6 @@
     <ClCompile Include="src\http\DesktopHttpClient.cpp" />
     <ClCompile Include="src\windows\WolframAlphaWindow.cpp" />
     <ClCompile Include="src\windows\ChatGPTWindow.cpp" />
-
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
