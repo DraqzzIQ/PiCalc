@@ -68,6 +68,7 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 				case 125: _equation_selected->del(); break;
 				case 126: _equation_selected->ac(); break;
 				case 73:
+					// ERROR: 3(1/4), 3*(1/4)
 					_result = _equation_selected->to_number();
 					if (Error::error_thrown()) {
 						set_menu(Menu::Error);

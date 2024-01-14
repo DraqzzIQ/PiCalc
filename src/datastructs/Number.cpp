@@ -64,7 +64,7 @@ Number* Number::add(Number* other)
 		_children = std::vector<Number*>{ clone(), other->clone() };
 		_value.set_key(69);
 	}
-	delete other;
+	other = nullptr;
 	return this;
 }
 
@@ -90,7 +90,7 @@ Number* Number::multiply(Number* other)
 		_children = std::vector<Number*>{ clone(), other->clone() };
 		_value.set_key(71);
 	}
-	delete other;
+	other = nullptr;
 	return this;
 }
 
@@ -98,7 +98,7 @@ Number* Number::divide(Number* other)
 {
 	_children = std::vector<Number*>{ clone(), other->clone() };
 	_value.set_key(72);
-	delete other;
+	other = nullptr;
 	return this;
 }
 
@@ -301,6 +301,7 @@ Number* Number::ran_int(Number* other)
 
 void Number::simplify()
 {
+	// TODO: simplify and show periodic
 	return;
 }
 

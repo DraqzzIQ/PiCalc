@@ -351,7 +351,10 @@ Decimal& Decimal::operator*=(Decimal other)
 
 Decimal& Decimal::operator/=(Decimal other)
 {
-	if (other._val == 0) std::cout << "Error: Division by zero" << std::endl;
+	if (other._val == 0) {
+		Error::throw_error(Error::ErrorType::MATH_ERROR);
+		return *this;
+	}
 
 	// if other._val has more than 17 digits, the code below could get stuck in an infinite loop as the result of the division could be 0
 	if (other._val >= powers_of_ten[17]) {
@@ -819,14 +822,27 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 			_exp += missing_digits;
 		}
 		// comma needed
-		int64_t val_copy = std::abs(_val);
-		while (val_copy != 0) {
-			res.push_back((KEY)(val_copy % 10));
-			val_copy /= 10;
+		if (-_exp < digits - missing_digits) {
+			int64_t val_copy = std::abs(_val);
+			for (uint8_t i = 0; i < -_exp; i++) {
+				res.push_back((KEY)(val_copy % 10));
+				val_copy /= 10;
+			}
+			res.push_back(82);
+			while (val_copy != 0) {
+				res.push_back((KEY)(val_copy % 10));
+				val_copy /= 10;
+			}
+		} else {
+			int64_t val_copy = std::abs(_val);
+			while (val_copy != 0) {
+				res.push_back((KEY)(val_copy % 10));
+				val_copy /= 10;
+			}
+			for (uint8_t i = res.size(); i < -_exp; i++) res.push_back(0);
+			res.push_back(82);
+			res.push_back(0);
 		}
-		for (uint8_t i = res.size(); i < -_exp; i++) res.push_back(0);
-		res.push_back(82);
-		res.push_back(0);
 		if (_val < 0) res.push_back(116);
 		std::reverse(res.begin(), res.end());
 	}
