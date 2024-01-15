@@ -28,6 +28,7 @@
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
     <ClInclude Include="src\datastructs\Number.h" />
+    <ClInclude Include="src\datastructs\NumberParser.h" />
     <ClInclude Include="src\http\HttpParams.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />
     <ClCompile Include="src\datastructs\Number.cpp" />
+    <ClCompile Include="src\datastructs\NumberParser.cpp" />
     <ClCompile Include="src\http\IHttpClient.cpp" />
     <ClCompile Include="src\keyboard\IKeyboard.cpp" />
     <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />

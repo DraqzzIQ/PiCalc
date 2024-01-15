@@ -2,6 +2,7 @@
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Number.h"
+#include "datastructs/NumberParser.h"
 #include "keyboard/KeyPress.h"
 #include "utils/Utils.h"
 #include "windows/Window.h"
@@ -179,30 +180,6 @@ class Equation
 	/// height of the frame the equation is rendered in
 	/// </summary>
 	uint32_t _frame_height = SCREEN_HEIGHT;
-
-	/// <summary>
-	/// exponent of the decimal currently being converted
-	/// </summary>
-	int16_t _number_exp;
-	/// <summary>
-	/// value of the decimal currently being converted
-	/// </summary>
-	int64_t _number_val;
-	/// <summary>
-	/// right to left:
-	/// 0-4: number of periodic digits
-	/// 5: periodic active
-	/// 6: comma placed
-	/// 7: exp placed
-	/// </summary>
-	uint8_t _number_state = 0;
-	/// <summary>
-	/// right to left:
-	/// 0-5: number of symbols placed
-	/// 6: digits placed before comma?
-	/// 7: digits placed after exp?
-	/// </summary>
-	uint8_t _number_value_cnt = 0;
 	/// <summary>
 	/// index of the equation currently converted to a number
 	/// </summary>
@@ -255,7 +232,4 @@ class Equation
 	/// converts a part of the equation to a number, starting at _calculate_index, stopping at a closed bracket, a next value char or an end symbol char, uses _calculate_index as counter
 	/// </summary>
 	Number* to_number_part(KEY expected_ending);
-	void clear_number();
-	bool add_digit(const KEY digit);
-	Number* get_number();
 };

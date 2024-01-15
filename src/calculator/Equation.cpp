@@ -541,12 +541,12 @@ Number* Equation::to_number_part(KEY expected_ending)
 	if (expected_ending != 95) _calculate_index++;
 	std::vector<CalculateNode> calculation;
 	bool numExpected = true;
-	clear_number();
+	NumberParser number_parser = NumberParser();
 	for (; _calculate_index < _equation.size(); _calculate_index++) {
 		KEY value = _equation.at(_calculate_index);
 
-		if (!add_digit(value)) {
-			if (_number_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _number_value_cnt & 0b00111111));
+		if (!number_parser.add_digit(value)) {
+			if (number_parser.get_value_cnt() != 0) calculation.push_back(CalculateNode(number_parser.get_number(), 95, number_parser.get_value_cnt()));
 
 			if (Chars::in_key_set(value, _symbols)) {
 				switch (value) {
@@ -620,7 +620,7 @@ Number* Equation::to_number_part(KEY expected_ending)
 			}
 		}
 	}
-	if (_number_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _calculate_index + (_number_value_cnt & 0b00111111)));
+	if (number_parser.get_value_cnt() != 0) calculation.push_back(CalculateNode(number_parser.get_number(), 95, number_parser.get_value_cnt()));
 
 	if (calculation.size() == 0) {
 		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
@@ -706,75 +706,4 @@ Number* Equation::to_number_part(KEY expected_ending)
 	// logic operators
 
 	return calculation.at(0).value;
-}
-
-void Equation::clear_number()
-{
-	_number_val = 0;
-	_number_exp = 0;
-	_number_state = 0;
-	_number_value_cnt = 0;
-}
-
-bool Equation::add_digit(const KEY digit)
-{
-	// TODO: numbers with more than 18 digits
-	if (_number_state & 0b00100000) {
-		if (digit < 10) {
-			_number_exp--;
-			_number_state++;
-			_number_val = _number_val * 10 + digit;
-		} else if (digit == 238) _number_state ^= 0b00100000;
-		else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-	} else {
-		if (_number_state & 0b00011111) return false;
-		if (digit < 10) { // key is digit
-			if (_number_state & 0b10000000) {
-				_number_exp = _number_exp * 10 + digit;
-				_number_value_cnt |= 0b10000000;
-			} else {
-				if (_number_state & 0b01000000) _number_exp--;
-				_number_val = _number_val * 10 + digit;
-				_number_value_cnt |= 0b01000000;
-			}
-			//} else if (digit == 69) { // key is +
-			//	if (!(_number_state & 0b10000000)) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			//} else if (digit == 70) { // key is -
-			//	if (_number_state & 0b10000000) _exp *= -1;
-			//	else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-		} else if (digit == 82) { // key is comma
-			if (_number_state & 0b11000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			_number_state |= 0b01000000;
-			//_number_value_cnt |= 0b01000000;
-		} else if (digit == 127) { // key is exp
-			if (_number_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			_number_state |= 0b10000000;
-		} else if (digit == 133) { // key is periodic
-			if (!(_number_state & 0b01000000) || _number_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			else _number_state |= 0b00100000;
-		} else {
-			return false;
-		}
-	}
-
-	_number_value_cnt++;
-	if ((_number_value_cnt & 0b00111111) == 0b00111111) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-
-	return true;
-}
-
-Number* Equation::get_number()
-{
-	Number* num;
-	if (_number_state & 0b00100000 || _number_value_cnt == 0) {
-		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-		num = new Number();
-	} else if (_number_state & 0b00011111) {
-		num = new Number(_number_val, _number_exp, _number_state & 0b00011111);
-	} else {
-		num = new Number(_number_val, _number_exp);
-	}
-
-	clear_number();
-	return num;
 }

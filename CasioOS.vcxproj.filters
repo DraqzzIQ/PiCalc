@@ -132,6 +132,9 @@
     <ClInclude Include="src\windows\PongWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\datastructs\NumberParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp">
@@ -228,6 +231,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\PongWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\datastructs\NumberParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -817,12 +817,12 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 		for (uint8_t i = 0; i < _exp; i++) res.push_back(0);
 	} else {
 		if (missing_digits > 0) {
-			// comma needed
 			shift_right(_val, missing_digits);
 			_exp += missing_digits;
+			digits -= missing_digits;
 		}
 		// comma needed
-		if (-_exp < digits - missing_digits) {
+		if (-_exp < digits) {
 			int64_t val_copy = std::abs(_val);
 			for (uint8_t i = 0; i < -_exp; i++) {
 				res.push_back((KEY)(val_copy % 10));

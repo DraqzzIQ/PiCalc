@@ -8,19 +8,28 @@ Number::Number()
 
 Number::Number(int64_t value, int16_t exp)
 {
-	_value.set_value(value, exp);
-	_children = std::vector<Number*>();
+	if (exp >= 0) {
+		_value.set_value(value, exp);
+		_children = std::vector<Number*>();
+	} else {
+		_value.set_key(72);
+		_children = std::vector<Number*>{
+			new Number(value, 0),
+			new Number(1, -exp)
+		};
+	}
 }
 
 Number::Number(int64_t value, int16_t exp, uint8_t periodic)
 {
 	exp += periodic;
 	value -= value / Decimal::powers_of_ten[periodic];
-	Number* top = new Number(value, exp);
-	Number* bottom = new Number(Decimal::powers_of_ten[periodic] - 1, 0);
 
 	_value.set_key(72);
-	_children = std::vector<Number*>{ top, bottom };
+	_children = std::vector<Number*>{
+		new Number(value, exp),
+		new Number(Decimal::powers_of_ten[periodic] - 1, 0)
+	};
 }
 
 Number::Number(const Number* other)
@@ -269,7 +278,7 @@ Number* Number::negate()
 
 Number* Number::percent()
 {
-	multiply(new Number(1, -2));
+	divide(new Number(100, 0));
 	return this;
 }
 
