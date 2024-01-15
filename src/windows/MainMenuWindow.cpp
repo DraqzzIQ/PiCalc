@@ -10,7 +10,7 @@ MainMenuWindow::MainMenuWindow():
 	options[3] = new MenuOption<ChatGPTWindow>("ChadGPT");
 	options[4] = new MenuOption<Window>("Notepad");
 	options[5] = new MenuOption<Window>("DOOM");
-	options[6] = new MenuOption<Window>("Another option with a really long name");
+	options[6] = new MenuOption<PongWindow>("Pong");
 	options[7] = new MenuOption<Window>("Google");
 	options[8] = new MenuOption<Window>("Option X");
 	options[9] = new MenuOption<Window>("Option XyZ");

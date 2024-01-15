@@ -6,9 +6,7 @@ PongWindow::PongWindow()
 	_settings = 0b1000;
 }
 
-PongWindow::~PongWindow()
-{
-}
+PongWindow::~PongWindow() {}
 
 Bitset2D PongWindow::update_window()
 {
@@ -17,4 +15,5 @@ Bitset2D PongWindow::update_window()
 
 bool PongWindow::handle_key_down(KeyPress keypress)
 {
+	return true;
 }

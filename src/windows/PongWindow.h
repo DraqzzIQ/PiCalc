@@ -5,7 +5,7 @@
 #include "windows/Window.h"
 #include <iostream>
 
-class PongWindow: Window
+class PongWindow: public Window
 {
 	public:
 	PongWindow();

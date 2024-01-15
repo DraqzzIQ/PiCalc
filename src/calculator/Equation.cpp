@@ -274,7 +274,16 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 				bracket_right.set_bit(2, bracket_right.height() - 2, true);
 				equation_part.extend_right(bracket_right);
 			}
-			if (type == 2) break;
+			if (type == 2) {
+				if (cursor_inside) {
+					cursor_inside_ref = true;
+					_cursor_data.x += cursor_offset_x;
+					_cursor_data.y += cursor_offset_y;
+					if (cursor_alignment == 1) _cursor_data.y += y_origin;
+					else if (cursor_alignment == 2) _cursor_data.y -= equation_part.height() - y_origin;
+				}
+				return equation_part;
+			}
 		}
 
 		// Abs
@@ -464,7 +473,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		equation_part.push_back(DynamicBitset(equation_part.height(), false));
 	}
 	// special case: cursor at the end of the equation
-	if (type != 2 && _render_index == _cursor_index) {
+	if (_render_index == _cursor_index) {
 		_cursor_data = { equation_part.width() - 1, 0, font_height };
 		cursor_inside = true;
 	}
