@@ -292,6 +292,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			_cursor_y = SCREEN_HEIGHT / 2 + corner_y;
 			break;
 		case 121: // RCL
+			// openSaveMenu();
 			bytes = _painted.to_bmp();
 			// TODO: open window to name file
 			#ifdef PICO
@@ -299,7 +300,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			#else
 				std::cout << "Writing to file on desktop" << std::endl;
 				{
-				std::ofstream out_file("test.bmp", std::ios::binary);
+				std::ofstream out_file("paint/test.bmp", std::ios::binary);
 				if (out_file.is_open()) {
 					out_file.write((char*)bytes.data(), bytes.size());
 					out_file.close();
@@ -329,7 +330,7 @@ void PaintWindow::openLoadMenu()
 		SDCardController::read_file("paint", filename, &bytes);
 		#else
 		std::cout << "Reading from file on desktop" << std::endl;
-		std::ifstream in_file(filename, std::ios::binary);
+		std::ifstream in_file("paint/" + filename, std::ios::binary);
 		{
 			if (in_file.is_open()) {
 				in_file.seekg(0, std::ios::end);
@@ -351,13 +352,17 @@ void PaintWindow::openLoadMenu()
 		WindowManager::get_instance()->minimize_window();
 	};
 	{
-		// TODO: show all files in directory as menu options
-		load_menu.options = std::vector<MenuOptionBase*>(5);
-		load_menu.options[0] = new ValueMenuOption<std::string>("Save 1", "test.bmp", callback);
-		load_menu.options[1] = new ValueMenuOption<std::string>("Save 2", "test1.bmp", callback);
-		load_menu.options[2] = new ValueMenuOption<std::string>("Save 3", "test2.bmp", callback);
-		load_menu.options[3] = new ValueMenuOption<std::string>("Save 4", "test3.bmp", callback);
-		load_menu.options[4] = new ValueMenuOption<std::string>("Save 5", "test4.bmp", callback);
+		# ifdef PICO
+		std::vector<string> files = SDCardController::list_dir("paint");
+		# else
+		std::vector<std::string> files = {};
+		for (const auto & entry : std::filesystem::directory_iterator("paint"))
+			files.push_back(entry.path().filename().string());
+		# endif
+		load_menu.options.clear();
+		for (const auto & file : files) {
+			load_menu.options.push_back(new ValueMenuOption<std::string>(file, file, callback));
+		}
 		WindowManager::get_instance()->add_window(&load_menu);
 		load_menu.create_menu();
 	}
@@ -365,4 +370,7 @@ void PaintWindow::openLoadMenu()
 
 void PaintWindow::openSaveMenu()
 {
+	auto input_window = InputWindow();
+	input_window.set_prompt("Enter filename:");
+	// WindowManager::get_instance()->add_window(&input_window);
 }

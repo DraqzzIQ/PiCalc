@@ -14,7 +14,7 @@ class ValueMenuOption: public MenuOptionBase
 		this->_value = value;
 		this->_callback = callback;
 	}
-	~ValueMenuOption(){};
+	~ValueMenuOption() = default;
 
 	void on_select() {
 		_callback(_value);

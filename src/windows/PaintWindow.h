@@ -1,18 +1,21 @@
 #pragma once
+#include "InputWindow.h"
 #include "MenuWindow.h"
 #include "constant/Chars.h"
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
 #include "io/SDCardController.h"
+#include "options/ValueMenuOption.h"
 #include "utils/Utils.h"
 #include "windows/Window.h"
+#include "windows/InputWindow.h"
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <stack>
-#include <vector>
 #include <string>
-#include "options/ValueMenuOption.h"
-#include <functional>
+#include <vector>
+#include <filesystem>
 
 class PaintWindow: public Window
 {
@@ -36,7 +39,6 @@ class PaintWindow: public Window
 
 	std::vector<uint8_t> bytes;
 	MenuWindow load_menu = MenuWindow();
-	Window save_menu = Window();
 
 	void openLoadMenu();
 	void openSaveMenu();
