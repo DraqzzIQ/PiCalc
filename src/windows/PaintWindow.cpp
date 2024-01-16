@@ -292,7 +292,8 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			_cursor_y = SCREEN_HEIGHT / 2 + corner_y;
 			break;
 		case 121: // RCL
-			// openSaveMenu();
+			openSaveMenu();
+			break;
 			bytes = _painted.to_bmp();
 			// TODO: open window to name file
 			#ifdef PICO
@@ -370,7 +371,11 @@ void PaintWindow::openLoadMenu()
 
 void PaintWindow::openSaveMenu()
 {
-	auto input_window = InputWindow();
-	input_window.set_prompt("Enter filename:");
-	// WindowManager::get_instance()->add_window(&input_window);
+	std::string filename = InputWindow::input("Enter filename: ");
+	if (filename.rfind(".bmp") == std::string::npos) {
+		filename += ".bmp";
+	}
+	// Replace spaces with underscores
+	std::replace(filename.begin(), filename.end(), ' ', '_');
+	std::cout << filename << std::endl;
 }
