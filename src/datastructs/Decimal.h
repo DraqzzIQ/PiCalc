@@ -93,9 +93,18 @@ class Decimal
 	Decimal& ran();
 	Decimal& ran_int(Decimal start, Decimal end);
 
+	void value_to_key_set(KEY_SET& res) const;
+	void exp_to_key_set(KEY_SET& res) const;
 	KEY_SET to_key_set_fix(uint8_t fix) const;
 	KEY_SET to_key_set_sci(uint8_t sci) const;
-	KEY_SET to_key_set_norm(uint8_t norm) const;
+	/// <summary>
+	/// returns a KEY_SET representing the decimal
+	/// </summary>
+	/// <param name="mode">1: norm (count = max lost digits), 2: fix (count = number of decimal places), 3: sci (count = number of digits)</param>
+	/// <param name="count">depends on mode</param>
+	/// <param name="max_size">max size of the output KEY_SET</param>
+	/// <returns></returns>
+	KEY_SET to_key_set(uint8_t max_size) const;
 
 	static const Decimal PI;
 	static const Decimal EULER;
@@ -133,6 +142,7 @@ class Decimal
 	/// maximize the exponent as much as possible without loosing precision
 	/// </summary>
 	void maximize_exp() const;
+	uint8_t exp_count_digits() const;
 
 	/// <summary>
 	/// value of the decimal: value = _val * 10^_exp

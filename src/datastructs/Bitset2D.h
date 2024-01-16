@@ -171,11 +171,11 @@ class Bitset2D
 	/// <summary>
 	/// Converts a 2D bitset to a string
 	/// </summary>
-	std::string to_string();
+	std::string to_string() const;
 	/// <summary>
 	/// Converts a 2D bitset to a string with formatting
 	/// </summary>
-	std::string to_string_formatted();
+	std::string to_string_formatted() const;
 	/// <summary>
 	/// Converts a 2D bitset to a vector of uint8_ts of a bmp file
 	/// </summary>

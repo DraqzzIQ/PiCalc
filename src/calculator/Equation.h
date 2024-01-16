@@ -2,6 +2,7 @@
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Number.h"
+#include "datastructs/NumberParser.h"
 #include "keyboard/KeyPress.h"
 #include "utils/Utils.h"
 #include "windows/Window.h"
@@ -37,6 +38,10 @@ class Equation
 	/// true: cursor is blinking
 	/// </summary>
 	void set_cursor_state(bool active);
+	/// <summary>
+	/// set the equation to the givcen KEY_SET
+	/// </summary>
+	void set_key_set(KEY_SET& equation);
 	/// <summary>
 	/// return the rendered equation
 	/// </summary>
@@ -86,7 +91,7 @@ class Equation
 	/// calculate the equation
 	/// </summary>
 	/// <returns>result</returns>
-	Number to_number();
+	Number* to_number();
 
 	private:
 	/// <summary>
@@ -175,30 +180,6 @@ class Equation
 	/// height of the frame the equation is rendered in
 	/// </summary>
 	uint32_t _frame_height = SCREEN_HEIGHT;
-
-	/// <summary>
-	/// exponent of the decimal currently being converted
-	/// </summary>
-	int16_t _number_exp;
-	/// <summary>
-	/// value of the decimal currently being converted
-	/// </summary>
-	int64_t _number_val;
-	/// <summary>
-	/// right to left:
-	/// 0-4: number of periodic digits
-	/// 5: periodic active
-	/// 6: comma placed
-	/// 7: exp placed
-	/// </summary>
-	uint8_t _number_state = 0;
-	/// <summary>
-	/// right to left:
-	/// 0-5: number of symbols placed
-	/// 6: digits placed before comma?
-	/// 7: digits placed after exp?
-	/// </summary>
-	uint8_t _number_value_cnt = 0;
 	/// <summary>
 	/// index of the equation currently converted to a number
 	/// </summary>
@@ -229,9 +210,9 @@ class Equation
 	/// <param name="cursor_offset_x">x offset applied to the cursor, if it's in this subequation</param>
 	/// <param name="cursor_offset_y">y offset applied to the cursor, if it's in this subequation</param>
 	/// <param name="cursor_alignment">0: in reference to y_origin; 1: in reference to the top; 2: in reference to the bottom</param>
-	/// <param name="top_level">if true, throws an error if a closed bracket is there without an opening bracket</param>
+	/// <param name="type">0: top level; 1: symbol; 2: bracket</param>
 	/// <returns>the rendered subequation</returns>
-	Bitset2D render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, bool bracket = false);
+	Bitset2D render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, uint8_t type = 1);
 	/// <summary>
 	/// appends the second bitset to the first one with their y_origins aligned
 	/// </summary>
@@ -251,7 +232,4 @@ class Equation
 	/// converts a part of the equation to a number, starting at _calculate_index, stopping at a closed bracket, a next value char or an end symbol char, uses _calculate_index as counter
 	/// </summary>
 	Number* to_number_part(KEY expected_ending);
-	void clear_number();
-	bool add_digit(const KEY digit);
-	Number* get_number();
 };

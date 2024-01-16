@@ -280,14 +280,14 @@ void Bitset2D::extend_up(uint32_t length, bool value)
 }
 
 
-std::string Bitset2D::to_string()
+std::string Bitset2D::to_string() const
 {
 	std::string s = "";
 	for (uint32_t i = 0; i < _plane.size(); i++) { s += _plane[i].to_string(); }
 	return s;
 }
 
-std::string Bitset2D::to_string_formatted()
+std::string Bitset2D::to_string_formatted() const
 {
 	uint32_t max_size = 0;
 	for (uint32_t i = 0; i < _plane.size(); i++) {

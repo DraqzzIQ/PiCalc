@@ -26,6 +26,7 @@ const std::map<std::string, KEY> Chars::CHAR_TO_KEYCODE = {
 	{ "M", 22 },
 	{ "N", 23 },
 	{ "O", 24 },
+	{ "O", 24 },
 	{ "P", 25 },
 	{ "Q", 26 },
 	{ "R", 27 },

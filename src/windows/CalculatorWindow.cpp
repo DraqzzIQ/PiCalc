@@ -8,6 +8,7 @@ CalculatorWindow::CalculatorWindow()
 
 	_variables = std::vector<Number*>(9);
 	_equation_selected->set_variable_list(_variables);
+	_result_selected = 0;
 
 	_result_equation.set_cursor_state(false);
 }
@@ -67,20 +68,30 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 				case 125: _equation_selected->del(); break;
 				case 126: _equation_selected->ac(); break;
 				case 73:
+					// ERROR: 3(1/4), 3*(1/4)
 					_result = _equation_selected->to_number();
 					if (Error::error_thrown()) {
 						set_menu(Menu::Error);
 						Error::error_handled();
 						calculated = false;
 					} else {
-						_result_equation = Equation(_result.to_key_set().at(0));
+						_result_selected = 0;
+						_result_key_sets = _result.get_all_representations();
+						_result_equation.set_key_set(_result_key_sets.at(0));
 						_result_rendered = _result_equation.get_rendered_equation();
 						calculated = true;
 					}
 					break;
-				case 95: break;  // unknown
+				case 189: break; // unknown
 				case 103: break; // SHIFT
 				case 104: break; // ALPHA
+				case 123:        // S<>D
+					if (!calculated) break;
+					_result_selected++;
+					if (_result_selected == _result_key_sets.size()) _result_selected = 0;
+					_result_equation.set_key_set(_result_key_sets.at(_result_selected));
+					_result_rendered = _result_equation.get_rendered_equation();
+					break;
 				case 141: break; // STO
 				case 121: break; // RCL
 				case 145: break; // CONST

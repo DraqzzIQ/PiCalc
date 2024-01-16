@@ -72,11 +72,13 @@ class CalculatorWindow: public Window
 
 	std::vector<Equation> equations;
 	Equation* _equation_selected;
+	uint8_t _result_selected;
 	Number _ans;
 	Number _prev_ans;
 	std::vector<Number*> _variables;
 
 	Number _result;
+	std::vector<KEY_SET> _result_key_sets;
 	Equation _result_equation;
 	Bitset2D _result_rendered;
 	bool calculated;

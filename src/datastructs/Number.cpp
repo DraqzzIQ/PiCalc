@@ -8,19 +8,28 @@ Number::Number()
 
 Number::Number(int64_t value, int16_t exp)
 {
-	_value = Decimal(value, exp);
-	_children = std::vector<Number*>();
+	if (exp >= 0) {
+		_value.set_value(value, exp);
+		_children = std::vector<Number*>();
+	} else {
+		_value.set_key(72);
+		_children = std::vector<Number*>{
+			new Number(value, 0),
+			new Number(1, -exp)
+		};
+	}
 }
 
 Number::Number(int64_t value, int16_t exp, uint8_t periodic)
 {
 	exp += periodic;
 	value -= value / Decimal::powers_of_ten[periodic];
-	Number* top = new Number(value, exp);
-	Number* bottom = new Number(Decimal::powers_of_ten[periodic] - 1, 0);
 
-	_value = 72;
-	_children = std::vector<Number*>{ top, bottom };
+	_value.set_key(72);
+	_children = std::vector<Number*>{
+		new Number(value, exp),
+		new Number(Decimal::powers_of_ten[periodic] - 1, 0)
+	};
 }
 
 Number::Number(const Number* other)
@@ -36,7 +45,8 @@ Number::Number(Decimal value)
 
 Number::~Number()
 {
-	for (Number* child : _children) delete child;
+	for (Number* child : _children)
+		delete child;
 }
 
 Number* Number::operator=(const Number* other)
@@ -63,14 +73,13 @@ Number* Number::add(Number* other)
 		_children = std::vector<Number*>{ clone(), other->clone() };
 		_value.set_key(69);
 	}
-	delete other;
+	other = nullptr;
 	return this;
 }
 
 Number* Number::subtract(Number* other)
 {
 	add(other->negate());
-	delete other;
 	return this;
 }
 
@@ -90,7 +99,7 @@ Number* Number::multiply(Number* other)
 		_children = std::vector<Number*>{ clone(), other->clone() };
 		_value.set_key(71);
 	}
-	delete other;
+	other = nullptr;
 	return this;
 }
 
@@ -98,14 +107,15 @@ Number* Number::divide(Number* other)
 {
 	_children = std::vector<Number*>{ clone(), other->clone() };
 	_value.set_key(72);
-	delete other;
+	other = nullptr;
 	return this;
 }
 
 Number* Number::mod(Number* other)
 {
-	_children = std::vector<Number*>{ clone(), other->clone() };
-	_value.set_key(130);
+	to_value();
+	other->to_value();
+	_value %= other->_value;
 	delete other;
 	return this;
 }
@@ -153,8 +163,8 @@ Number* Number::root(Number* other)
 
 Number* Number::factorial()
 {
-	_children = std::vector<Number*>{ clone() };
-	_value.set_key(85);
+	to_value();
+	_value.factorial();
 	return this;
 }
 
@@ -222,44 +232,43 @@ Number* Number::atanh()
 
 Number* Number::round()
 {
-	_children = std::vector<Number*>{ clone() };
-	_value.set_key(154);
+	to_value();
+	_value.round();
 	return this;
 }
 
 Number* Number::floor()
 {
-	_children = std::vector<Number*>{ clone() };
-	_value.set_key(163);
+	to_value();
+	_value.floor();
 	return this;
 }
 
 Number* Number::ceil()
 {
-	_children = std::vector<Number*>{ clone() };
-	_value.set_key(251);
+	to_value();
+	_value.ceil();
 	return this;
 }
 
 Number* Number::abs()
 {
-	_children = std::vector<Number*>{ clone() };
-	_value.set_key(106);
+	to_value();
+	_value.abs();
 	return this;
 }
 
 Number* Number::to_int()
 {
-	_children = std::vector<Number*>{ clone() };
-	_value.set_key(162);
+	to_value();
+	_value.to_int();
 	return this;
 }
 
 Number* Number::negate()
 {
 	if (_value.is_key()) {
-		_children = std::vector<Number*>{ clone(), new Number(-1, 0) };
-		_value.set_key(72);
+		multiply(new Number(-1, 0));
 		return this;
 	} else {
 		_value.negate();
@@ -269,7 +278,7 @@ Number* Number::negate()
 
 Number* Number::percent()
 {
-	multiply(new Number(1, -2));
+	divide(new Number(100, 0));
 	return this;
 }
 
@@ -301,6 +310,7 @@ Number* Number::ran_int(Number* other)
 
 void Number::simplify()
 {
+	// TODO: simplify and show periodic
 	return;
 }
 
@@ -316,6 +326,9 @@ Decimal Number::to_value() const
 		case 71:
 			res = 1;
 			for (Number* child : _children) res *= child->to_value();
+			break;
+		case 72:
+			res = _children[0]->to_value() / _children[1]->to_value();
 			break;
 		case 85:
 			res = _children[0]->to_value().factorial();
@@ -415,10 +428,57 @@ Decimal Number::to_value() const
 	} else return _value;
 }
 
-std::vector<KEY_SET> Number::to_key_set() const
+void Number::to_key_set(KEY_SET& result) const
 {
-	to_value();
-	return std::vector<KEY_SET>{ _value.to_key_set_sci(9) };
+	if (_value.is_key()) {
+		KEY key = _value.get_key();
+		if (key == 69) result.push_back(74);
+		if (key == 72) {
+			result.push_back(110);
+			_children[0]->to_key_set(result);
+			result.push_back(237);
+			_children[1]->to_key_set(result);
+			result.push_back(238);
+		} else {
+			for (Number* child : _children) {
+				child->to_key_set(result);
+				result.push_back(_value.get_key());
+			}
+		}
+		if (key == 69) result.back() = 75;
+		else if (key != 72) result.pop_back();
+	} else {
+		KEY_SET val = _value.to_key_set(16);
+		result.insert(result.end(), val.begin(), val.end());
+	}
+}
+
+std::vector<KEY_SET> Number::get_all_representations()
+{
+	auto results = std::vector<KEY_SET>();
+	simplify();
+	if (_value.is_key()) {
+		KEY_SET result;
+		KEY key = _value.get_key();
+		if (key == 72) {
+			result.push_back(110);
+			_children[0]->to_key_set(result);
+			result.push_back(237);
+			_children[1]->to_key_set(result);
+			result.push_back(238);
+		} else {
+			for (Number* child : _children) {
+				child->to_key_set(result);
+				result.push_back(_value.get_key());
+			}
+		}
+		result.pop_back();
+		results.push_back(result);
+	}
+
+	results.push_back(to_value().to_key_set(14));
+
+	return results;
 }
 
 

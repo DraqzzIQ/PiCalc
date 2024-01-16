@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0"
-  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -130,6 +129,12 @@
     <ClInclude Include="src\windows\ChatGPTWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\windows\PongWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\datastructs\NumberParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\windows\PaintWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -229,6 +234,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\ChatGPTWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\PongWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\datastructs\NumberParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\PaintWindow.cpp">

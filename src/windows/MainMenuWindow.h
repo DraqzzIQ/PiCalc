@@ -4,6 +4,7 @@
 #include "windows/ChatGPTWindow.h"
 #include "windows/MenuWindow.h"
 #include "windows/PaintWindow.h"
+#include "windows/PongWindow.h"
 #include "windows/SettingsWindow.h"
 #include "windows/WolframAlphaWindow.h"
 

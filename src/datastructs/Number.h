@@ -211,10 +211,11 @@ class Number
 	/// return a single decimal representing this (often looses precision)
 	/// </summary>
 	Decimal to_value() const;
+	void to_key_set(KEY_SET& result) const;
 	/// <summary>
 	/// returns all possible representations of this as a KEY_SET
 	/// </summary>
-	std::vector<KEY_SET> to_key_set() const;
+	std::vector<KEY_SET> get_all_representations();
 
 	private:
 	/// <summary>

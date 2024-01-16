@@ -35,6 +35,13 @@ void Equation::set_cursor_state(bool active)
 	_cursor_active = active;
 }
 
+void Equation::set_key_set(KEY_SET& equation)
+{
+	_equation = equation;
+	_cursor_index = 0;
+	render_equation();
+}
+
 Bitset2D Equation::get_rendered_equation(bool complete)
 {
 	// change _show_cursor every 500ms if cursor is active
@@ -153,16 +160,10 @@ void Equation::set_variable_list(std::vector<Number*> variables)
 	_variables = variables;
 }
 
-Number Equation::to_number()
+Number* Equation::to_number()
 {
-	if (_equation.size() == 0) {
-		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-		_cursor_index = 0;
-		return Number();
-	}
 	_calculate_index = 0;
-	Number res = to_number_part(95);
-	if (Error::error_thrown()) return Number();
+	Number* res = to_number_part(95);
 	render_equation();
 	return res;
 }
@@ -182,7 +183,7 @@ void Equation::render_equation()
 	_cursor_data = { 0, 0, 0 };
 	int32_t y_origin = 0;
 	bool cursor_in_equation = false;
-	_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, cursor_in_equation, 0, 0, 1, true);
+	_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, cursor_in_equation, 0, 0, 1, 0);
 	_rendered_equation.extend_right(1, false);
 
 	// add the cursor to the equation
@@ -200,13 +201,13 @@ void Equation::render_equation()
 	_rendered_equation_cursor.copy(_frame_x, _frame_y, _frame_width, _frame_height, _rendered_equation_cursor_frame);
 }
 
-Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, bool bracket)
+Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, uint8_t type)
 {
 	uint8_t font_height = table.at(0).height();
 	Bitset2D equation_part(1, font_height, false);
 	bool cursor_inside = false;
 	y_origin = 0;
-	if (!bracket) _render_index++;
+	if (type == 1) _render_index++;
 
 	for (; _render_index < _equation.size(); _render_index++) {
 		Bitset2D symbol_matrix;
@@ -235,7 +236,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			// render everything until the closing bracket
 			int32_t new_y_origin = 0;
 			_render_index++;
-			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 5, 0, 0, true);
+			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 5, 0, 0, 2);
 			symbol_matrix.pop_back_x();
 
 			// add opening bracket
@@ -273,7 +274,16 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 				bracket_right.set_bit(2, bracket_right.height() - 2, true);
 				equation_part.extend_right(bracket_right);
 			}
-			break;
+			if (type == 2) {
+				if (cursor_inside) {
+					cursor_inside_ref = true;
+					_cursor_data.x += cursor_offset_x;
+					_cursor_data.y += cursor_offset_y;
+					if (cursor_alignment == 1) _cursor_data.y += y_origin;
+					else if (cursor_alignment == 2) _cursor_data.y -= equation_part.height() - y_origin;
+				}
+				return equation_part;
+			}
 		}
 
 		// Abs
@@ -474,7 +484,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		if (cursor_alignment == 1) _cursor_data.y += y_origin;
 		else if (cursor_alignment == 2) _cursor_data.y -= equation_part.height() - y_origin;
 	}
-	if (equation_part.width() == 1 && !bracket) {
+	if (equation_part.width() == 1 && type == 1) {
 		equation_part.extend_right(table.at(95));
 		equation_part.extend_right(1, false);
 	}
@@ -531,12 +541,12 @@ Number* Equation::to_number_part(KEY expected_ending)
 	if (expected_ending != 95) _calculate_index++;
 	std::vector<CalculateNode> calculation;
 	bool numExpected = true;
-	clear_number();
+	NumberParser number_parser = NumberParser();
 	for (; _calculate_index < _equation.size(); _calculate_index++) {
 		KEY value = _equation.at(_calculate_index);
 
-		if (!add_digit(value)) {
-			if (_number_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _number_value_cnt & 0b00111111));
+		if (!number_parser.add_digit(value)) {
+			if (number_parser.get_value_cnt() != 0) calculation.push_back(CalculateNode(number_parser.get_number(), 95, number_parser.get_value_cnt()));
 
 			if (Chars::in_key_set(value, _symbols)) {
 				switch (value) {
@@ -610,7 +620,13 @@ Number* Equation::to_number_part(KEY expected_ending)
 			}
 		}
 	}
-	if (_number_value_cnt != 0) calculation.push_back(CalculateNode(get_number(), 95, _calculate_index + (_number_value_cnt & 0b00111111)));
+	if (number_parser.get_value_cnt() != 0) calculation.push_back(CalculateNode(number_parser.get_number(), 95, number_parser.get_value_cnt()));
+
+	if (calculation.size() == 0) {
+		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		_cursor_index = _calculate_index;
+		return new Number();
+	}
 
 	// handle negative numbers
 	uint8_t add_i = 0;
@@ -690,76 +706,4 @@ Number* Equation::to_number_part(KEY expected_ending)
 	// logic operators
 
 	return calculation.at(0).value;
-}
-
-void Equation::clear_number()
-{
-	_number_val = 0;
-	_number_exp = 0;
-	_number_state = 0;
-	_number_value_cnt = 0;
-}
-
-bool Equation::add_digit(const KEY digit)
-{
-	if (_number_state & 0b00100000) {
-		if (digit < 10) {
-			_number_exp++;
-			_number_state++;
-			_number_val = _number_val * 10 + digit;
-		} else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-	} else {
-		if (_number_state & 0b00011111) return false;
-		if (digit < 10) { // key is digit
-			if (_number_state & 0b10000000) {
-				_number_exp = _number_exp * 10 + digit;
-				_number_value_cnt |= 0b10000000;
-			} else {
-				if (_number_state & 0b01000000) _number_exp--;
-				_number_val = _number_val * 10 + digit;
-				_number_value_cnt |= 0b01000000;
-			}
-			//} else if (digit == 69) { // key is +
-			//	if (!(_number_state & 0b10000000)) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			//} else if (digit == 70) { // key is -
-			//	if (_number_state & 0b10000000) _exp *= -1;
-			//	else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-		} else if (digit == 82) { // key is comma
-			if (_number_state & 0b11000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			_number_state |= 0b01000000;
-			//_number_value_cnt |= 0b01000000;
-		} else if (digit == 127) { // key is exp
-			if (_number_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			_number_state |= 0b10000000;
-		} else if (digit == 133) { // key is periodic
-			if (!(_number_state & 0b01000000) || _number_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-			else _number_state |= 0b00100000;
-		} else if (digit == 238) {
-			if (_number_state & 0b00100000) _number_state ^= 0b00100000;
-			else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-		} else {
-			return false;
-		}
-	}
-
-	_number_value_cnt++;
-	if ((_number_value_cnt & 0b00111111) == 0b00111111) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-
-	return true;
-}
-
-Number* Equation::get_number()
-{
-	Number* num;
-	if (_number_state & 0b00100000 || _number_value_cnt == 0) {
-		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-		num = new Number();
-	} else if (_number_state & 0b00011111) {
-		num = new Number(_number_val, _number_exp, _number_state & 0b00011111);
-	} else {
-		num = new Number(_number_val, _number_exp);
-	}
-
-	clear_number();
-	return num;
 }

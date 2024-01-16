@@ -29,6 +29,7 @@
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
     <ClInclude Include="src\datastructs\Number.h" />
+    <ClInclude Include="src\datastructs\NumberParser.h" />
     <ClInclude Include="src\http\HttpParams.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
@@ -46,6 +47,7 @@
     <ClInclude Include="src\windows\InstanceSelectionWindow.h" />
     <ClInclude Include="src\windows\MainMenuWindow.h" />
     <ClInclude Include="src\windows\MenuWindow.h" />
+    <ClInclude Include="src\windows\PongWindow.h" />
     <ClInclude Include="src\windows\SettingsWindow.h" />
     <ClInclude Include="src\windows\SysInfoWindow.h" />
     <ClInclude Include="src\windows\TextWindow.h" />
@@ -72,6 +74,7 @@
     <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />
     <ClCompile Include="src\datastructs\Number.cpp" />
+    <ClCompile Include="src\datastructs\NumberParser.cpp" />
     <ClCompile Include="src\http\IHttpClient.cpp" />
     <ClCompile Include="src\keyboard\IKeyboard.cpp" />
     <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
@@ -85,6 +88,7 @@
     <ClCompile Include="src\windows\InstanceSelectionWindow.cpp" />
     <ClCompile Include="src\windows\MainMenuWindow.cpp" />
     <ClCompile Include="src\windows\MenuWindow.cpp" />
+    <ClCompile Include="src\windows\PongWindow.cpp" />
     <ClCompile Include="src\windows\SettingsWindow.cpp" />
     <ClCompile Include="src\windows\SysInfoWindow.cpp" />
     <ClCompile Include="src\windows\TextWindow.cpp" />
