@@ -1,6 +1,5 @@
 #include "windows/PaintWindow.h"
 
-// TODO: save/load
 // TODO: add round brush
 // TODO: brightness
 
@@ -294,23 +293,6 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 		case 121: // RCL
 			openSaveMenu();
 			break;
-			bytes = _painted.to_bmp();
-			// TODO: open window to name file
-			#ifdef PICO
-				SDCardController::write_file("paint", "test.bmp", &bytes);
-			#else
-				std::cout << "Writing to file on desktop" << std::endl;
-				{
-				std::ofstream out_file("paint/test.bmp", std::ios::binary);
-				if (out_file.is_open()) {
-					out_file.write((char*)bytes.data(), bytes.size());
-					out_file.close();
-				} else {
-					std::cout << "Failed to open file" << std::endl;
-				}
-				}
-			#endif
-			break;
 		case 122: // ENG
 			openLoadMenu();
 			break;
@@ -369,7 +351,7 @@ void PaintWindow::openLoadMenu()
 	}
 }
 
-void PaintWindow::openSaveMenu() // TODO: open a windiw with a text for feedback
+void PaintWindow::openSaveMenu()
 {
 	std::string filename = InputWindow::input("Enter filename: ");
 	if (filename.rfind(".bmp") == std::string::npos) {
@@ -377,4 +359,19 @@ void PaintWindow::openSaveMenu() // TODO: open a windiw with a text for feedback
 	}
 	std::replace(filename.begin(), filename.end(), ' ', '_');
 	std::cout << filename << std::endl;
+	bytes = _painted.to_bmp();
+#ifdef PICO
+	SDCardController::write_file("paint", filename, &bytes);
+#else
+	std::cout << "Writing to file on desktop" << std::endl;
+	{
+		std::ofstream out_file("paint/"+filename, std::ios::binary);
+		if (out_file.is_open()) {
+			out_file.write((char*)bytes.data(), bytes.size());
+			out_file.close();
+		} else {
+			std::cout << "Failed to open file" << std::endl;
+		}
+	}
+#endif
 }
