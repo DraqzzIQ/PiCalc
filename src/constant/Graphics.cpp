@@ -6,7 +6,7 @@ Graphics::Graphics() {}
 Graphics::~Graphics() {}
 
 
-const Bitset2D EMPTY_SCREEN = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+const Bitset2D Graphics::EMPTY_SCREEN = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
 
 const Bitset2D Graphics::LOGO_SCREEN =
 	Bitset2D(SCREEN_WIDTH,
