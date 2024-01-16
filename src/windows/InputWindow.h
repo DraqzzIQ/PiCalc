@@ -3,8 +3,14 @@
 #include "windows/WindowManager.h"
 #include <functional>
 #include "utils/Utils.h"
+#include "keyboard/IKeyboard.h"
+#ifdef PICO
+#include "keyboard/PicoKeyboard.h"
+#else
+#include "keyboard/SDLKeyboard.h"
+#endif
 
-class InputWindow: public Window
+class InputWindow : public Window
 {
 	public:
 	InputWindow();
@@ -16,9 +22,11 @@ class InputWindow: public Window
 
 	void set_prompt(std::string prompt);
 	std::string get_input();
-	void set_finnished_callback(std::function<void(std::string)> callback);
+	bool _finnished = false;
+	bool get_finnished();
 
 	static std::string input(std::string prompt);
+	static IKeyboard* keyboard;
 
 	private:
 	std::string _prompt;

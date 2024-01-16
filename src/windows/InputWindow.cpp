@@ -1,5 +1,11 @@
 #include "InputWindow.h"
 
+#ifdef PICO
+IKeyboard* InputWindow::keyboard = new PicoKeyboard();
+#else
+IKeyboard* InputWindow::keyboard = new SDLKeyboard();
+#endif
+
 InputWindow::InputWindow()
 {
 	_blink_timer = Utils::us_since_boot();
@@ -22,7 +28,7 @@ bool InputWindow::handle_key_down(KeyPress keypress)
 	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
 	if (key == "ceil") {
 		if (_input.length() > 0) {
-			_finnished_callback(_input);
+			_finnished = true;
 		}
 	} else if (key == "DEL") {
 		if (_cursor_index > 0) {
@@ -35,7 +41,6 @@ bool InputWindow::handle_key_down(KeyPress keypress)
 		_cursor_index++;
 		_input += key;
 	}
-	std::cout << key << std::endl;
 	return true;
 }
 
@@ -44,14 +49,14 @@ void InputWindow::set_prompt(std::string prompt)
 	_prompt = prompt;
 }
 
-void InputWindow::set_finnished_callback(std::function<void(std::string)> callback)
-{
-	_finnished_callback = callback;
-}
-
 std::string InputWindow::get_input()
 {
 	return _input;
+}
+
+bool InputWindow::get_finnished()
+{
+	return _finnished;
 }
 
 Bitset2D InputWindow::add_cursor(Bitset2D bitset)
@@ -74,13 +79,16 @@ Bitset2D InputWindow::add_cursor(Bitset2D bitset)
 
 std::string InputWindow::input(std::string prompt)
 {
-    std::function<void(std::string)> callback = [](std::string input) {
-        std::cout << input << std::endl;
-		WindowManager::get_instance()->close_window();
-    };
     InputWindow* in_win = new InputWindow();
     in_win->set_prompt(prompt);
-    in_win->set_finnished_callback(callback);
     WindowManager::get_instance()->add_window(in_win);
-    return in_win->get_input(); // TODO don't return until callback is called
+
+	while (true) {
+		InputWindow::keyboard->check_for_keyboard_presses();
+		WindowManager::get_instance()->update();
+		Utils::sleep_for_ms(10);
+		if (in_win->get_finnished()) break;
+	}
+	WindowManager::get_instance()->close_window();
+    return in_win->get_input();
 }

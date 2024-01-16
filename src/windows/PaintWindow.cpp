@@ -369,13 +369,12 @@ void PaintWindow::openLoadMenu()
 	}
 }
 
-void PaintWindow::openSaveMenu()
+void PaintWindow::openSaveMenu() // TODO: open a windiw with a text for feedback
 {
 	std::string filename = InputWindow::input("Enter filename: ");
 	if (filename.rfind(".bmp") == std::string::npos) {
 		filename += ".bmp";
 	}
-	// Replace spaces with underscores
 	std::replace(filename.begin(), filename.end(), ' ', '_');
 	std::cout << filename << std::endl;
 }
