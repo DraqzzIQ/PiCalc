@@ -306,12 +306,11 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 }
 void PaintWindow::_open_load_menu()
 {
-	std::function<void(std::string)> callback = [this](std::string filename)
-	{
+	std::function<void(std::string)> callback = [this](std::string filename) {
 		_bytes.clear();
-		#ifdef PICO
-		SDCardController::read_file("paint", filename, &bytes);
-		#else
+#ifdef PICO
+		SDCardController::read_file("paint", filename, &_bytes);
+#else
 		std::cout << "Reading from file on desktop" << std::endl;
 		std::ifstream in_file("paint/" + filename, std::ios::binary);
 		{
@@ -325,7 +324,7 @@ void PaintWindow::_open_load_menu()
 				std::cout << "Failed to open file" << std::endl;
 			}
 		}
-		#endif
+#endif
 		if (_bytes.size() == 0) return;
 		_painted = Bitset2D::from_bmp(_bytes);
 		_corner_x = 0;
@@ -335,15 +334,15 @@ void PaintWindow::_open_load_menu()
 		WindowManager::get_instance()->minimize_window();
 	};
 	{
-		# ifdef PICO
+#ifdef PICO
 		std::vector<std::string> files = SDCardController::list_dir("paint");
-		# else
+#else
 		std::vector<std::string> files = {};
-		for (const auto & entry : std::filesystem::directory_iterator("paint"))
+		for (const auto& entry : std::filesystem::directory_iterator("paint"))
 			files.push_back(entry.path().filename().string());
-		# endif
+#endif
 		_load_menu.options.clear();
-		for (const auto & file : files) {
+		for (const auto& file : files) {
 			_load_menu.options.push_back(new ValueMenuOption<std::string>(file, file, callback));
 		}
 		WindowManager::get_instance()->add_window(&_load_menu);
@@ -364,7 +363,7 @@ void PaintWindow::_open_save_menu()
 #else
 	std::cout << "Writing to file on desktop" << std::endl;
 	{
-		std::ofstream out_file("paint/"+filename, std::ios::binary);
+		std::ofstream out_file("paint/" + filename, std::ios::binary);
 		if (out_file.is_open()) {
 			out_file.write((char*)_bytes.data(), _bytes.size());
 			out_file.close();
