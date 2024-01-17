@@ -184,7 +184,7 @@ class Bitset2D
 	/// <summary>
 	/// Converts bytes of a bmp file to a 2D bitset
 	/// </summary>
-	static Bitset2D from_bmp(std::vector<uint8_t> bytes);
+	void from_bmp(std::vector<uint8_t> bytes);
 
 	private:
 	/// <summary>

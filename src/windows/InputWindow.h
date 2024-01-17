@@ -20,8 +20,6 @@ class InputWindow: public Window
 	std::string _prompt;
 	std::string _input;
 
-	Bitset2D _rendered;
-
 	uint32_t _cursor_index = 0;
 	uint64_t _blink_timer;
 	bool _cursor_on = true;

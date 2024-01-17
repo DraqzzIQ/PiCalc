@@ -1,21 +1,14 @@
 #pragma once
-#include "InputWindow.h"
-#include "MenuWindow.h"
 #include "constant/Chars.h"
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
-#include "io/SDCardController.h"
+#include "io/PaintingSerializable.h"
 #include "options/ValueMenuOption.h"
 #include "utils/Utils.h"
 #include "windows/InputWindow.h"
-#include "windows/Window.h"
-#include <filesystem>
-#include <fstream>
+#include "windows/MenuWindow.h"
 #include <functional>
-#include <iostream>
 #include <stack>
-#include <string>
-#include <vector>
 
 class PaintWindow: public Window
 {
@@ -37,7 +30,6 @@ class PaintWindow: public Window
 	Tool _tool = Tool::NONE;
 	bool _erase = false;
 
-	std::vector<uint8_t> _bytes;
 	MenuWindow load_menu = MenuWindow();
 
 	void open_load_menu();

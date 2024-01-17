@@ -17,8 +17,8 @@ Bitset2D InputWindow::update_window()
 	clear_window();
 	add_to_window(Graphics::create_text(_prompt), 1, 1);
 	add_to_window(Graphics::create_text(_input), 1, 15);
-	_rendered = add_cursor(window);
-	return _rendered;
+	Bitset2D rendered = add_cursor(window);
+	return rendered;
 }
 bool InputWindow::handle_key_down(KeyPress keypress)
 {

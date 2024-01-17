@@ -308,43 +308,21 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 void PaintWindow::open_load_menu()
 {
 	std::function<void(std::string)> callback = [this](std::string filename) {
-		_bytes.clear();
-#ifdef PICO
-		SDCardController::read_file("paint", filename, &_bytes);
-#else
-		std::cout << "Reading from file on desktop" << std::endl;
-		std::ifstream in_file("paint/" + filename, std::ios::binary);
-		{
-			if (in_file.is_open()) {
-				in_file.seekg(0, std::ios::end);
-				_bytes.resize(in_file.tellg());
-				in_file.seekg(0, std::ios::beg);
-				in_file.read((char*)_bytes.data(), _bytes.size());
-				in_file.close();
-			} else {
-				std::cout << "Failed to open file" << std::endl;
-			}
-		}
-#endif
-		if (_bytes.size() == 0) return;
-		_painted = Bitset2D::from_bmp(_bytes);
+		PaintingSerializable save_file;
+		save_file.read_file("paint", filename);
+
+		_painted = save_file.get_bitmap();
 		_corner_x = 0;
 		_corner_y = 0;
 		_cursor_x = SCREEN_WIDTH / 2;
 		_cursor_y = SCREEN_HEIGHT / 2;
-		WindowManager::get_instance()->minimize_window();
+		WindowManager::get_instance()->close_window(false);
 	};
 	{
-#ifdef PICO
-		std::vector<std::string> files = SDCardController::list_dir("paint");
-#else
-		std::vector<std::string> files = {};
-		for (const auto& entry : std::filesystem::directory_iterator("paint"))
-			files.push_back(entry.path().filename().string());
-#endif
+		std::vector<std::string> files = ISerializable::list_dir("paint");
 		load_menu.options.clear();
-		for (const auto& file : files) {
-			load_menu.options.push_back(new ValueMenuOption<std::string>(file, file, callback));
+		for (int i = 0; i < files.size(); i++) {
+			load_menu.options.push_back(new ValueMenuOption<std::string>(files[i], files[i], callback));
 		}
 		WindowManager::get_instance()->add_window(&load_menu);
 		load_menu.create_menu();
@@ -360,20 +338,8 @@ void PaintWindow::open_save_menu()
 				filename += ".bmp";
 			}
 			std::replace(filename.begin(), filename.end(), ' ', '_');
-			_bytes = _painted.to_bmp();
-#ifdef PICO
-			SDCardController::write_file("paint", filename, &_bytes);
-#else
-			std::cout << "Writing to file on desktop" << std::endl;
-			{
-				std::ofstream out_file("paint/" + filename, std::ios::binary);
-				if (out_file.is_open()) {
-					out_file.write((char*)_bytes.data(), _bytes.size());
-					out_file.close();
-				} else {
-					std::cout << "Failed to open file" << std::endl;
-				}
-			}
-#endif
+
+			PaintingSerializable save_file = PaintingSerializable(_painted);
+			save_file.write_file("paint", filename);
 		});
 }
