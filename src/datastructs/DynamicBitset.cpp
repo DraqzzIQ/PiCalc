@@ -108,7 +108,7 @@ std::vector<uint8_t> DynamicBitset::get_bytes() const
 DynamicBitset DynamicBitset::copy(uint32_t start, uint32_t width) const
 {
 #ifdef IS_DEBUG_BUILD
-	if (start + width >= _bit_count) { throw std::out_of_range("DynamicBitset::copy"); }
+	if (start + width > _bit_count) { throw std::out_of_range("DynamicBitset::copy"); }
 #endif
 	DynamicBitset res;
 	width += start;
