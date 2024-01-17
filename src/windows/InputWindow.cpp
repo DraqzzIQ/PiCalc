@@ -1,11 +1,12 @@
 #include "InputWindow.h"
 
 
-InputWindow::InputWindow(std::string promt, std::string* input)
+InputWindow::InputWindow(std::string promt, std::string* input, std::function<void()> callback)
 {
 	_blink_timer = Utils::us_since_boot();
 	_input = input;
 	_prompt = promt;
+	_callback = callback;
 }
 
 InputWindow::~InputWindow()
@@ -25,7 +26,9 @@ bool InputWindow::handle_key_down(KeyPress keypress)
 	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
 	if (key == "ceil") {
 		if (_input->length() > 0) {
-			WindowManager::get_instance()->close_window();
+			WindowManager::get_instance()->close_window(false);
+			_callback();
+			delete this;
 		}
 	} else if (key == "DEL") {
 		if (_cursor_index > 0) {
@@ -59,7 +62,7 @@ Bitset2D InputWindow::add_cursor(Bitset2D bitset)
 	return bitset;
 }
 
-void InputWindow::input(std::string promt, std::string* input)
+void InputWindow::input(std::string promt, std::string* input, std::function<void()> callback)
 {
-	WindowManager::get_instance()->add_window(new InputWindow(promt, input));
+	WindowManager::get_instance()->add_window(new InputWindow(promt, input, callback));
 }

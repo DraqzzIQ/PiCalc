@@ -1,4 +1,5 @@
 #include "windows/PaintWindow.h"
+#include "PaintWindow.h"
 
 // TODO: add round brush
 // TODO: brightness
@@ -353,25 +354,28 @@ void PaintWindow::open_load_menu()
 void PaintWindow::open_save_menu()
 {
 	std::string filename;
-	InputWindow::input("Enter filename: ", &filename);
-
-	if (filename.rfind(".bmp") == std::string::npos) {
-		filename += ".bmp";
-	}
-	std::replace(filename.begin(), filename.end(), ' ', '_');
-	_bytes = _painted.to_bmp();
+	InputWindow::input(
+		"Enter filename: ",
+		&filename,
+		[this, &filename]() {
+			if (filename.rfind(".bmp") == std::string::npos) {
+				filename += ".bmp";
+			}
+			std::replace(filename.begin(), filename.end(), ' ', '_');
+			_bytes = _painted.to_bmp();
 #ifdef PICO
-	SDCardController::write_file("paint", filename, &_bytes);
+			SDCardController::write_file("paint", filename, &_bytes);
 #else
-	std::cout << "Writing to file on desktop" << std::endl;
-	{
-		std::ofstream out_file("paint/" + filename, std::ios::binary);
-		if (out_file.is_open()) {
-			out_file.write((char*)_bytes.data(), _bytes.size());
-			out_file.close();
-		} else {
-			std::cout << "Failed to open file" << std::endl;
-		}
-	}
+			std::cout << "Writing to file on desktop" << std::endl;
+			{
+				std::ofstream out_file("paint/" + filename, std::ios::binary);
+				if (out_file.is_open()) {
+					out_file.write((char*)_bytes.data(), _bytes.size());
+					out_file.close();
+				} else {
+					std::cout << "Failed to open file" << std::endl;
+				}
+			}
 #endif
+		});
 }

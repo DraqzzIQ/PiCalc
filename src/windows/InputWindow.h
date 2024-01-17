@@ -7,12 +7,15 @@
 class InputWindow: public Window
 {
 	public:
-	InputWindow(std::string promt, std::string* input);
+	InputWindow(
+		std::string promt,
+		std::string* input,
+		std::function<void()> callback);
 	~InputWindow();
 	Bitset2D update_window();
 	bool handle_key_down(KeyPress keypress);
 
-	static void input(std::string prompt, std::string* input);
+	static void input(std::string prompt, std::string* input, std::function<void()> callback);
 
 	private:
 	std::string _prompt;
@@ -24,4 +27,6 @@ class InputWindow: public Window
 	uint64_t _blink_timer;
 	bool _cursor_on = true;
 	Bitset2D add_cursor(Bitset2D bitset);
+
+	std::function<void()> _callback;
 };
