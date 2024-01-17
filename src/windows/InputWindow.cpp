@@ -20,7 +20,7 @@ Bitset2D InputWindow::update_window()
 	clear_window();
 	add_to_window(Graphics::create_text(_prompt), 1, 1);
 	add_to_window(Graphics::create_text(_input), 1, 15);
-	_rendered = add_cursor(window);
+	_rendered = _add_cursor(window);
 	return _rendered;
 }
 bool InputWindow::handle_key_down(KeyPress keypress)
@@ -28,7 +28,7 @@ bool InputWindow::handle_key_down(KeyPress keypress)
 	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
 	if (key == "ceil") {
 		if (_input.length() > 0) {
-			_finnished = true;
+			_finished = true;
 		}
 	} else if (key == "DEL") {
 		if (_cursor_index > 0) {
@@ -54,12 +54,12 @@ std::string InputWindow::get_input()
 	return _input;
 }
 
-bool InputWindow::get_finnished()
+bool InputWindow::get_finished()
 {
-	return _finnished;
+	return _finished;
 }
 
-Bitset2D InputWindow::add_cursor(Bitset2D bitset)
+Bitset2D InputWindow::_add_cursor(Bitset2D bitset)
 {
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
 		_blink_timer += 500000;
@@ -87,8 +87,9 @@ std::string InputWindow::input(std::string prompt)
 		InputWindow::keyboard->check_for_keyboard_presses();
 		WindowManager::get_instance()->update();
 		Utils::sleep_for_ms(10);
-		if (in_win->get_finnished()) break;
+		if (in_win->get_finished()) break;
 	}
+
 	WindowManager::get_instance()->close_window();
     return in_win->get_input();
 }

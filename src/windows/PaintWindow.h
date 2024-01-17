@@ -37,26 +37,26 @@ class PaintWindow: public Window
 	Tool _tool = Tool::NONE;
 	bool _erase = false;
 
-	std::vector<uint8_t> bytes;
-	MenuWindow load_menu = MenuWindow();
+	std::vector<uint8_t> _bytes;
+	MenuWindow _load_menu = MenuWindow();
 
-	void openLoadMenu();
-	void openSaveMenu();
+	void _open_load_menu();
+	void _open_save_menu();
 
-	static void draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset);
-	static void draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);
-	static void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
-	static void draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
-	void fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset, int limit = 1000);
+	void _draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset);
+	void _draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);
+	void _draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
+	void _draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
+	void _fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset, int limit = 1000);
 
-	bool set_tool(Tool tool);
-	void save_to_hist();
-	void scroll_left();
-	void scroll_right();
-	void scroll_up();
-	void scroll_down();
+	bool _set_tool(Tool tool);
+	void _save_to_hist();
+	void _scroll_left();
+	void _scroll_right();
+	void _scroll_up();
+	void _scroll_down();
 
-	Bitset2D draw_preview(Bitset2D target);
+	Bitset2D _draw_preview(Bitset2D target);
 
 	Bitset2D _painted;
 	Bitset2D _rendered;
@@ -69,10 +69,10 @@ class PaintWindow: public Window
 	uint32_t _start_pos_y = 0;
 	uint8_t _brush_size = 1;
 	uint64_t _blink_timer;
-	bool preview = true;
+	bool _preview = true;
 
-	uint8_t current_history_index = 0;
-	Bitset2D history[20];
+	uint8_t _current_history_index = 0;
+	Bitset2D _history[20];
 
-	std::stack<Bitset2D> redo_stack{};
+	std::stack<Bitset2D> _redo_stack{};
 };

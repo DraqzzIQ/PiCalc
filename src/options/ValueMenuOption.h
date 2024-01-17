@@ -6,9 +6,6 @@ template <typename T>
 class ValueMenuOption: public MenuOptionBase
 {
 	public:
-	std::string _display_name;
-	T _value;
-	std::function<void(T)> _callback;
 	ValueMenuOption(std::string name, T value, std::function<void(T)> callback) {
 		this->_display_name = name;
 		this->_value = value;
@@ -32,4 +29,9 @@ class ValueMenuOption: public MenuOptionBase
 	bool open_window() {
 		return false;
 	}
+
+	private:
+	std::string _display_name;
+	T _value;
+	std::function<void(T)> _callback;
 };
