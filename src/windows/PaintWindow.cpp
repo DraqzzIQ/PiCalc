@@ -336,7 +336,7 @@ void PaintWindow::openLoadMenu()
 	};
 	{
 		# ifdef PICO
-		std::vector<string> files = SDCardController::list_dir("paint");
+		std::vector<std::string> files = SDCardController::list_dir("paint");
 		# else
 		std::vector<std::string> files = {};
 		for (const auto & entry : std::filesystem::directory_iterator("paint"))
@@ -358,7 +358,6 @@ void PaintWindow::openSaveMenu()
 		filename += ".bmp";
 	}
 	std::replace(filename.begin(), filename.end(), ' ', '_');
-	std::cout << filename << std::endl;
 	bytes = _painted.to_bmp();
 #ifdef PICO
 	SDCardController::write_file("paint", filename, &bytes);
