@@ -53,7 +53,7 @@ class PicoKeyboard: public IKeyboard
 	/// <summary>
 	/// the GPIO numbers to be used as output for the button matrix
 	/// </summary>
-	const std::vector<uint8_t> outputs{ 13, 14, 15, 16, 17, 18 };
+	const std::vector<uint8_t> outputs{ 13, 14, 15, 20, 21, 22 };
 	/// <summary>
 	/// Saves, which key is currently pressed and how it was pressed (shift / alpha / none) using the KeyState enumerator
 	/// </summary>
