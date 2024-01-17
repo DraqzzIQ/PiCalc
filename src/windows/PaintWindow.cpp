@@ -16,11 +16,11 @@ PaintWindow::~PaintWindow() = default;
 
 Bitset2D PaintWindow::update_window()
 {
-	_draw_preview(_painted).copy(_corner_x, _corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
+	draw_preview(_painted).copy(_corner_x, _corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
 	return _rendered;
 }
 
-Bitset2D PaintWindow::_draw_preview(Bitset2D target)
+Bitset2D PaintWindow::draw_preview(Bitset2D target)
 {
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
 		_blink_timer += 500000;
@@ -28,17 +28,17 @@ Bitset2D PaintWindow::_draw_preview(Bitset2D target)
 	}
 
 	switch (_tool) {
-	case Tool::LINE: _draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
-	case Tool::RECTANGLE: _draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
-	case Tool::CIRCLE: _draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
+	case Tool::LINE: draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
+	case Tool::RECTANGLE: draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
+	case Tool::CIRCLE: draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
 	default:
-		if (_erase) _draw_rectangle(_cursor_x - _brush_size / 2, _cursor_y - _brush_size / 2, _cursor_x + _brush_size / 2, _cursor_y + _brush_size / 2, _preview, 1, target);
-		else _draw(_cursor_x, _cursor_y, _preview, _brush_size, target);
+		if (_erase) draw_rectangle(_cursor_x - _brush_size / 2, _cursor_y - _brush_size / 2, _cursor_x + _brush_size / 2, _cursor_y + _brush_size / 2, _preview, 1, target);
+		else draw(_cursor_x, _cursor_y, _preview, _brush_size, target);
 	}
 	return target;
 }
 
-void PaintWindow::_draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset)
+void PaintWindow::draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset)
 {
 	int32_t x_start = x - size / 2;
 	int32_t y_start = y - size / 2;
@@ -57,7 +57,7 @@ void PaintWindow::_draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset
 	}
 }
 
-void PaintWindow::_draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset)
+void PaintWindow::draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset)
 {
 	int dx = x2 > x1 ? x2 - x1 : x1 - x2;
 	int dy = y2 > y1 ? y2 - y1 : y1 - y2;
@@ -67,7 +67,7 @@ void PaintWindow::_draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2,
 	int e2;
 
 	while (true) {
-		_draw(x1, y1, value, size, bitset);
+		draw(x1, y1, value, size, bitset);
 		if (x1 == x2 && y1 == y2) break;
 		e2 = 2 * err;
 		if (e2 > -dy) {
@@ -81,15 +81,15 @@ void PaintWindow::_draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2,
 	}
 }
 
-void PaintWindow::_draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset)
+void PaintWindow::draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset)
 {
-	_draw_line(x0, y0, x1, y0, value, size, bitset); // Top edge
-	_draw_line(x0, y1, x1, y1, value, size, bitset); // Bottom edge
-	_draw_line(x0, y0, x0, y1, value, size, bitset); // Left edge
-	_draw_line(x1, y0, x1, y1, value, size, bitset); // Right edge
+	draw_line(x0, y0, x1, y0, value, size, bitset); // Top edge
+	draw_line(x0, y1, x1, y1, value, size, bitset); // Bottom edge
+	draw_line(x0, y0, x0, y1, value, size, bitset); // Left edge
+	draw_line(x1, y0, x1, y1, value, size, bitset); // Right edge
 }
 
-void PaintWindow::_draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset)
+void PaintWindow::draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset)
 {
 	uint32_t a = x1 > x0 ? x1 - x0 : x0 - x1;
 	uint32_t b = y1 > y0 ? y1 - y0 : y0 - y1;
@@ -109,10 +109,10 @@ void PaintWindow::_draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t 
 	b1 = 8 * b * b;
 
 	do {
-		_draw(x1, y0, value, size, bitset);
-		_draw(x0, y0, value, size, bitset);
-		_draw(x0, y1, value, size, bitset);
-		_draw(x1, y1, value, size, bitset);
+		draw(x1, y0, value, size, bitset);
+		draw(x0, y0, value, size, bitset);
+		draw(x0, y1, value, size, bitset);
+		draw(x1, y1, value, size, bitset);
 		int e2 = 2 * err;
 		if (e2 <= dy) {
 			y0++;
@@ -127,26 +127,26 @@ void PaintWindow::_draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t 
 	} while (x0 <= x1);
 
 	while (y0 - y1 <= b) {
-		_draw(x0 - 1, y0, value, size, bitset);
-		_draw(x1 + 1, y0++, value, size, bitset);
-		_draw(x0 - 1, y1, value, size, bitset);
-		_draw(x1 + 1, y1--, value, size, bitset);
+		draw(x0 - 1, y0, value, size, bitset);
+		draw(x1 + 1, y0++, value, size, bitset);
+		draw(x0 - 1, y1, value, size, bitset);
+		draw(x1 + 1, y1--, value, size, bitset);
 	}
 }
 
-void PaintWindow::_fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset, int limit)
+void PaintWindow::fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset, int limit)
 {
 	if (limit <= 0) return;
 	if (x >= bitset.width() || y >= bitset.height()) return;
 	if (bitset.get_bit(x, y) == value) return;
 	bitset.set_bit(x, y, value);
-	_fill(x + 1, y, value, bitset, limit - 1);
-	_fill(x - 1, y, value, bitset, limit - 1);
-	_fill(x, y + 1, value, bitset, limit - 1);
-	_fill(x, y - 1, value, bitset, limit - 1);
+	fill(x + 1, y, value, bitset, limit - 1);
+	fill(x - 1, y, value, bitset, limit - 1);
+	fill(x, y + 1, value, bitset, limit - 1);
+	fill(x, y - 1, value, bitset, limit - 1);
 }
 
-bool PaintWindow::_set_tool(Tool tool)
+bool PaintWindow::set_tool(Tool tool)
 {
 	if (_tool == Tool::NONE) {
 		_start_pos_x = _cursor_x;
@@ -158,7 +158,7 @@ bool PaintWindow::_set_tool(Tool tool)
 	return true;
 }
 
-void PaintWindow::_save_to_hist()
+void PaintWindow::save_to_hist()
 {
 	if (_current_history_index < 1 || _painted != _history[_current_history_index - 1]) {
 		if (_current_history_index < 20) {
@@ -174,26 +174,26 @@ void PaintWindow::_save_to_hist()
 	}
 }
 
-void PaintWindow::_scroll_left()
+void PaintWindow::scroll_left()
 {
 	if (_corner_x > 0) _corner_x--;
 	if (_cursor_x >= corner_x + SCREEN_WIDTH - 1) _cursor_x = _corner_x + SCREEN_WIDTH - 1;
 }
 
-void PaintWindow::_scroll_right()
+void PaintWindow::scroll_right()
 {
 	if (_corner_x < _painted.width()) _painted.extend_right(1, false);
 	_corner_x++;
 	if (_cursor_x <= _corner_x) _cursor_x = _corner_x;
 }
 
-void PaintWindow::_scroll_up()
+void PaintWindow::scroll_up()
 {
 	if (_corner_y > 0) _corner_y--;
 	if (_cursor_y >= _corner_y + SCREEN_HEIGHT - 1) _cursor_y = _corner_y + SCREEN_HEIGHT - 1;
 }
 
-void PaintWindow::_scroll_down()
+void PaintWindow::scroll_down()
 {
 	if (_corner_y + SCREEN_HEIGHT >= _painted.height()) _painted.extend_down(1, false);
 	_corner_y++;
@@ -205,63 +205,63 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 	if (keypress.alpha) {
 		switch (keypress.key_raw) {
 		case 167: // up
-			_scroll_up();
+			scroll_up();
 			break;
 		case 168: // down
-			_scroll_down();
+			scroll_down();
 			break;
 		case 169: // left
-			_scroll_left();
+			scroll_left();
 			break;
 		case 170: // right
-			_scroll_right();
+			scroll_right();
 			break;
 		}
 	} else if (!keypress.shift) {
 		switch (keypress.key_raw) {
 		case 167: // up
-			if (_cursor_y == corner_y) _scroll_up();
+			if (_cursor_y == corner_y) scroll_up();
 			if (_cursor_y > 0) _cursor_y--;
 			break;
 		case 168: // down
-			if (_cursor_y == _corner_y + SCREEN_HEIGHT - 1) _scroll_down();
+			if (_cursor_y == _corner_y + SCREEN_HEIGHT - 1) scroll_down();
 			_cursor_y++;
 			break;
 		case 169: // left
-			if (_cursor_x == _corner_x) _scroll_left();
+			if (_cursor_x == _corner_x) scroll_left();
 			if (_cursor_x > 0) _cursor_x--;
 			break;
 		case 170: // right
-			if (_cursor_x == _corner_x + SCREEN_WIDTH - 1) _scroll_right();
+			if (_cursor_x == _corner_x + SCREEN_WIDTH - 1) scroll_right();
 			_cursor_x++;
 			break;
 		case 73: // =
-			_set_tool(Tool::PEN);
-			_save_to_hist();
+			set_tool(Tool::PEN);
+			save_to_hist();
 			break;
 		case 1: // 1
-			if (_set_tool(Tool::LINE)) _draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
-			_save_to_hist();
+			if (set_tool(Tool::LINE)) draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
+			save_to_hist();
 			break;
 		case 2: // 2
-			if (_set_tool(Tool::RECTANGLE)) _draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
-			_save_to_hist();
+			if (set_tool(Tool::RECTANGLE)) draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
+			save_to_hist();
 			break;
 		case 3: // 3
-			if (_set_tool(Tool::CIRCLE)) _draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
-			_save_to_hist();
+			if (set_tool(Tool::CIRCLE)) draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
+			save_to_hist();
 			break;
 		case 4: // 4
-			if (_tool == Tool::NONE) _fill(_cursor_x, _cursor_y, !_erase, _painted);
-			_save_to_hist();
+			if (_tool == Tool::NONE) fill(_cursor_x, _cursor_y, !_erase, _painted);
+			save_to_hist();
 			break;
 		case 126: // AC
 			_painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
-			_save_to_hist();
+			save_to_hist();
 			break;
 		case 125: // DEL
 			_erase = !_erase;
-			_save_to_hist();
+			save_to_hist();
 			break;
 		case 0: // 0
 			_corner_x = 0;
@@ -291,20 +291,20 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			_cursor_y = SCREEN_HEIGHT / 2 + corner_y;
 			break;
 		case 121: // RCL
-			_open_save_menu();
+			open_save_menu();
 			break;
 		case 122: // ENG
-			_open_load_menu();
+			open_load_menu();
 			break;
 		}
 	}
 
 	if (_tool == Tool::PEN)
-		_draw(_cursor_x, _cursor_y, !_erase, _brush_size, _painted);
+		draw(_cursor_x, _cursor_y, !_erase, _brush_size, _painted);
 
 	return true;
 }
-void PaintWindow::_open_load_menu()
+void PaintWindow::open_load_menu()
 {
 	std::function<void(std::string)> callback = [this](std::string filename) {
 		_bytes.clear();
@@ -341,18 +341,20 @@ void PaintWindow::_open_load_menu()
 		for (const auto& entry : std::filesystem::directory_iterator("paint"))
 			files.push_back(entry.path().filename().string());
 #endif
-		_load_menu.options.clear();
+		load_menu.options.clear();
 		for (const auto& file : files) {
-			_load_menu.options.push_back(new ValueMenuOption<std::string>(file, file, callback));
+			load_menu.options.push_back(new ValueMenuOption<std::string>(file, file, callback));
 		}
-		WindowManager::get_instance()->add_window(&_load_menu);
-		_load_menu.create_menu();
+		WindowManager::get_instance()->add_window(&load_menu);
+		load_menu.create_menu();
 	}
 }
 
-void PaintWindow::_open_save_menu()
+void PaintWindow::open_save_menu()
 {
-	std::string filename = InputWindow::input("Enter filename: ");
+	std::string filename;
+	InputWindow::input("Enter filename: ", &filename);
+
 	if (filename.rfind(".bmp") == std::string::npos) {
 		filename += ".bmp";
 	}

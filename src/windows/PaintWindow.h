@@ -7,15 +7,15 @@
 #include "io/SDCardController.h"
 #include "options/ValueMenuOption.h"
 #include "utils/Utils.h"
-#include "windows/Window.h"
 #include "windows/InputWindow.h"
+#include "windows/Window.h"
+#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <stack>
 #include <string>
 #include <vector>
-#include <filesystem>
 
 class PaintWindow: public Window
 {
@@ -38,25 +38,25 @@ class PaintWindow: public Window
 	bool _erase = false;
 
 	std::vector<uint8_t> _bytes;
-	MenuWindow _load_menu = MenuWindow();
+	MenuWindow load_menu = MenuWindow();
 
-	void _open_load_menu();
-	void _open_save_menu();
+	void open_load_menu();
+	void open_save_menu();
 
-	void _draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset);
-	void _draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);
-	void _draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
-	void _draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
-	void _fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset, int limit = 1000);
+	void draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset);
+	void draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, bool value, uint8_t size, Bitset2D& bitset);
+	void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
+	void draw_ellipse(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool value, uint8_t size, Bitset2D& bitset);
+	void fill(uint32_t x, uint32_t y, bool value, Bitset2D& bitset, int limit = 1000);
 
-	bool _set_tool(Tool tool);
-	void _save_to_hist();
-	void _scroll_left();
-	void _scroll_right();
-	void _scroll_up();
-	void _scroll_down();
+	bool set_tool(Tool tool);
+	void save_to_hist();
+	void scroll_left();
+	void scroll_right();
+	void scroll_up();
+	void scroll_down();
 
-	Bitset2D _draw_preview(Bitset2D target);
+	Bitset2D draw_preview(Bitset2D target);
 
 	Bitset2D _painted;
 	Bitset2D _rendered;
