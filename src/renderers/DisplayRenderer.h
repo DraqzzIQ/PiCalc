@@ -1,10 +1,10 @@
 #pragma once
 #ifdef PICO
-#include "renderers/IRenderer.h"
 #include "constant/LCDConstants.h"
-#include "utils/Utils.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
+#include "renderers/IRenderer.h"
+#include "utils/Utils.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -48,5 +48,14 @@ class DisplayRenderer: public IRenderer
 	/// loads the x (column) address
 	/// </summary>
 	uint8_t load_x_address(uint8_t column_address, uint8_t command_following);
+	/// <summary>
+	/// sets the contrast of the lcd
+	/// </summary>
+	/// <param name="value">0-127</param>
+	void set_contrast(uint8_t value);
+	/// <summary>
+	/// reverses the bits in a byte
+	/// </summary>
+	uint8_t reverse_byte(uint8_t b);
 };
 #endif

@@ -30,8 +30,7 @@ void start_main_thread()
 {
 	while (1) {
 		keyboard->check_for_keyboard_presses();
-		// TODO: option to only update on keypress
-		window_manager->update();
+		window_manager->update(true);
 	}
 }
 
@@ -46,9 +45,9 @@ int main(int argc, char* argv[])
 	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl;
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
-	if (!I2CUtils::device_availible(DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
-	else
-		new DisplayRenderer();
+	// if (!I2CUtils::device_availible(LCD_DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
+	// else
+	new DisplayRenderer();
 #else
 	new ConsoleRenderer();
 #endif
