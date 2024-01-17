@@ -1,27 +1,30 @@
 #include "io/ISerializable.h"
 #include "ISerializable.h"
 
-void ISerializable::save_file(std::string dir, std::string filename)
+bool ISerializable::save_file(std::string dir, std::string filename)
 {
 	std::vector<uint8_t> bytes = searialize();
 #ifdef PICO
-	SDCardController::write_file(dir, filename, &bytes);
+	if (!SDCardController::write_file(dir, filename, &bytes)) return false;
 #else
 	if (!std::filesystem::exists(dir))
 		std::filesystem::create_directory(dir);
 	FILE* file = fopen((dir + "/" + filename).c_str(), "wb");
+	if (!file) return false;
 	fwrite(bytes.data(), sizeof(uint8_t), bytes.size(), file);
 	fclose(file);
 #endif
+	return true;
 }
 
-void ISerializable::load_file(std::string dir, std::string filename)
+bool ISerializable::load_file(std::string dir, std::string filename)
 {
 	std::vector<uint8_t> bytes;
 #ifdef PICO
-	SDCardController::read_file(dir, filename, &bytes);
+	if (!SDCardController::read_file(dir, filename, &bytes)) return false;
 #else
 	FILE* file = fopen((dir + "/" + filename).c_str(), "rb");
+	if (!file) return false;
 	fseek(file, 0, SEEK_END);
 	size_t size = ftell(file);
 	bytes.resize(size);
@@ -30,6 +33,7 @@ void ISerializable::load_file(std::string dir, std::string filename)
 	fclose(file);
 #endif
 	desearialize(bytes);
+	return true;
 }
 
 bool ISerializable::file_exists(std::string dir, std::string filename)

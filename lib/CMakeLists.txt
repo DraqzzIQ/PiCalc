@@ -22,7 +22,15 @@ if(NOT RPI_PICO)
 
     target_link_libraries(${PROJECT_NAME} Threads::Threads ${SDL2_LIBRARIES} OpenSSL::SSL OpenSSL::Crypto)
 else()
+    # picowota config
+    set(PICOWOTA_WIFI_SSID "picowota")
+    set(PICOWOTA_WIFI_PASS "pico1234")
+    set(PICOWOTA_WIFI_AP 1) # 0 = connect to wifi, 1 = create wifi ap
+
+
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/no-OS-FatFS-SD-SPI-RPi-Pico/FatFs_SPI build)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/picowota)
 
     target_link_libraries(${PROJECT_NAME}  FatFs_SPI)
+    target_link_libraries(${PROJECT_NAME} picowota_reboot)
 endif()
