@@ -9,17 +9,16 @@ class InputWindow: public Window
 	public:
 	InputWindow(
 		std::string promt,
-		std::string* input,
-		std::function<void()> callback);
+		std::function<void(std::string)> callback);
 	~InputWindow();
 	Bitset2D update_window();
 	bool handle_key_down(KeyPress keypress);
 
-	static void input(std::string prompt, std::string* input, std::function<void()> callback);
+	static void input(std::string prompt, std::function<void(std::string)> callback);
 
 	private:
 	std::string _prompt;
-	std::string* _input;
+	std::string _input;
 
 	Bitset2D _rendered;
 
@@ -28,5 +27,5 @@ class InputWindow: public Window
 	bool _cursor_on = true;
 	Bitset2D add_cursor(Bitset2D bitset);
 
-	std::function<void()> _callback;
+	std::function<void(std::string)> _callback;
 };

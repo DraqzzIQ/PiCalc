@@ -1,10 +1,9 @@
 #include "InputWindow.h"
 
 
-InputWindow::InputWindow(std::string promt, std::string* input, std::function<void()> callback)
+InputWindow::InputWindow(std::string promt, std::function<void(std::string)> callback)
 {
 	_blink_timer = Utils::us_since_boot();
-	_input = input;
 	_prompt = promt;
 	_callback = callback;
 }
@@ -17,7 +16,7 @@ Bitset2D InputWindow::update_window()
 {
 	clear_window();
 	add_to_window(Graphics::create_text(_prompt), 1, 1);
-	add_to_window(Graphics::create_text(*_input), 1, 15);
+	add_to_window(Graphics::create_text(_input), 1, 15);
 	_rendered = add_cursor(window);
 	return _rendered;
 }
@@ -25,21 +24,21 @@ bool InputWindow::handle_key_down(KeyPress keypress)
 {
 	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
 	if (key == "ceil") {
-		if (_input->length() > 0) {
+		if (_input.length() > 0) {
 			WindowManager::get_instance()->close_window(false);
-			_callback();
+			_callback(_input);
 			delete this;
 		}
 	} else if (key == "DEL") {
 		if (_cursor_index > 0) {
-			*_input = _input->substr(0, _input->length() - 1);
+			_input = _input.substr(0, _input.length() - 1);
 			_cursor_index--;
 		}
-	} else if (_input->length() >= 15) {
+	} else if (_input.length() >= 15) {
 		return true;
 	} else {
 		_cursor_index++;
-		*_input += key;
+		_input += key;
 	}
 	return true;
 }
@@ -62,7 +61,7 @@ Bitset2D InputWindow::add_cursor(Bitset2D bitset)
 	return bitset;
 }
 
-void InputWindow::input(std::string promt, std::string* input, std::function<void()> callback)
+void InputWindow::input(std::string promt, std::function<void(std::string)> callback)
 {
-	WindowManager::get_instance()->add_window(new InputWindow(promt, input, callback));
+	WindowManager::get_instance()->add_window(new InputWindow(promt, callback));
 }

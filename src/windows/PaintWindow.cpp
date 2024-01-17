@@ -353,11 +353,9 @@ void PaintWindow::open_load_menu()
 
 void PaintWindow::open_save_menu()
 {
-	std::string filename;
 	InputWindow::input(
 		"Enter filename: ",
-		&filename,
-		[this, &filename]() {
+		[this](std::string filename) {
 			if (filename.rfind(".bmp") == std::string::npos) {
 				filename += ".bmp";
 			}
