@@ -19,7 +19,7 @@ class ChatWindow: public TextWindow
 	/// <summary>
 	/// removes the last character of the text
 	/// </summary>
-	void remove_chars();
+	void remove_char();
 	/// <summary>
 	/// creates the menu out of the text
 	/// </summary>

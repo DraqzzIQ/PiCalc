@@ -8,10 +8,7 @@ bool ChatWindow::handle_key_down(KeyPress keypress)
 {
 	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
 
-	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) scroll_up();
-	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) scroll_down();
-	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("left")) scroll_left();
-	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) scroll_right();
+	if (TextWindow::handle_key_down(keypress)) return true;
 	else if (key == "RETURN") {
 		add_text("...", false, false, false);
 		on_return_key();
@@ -21,7 +18,7 @@ bool ChatWindow::handle_key_down(KeyPress keypress)
 	} else if (key == "DEL") {
 		if (_input.size() > 0)
 			_input.pop_back();
-		remove_chars();
+		remove_char();
 		return true;
 	} else if (key == "unknown") return false;
 	else {
@@ -107,7 +104,7 @@ void ChatWindow::add_text(std::string text_to_add, bool keep_words, bool newline
 	_current_page = pages_count() - 1;
 }
 
-void ChatWindow::remove_chars()
+void ChatWindow::remove_char()
 {
 	if (_text.size() < 1) return;
 

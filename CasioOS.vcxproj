@@ -63,6 +63,7 @@
     <ClInclude Include="src\windows\ChatWindow.h" />
     <ClInclude Include="src\windows\InputWindow.h" />
     <ClInclude Include="src\windows\PaintWindow.h" />
+    <ClInclude Include="src\windows\NotesWindow.h" />
     <ClInclude Include="src\options\CallbackMenuOption.h" />
     <ClInclude Include="src\io\ISerializable.h" />
     <ClInclude Include="src\io\ConfigSerializable.h" />
@@ -105,6 +106,7 @@
     <ClCompile Include="src\windows\ChatWindow.cpp" />
     <ClCompile Include="src\windows\InputWindow.cpp" />
     <ClCompile Include="src\windows\PaintWindow.cpp" />
+    <ClCompile Include="src\windows\NotesWindow.cpp" />
     <ClCompile Include="src\io\ISerializable.cpp" />
     <ClCompile Include="src\io\ConfigSerializable.cpp" />
     <ClCompile Include="src\io\PaintingSerializable.cpp" />

@@ -5,8 +5,22 @@ TextWindow::~TextWindow() {}
 
 bool TextWindow::handle_key_down(KeyPress keypress)
 {
-	return true;
+	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) {
+		scroll_up();
+		return true;
+	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) {
+		scroll_down();
+		return true;
+	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("left")) {
+		scroll_left();
+		return true;
+	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) {
+		scroll_right();
+		return true;
+	}
+	return false;
 }
+
 Frame TextWindow::update_window()
 {
 	clear_window();
