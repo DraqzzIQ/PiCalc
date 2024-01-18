@@ -51,7 +51,11 @@ void WindowManager::update(bool force_rerender)
 void WindowManager::handle_key_down(KeyPress keypress)
 {
 	if (keypress.shift && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("AC")) {
-		if (_windows.size() > 1) minimize_window();
+#ifdef PICO
+		gpio_put(28, 0);
+#endif
+	} else if (keypress.alpha && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("DEL")) {
+		if (_windows.size() > 0) minimize_window();
 	} else if (keypress.shift && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("DEL")) {
 		if (_windows.size() > 1) close_window();
 	} else if (_windows.size() > 0) _windows.top()->handle_key_down(keypress);

@@ -32,8 +32,8 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 		if (bytes[1] & 1) bytes[2] |= 0x80;
 		bytes[1] >>= 1;
 		if (bytes[0] & 1) bytes[1] |= 0x80;
-		if (j == screen_symbol_positions[screen_symbol_index] && frame.screen_symbols.size() > screen_symbol_index && frame.screen_symbols.at(screen_symbol_positions[screen_symbol_index++]) == 1) bytes[0] |= 1;
-		else bytes[0] &= 0xFE;
+		bytes[0] >>= 1;
+		if (j == screen_symbol_positions[screen_symbol_index] && frame.screen_symbols.size() > screen_symbol_index && frame.screen_symbols.at(screen_symbol_index++) == 1) bytes[0] |= 0x80;
 		// to here
 
 		for (uint8_t i = 0; i < 4; i++) {

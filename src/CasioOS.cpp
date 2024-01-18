@@ -40,6 +40,9 @@ void start_main_thread()
 int main(int argc, char* argv[])
 {
 #ifdef PICO
+	gpio_init(28);
+	gpio_set_dir(28, GPIO_OUT);
+	gpio_put(28, 1);
 	// Enable UART so we can print status output
 	stdio_init_all();
 	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl;
