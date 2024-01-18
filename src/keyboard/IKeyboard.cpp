@@ -52,6 +52,7 @@ KEY IKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
 		case 82: return Chars::CHAR_TO_KEYCODE.at(";");
 		case 127: return Chars::CHAR_TO_KEYCODE.at("!");
 		case 128: return Chars::CHAR_TO_KEYCODE.at("?");
+		case 73: return Chars::CHAR_TO_KEYCODE.at("RETURN");
 		}
 	} else {
 		if (raw_key < 10) return raw_key;
@@ -85,6 +86,7 @@ KEY IKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
 		case 82: return Chars::CHAR_TO_KEYCODE.at(",");
 		case 127: return Chars::CHAR_TO_KEYCODE.at(".");
 		case 128: return Chars::CHAR_TO_KEYCODE.at(" ");
+		case 73: return Chars::CHAR_TO_KEYCODE.at("RETURN");
 		}
 	}
 	return Chars::CHAR_TO_KEYCODE.at("unknown");

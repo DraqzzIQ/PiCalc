@@ -1,5 +1,4 @@
 #include "io/SDCardController.h"
-#include "SDCardController.h"
 #ifdef PICO
 
 bool SDCardController::write_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes)
@@ -94,32 +93,32 @@ std::vector<std::string> SDCardController::list_dir(std::string dir)
 {
 	std::vector<std::string> files;
 	if (!mount() || !set_directory(dir)) return files;
-	DIR dirp;
-	FRESULT fr = f_opendir(&dirp, dir.c_str());
+
+	DIR dj;
+	FILINFO fno;
+	memset(&dj, 0, sizeof dj);
+	memset(&fno, 0, sizeof fno);
+
+	FRESULT fr = f_findfirst(&dj, &fno, ("/" + dir).c_str(), "*");
 	if (FR_OK != fr) {
-		std::cout << "f_opendir error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
+		std::cout << "f_findfirst error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
 		unmount();
 		return files;
 	}
 
-	FILINFO fno;
-	while (true) {
-		fr = f_readdir(&dirp, &fno);
-		if (FR_OK != fr) {
-			std::cout << "f_readdir error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
-			unmount();
-			return files;
-		}
-		if (fno.fname[0] == 0) break;
-		files.push_back(fno.fname);
+	while (fr == FR_OK && fno.fname[0]) { /* Repeat while an item is found */
+		files.push_back(std::string(fno.fname));
+
+		fr = f_findnext(&dj, &fno); /* Search for next item */
 	}
 
-	fr = f_closedir(&dirp);
+	fr = f_closedir(&dj);
 	if (FR_OK != fr) {
 		std::cout << "f_closedir error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
 		unmount();
 		return files;
 	}
+
 	unmount();
 	return files;
 }
