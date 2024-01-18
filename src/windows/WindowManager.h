@@ -3,6 +3,9 @@
 #include "keyboard/KeyPress.h"
 #include "renderers/IRenderer.h"
 #include "windows/Window.h"
+#ifdef PICO
+#include "pico/stdlib.h"
+#endif
 #include <stack>
 #include <typeinfo>
 #include <unordered_map>
