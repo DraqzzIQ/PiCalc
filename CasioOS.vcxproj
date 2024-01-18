@@ -103,9 +103,9 @@
     <ClCompile Include="src\windows\ChatGPTWindow.cpp" />
     <ClCompile Include="src\windows\InputWindow.cpp" />
     <ClCompile Include="src\windows\PaintWindow.cpp" />
-    <ClInclude Include="src\io\ISerializable.cpp" />
-    <ClInclude Include="src\io\ConfigSerializable.cpp" />
-    <ClInclude Include="src\io\PaintingSerializable.cpp" />
+    <ClCompile Include="src\io\ISerializable.cpp" />
+    <ClCompile Include="src\io\ConfigSerializable.cpp" />
+    <ClCompile Include="src\io\PaintingSerializable.cpp" />
 
   </ItemGroup>
   <PropertyGroup Label="Globals">
