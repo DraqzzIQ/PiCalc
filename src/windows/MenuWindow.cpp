@@ -11,11 +11,11 @@ MenuWindow::~MenuWindow()
 	options.clear();
 }
 
-Bitset2D MenuWindow::update_window()
+Frame MenuWindow::update_window()
 {
-	corner_y = current_page * 4 * line_height;
+	_corner_y = current_page * 4 * line_height;
 
-	return get_render_canvas();
+	return Frame(get_render_canvas(), _screen_symbols);
 }
 
 void MenuWindow::create_menu()

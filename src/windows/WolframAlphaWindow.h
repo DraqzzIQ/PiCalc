@@ -1,5 +1,5 @@
 #pragma once
-#include "windows/TextWindow.h"
+#include "windows/ChatWindow.h"
 #ifdef PICO
 #include <http/PicoHttpClient.h>
 #else
@@ -11,7 +11,7 @@
 #define WOLFRAMALPHA_APPID "DEMO"
 #endif
 
-class WolframAlphaWindow: public TextWindow
+class WolframAlphaWindow: public ChatWindow
 {
 	public:
 	WolframAlphaWindow();

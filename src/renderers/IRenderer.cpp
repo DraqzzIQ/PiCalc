@@ -5,15 +5,14 @@ std::vector<IRenderer*> IRenderer::Renderers;
 IRenderer::IRenderer()
 {
 	Renderers.push_back(this);
-	rendered_pixels = Bitset2D(SCREEN_WIDTH, DynamicBitset(SCREEN_HEIGHT, false));
-	rendered_screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), false);
+	_rendered_frame = Frame(Bitset2D(SCREEN_WIDTH, DynamicBitset(SCREEN_HEIGHT, false)), DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), false));
 }
 
-bool IRenderer::already_rendered(const Bitset2D& pixels, const DynamicBitset& screen_symbols)
+bool IRenderer::already_rendered(const Frame& frame)
 {
-	if (pixels != rendered_pixels || screen_symbols != rendered_screen_symbols) {
-		rendered_pixels = pixels;
-		rendered_screen_symbols = screen_symbols;
+	if (frame.pixels != _rendered_frame.pixels || frame.screen_symbols != _rendered_frame.screen_symbols) {
+		_rendered_frame.pixels = frame.pixels;
+		_rendered_frame.screen_symbols = frame.screen_symbols;
 		return false;
 	}
 	return true;

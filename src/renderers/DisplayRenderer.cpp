@@ -8,9 +8,9 @@ DisplayRenderer::DisplayRenderer()
 	set_contrast(0);
 }
 
-void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender)
+void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 {
-	if (!force_rerender && already_rendered(pixels, screen_symbols))
+	if (!force_rerender && already_rendered(frame))
 		return;
 
 	// 3 commands + 4 bytes per column
@@ -21,8 +21,8 @@ void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen
 
 	uint16_t index = 3;
 
-	for (uint8_t j = 0; j < pixels.width(); j++) {
-		std::vector<uint8_t> bytes = pixels[j].get_bytes();
+	for (uint8_t j = 0; j < frame.pixels.width(); j++) {
+		std::vector<uint8_t> bytes = frame.pixels[j].get_bytes();
 		for (uint8_t i = 0; i < 4; i++) {
 			command[index++] = reverse_byte(bytes[i]);
 		}

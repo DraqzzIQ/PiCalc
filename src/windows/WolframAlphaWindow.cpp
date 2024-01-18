@@ -17,12 +17,12 @@ void WolframAlphaWindow::request(std::string query)
 
 	if (res.error()) {
 		add_text("error: " + res.error_msg, true, true, false);
-		text.push_back("");
+		_text.push_back("");
 		return;
 	}
 
 	add_text(res.body, true, true, false);
-	text.push_back("");
+	_text.push_back("");
 }
 
 void WolframAlphaWindow::on_return_key()

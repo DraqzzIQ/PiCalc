@@ -15,7 +15,7 @@ class PaintWindow: public Window
 	public:
 	PaintWindow();
 	~PaintWindow();
-	Bitset2D update_window() override;
+	Frame update_window() override;
 	bool handle_key_down(KeyPress keypress) override;
 
 	private:
