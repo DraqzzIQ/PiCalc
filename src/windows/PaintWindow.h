@@ -3,7 +3,7 @@
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
 #include "io/PaintingSerializable.h"
-#include "options/ValueMenuOption.h"
+#include "options/CallbackMenuOption.h"
 #include "utils/Utils.h"
 #include "windows/InputWindow.h"
 #include "windows/MenuWindow.h"

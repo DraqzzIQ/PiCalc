@@ -48,7 +48,7 @@
     <ClInclude Include="src\constant\LCDConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\options\MenuOption.h">
+    <ClInclude Include="src\options\WindowMenuOption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\options\MenuOptionBase.h">
@@ -139,6 +139,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\windows\InputWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\options\CallbackMenuOption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

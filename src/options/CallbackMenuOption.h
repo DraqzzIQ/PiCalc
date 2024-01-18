@@ -4,16 +4,16 @@
 #include <string>
 
 template <typename T>
-class ValueMenuOption: public MenuOptionBase
+class CallbackMenuOption: public MenuOptionBase
 {
 	public:
-	ValueMenuOption(const std::string& name, T value, std::function<void(T)> callback)
+	CallbackMenuOption(const std::string& name, T value, std::function<void(T)> callback)
 	{
 		this->_display_name = name;
 		this->_value = value;
 		this->_callback = callback;
 	}
-	~ValueMenuOption() = default;
+	~CallbackMenuOption() = default;
 
 	void on_select()
 	{

@@ -7,20 +7,20 @@
 /// base class for all menu options
 /// </summary>
 template <typename T>
-class MenuOption: public MenuOptionBase
+class WindowMenuOption: public MenuOptionBase
 {
 	public:
 	/// <summary>
-	/// creates a new MenuOption
+	/// creates a new WindowMenuOption
 	/// </summary>
 	/// <param name="display_name">name of that option</param>
 	/// <param name="window_manager">window_manager to add windows to</param>
-	MenuOption(const std::string display_name)
+	WindowMenuOption(const std::string display_name)
 	{
 		this->display_name = display_name;
 		this->window_manager = WindowManager::get_instance();
 	}
-	~MenuOption(){};
+	~WindowMenuOption(){};
 	/// <summary>
 	/// called when option is selected
 	/// </summary>

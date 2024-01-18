@@ -36,7 +36,7 @@
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />
     <ClInclude Include="src\keyboard\SDLKeyboard.h" />
     <ClInclude Include="src\constant\LCDConstants.h" />
-    <ClInclude Include="src\options\MenuOption.h" />
+    <ClInclude Include="src\options\WindowMenuOption.h" />
     <ClInclude Include="src\options\MenuOptionBase.h" />
     <ClInclude Include="src\renderers\ConsoleRenderer.h" />
     <ClInclude Include="src\renderers\DisplayRenderer.h" />
@@ -62,6 +62,7 @@
     <ClInclude Include="src\windows\ChatGPTWindow.h" />
     <ClInclude Include="src\windows\InputWindow.h" />
     <ClInclude Include="src\windows\PaintWindow.h" />
+    <ClInclude Include="src\options\CallbackMenuOption.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
