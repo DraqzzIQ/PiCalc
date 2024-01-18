@@ -60,6 +60,7 @@
     <ClInclude Include="src\http\HttpResponse.h" />
     <ClInclude Include="src\windows\WolframAlphaWindow.h" />
     <ClInclude Include="src\windows\ChatGPTWindow.h" />
+    <ClInclude Include="src\windows\ChatWindow.h" />
     <ClInclude Include="src\windows\InputWindow.h" />
     <ClInclude Include="src\windows\PaintWindow.h" />
     <ClInclude Include="src\options\CallbackMenuOption.h" />
@@ -101,6 +102,7 @@
     <ClCompile Include="src\http\DesktopHttpClient.cpp" />
     <ClCompile Include="src\windows\WolframAlphaWindow.cpp" />
     <ClCompile Include="src\windows\ChatGPTWindow.cpp" />
+    <ClCompile Include="src\windows\ChatWindow.cpp" />
     <ClCompile Include="src\windows\InputWindow.cpp" />
     <ClCompile Include="src\windows\PaintWindow.cpp" />
     <ClCompile Include="src\io\ISerializable.cpp" />

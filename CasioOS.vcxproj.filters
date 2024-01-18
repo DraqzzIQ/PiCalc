@@ -129,6 +129,9 @@
     <ClInclude Include="src\windows\ChatGPTWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\windows\ChatWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\windows\PongWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -246,6 +249,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\ChatGPTWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\ChatWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\PongWindow.cpp">
