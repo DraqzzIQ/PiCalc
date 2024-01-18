@@ -63,6 +63,8 @@
     <ClInclude Include="src\windows\InputWindow.h" />
     <ClInclude Include="src\windows\PaintWindow.h" />
     <ClInclude Include="src\options\CallbackMenuOption.h" />
+    <ClInclude Include="src\io\ISerializable.h" />
+    <ClInclude Include="src\io\ConfigSerializable.h" />
     <ClInclude Include="src\io\PaintingSerializable.h" />
   </ItemGroup>
   <ItemGroup>
@@ -101,7 +103,10 @@
     <ClCompile Include="src\windows\ChatGPTWindow.cpp" />
     <ClCompile Include="src\windows\InputWindow.cpp" />
     <ClCompile Include="src\windows\PaintWindow.cpp" />
+    <ClInclude Include="src\io\ISerializable.cpp" />
+    <ClInclude Include="src\io\ConfigSerializable.cpp" />
     <ClInclude Include="src\io\PaintingSerializable.cpp" />
+
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

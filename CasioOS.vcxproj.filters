@@ -144,6 +144,12 @@
     <ClInclude Include="src\options\CallbackMenuOption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\io\ISerializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\ConfigSerializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\io\PaintingSerializable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -252,6 +258,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\InputWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\ISerializable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\ConfigSerializable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\io\PaintingSerializable.cpp">
