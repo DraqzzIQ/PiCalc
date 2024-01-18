@@ -5,6 +5,7 @@ DisplayRenderer::DisplayRenderer()
 {
 	Utils::sleep_for_ms(1);
 	clear();
+	set_contrast(0);
 }
 
 void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender)
@@ -23,17 +24,24 @@ void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen
 	for (uint8_t j = 0; j < pixels.width(); j++) {
 		std::vector<uint8_t> bytes = pixels[j].get_bytes();
 		for (uint8_t i = 0; i < 4; i++) {
-			command[index++] = bytes[i];
+			command[index++] = reverse_byte(bytes[i]);
 		}
 	}
-	i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
+	i2c_write_blocking(i2c_default, LCD_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
 }
 
+uint8_t DisplayRenderer::reverse_byte(uint8_t b)
+{
+	b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+	b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+	b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+	return b;
+}
 
 void DisplayRenderer::clear()
 {
-	uint8_t command[1] = { set_mode(T_ROW_MODE, E_NORMAL_STATUS, M_1_32_MULTIPLEX, false) };
-	i2c_write_blocking(i2c_default, DEVICE_ADDRESS, command, sizeof(command), false);
+	uint8_t command[1] = { set_mode(T_ROW_MODE, E_NORMAL_STATUS, M_1_32_MULTIPLEX, C_LAST_COMMAND) };
+	i2c_write_blocking(i2c_default, LCD_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
 }
 
 uint8_t DisplayRenderer::set_mode(uint8_t mode, uint8_t status, uint8_t mux_mode, uint8_t command_following)
@@ -51,5 +59,13 @@ uint8_t DisplayRenderer::ram_access(uint8_t access_mode, uint8_t row_address, ui
 uint8_t DisplayRenderer::load_x_address(uint8_t column_address, uint8_t command_following)
 {
 	return command_following + LOAD_X_ADDRESS + column_address;
+}
+
+void DisplayRenderer::set_contrast(uint8_t value)
+{
+	uint8_t command[2];
+	command[0] = POT_REGISTER_ADDRESS;
+	command[1] = value;
+	i2c_write_blocking(i2c_default, POT_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
 }
 #endif
