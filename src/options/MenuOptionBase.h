@@ -1,3 +1,4 @@
+#pragma once
 #include "windows/WindowManager.h"
 #include <string>
 

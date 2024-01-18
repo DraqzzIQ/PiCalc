@@ -27,15 +27,15 @@ class ISerializable
 	/// </param>
 	/// <param name="filename">the name of the file</param>
 	/// </summary>
-	void save_file(std::string dir, std::string filename);
+	void write_file(std::string dir, std::string filename);
 	/// <summary>
-	/// uses the result of desearialize() to call desearialize()
+	/// uses the result to call desearialize()
 	/// <param name="dir">
 	/// the directory containing the file
 	/// </param>
 	/// <param name="filename">the name of the file</param>
 	/// </summary>
-	void load_file(std::string dir, std::string filename);
+	void read_file(std::string dir, std::string filename);
 	/// <summary>
 	/// returns true if the file exists
 	/// <param name="dir">
@@ -43,21 +43,21 @@ class ISerializable
 	/// </param>
 	/// <param name="filename">the name of the file</param>
 	/// </summary>
-	bool file_exists(std::string dir, std::string filename);
+	static bool file_exists(std::string dir, std::string filename);
 	/// <summary>
 	/// returns true if the directory exists
 	/// <param name="dir">
 	/// the directory to check
 	/// </param>
 	/// </summary>
-	bool dir_exists(std::string dir);
+	static bool dir_exists(std::string dir);
 	/// <summary>
 	/// returns all files in the directory
 	/// <param name="dir">
 	/// the directory to list
 	/// </param>
 	/// </summary>
-	std::vector<std::string> list_dir(std::string dir);
+	static std::vector<std::string> list_dir(std::string dir);
 
 	protected:
 	/// <summary>
