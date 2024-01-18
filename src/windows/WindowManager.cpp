@@ -30,12 +30,13 @@ void WindowManager::minimize_window()
 	}
 }
 
-void WindowManager::close_window()
+void WindowManager::close_window(bool dispose)
 {
 	if (!_windows.empty()) {
 		Window* top = _windows.top();
 		_windows.pop();
-		delete top;
+		if (dispose)
+			delete top;
 	}
 }
 

@@ -37,8 +37,8 @@ void PicoKeyboard::check_for_keyboard_presses()
 		for (uint8_t py = 0; py < high_pins.size(); py++) {
 			if (pressedButtons[px][py] == KeyState::OFF && high_pins[py]) {
 				KeyPress press = coords_to_keypress(px, py, functionKeysState);
-				printf("\nKey pressed:  "); // uncomment to test keys via picoprobe / serial output
-				print_key(press.key_calculator); // uncomment to test keys via picoprobe / serial output
+				// std::cout << "\nKey pressed:  " << std::endl; // uncomment to test keys via picoprobe / serial output
+				// print_key(press.key_calculator); // uncomment to test keys via picoprobe / serial output
 				_window_manager->handle_key_down(press); // comment to test keys via picoprobe / serial output
 				pressedButtons[px][py] = functionKeysState;
 
@@ -47,8 +47,8 @@ void PicoKeyboard::check_for_keyboard_presses()
 				else functionKeysState = KeyState::ON;
 			} else if (pressedButtons[px][py] != KeyState::OFF && !high_pins[py]) {
 				KeyPress release = coords_to_keypress(px, py, pressedButtons[px][py]);
-				printf("\nKey released: "); // uncomment to test keys via picoprobe / serial output
-				print_key(release.key_calculator); // uncomment to test keys via picoprobe / serial output
+				// std::cout << "\nKey released: " << std::endl; // uncomment to test keys via picoprobe / serial output
+				// print_key(release.key_calculator); // uncomment to test keys via picoprobe / serial output
 				_window_manager->handle_key_up(release); // comment to test keys via picoprobe / serial output
 				pressedButtons[px][py] = KeyState::OFF;
 			}
@@ -59,7 +59,7 @@ void PicoKeyboard::check_for_keyboard_presses()
 void PicoKeyboard::print_key(KEY key)
 {
 	for (int i = 0; i < Chars::KEY_MAP.size(); i++) {
-		if (i == key) { printf(Chars::KEY_MAP[i].c_str()); }
+		if (i == key) { std::cout << Chars::KEY_MAP[i] << std::endl; }
 	}
 }
 

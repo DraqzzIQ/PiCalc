@@ -1,7 +1,6 @@
 #include "io/ISerializable.h"
-#include "ISerializable.h"
 
-void ISerializable::save_file(std::string dir, std::string filename)
+void ISerializable::write_file(std::string dir, std::string filename)
 {
 	std::vector<uint8_t> bytes = searialize();
 #ifdef PICO
@@ -15,7 +14,7 @@ void ISerializable::save_file(std::string dir, std::string filename)
 #endif
 }
 
-void ISerializable::load_file(std::string dir, std::string filename)
+void ISerializable::read_file(std::string dir, std::string filename)
 {
 	std::vector<uint8_t> bytes;
 #ifdef PICO

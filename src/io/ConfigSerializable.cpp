@@ -42,3 +42,20 @@ size_t ConfigSerializable::get_total_serialized_size()
 	// +2 for the null terminators
 	return _openai_api_key.size() + _wolframalpha_api_key.size() + 2;
 }
+
+std::string ConfigSerializable::get_openai_api_key()
+{
+	return _openai_api_key;
+}
+std::string ConfigSerializable::get_wolframalpha_api_key()
+{
+	return _wolframalpha_api_key;
+}
+void ConfigSerializable::set_openai_api_key(std::string openai_api_key)
+{
+	_openai_api_key = openai_api_key;
+}
+void ConfigSerializable::set_wolframalpha_api_key(std::string wolframalpha_api_key)
+{
+	_wolframalpha_api_key = wolframalpha_api_key;
+}

@@ -52,7 +52,7 @@ class WindowManager
 	/// removes the top window from the window stack
 	/// and deletes it
 	/// </summary>
-	void close_window();
+	void close_window(bool dispose = true);
 	/// <summary>
 	/// rerenders the top window
 	/// </summary>

@@ -48,7 +48,7 @@
     <ClInclude Include="src\constant\LCDConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\options\MenuOption.h">
+    <ClInclude Include="src\options\WindowMenuOption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\options\MenuOptionBase.h">
@@ -133,6 +133,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\datastructs\NumberParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\PaintWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\InputWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\options\CallbackMenuOption.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\ISerializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\ConfigSerializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\PaintingSerializable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -234,6 +252,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\datastructs\NumberParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\PaintWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\InputWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\ISerializable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\ConfigSerializable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\PaintingSerializable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
