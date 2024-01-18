@@ -58,6 +58,6 @@ class DisplayRenderer: public IRenderer
 	/// </summary>
 	uint8_t reverse_byte(uint8_t b);
 
-	const std::vector<uint8_t> screen_symbol_posisions{3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93};
+	const std::vector<uint8_t> screen_symbol_positions{3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93};
 };
 #endif

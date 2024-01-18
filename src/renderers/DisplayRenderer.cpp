@@ -25,14 +25,16 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 	for (uint8_t j = 0; j < frame.pixels.width(); j++) {
 		std::vector<uint8_t> bytes = frame.pixels[j].get_bytes();
 
-		bytes[3] >> 1;
+		// comment this
+		bytes[3] >>= 1;
 		if (bytes[2] & 1) bytes[3] |= 0x80;
 		bytes[2] >>= 1;
 		if (bytes[1] & 1) bytes[2] |= 0x80;
 		bytes[1] >>= 1;
 		if (bytes[0] & 1) bytes[1] |= 0x80;
-		if (j == screen_symbol_index && frame.screen_symbols.at(screen_symbol_index++) == 1) bytes[0] |= 1;
+		if (j == screen_symbol_positions[screen_symbol_index] && frame.screen_symbols.size() > screen_symbol_index && frame.screen_symbols.at(screen_symbol_positions[screen_symbol_index++]) == 1) bytes[0] |= 1;
 		else bytes[0] &= 0xFE;
+		// to here
 
 		for (uint8_t i = 0; i < 4; i++) {
 			command[index++] = reverse_byte(bytes[i]);
