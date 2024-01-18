@@ -32,7 +32,7 @@ void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen
 		if (bytes[1] & 1) bytes[2] |= 0x80;
 		bytes[1] >>= 1;
 		if (bytes[0] & 1) bytes[1] |= 0x80;
-		if (j == screen_symbol_positions[screen_symbol_index] && screen_symbols.size() > screen_symbol_index && screen_symbols.at(screen_symbol_positions[screen_symbol_index++]) == 1) bytes[0] |= 1;
+		if (j == screen_symbol_positions[screen_symbol_index] && screen_symbols.size() > screen_symbol_index && screen_symbols.at(screen_symbol_index++) == 1) bytes[0] |= 1;
 		else bytes[0] &= 0xFE;
 		// to here
 
