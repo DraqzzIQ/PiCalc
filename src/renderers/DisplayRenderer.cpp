@@ -20,9 +20,20 @@ void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen
 	command[2] = ram_access(G_RAM_FULL_GRAPHIC_MODE, BANK_ZERO_ADDRESS, C_LAST_COMMAND);
 
 	uint16_t index = 3;
+	uint8_t screen_symbol_index = 0;
 
 	for (uint8_t j = 0; j < pixels.width(); j++) {
 		std::vector<uint8_t> bytes = pixels[j].get_bytes();
+
+		// bytes[3] >> 1;
+		// if (bytes[2] & 1) bytes[3] |= 0x80;
+		// bytes[2] >>= 1;
+		// if (bytes[1] & 1) bytes[2] |= 0x80;
+		// bytes[1] >>= 1;
+		// if (bytes[0] & 1) bytes[1] |= 0x80;
+		// if (j == screen_symbol_index && screen_symbols.at(screen_symbol_index++) == 1) bytes[0] |= 1;
+		// else bytes[0] &= 0xFE;
+
 		for (uint8_t i = 0; i < 4; i++) {
 			command[index++] = reverse_byte(bytes[i]);
 		}
