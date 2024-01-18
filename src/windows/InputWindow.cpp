@@ -23,7 +23,7 @@ Frame InputWindow::update_window()
 bool InputWindow::handle_key_down(KeyPress keypress)
 {
 	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
-	if (key == "ceil") {
+	if (key == "RETURN") {
 		if (_input.length() > 0) {
 			WindowManager::get_instance()->close_window(false);
 			_callback(_input);

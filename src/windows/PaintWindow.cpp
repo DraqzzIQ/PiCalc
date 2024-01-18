@@ -320,12 +320,12 @@ void PaintWindow::open_load_menu()
 	};
 	{
 		std::vector<std::string> files = ISerializable::list_dir("paint");
-		load_menu.options.clear();
+		_load_menu.options.clear();
 		for (int i = 0; i < files.size(); i++) {
-			load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
+			_load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
 		}
-		WindowManager::get_instance()->add_window(&load_menu);
-		load_menu.create_menu();
+		WindowManager::get_instance()->add_window(&_load_menu);
+		_load_menu.create_menu();
 	}
 }
 

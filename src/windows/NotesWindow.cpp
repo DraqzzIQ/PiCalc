@@ -30,7 +30,12 @@ bool NotesWindow::handle_key_down(KeyPress keypress)
 	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
 
 	if (TextWindow::handle_key_down(keypress)) return true;
-	else if (key == "RETURN") {
+
+	if (keypress.shift && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("MODE")) {
+		open_save_menu();
+	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("MODE")) {
+		open_load_menu();
+	} else if (key == "RETURN") {
 		_text.push_back("");
 		return true;
 	} else if (key == "DEL") {
@@ -69,4 +74,39 @@ void NotesWindow::create_menu()
 			add_to_window(Bitset2D(2, 9, true), cursor_x, cursor_y);
 		}
 	}
+}
+
+void NotesWindow::open_load_menu()
+{
+	std::function<void(std::string)> callback = [this](std::string filename) {
+		NoteSerializable save_file;
+		save_file.read_file("notes", filename);
+		_text = save_file.get_text();
+
+		WindowManager::get_instance()->close_window(false);
+	};
+	{
+		std::vector<std::string> files = ISerializable::list_dir("notes");
+		_load_menu.options.clear();
+		for (int i = 0; i < files.size(); i++) {
+			_load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
+		}
+		WindowManager::get_instance()->add_window(&_load_menu);
+		_load_menu.create_menu();
+	}
+}
+
+void NotesWindow::open_save_menu()
+{
+	InputWindow::input(
+		"Enter filename: ",
+		[this](std::string filename) {
+			if (filename.rfind(".txt") == std::string::npos) {
+				filename += ".txt";
+			}
+			std::replace(filename.begin(), filename.end(), ' ', '_');
+
+			NoteSerializable save_file = NoteSerializable(_text);
+			save_file.write_file("notes", filename);
+		});
 }

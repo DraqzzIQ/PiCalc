@@ -30,7 +30,7 @@ class PaintWindow: public Window
 	Tool _tool = Tool::NONE;
 	bool _erase = false;
 
-	MenuWindow load_menu = MenuWindow();
+	MenuWindow _load_menu = MenuWindow();
 
 	void open_load_menu();
 	void open_save_menu();
