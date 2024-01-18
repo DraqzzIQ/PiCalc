@@ -25,7 +25,7 @@ void DisplayRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen
 	for (uint8_t j = 0; j < pixels.width(); j++) {
 		std::vector<uint8_t> bytes = pixels[j].get_bytes();
 
-		bytes[3] >> 1;
+		bytes[3] >>= 1;
 		if (bytes[2] & 1) bytes[3] |= 0x80;
 		bytes[2] >>= 1;
 		if (bytes[1] & 1) bytes[2] |= 0x80;
