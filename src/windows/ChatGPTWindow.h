@@ -5,21 +5,20 @@
 #include <http/DesktopHttpClient.h>
 #endif
 
-#include "windows/TextWindow.h"
+#include "windows/ChatWindow.h"
 #include <regex>
 #ifdef PICO
 #include <http/PicoHttpClient.h>
 #else
 #include <http/DesktopHttpClient.h>
 #endif
-#include "windows/TextWindow.h"
 
 #ifndef OPENAI_API_KEY
 #pragma message("warning: OPENAI_API_KEY not defined")
 #define OPENAI_API_KEY "DEMO"
 #endif
 
-class ChatGPTWindow: public TextWindow
+class ChatGPTWindow: public ChatWindow
 {
 	public:
 	ChatGPTWindow();

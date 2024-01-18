@@ -1,6 +1,7 @@
 #pragma once
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
+#include "datastructs/Frame.h"
 #include "keyboard/KeyPress.h"
 #include <algorithm>
 #include <stdint.h>
@@ -18,8 +19,8 @@ class Window
 	/// <summary>
 	/// called when the window gets rerendered
 	/// </summary>
-	/// <returns>pixels to render</returns>
-	virtual Bitset2D update_window();
+	/// <returns>Frame to render</returns>
+	virtual Frame update_window();
 	/// <summary>
 	/// handles keydown events
 	/// returns true, if the keypress was handled
@@ -40,21 +41,27 @@ class Window
 	/// </summary>
 	virtual void lost_focus();
 	/// <summary>
+	/// returns the rendered window
+	/// </summary>
+	Bitset2D get_preview();
+
+	protected:
+	/// <summary>
 	/// Bitset2D describing the window
 	/// </summary>
-	Bitset2D window;
+	Bitset2D _window;
 	/// <summary>
 	/// x coordinate of the upper left corner of the part of the canvas that is rendered
 	/// </summary>
-	int corner_x = 0;
+	int _corner_x = 0;
 	/// <summary>
 	/// y coordinate of the upper left corner of the part of the canvas that is rendered
 	/// </summary>
-	int corner_y = 0;
+	int _corner_y = 0;
 	/// <summary>
 	/// saves, which symbols on the lcd should be displayed
 	/// </summary>
-	DynamicBitset screen_symbols;
+	DynamicBitset _screen_symbols;
 	/// <summary>
 	/// extracts the part of the window that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 	/// </summary>

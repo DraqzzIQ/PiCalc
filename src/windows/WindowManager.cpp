@@ -43,8 +43,8 @@ void WindowManager::close_window(bool dispose)
 void WindowManager::update(bool force_rerender)
 {
 	for (size_t i = 0; i < IRenderer::Renderers.size(); i++) {
-		if (!_windows.empty()) IRenderer::Renderers.at(i)->render(_windows.top()->update_window(), _windows.top()->screen_symbols, force_rerender);
-		else IRenderer::Renderers.at(i)->render(Graphics::LOGO_SCREEN, DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true), force_rerender);
+		if (!_windows.empty()) IRenderer::Renderers.at(i)->render(_windows.top()->update_window(), force_rerender);
+		else IRenderer::Renderers.at(i)->render(Frame(Graphics::LOGO_SCREEN, DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true)), force_rerender);
 	}
 }
 

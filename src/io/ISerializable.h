@@ -18,6 +18,7 @@
 class ISerializable
 {
 	public:
+	~ISerializable();
 	/// <summary>
 	/// saves the result of searialize() to a file
 	/// either on the sd card or in the local filesystem
