@@ -155,11 +155,11 @@ class Equation
 	/// <summary>
 	/// bool keeping track of wether to show the cursor or not (in 0.5s intervals)
 	/// </summary>
-	bool _show_cursor;
+	bool _show_cursor = true;
 	/// <summary>
 	/// stores wether the cursor is blinking or not
 	/// </summary>
-	bool _cursor_active;
+	bool _cursor_active = true;
 	/// <summary>
 	/// time since boot at which the cursor last changed its state
 	/// </summary>
