@@ -43,15 +43,19 @@ void WindowManager::close_window(bool dispose)
 void WindowManager::update(bool force_rerender)
 {
 	for (size_t i = 0; i < IRenderer::Renderers.size(); i++) {
-		if (!_windows.empty()) IRenderer::Renderers.at(i)->render(_windows.top()->update_window(), _windows.top()->screen_symbols, force_rerender);
-		else IRenderer::Renderers.at(i)->render(Graphics::LOGO_SCREEN, DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true), force_rerender);
+		if (!_windows.empty()) IRenderer::Renderers.at(i)->render(_windows.top()->update_window(), force_rerender);
+		else IRenderer::Renderers.at(i)->render(Frame(Graphics::LOGO_SCREEN, DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true)), force_rerender);
 	}
 }
 
 void WindowManager::handle_key_down(KeyPress keypress)
 {
 	if (keypress.shift && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("AC")) {
-		if (_windows.size() > 1) minimize_window();
+#ifdef PICO
+		gpio_put(28, 0);
+#endif
+	} else if (keypress.alpha && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("DEL")) {
+		if (_windows.size() > 0) minimize_window();
 	} else if (keypress.shift && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("DEL")) {
 		if (_windows.size() > 1) close_window();
 	} else if (_windows.size() > 0) _windows.top()->handle_key_down(keypress);

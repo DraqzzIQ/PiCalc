@@ -15,10 +15,10 @@ PaintWindow::PaintWindow()
 
 PaintWindow::~PaintWindow() = default;
 
-Bitset2D PaintWindow::update_window()
+Frame PaintWindow::update_window()
 {
 	draw_preview(_painted).copy(_corner_x, _corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
-	return _rendered;
+	return Frame(_rendered, _screen_symbols);
 }
 
 Bitset2D PaintWindow::draw_preview(Bitset2D target)
@@ -178,7 +178,7 @@ void PaintWindow::save_to_hist()
 void PaintWindow::scroll_left()
 {
 	if (_corner_x > 0) _corner_x--;
-	if (_cursor_x >= corner_x + SCREEN_WIDTH - 1) _cursor_x = _corner_x + SCREEN_WIDTH - 1;
+	if (_cursor_x >= _corner_x + SCREEN_WIDTH - 1) _cursor_x = _corner_x + SCREEN_WIDTH - 1;
 }
 
 void PaintWindow::scroll_right()
@@ -221,7 +221,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 	} else if (!keypress.shift) {
 		switch (keypress.key_raw) {
 		case 167: // up
-			if (_cursor_y == corner_y) scroll_up();
+			if (_cursor_y == _corner_y) scroll_up();
 			if (_cursor_y > 0) _cursor_y--;
 			break;
 		case 168: // down
@@ -288,8 +288,8 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			}
 			break;
 		case 128: // ans
-			_cursor_x = SCREEN_WIDTH / 2 + corner_x;
-			_cursor_y = SCREEN_HEIGHT / 2 + corner_y;
+			_cursor_x = SCREEN_WIDTH / 2 + _corner_x;
+			_cursor_y = SCREEN_HEIGHT / 2 + _corner_y;
 			break;
 		case 121: // RCL
 			open_save_menu();
@@ -320,12 +320,12 @@ void PaintWindow::open_load_menu()
 	};
 	{
 		std::vector<std::string> files = ISerializable::list_dir("paint");
-		load_menu.options.clear();
+		_load_menu.options.clear();
 		for (int i = 0; i < files.size(); i++) {
-			load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
+			_load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
 		}
-		WindowManager::get_instance()->add_window(&load_menu);
-		load_menu.create_menu();
+		WindowManager::get_instance()->add_window(&_load_menu);
+		_load_menu.create_menu();
 	}
 }
 

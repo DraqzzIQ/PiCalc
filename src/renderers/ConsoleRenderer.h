@@ -17,10 +17,10 @@ class ConsoleRenderer: public IRenderer
 	ConsoleRenderer();
 
 	/// <summary>
-	/// renders the given pixels to the console
+	/// renders the given frame to the console
 	/// </summary>
-	/// <param name="pixels">pixels to render</param>
-	void render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender);
+	/// <param name="frame">frame to render</param>
+	void render(const Frame& frame, bool force_rerender);
 
 	private:
 	/// <summary>

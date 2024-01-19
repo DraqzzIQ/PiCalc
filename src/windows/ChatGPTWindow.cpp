@@ -22,7 +22,7 @@ void ChatGPTWindow::request(std::string query)
 
 	if (res.error()) {
 		add_text("error: " + res.error_msg, true, true, false);
-		text.push_back("");
+		_text.push_back("");
 		return;
 	}
 	std::cout << std::endl
@@ -30,7 +30,7 @@ void ChatGPTWindow::request(std::string query)
 			  << res.body << std::endl;
 
 	add_text(extract_answer(res.body), true, true, false);
-	text.push_back("");
+	_text.push_back("");
 }
 
 void ChatGPTWindow::on_return_key()

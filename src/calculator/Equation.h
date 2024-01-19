@@ -133,11 +133,11 @@ class Equation
 	/// </summary>
 	CursorPositionData _cursor_data;
 	/// <summary>
-	/// stores the complete raw rendered equatíon
+	/// stores the complete raw rendered equatï¿½on
 	/// </summary>
 	Bitset2D _rendered_equation;
 	/// <summary>
-	/// stores the complete raw rendered equatíon with the cursor added
+	/// stores the complete raw rendered equatï¿½on with the cursor added
 	/// </summary>
 	Bitset2D _rendered_equation_cursor;
 	/// <summary>
@@ -153,11 +153,11 @@ class Equation
 	/// </summary>
 	uint32_t _render_index;
 	/// <summary>
-	/// bool keeping track of wether to show the cursor or not (in 0.5s intervals)
+	/// stores wether the cursor is blinking or not
 	/// </summary>
 	bool _show_cursor = true;
 	/// <summary>
-	/// stores wether the cursor is blinking or not
+	/// bool keeping track of wether to show the cursor or not (in 0.5s intervals)
 	/// </summary>
 	bool _cursor_active = true;
 	/// <summary>

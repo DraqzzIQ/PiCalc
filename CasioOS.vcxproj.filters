@@ -129,6 +129,9 @@
     <ClInclude Include="src\windows\ChatGPTWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\windows\ChatWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\windows\PongWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -141,6 +144,9 @@
     <ClInclude Include="src\windows\InputWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\windows\NotesWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\options\CallbackMenuOption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -151,6 +157,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\io\PaintingSerializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+     <ClInclude Include="src\io\NoteSerializable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -248,6 +257,9 @@
     <ClCompile Include="src\windows\ChatGPTWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\windows\ChatWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\windows\PongWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -260,6 +272,9 @@
     <ClCompile Include="src\windows\InputWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+     <ClCompile Include="src\windows\NotesWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\io\ISerializable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -267,6 +282,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\io\PaintingSerializable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\NoteSerializable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

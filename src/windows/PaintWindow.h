@@ -15,7 +15,7 @@ class PaintWindow: public Window
 	public:
 	PaintWindow();
 	~PaintWindow();
-	Bitset2D update_window() override;
+	Frame update_window() override;
 	bool handle_key_down(KeyPress keypress) override;
 
 	private:
@@ -30,7 +30,7 @@ class PaintWindow: public Window
 	Tool _tool = Tool::NONE;
 	bool _erase = false;
 
-	MenuWindow load_menu = MenuWindow();
+	MenuWindow _load_menu = MenuWindow();
 
 	void open_load_menu();
 	void open_save_menu();

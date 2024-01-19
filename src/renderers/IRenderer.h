@@ -1,6 +1,7 @@
 #pragma once
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
+#include "datastructs/Frame.h"
 #include <stddef.h>
 
 /// <summary>
@@ -12,16 +13,16 @@ class IRenderer
 	IRenderer();
 	virtual ~IRenderer(){};
 	/// <summary>
-	/// renders the given pixels
+	/// renders the given frame
 	/// </summary>
-	/// <param name="pixels">pixels to render</param>
-	virtual void render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender) = 0;
+	/// <param name="frame">frame to render</param>
+	virtual void render(const Frame& frame, bool force_rerender) = 0;
 	/// <summary>
-	/// checks if pixels to render are the same as currently rendered
+	/// checks if frame to render is the same as currently rendered
 	/// </summary>
-	/// <param name="pixels">pixels to render</param>
+	/// <param name="frame">frame to check</param>
 	/// <returns>true if same else false</returns>
-	bool already_rendered(const Bitset2D& pixels, const DynamicBitset& screen_symbols);
+	bool already_rendered(const Frame& frame);
 
 	/// <summary>
 	/// holds all renderers
@@ -30,11 +31,7 @@ class IRenderer
 
 	private:
 	/// <summary>
-	/// currently rendered pixels
+	/// currently rendered frame
 	/// </summary>
-	Bitset2D rendered_pixels;
-	/// <summary>
-	/// currently rendered symbols
-	/// </summary>
-	DynamicBitset rendered_screen_symbols;
+	Frame _rendered_frame;
 };

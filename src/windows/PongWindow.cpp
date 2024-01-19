@@ -8,9 +8,9 @@ PongWindow::PongWindow()
 
 PongWindow::~PongWindow() {}
 
-Bitset2D PongWindow::update_window()
+Frame PongWindow::update_window()
 {
-	return Bitset2D();
+	return Frame();
 }
 
 bool PongWindow::handle_key_down(KeyPress keypress)

@@ -494,7 +494,7 @@ const std::vector<std::string> Chars::KEY_MAP = {
 	"CONV40",
 	"ON",
 	"nextVal",
-	"symbolEnd"
+	"symbolEnd",
 	"newline",
 	"dark0",
 	"dark1",

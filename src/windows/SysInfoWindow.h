@@ -1,12 +1,12 @@
 #pragma once
-#include "windows/TextWindow.h"
 #include "utils/Utils.h"
+#include "windows/TextWindow.h"
 
 class SysInfoWindow: public TextWindow
 {
 	public:
 	SysInfoWindow();
-	Bitset2D update_window();
+	Frame update_window();
 
 	private:
 };

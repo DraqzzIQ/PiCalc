@@ -11,7 +11,7 @@ class InputWindow: public Window
 		std::string promt,
 		std::function<void(std::string)> callback);
 	~InputWindow();
-	Bitset2D update_window();
+	Frame update_window();
 	bool handle_key_down(KeyPress keypress);
 
 	static void input(std::string prompt, std::function<void(std::string)> callback);

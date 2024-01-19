@@ -10,7 +10,7 @@ class PongWindow: public Window
 	public:
 	PongWindow();
 	~PongWindow();
-	Bitset2D update_window();
+	Frame update_window();
 	bool handle_key_down(KeyPress keypress);
 
 	private:

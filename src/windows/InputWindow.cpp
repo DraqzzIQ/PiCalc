@@ -12,18 +12,18 @@ InputWindow::~InputWindow()
 {
 }
 
-Bitset2D InputWindow::update_window()
+Frame InputWindow::update_window()
 {
 	clear_window();
 	add_to_window(Graphics::create_text(_prompt), 1, 1);
 	add_to_window(Graphics::create_text(_input), 1, 15);
-	Bitset2D rendered = add_cursor(window);
-	return rendered;
+	Bitset2D rendered = add_cursor(_window);
+	return Frame(rendered, _screen_symbols);
 }
 bool InputWindow::handle_key_down(KeyPress keypress)
 {
 	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
-	if (key == "ceil") {
+	if (key == "RETURN") {
 		if (_input.length() > 0) {
 			WindowManager::get_instance()->close_window(false);
 			_callback(_input);

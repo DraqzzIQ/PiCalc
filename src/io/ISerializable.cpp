@@ -1,5 +1,9 @@
 #include "io/ISerializable.h"
 
+ISerializable::~ISerializable()
+{
+}
+
 void ISerializable::write_file(std::string dir, std::string filename)
 {
 	std::vector<uint8_t> bytes = searialize();
