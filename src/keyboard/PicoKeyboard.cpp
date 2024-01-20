@@ -93,7 +93,7 @@ KEY PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
 	case 26: return Chars::CHAR_TO_KEYCODE.at("6");
 	case 27: return Chars::CHAR_TO_KEYCODE.at("3");
 	case 28: return Chars::CHAR_TO_KEYCODE.at("*10^n");
-	case 30: return Chars::CHAR_TO_KEYCODE.at("right");
+	case 30: return Chars::CHAR_TO_KEYCODE.at("up");
 	case 31: return Chars::CHAR_TO_KEYCODE.at("x^-1");
 	case 32: return Chars::CHAR_TO_KEYCODE.at("x^n");
 	case 33: return Chars::CHAR_TO_KEYCODE.at("sin");
@@ -102,7 +102,7 @@ KEY PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
 	case 36: return Chars::CHAR_TO_KEYCODE.at("multiply");
 	case 37: return Chars::CHAR_TO_KEYCODE.at("+");
 	case 38: return Chars::CHAR_TO_KEYCODE.at("Ans");
-	case 40: return Chars::CHAR_TO_KEYCODE.at("up");
+	case 40: return Chars::CHAR_TO_KEYCODE.at("right");
 	case 41: return Chars::CHAR_TO_KEYCODE.at("logn");
 	case 42: return Chars::CHAR_TO_KEYCODE.at("log10");
 	case 43: return Chars::CHAR_TO_KEYCODE.at("cos");

@@ -8,12 +8,12 @@ ContrastWindow::ContrastWindow():
 
 bool ContrastWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == 169) {
+	if (keypress.key_raw == 170) {
 		uint8_t contrast = get_contrast();
 		if (contrast > 0) set_contrast(contrast - 1);
 		render();
 		return true;
-	} else if (keypress.key_raw == 170) {
+	} else if (keypress.key_raw == 169) {
 		uint8_t contrast = get_contrast();
 		if (contrast < 30) set_contrast(contrast + 1);
 		render();
