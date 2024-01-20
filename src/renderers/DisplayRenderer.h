@@ -64,7 +64,7 @@ class DisplayRenderer: public IRenderer
 	/// <summary>
 	/// current contrast of the display
 	/// </summary>
-	uint8_t _contrast = 20;
+	uint8_t _contrast = 14;
 
 	const std::vector<uint8_t> screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
 };
