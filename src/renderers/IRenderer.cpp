@@ -17,3 +17,12 @@ bool IRenderer::already_rendered(const Frame& frame)
 	}
 	return true;
 }
+
+void IRenderer::set_contrast(uint8_t value)
+{
+}
+
+uint8_t IRenderer::get_contrast()
+{
+	return 255;
+}

@@ -63,17 +63,22 @@ class Window
 	/// </summary>
 	DynamicBitset _screen_symbols;
 	/// <summary>
-	/// extracts the part of the window that is rendered wich is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
+	/// extracts the part of the window that is rendered which is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 	/// </summary>
 	/// <returns>canvas to render</returns>
 	Bitset2D get_render_canvas();
 	/// <summary>
 	/// adds a graphic in form of a Bitset2D (like text) at given coordinates to the screen
 	/// </summary>
-	/// <param name="renderplane"></param>
-	/// <param name="corner_x"></param>
-	/// <param name="corner_y"></param>
 	void add_to_window(const Bitset2D& graphic, int corner_x, int corner_y);
+	/// <summary>
+	/// put text on the screen
+	/// </summary>
+	void put_text(KEY_SET text, FONT font, int corner_x, int corner_y);
+	/// <summary>
+	/// put text on the screen
+	/// </summary>
+	void put_text(std::string text, FONT font, int corner_x, int corner_y);
 	/// <summary>
 	/// clears the window
 	/// </summary>

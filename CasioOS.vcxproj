@@ -46,6 +46,7 @@
     <ClInclude Include="src\utils\I2CUtils.h" />
     <ClInclude Include="src\utils\Utils.h" />
     <ClInclude Include="src\windows\CalculatorWindow.h" />
+    <ClInclude Include="src\windows\ContrastWindow.h" />
     <ClInclude Include="src\windows\InstanceSelectionWindow.h" />
     <ClInclude Include="src\windows\MainMenuWindow.h" />
     <ClInclude Include="src\windows\MenuWindow.h" />
@@ -96,11 +97,10 @@
     <ClCompile Include="src\utils\I2CUtils.cpp" />
     <ClCompile Include="src\utils\Utils.cpp" />
     <ClCompile Include="src\windows\CalculatorWindow.cpp" />
+    <ClCompile Include="src\windows\ContrastWindow.cpp" />
     <ClCompile Include="src\windows\InstanceSelectionWindow.cpp" />
-    <ClCompile Include="src\windows\MainMenuWindow.cpp" />
     <ClCompile Include="src\windows\MenuWindow.cpp" />
     <ClCompile Include="src\windows\PongWindow.cpp" />
-    <ClCompile Include="src\windows\SettingsWindow.cpp" />
     <ClCompile Include="src\windows\SysInfoWindow.cpp" />
     <ClCompile Include="src\windows\TextWindow.cpp" />
     <ClCompile Include="src\windows\Window.cpp" />

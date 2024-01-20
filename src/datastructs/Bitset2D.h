@@ -80,9 +80,13 @@ class Bitset2D
 	Bitset2D& copy(uint32_t x_start, uint32_t y_start, uint32_t width, uint32_t height, Bitset2D& destination) const;
 
 	/// <summary>
-	/// put a string (vector of Keys) on the Bitset2D starting at coord_x, coord_y
+	/// put a KEY_SET on the Bitset2D starting at coord_x, coord_y
 	/// </summary>
 	void put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, KEY_SET text, bool resize_if_needed);
+	/// <summary>
+	/// put a string on the Bitset2D starting at coord_x, coord_y
+	/// </summary>
+	void put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, std::string text, bool resize_if_needed);
 	/// <summary>
 	/// Overwrite the Bitset2D with other placed on the position coord_x, coord_y
 	/// </summary>

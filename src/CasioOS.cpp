@@ -18,7 +18,6 @@
 #include "keyboard/SDLKeyboard.h"
 #endif
 
-
 IKeyboard* keyboard;
 WindowManager* window_manager;
 MenuWindow* main_menu;
@@ -40,6 +39,7 @@ void start_main_thread()
 int main(int argc, char* argv[])
 {
 #ifdef PICO
+	// GPIO 28 must be turned on for the pico to get power
 	gpio_init(28);
 	gpio_set_dir(28, GPIO_OUT);
 	gpio_put(28, 1);

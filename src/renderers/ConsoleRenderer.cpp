@@ -44,7 +44,7 @@ void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
 	for (uint32_t i = 0; i < SCREEN_HEIGHT; i++) {
 		out += "# ";
 		for (uint32_t j = 0; j < SCREEN_WIDTH; j++) {
-			if (frame.pixels.at(j)[i]) out += '\xFE';
+			if (frame.pixels.get_bit(j, i)) out += '\xFE';
 			else out += " ";
 			out += " ";
 		}

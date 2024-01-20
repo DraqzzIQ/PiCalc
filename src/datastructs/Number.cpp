@@ -1,5 +1,10 @@
 #include "Number.h"
 
+// TODO:
+// -output periodic numbers
+// -simplify
+// -only format Decimal to fraction at the end
+
 Number::Number()
 {
 	_value = 0;

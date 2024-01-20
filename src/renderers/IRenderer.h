@@ -18,6 +18,14 @@ class IRenderer
 	/// <param name="frame">frame to render</param>
 	virtual void render(const Frame& frame, bool force_rerender) = 0;
 	/// <summary>
+	/// sets the contrast of the display on the pico, does nothing on other platforms
+	/// </summary>
+	virtual void set_contrast(uint8_t value);
+	/// <summary>
+	/// returns the current contrast of the display on the pico, returns 255 on other platforms
+	/// </summary>
+	virtual uint8_t get_contrast();
+	/// <summary>
 	/// checks if frame to render is the same as currently rendered
 	/// </summary>
 	/// <param name="frame">frame to check</param>

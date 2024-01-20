@@ -22,6 +22,15 @@ class DisplayRenderer: public IRenderer
 	/// </summary>
 	/// <param name="frame">frame to render</param>
 	void render(const Frame& frame, bool force_rerender);
+	/// <summary>
+	/// sets the contrast of the lcd
+	/// </summary>
+	/// <param name="value">0-127</param>
+	void set_contrast(uint8_t value);
+	/// <summary>
+	/// get the current contrast of the lcd
+	/// </summary>
+	void get_contrast();
 
 	private:
 	/// <summary>
@@ -49,15 +58,14 @@ class DisplayRenderer: public IRenderer
 	/// </summary>
 	uint8_t load_x_address(uint8_t column_address, uint8_t command_following);
 	/// <summary>
-	/// sets the contrast of the lcd
-	/// </summary>
-	/// <param name="value">0-127</param>
-	void set_contrast(uint8_t value);
-	/// <summary>
 	/// reverses the bits in a byte
 	/// </summary>
 	uint8_t reverse_byte(uint8_t b);
+	/// <summary>
+	/// current contrast of the display
+	/// </summary>
+	uint8_t _contrast = 20;
 
-	const std::vector<uint8_t> screen_symbol_positions{3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93};
+	const std::vector<uint8_t> screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
 };
 #endif

@@ -19,12 +19,21 @@ class Graphics
 
 	/// <summary>
 	/// creates a Bitset2D text from string
+	/// DEPRECATED: use Bitset2D::put_chars instead
 	/// </summary>
 	/// <param name="text">text to be transformed</param>
 	/// <param name="table">charset to be used</param>
 	/// <param name="spacing">spacing between each char</param>
 	/// <returns>converted text</returns>
 	static Bitset2D create_text(const std::string& text, FONT& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
+	/// <summary>
+	/// creates a Bitset2D text from KEY_SET
+	/// DEPRECATED: use Bitset2D::put_chars instead
+	/// </summary>
+	/// <param name="text">text to be transformed</param>
+	/// <param name="table">charset to be used</param>
+	/// <param name="spacing">spacing between each char</param>
+	/// <returns>converted text</returns>
 	static Bitset2D create_text(const KEY_SET text, FONT& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
 
 	static const Bitset2D EMPTY_SCREEN;

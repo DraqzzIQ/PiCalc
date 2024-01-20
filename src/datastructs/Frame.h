@@ -13,5 +13,7 @@ struct Frame {
 	}
 	Frame()
 	{
+		this->pixels = Bitset2D();
+		this->screen_symbols = DynamicBitset();
 	}
 };

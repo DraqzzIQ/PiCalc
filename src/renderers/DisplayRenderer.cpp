@@ -5,7 +5,7 @@ DisplayRenderer::DisplayRenderer()
 {
 	Utils::sleep_for_ms(1);
 	clear();
-	set_contrast(0);
+	set_contrast(_contrast);
 }
 
 void DisplayRenderer::render(const Frame& frame, bool force_rerender)
@@ -43,6 +43,20 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 	i2c_write_blocking(i2c_default, LCD_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
 }
 
+void DisplayRenderer::set_contrast(uint8_t value)
+{
+	_contrast = value;
+	uint8_t command[2];
+	command[0] = POT_REGISTER_ADDRESS;
+	command[1] = value;
+	i2c_write_blocking(i2c_default, POT_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
+}
+
+uint8_t DisplayRenderer::get_contrast()
+{
+	return _contrast;
+}
+
 uint8_t DisplayRenderer::reverse_byte(uint8_t b)
 {
 	b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
@@ -72,13 +86,5 @@ uint8_t DisplayRenderer::ram_access(uint8_t access_mode, uint8_t row_address, ui
 uint8_t DisplayRenderer::load_x_address(uint8_t column_address, uint8_t command_following)
 {
 	return command_following + LOAD_X_ADDRESS + column_address;
-}
-
-void DisplayRenderer::set_contrast(uint8_t value)
-{
-	uint8_t command[2];
-	command[0] = POT_REGISTER_ADDRESS;
-	command[1] = value;
-	i2c_write_blocking(i2c_default, POT_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
 }
 #endif

@@ -78,10 +78,11 @@ class DynamicBitset
 	/// <summary>
 	/// copy width bits starting at start to another DynamicBitset
 	/// </summary>
-	/// <param name="start"></param>
-	/// <param name="width"></param>
-	/// <returns></returns>
 	DynamicBitset copy(uint32_t start, uint32_t width) const;
+	/// <summary>
+	/// copy width bits starting at start to another DynamicBitset, but doesn't check for out of bounds => faster for Bitset2D
+	/// </summary>
+	DynamicBitset copy_unsafe(uint32_t start, uint32_t width) const;
 
 	/// <summary>
 	/// Sets the bit at index to value.

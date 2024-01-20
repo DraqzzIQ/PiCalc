@@ -1,7 +1,7 @@
 #pragma once
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
-#include "options/WindowMenuOption.h"
+#include "options/MenuOptionBase.h"
 #include "windows/Window.h"
 #include "windows/WindowManager.h"
 #include <cmath>

@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{43e15007-1338-4650-a1ab-328dc38c761f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\constant\Chars.h">
@@ -75,13 +78,7 @@
     <ClInclude Include="src\windows\InstanceSelectionWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\windows\MainMenuWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\windows\MenuWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\windows\SettingsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\windows\SysInfoWindow.h">
@@ -159,7 +156,25 @@
     <ClInclude Include="src\io\PaintingSerializable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-     <ClInclude Include="src\io\NoteSerializable.h">
+    <ClInclude Include="src\io\NoteSerializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\datastructs\Frame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http\PicoHttpClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\SDCardController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\ContrastWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\SettingsWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\MainMenuWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -215,13 +230,7 @@
     <ClCompile Include="src\windows\InstanceSelectionWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\windows\MainMenuWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\windows\MenuWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\windows\SettingsWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\SysInfoWindow.cpp">
@@ -272,7 +281,7 @@
     <ClCompile Include="src\windows\InputWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-     <ClCompile Include="src\windows\NotesWindow.cpp">
+    <ClCompile Include="src\windows\NotesWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\io\ISerializable.cpp">
@@ -285,6 +294,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\io\NoteSerializable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http\PicoHttpClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\SDCardController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\ContrastWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
