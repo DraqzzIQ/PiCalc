@@ -30,7 +30,7 @@ class DisplayRenderer: public IRenderer
 	/// <summary>
 	/// get the current contrast of the lcd
 	/// </summary>
-	void get_contrast();
+	uint8_t get_contrast();
 
 	private:
 	/// <summary>
