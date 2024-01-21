@@ -87,6 +87,7 @@ KEY IKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
 		case 127: return Chars::CHAR_TO_KEYCODE.at(".");
 		case 128: return Chars::CHAR_TO_KEYCODE.at(" ");
 		case 73: return Chars::CHAR_TO_KEYCODE.at("RETURN");
+		case 125: return Chars::CHAR_TO_KEYCODE.at("DEL");
 		}
 	}
 	return Chars::CHAR_TO_KEYCODE.at("unknown");
