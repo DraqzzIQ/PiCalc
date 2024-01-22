@@ -40,6 +40,10 @@ class Number
 	/// copy other to this
 	/// </summary>
 	Number* operator=(const Number* other);
+	/// <summary>
+	/// create a Number from a KEY
+	/// </summary>
+	static Number* from_key(KEY key);
 
 	/// <summary>
 	/// add other to this

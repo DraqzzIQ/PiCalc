@@ -57,18 +57,11 @@ class Decimal
 	Decimal& operator%=(Decimal other);
 	Decimal& operator^=(Decimal other);
 
-	bool add_if_exact(Decimal other);
-	bool subtract_if_exact(Decimal other);
-	bool multiply_if_exact(Decimal other);
-	bool divide_if_exact(Decimal other);
-	bool pow_if_exact(Decimal other);
-
 	Decimal& ln();
-	Decimal& log(const Decimal& other);
+	Decimal& log(Decimal other);
 	Decimal& exp();
-	Decimal& pow(const Decimal& other);
 	Decimal& sqrt();
-	Decimal& root(const Decimal& other);
+	Decimal& root(Decimal other);
 	Decimal& factorial();
 
 	Decimal& sin();
@@ -93,10 +86,16 @@ class Decimal
 	Decimal& ran();
 	Decimal& ran_int(Decimal start, Decimal end);
 
+	/// <summary>
+	/// turns the value into a KEY_SET and appends it to res
+	/// </summary>
+	/// <param name="res"></param>
 	void value_to_key_set(KEY_SET& res) const;
+	/// <summary>
+	/// turns the exponent into a KEY_SET and appends it to res
+	/// </summary>
+	/// <param name="res"></param>
 	void exp_to_key_set(KEY_SET& res) const;
-	KEY_SET to_key_set_fix(uint8_t fix) const;
-	KEY_SET to_key_set_sci(uint8_t sci) const;
 	/// <summary>
 	/// returns a KEY_SET representing the decimal
 	/// </summary>
@@ -106,9 +105,18 @@ class Decimal
 	/// <returns></returns>
 	KEY_SET to_key_set(uint8_t max_size) const;
 
+	/// <summary>
+	/// approximation of pi
+	/// </summary>
 	static const Decimal PI;
+	/// <summary>
+	/// approximation of e
+	/// </summary>
 	static const Decimal EULER;
-
+	/// <summary>
+	/// approximation of ln(10)
+	/// </summary>
+	static const Decimal LN10;
 	/// <summary>
 	/// contains all values for 10^n with n from 0 to 18
 	/// </summary>
@@ -142,6 +150,10 @@ class Decimal
 	/// maximize the exponent as much as possible without loosing precision
 	/// </summary>
 	void maximize_exp() const;
+	/// <summary>
+	/// add other to this while adding the next digit to error if necessary and returning whether the value or error changed
+	/// </summary>
+	bool add_changed(Decimal other);
 	uint8_t exp_count_digits() const;
 
 	/// <summary>
