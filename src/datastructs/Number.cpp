@@ -396,7 +396,7 @@ Decimal Number::to_value() const
 			res = _children[0]->to_value().sqrt();
 			break;
 		case 113:
-			res = _children[0]->to_value().pow(_children[1]->to_value());
+			res = _children[0]->to_value() ^= _children[1]->to_value();
 			break;
 		case 115:
 			res = _children[0]->to_value().ln();
