@@ -1,4 +1,5 @@
 #pragma once
+#include "threading/Threading.h"
 #include "windows/ChatWindow.h"
 #ifdef PICO
 #include <http/PicoHttpClient.h>

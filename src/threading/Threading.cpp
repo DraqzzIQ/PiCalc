@@ -1,5 +1,21 @@
-#include "Threading.h"
+#include "threading/Threading.h"
 
+Threading* Threading::_instance = nullptr;
+
+Threading* Threading::get_instance()
+{
+	if (!_instance)
+		_instance = new Threading();
+
+	return _instance;
+}
+
+Threading::Threading()
+{
+#ifdef PICO
+	queue_init(&_queue, sizeof(Thread), 5);
+#endif
+}
 
 void Threading::run()
 {
@@ -10,13 +26,11 @@ void Threading::run()
 #else
 		thread = _queue.pop();
 #endif
-
 		thread.task();
-        
 	}
 }
 
-void Threading::enqueue_thread(Thread thread);
+void Threading::enqueue_thread(Thread thread)
 {
 #ifdef PICO
 	queue_add_blocking(&_queue, &thread);

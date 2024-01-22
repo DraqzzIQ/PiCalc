@@ -25,9 +25,6 @@ void ChatGPTWindow::request(std::string query)
 		_text.push_back("");
 		return;
 	}
-	std::cout << std::endl
-			  << std::endl
-			  << res.body << std::endl;
 
 	add_text(extract_answer(res.body), true, true, false);
 	_text.push_back("");
@@ -35,7 +32,7 @@ void ChatGPTWindow::request(std::string query)
 
 void ChatGPTWindow::on_return_key()
 {
-	request(_input);
+	Threading::get_instance()->enqueue_thread({ std::bind(&ChatGPTWindow::request, this, _input) });
 }
 
 

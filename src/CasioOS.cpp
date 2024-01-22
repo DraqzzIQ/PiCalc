@@ -2,6 +2,7 @@
 #include "keyboard/IKeyboard.h"
 #include "renderers/ConsoleRenderer.h"
 #include "renderers/IRenderer.h"
+#include "threading/Threading.h"
 #include "utils/Utils.h"
 #include "windows/MainMenuWindow.h"
 #include "windows/WindowManager.h"
@@ -27,6 +28,16 @@ MenuWindow* main_menu;
 /// </summary>
 void start_main_thread()
 {
+#ifdef PICO
+	multicore_launch_core1([]() {
+		Threading::get_instance()->run();
+	});
+#else
+	std::thread t([]() {
+		Threading::get_instance()->run();
+	});
+	t.detach();
+#endif
 	while (1) {
 		keyboard->check_for_keyboard_presses();
 		window_manager->update();
