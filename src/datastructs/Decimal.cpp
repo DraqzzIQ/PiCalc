@@ -22,8 +22,9 @@ const int64_t Decimal::powers_of_ten[] = {
 	1000000000000000000
 };
 
-const Decimal Decimal::PI(314159265358979323, -17);
-const Decimal Decimal::EULER(271828182845904523, -17);
+const Decimal Decimal::PI(314159265358979324, -17);
+const Decimal Decimal::EULER(271828182845904524, -17);
+const Decimal Decimal::LN10(230258509299404568, -17);
 
 
 Decimal::Decimal()
@@ -204,38 +205,39 @@ Decimal& Decimal::operator+=(Decimal other)
 	// if the exponents are not equal: make them equal by shifting the commas and changing the exponents
 	// this is done by shifting the bigger value to the left until the exponents are equal, if no more
 	// shifting is possible, shift the smaller value to the right until the exponents are equal
+	// other._exp is used to store the difference between the exponents as it is not needed anymore
 	if (other._exp > _exp) {
-		uint16_t diff = other._exp - _exp;
+		other._exp -= _exp;
 
-		// test if the the bigger value can be shifted enough to the left to compensate the difference in exponents
-		if (diff < DECIMAL_VALUE_PRECISION && std::abs(other._val) < powers_of_ten[DECIMAL_VALUE_PRECISION - diff]) {
-			other._val *= powers_of_ten[diff];
+		// test if the the bigger value can be shifted enough to the left to compensate the other._experence in exponents
+		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(other._val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
+			other._val *= powers_of_ten[other._exp];
 		} else {
 			// when it can't be shifted enough, shift it as much as possible and shift the smaller value to the right
 			uint8_t max_shift = DECIMAL_VALUE_PRECISION - count_digits(other._val);
 			other._val *= powers_of_ten[max_shift];
-			diff -= max_shift;
+			other._exp -= max_shift;
 
-			if (diff > DECIMAL_VALUE_PRECISION) _val = 0;
-			else shift_right(_val, diff);
-			_exp += diff;
+			if (other._exp > DECIMAL_VALUE_PRECISION) _val = 0;
+			else shift_right(_val, other._exp);
+			_exp += other._exp;
 		}
 	} else if (other._exp < _exp) {
-		uint16_t diff = _exp - other._exp;
+		other._exp = _exp - other._exp;
 
-		// test if the the bigger value can be shifted enough to the left to compensate the difference in exponents
-		if (diff < DECIMAL_VALUE_PRECISION && std::abs(_val) < powers_of_ten[DECIMAL_VALUE_PRECISION - diff]) {
-			_val *= powers_of_ten[diff];
-			_exp -= diff;
+		// test if the the bigger value can be shifted enough to the left to compensate the other._experence in exponents
+		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(_val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
+			_val *= powers_of_ten[other._exp];
+			_exp -= other._exp;
 		} else {
 			// when it can't be shifted enough, shift it as much as possible and shift the smaller value to the right
 			uint8_t shift = DECIMAL_VALUE_PRECISION - count_digits(_val);
 			_val *= powers_of_ten[shift];
 			_exp -= shift;
 
-			diff -= shift;
-			if (diff > DECIMAL_VALUE_PRECISION) other._val = 0;
-			else shift_right(other._val, diff);
+			other._exp -= shift;
+			if (other._exp > DECIMAL_VALUE_PRECISION) other._val = 0;
+			else shift_right(other._val, other._exp);
 		}
 	}
 
@@ -268,6 +270,12 @@ Decimal& Decimal::operator*=(Decimal other)
 	// => multiply values and add exponents
 	maximize_exp();
 	other.maximize_exp();
+
+	if (_val == 0 || other._val == 0) {
+		_val = 0;
+		_exp = 0;
+		return *this;
+	}
 
 	// test if the value can be multiplied without overflow
 	int64_t test = _val * other._val;
@@ -430,142 +438,75 @@ Decimal& Decimal::operator%=(Decimal other)
 
 Decimal& Decimal::operator^=(Decimal other)
 {
+	ln();
+	operator*=(other);
+	exp();
+	shift_right(_val, 2);
+	_exp += 2;
 	return *this;
-}
-
-bool Decimal::add_if_exact(Decimal other)
-{
-	if (_val == 0) {
-		_val = other._val;
-		_exp = other._exp;
-		return true;
-	}
-	if (other._val == 0) return true;
-
-	maximize_exp();
-	other.maximize_exp();
-	if (other._exp > _exp) {
-		other._exp -= _exp;
-		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(other._val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
-			other._val *= powers_of_ten[other._exp];
-		} else return false;
-	} else if (other._exp < _exp) {
-		other._exp = _exp - other._exp;
-		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(_val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
-			_val *= powers_of_ten[other._exp];
-			_exp -= other._exp;
-		} else return false;
-	}
-
-	_val += other._val;
-	maximize_exp();
-	if (std::abs(_val) > DECIMAL_VALUE_MAX) {
-		_val -= other._val;
-		return false;
-	}
-	return true;
-}
-
-bool Decimal::subtract_if_exact(Decimal other)
-{
-	return add_if_exact(other.negate());
-}
-
-bool Decimal::multiply_if_exact(Decimal other)
-{
-	maximize_exp();
-	other.maximize_exp();
-
-	// test if the value can be multiplied without overflow
-	int64_t test = _val * other._val;
-	if (test / other._val != _val) return false;
-	if (std::abs(test) > DECIMAL_VALUE_MAX) {
-		_exp++;
-		if (std::abs(_exp) > DECIMAL_EXP_MAX) return false;
-		if (test % 10 != 0) return false;
-		test /= 10;
-	} else if (std::abs(_exp) > DECIMAL_EXP_MAX) {
-		uint8_t shift = DECIMAL_EXP_PRECISION - count_digits(_val);
-		if (_exp > DECIMAL_EXP_MAX + shift) return false;
-		shift_right(_val, _exp - DECIMAL_EXP_MAX);
-		_exp = DECIMAL_EXP_MAX;
-	}
-	_val = test;
-	_exp += other._exp;
-	return true;
-}
-
-bool Decimal::divide_if_exact(Decimal other)
-{
-	if (other._val == 0) {
-		Error::throw_error(Error::ErrorType::MATH_ERROR);
-		return false;
-	}
-	if (other._val >= powers_of_ten[17]) {
-		shift_right_one(other._val);
-		other._exp++;
-	}
-
-	int64_t res = _val / other._val;
-	_val %= other._val;
-	if (_val != 0) {
-		while (true) {
-			uint8_t shift = DECIMAL_VALUE_PRECISION - count_digits(_val);
-			_val *= powers_of_ten[shift];
-			int64_t div = _val / other._val;
-			_val %= other._val;
-			uint8_t max_shift = DECIMAL_VALUE_PRECISION - count_digits(res);
-			if (shift > max_shift) {
-				if (_val != 0 || div % powers_of_ten[shift - max_shift] != 0) return false;
-				div /= shift - max_shift;
-				res *= powers_of_ten[max_shift];
-				res += div;
-				_exp -= max_shift;
-				break;
-			}
-			res *= powers_of_ten[shift];
-			res += div;
-			_exp -= shift;
-			if (_val == 0) break;
-		}
-	}
-	_val = res;
-	_exp -= other._exp;
-	return true;
-}
-
-bool Decimal::pow_if_exact(Decimal other)
-{
-	return false;
 }
 
 Decimal& Decimal::ln()
 {
-	return *this;
+	// TODO: make this slightly bigger than 1
+	// https://math.stackexchange.com/questions/977586/is-there-an-approximation-to-the-natural-log-function-at-large-values/977836#977836
+	if (_val <= 0) {
+		std::cout << "Error: Logarithm of a negative number" << std::endl;
+		return *this;
+	}
+
+	// TODO: store error (Khan sum)
+
+	uint8_t exp = count_digits(_val) - 1;
+	Decimal y = Decimal(_val - powers_of_ten[exp]) / Decimal(_val + powers_of_ten[exp]);
+	exp += _exp;
+	Decimal top = y;
+	operator=(y);
+	y *= y;
+
+	for (uint8_t i = 3; add_changed((top *= y) / i); i += 2) {}
+	operator*=(2);
+	operator+=(Decimal(exp) * LN10);
 }
 
-Decimal& Decimal::log(const Decimal& other)
+Decimal& Decimal::log(Decimal other)
 {
+	ln();
+	other.ln();
+	operator/=(other);
 	return *this;
 }
 
 Decimal& Decimal::exp()
 {
-	return *this;
-}
+	// if value is too big, throw error
+	if (operator>(Decimal(234172903957494446, -14))) {
+		std::cout << "Error: Decimal overflow" << std::endl;
+		return *this;
+	}
+	// TODO: store error (Khan sum)
 
-Decimal& Decimal::pow(const Decimal& other)
-{
+	// wolfram alpha:
+	// e^(a 10^b) = sum_(k=0)^(infinity) (10^b a)^k/(k!)
+	Decimal fact = 1;
+	Decimal mult = *this;
+	Decimal denom = 1;
+	_val = 1;
+	_exp = 0;
+
+	for (uint16_t i = 1; add_changed((denom *= mult) / (fact *= i)); i++) {}
 	return *this;
 }
 
 Decimal& Decimal::sqrt()
 {
+	operator^=(Decimal(5, -1));
 	return *this;
 }
 
-Decimal& Decimal::root(const Decimal& other)
+Decimal& Decimal::root(Decimal other)
 {
+	operator^=(Decimal(1) / other);
 	return *this;
 }
 
@@ -758,21 +699,6 @@ void Decimal::exp_to_key_set(KEY_SET& res) const
 	std::reverse(begin, res.end());
 }
 
-KEY_SET Decimal::to_key_set_fix(uint8_t fix) const
-{
-	// TODO
-	return to_key_set_sci(fix - _exp);
-}
-
-KEY_SET Decimal::to_key_set_sci(uint8_t sci) const
-{
-	KEY_SET res;
-	uint8_t shift = count_digits(_val);
-
-
-	return res;
-}
-
 KEY_SET Decimal::to_key_set(uint8_t max_size) const
 {
 	KEY_SET res;
@@ -860,6 +786,52 @@ void Decimal::maximize_exp() const
 		_val /= 10;
 		_exp++;
 	}
+}
+
+bool Decimal::add_changed(Decimal other)
+{
+	if (_val == 0) {
+		_val = other._val;
+		_exp = other._exp;
+		return true;
+	}
+	if (other._val == 0) return false;
+
+	if (other._exp > _exp) {
+		other._exp -= _exp;
+		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(other._val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
+			other._val *= powers_of_ten[other._exp];
+		} else {
+			uint8_t max_shift = DECIMAL_VALUE_PRECISION - count_digits(other._val);
+			other._val *= powers_of_ten[max_shift];
+			other._exp -= max_shift;
+
+			if (other._exp > DECIMAL_VALUE_PRECISION) _val = 0;
+			else shift_right(_val, other._exp);
+			_exp += other._exp;
+		}
+	} else if (other._exp < _exp) {
+		other._exp = _exp - other._exp;
+		if (other._exp < DECIMAL_VALUE_PRECISION && std::abs(_val) < powers_of_ten[DECIMAL_VALUE_PRECISION - other._exp]) {
+			_val *= powers_of_ten[other._exp];
+			_exp -= other._exp;
+		} else {
+			uint8_t shift = DECIMAL_VALUE_PRECISION - count_digits(_val);
+			_val *= powers_of_ten[shift];
+			_exp -= shift;
+
+			other._exp -= shift;
+			if (other._exp > DECIMAL_VALUE_PRECISION) return false;
+			else shift_right(other._val, other._exp);
+		}
+	}
+	_val += other._val;
+	if (std::abs(_val) > DECIMAL_VALUE_MAX) {
+		if (_exp == DECIMAL_EXP_MAX) std::cout << "Error: Decimal overflow" << std::endl;
+		_exp++;
+		shift_right_one(_val);
+	}
+	return true;
 }
 
 uint8_t Decimal::exp_count_digits() const

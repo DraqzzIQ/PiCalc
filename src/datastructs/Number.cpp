@@ -13,16 +13,8 @@ Number::Number()
 
 Number::Number(int64_t value, int16_t exp)
 {
-	if (exp >= 0) {
-		_value.set_value(value, exp);
-		_children = std::vector<Number*>();
-	} else {
-		_value.set_key(72);
-		_children = std::vector<Number*>{
-			new Number(value, 0),
-			new Number(1, -exp)
-		};
-	}
+	_value.set_value(value, exp);
+	_children = std::vector<Number*>();
 }
 
 Number::Number(int64_t value, int16_t exp, uint8_t periodic)
@@ -62,22 +54,59 @@ Number* Number::operator=(const Number* other)
 	return this;
 }
 
+Number* Number::from_key(KEY key)
+{
+	Number* number = new Number();
+	number->_value.set_key(key);
+	return number;
+}
+
 Number* Number::add(Number* other)
 {
-	if (!_value.is_key() && !other->_value.is_key()) {
-		_value += other->_value;
-	} else if (_value.get_key() == 69 && other->_value.get_key() == 69) {
-		for (Number* child : other->_children) _children.push_back(child);
-	} else if (_value.get_key() == 69) {
-		_children.push_back(other);
-	} else if (other->_value.get_key() == 69) {
-		_children = std::vector<Number*>{ clone() };
-		for (Number* child : other->_children) _children.push_back(child);
-		_value.set_key(69);
-	} else {
-		_children = std::vector<Number*>{ clone(), other->clone() };
-		_value.set_key(69);
+	// _value is guaranteed to be a key after this
+	if (!_value.is_key()) {
+		if (!other->_value.is_key()) {
+			// both are decimal values
+			_value += other->_value;
+			other = nullptr;
+			return this;
+		} else {
+			// swap this and other
+			Decimal old_value = _value;
+			_value = other->_value;
+			other->_value = old_value;
+			_children = other->_children;
+			other->_children.clear();
+		}
 	}
+
+	if (other->_value.is_key()) {
+		if (other->_value.get_key() == 69) {
+			for (Number* child : other->_children) add(child);
+		} else {
+			_children.push_back(other);
+		}
+	} else {
+		if (_value.get_key() == 69) {
+			for (Number* child : _children) {
+				if (!child->_value.is_key()) {
+					child->_value += other->_value;
+					other = nullptr;
+					return this;
+				} else if (child->_value.get_key() == 72 && !child->_children.at(1)->_value.is_key()) {
+					child->_children.at(1)->add(other);
+					other = nullptr;
+					return this;
+				}
+			}
+			_children.push_back(other);
+		} else if (_value.get_key() == 72 && !_children.at(1)->_value.is_key()) {
+			_children.at(1)->add(other);
+		} else {
+			_children.push_back(other);
+		}
+	}
+
 	other = nullptr;
 	return this;
 }
@@ -128,41 +157,60 @@ Number* Number::mod(Number* other)
 
 Number* Number::ln()
 {
+	_children = std::vector<Number*>{ Number::from_key(165), clone() };
+	_value.set_key(209);
 	return this;
 }
 
 Number* Number::log()
 {
+	_children = std::vector<Number*>{ new Number(1, 1), clone() };
+	_value.set_key(209);
 	return this;
 }
 
 Number* Number::log(Number* other)
 {
+	_children = std::vector<Number*>{ other, clone() };
+	_value.set_key(209);
+	other = nullptr;
 	return this;
 }
 
 Number* Number::exp()
 {
+	_children = std::vector<Number*>{ clone(), Number::from_key(165) };
+	_value.set_key(113);
 	return this;
 }
 
 Number* Number::pow10()
 {
+	_children = std::vector<Number*>{ clone(), new Number(1, 1) };
+	_value.set_key(113);
 	return this;
 }
 
 Number* Number::pow(Number* other)
 {
+	_children = std::vector<Number*>{ clone(), other };
+	_value.set_key(113);
+	other = nullptr;
 	return this;
 }
 
 Number* Number::sqrt()
 {
+	_children = std::vector<Number*>{ new Number(2, 0), clone() };
+	_value.set_key(134);
 	return this;
 }
 
 Number* Number::root(Number* other)
 {
+	_children = std::vector<Number*>{ other, clone() };
+	_value.set_key(134);
+	other = nullptr;
 	return this;
 }
 
