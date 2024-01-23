@@ -13,6 +13,8 @@ class IKeyboard
 	/// checks for keyboard presses
 	/// </summary>
 	virtual void check_for_keyboard_presses() = 0;
+
+	protected:
 	/// <summary>
 	/// checks wether shift is active
 	/// </summary>

@@ -20,6 +20,8 @@ class SDLKeyboard: public IKeyboard
 	/// checks for keyboard presses
 	/// </summary>
 	void check_for_keyboard_presses();
+
+	protected:
 	/// <summary>
 	/// checks wether shift is active
 	/// </summary>
@@ -30,11 +32,6 @@ class SDLKeyboard: public IKeyboard
 	/// </summary>
 	/// <returns>true if pressed else false</returns>
 	bool is_alpha_active();
-	/// <summary>
-	/// checks wether right alt is active
-	/// </summary>
-	/// <returns>true if pressed else false</returns>
-	bool is_ralt_active();
 
 	private:
 	/// <summary>
@@ -65,5 +62,10 @@ class SDLKeyboard: public IKeyboard
 	/// <param name="key">scancode</param>
 	/// <returns>keycode</returns>
 	KEY scancode_to_key_raw(SDL_Event* _event);
+	/// <summary>
+	/// checks wether right alt is active
+	/// </summary>
+	/// <returns>true if pressed else false</returns>
+	bool is_ralt_active();
 };
 #endif
