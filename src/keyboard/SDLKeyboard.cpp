@@ -1,11 +1,16 @@
 #include "keyboard/SDLKeyboard.h"
-#include "SDLKeyboard.h"
 #ifndef PICO
 
 SDLKeyboard::SDLKeyboard():
 	IKeyboard()
 {
 	sdl_init();
+	std::thread t([this]() {
+		while (true) {
+			check_for_keyboard_presses();
+		}
+	});
+	t.detach();
 }
 
 void SDLKeyboard::sdl_init()
@@ -37,7 +42,7 @@ bool SDLKeyboard::is_ralt_active()
 
 void SDLKeyboard::check_for_keyboard_presses()
 {
-	if (SDL_PollEvent(&_event)) {
+	if (SDL_WaitEvent(&_event)) {
 		if (_event.type == SDL_QUIT) {
 			SDL_DestroyWindow(_window);
 			SDL_Quit();

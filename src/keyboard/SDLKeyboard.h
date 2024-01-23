@@ -5,6 +5,7 @@
 #include "windows/WindowManager.h"
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <thread>
 
 /// <summary>
 ///  gets keyboard input from SDL
@@ -19,10 +20,6 @@ class SDLKeyboard: public IKeyboard
 
 	protected:
 	/// <summary>
-	/// checks for keyboard presses
-	/// </summary>
-	void check_for_keyboard_presses();
-	/// <summary>
 	/// checks wether shift is active
 	/// </summary>
 	/// <returns>true if pressed else false</returns>
@@ -34,6 +31,10 @@ class SDLKeyboard: public IKeyboard
 	bool is_alpha_active();
 
 	private:
+	/// <summary>
+	/// checks for keyboard presses
+	/// </summary>
+	void check_for_keyboard_presses();
 	/// <summary>
 	/// SDL window used to get keyboard input
 	/// </summary>
