@@ -500,6 +500,7 @@ Decimal& Decimal::exp()
 
 Decimal& Decimal::sqrt()
 {
+	// optimize
 	operator^=(Decimal(5, -1));
 	return *this;
 }
@@ -658,6 +659,7 @@ Decimal& Decimal::negate()
 
 Decimal& Decimal::ran()
 {
+	// TODO: more digits
 	_exp = -3;
 	_val = Utils::us_since_boot() % 1000;
 	return *this;
@@ -665,6 +667,7 @@ Decimal& Decimal::ran()
 
 Decimal& Decimal::ran_int(Decimal start, Decimal end)
 {
+	// TODO
 	return *this;
 }
 

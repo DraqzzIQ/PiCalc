@@ -20,7 +20,7 @@ class Number
 	/// </summary>
 	Number(int64_t value, int16_t exp);
 	/// <summary>
-	/// create a Number with given value, exponent and periodic digits
+	/// create a Number with given value, exponent and number of periodic digits
 	/// </summary>
 	Number(int64_t value, int16_t exp, uint8_t periodic);
 	/// <summary>

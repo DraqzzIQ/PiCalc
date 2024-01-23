@@ -63,7 +63,7 @@ Number* Number::from_key(KEY key)
 
 Number* Number::add(Number* other)
 {
-	// _value is guaranteed to be a key after this
+	// this is guaranteed to be a key after this
 	if (!_value.is_key()) {
 		if (!other->_value.is_key()) {
 			// both are decimal values
@@ -71,7 +71,7 @@ Number* Number::add(Number* other)
 			other = nullptr;
 			return this;
 		} else {
-			// swap this and other
+			// swap this and other sot that this is a key and other is a decimal value
 			Decimal old_value = _value;
 			_value = other->_value;
 			other->_value = old_value;
