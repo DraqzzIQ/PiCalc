@@ -39,6 +39,7 @@ void start_main_thread()
 	t.detach();
 #endif
 	while (1) {
+		keyboard->check_for_keyboard_presses();
 		window_manager->update();
 	}
 }
@@ -72,7 +73,7 @@ int main(int argc, char* argv[])
 	main_menu = new MainMenuWindow();
 
 #ifdef PICO
-	keyboard = PicoKeyboard::get_instance();
+	keyboard = new PicoKeyboard();
 #else
 	keyboard = new SDLKeyboard();
 	Utils::set_time_start_point();
