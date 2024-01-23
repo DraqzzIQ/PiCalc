@@ -1,59 +1,84 @@
 #include "keyboard/PicoKeyboard.h"
 #ifdef PICO
 
+PicoKeyboard* PicoKeyboard::_instance = nullptr;
+
+PicoKeyboard* PicoKeyboard::get_instance()
+{
+	if (!_instance)
+		_instance = new PicoKeyboard();
+
+	return _instance;
+}
+
 PicoKeyboard::PicoKeyboard():
 	IKeyboard()
 {
-	stdio_init_all();
+	gpio_set_irq_enabled_with_callback(2, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &PicoKeyboard::interrupt_callback);
 
-	for (auto& pin : outputs) {
+
+	for (uint8_t pin : _outputs) {
 		gpio_init(pin);
 		gpio_set_dir(pin, GPIO_OUT);
+		gpio_put(pin, 1);
 	}
 
-	for (auto& pin : inputs) {
+	for (uint8_t pin : _inputs) {
 		gpio_init(pin);
 		gpio_set_dir(pin, GPIO_IN);
 		gpio_pull_down(pin);
+		gpio_set_irq_enabled(pin, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 	}
+}
+
+PicoKeyboard::~PicoKeyboard()
+{
 }
 
 bool PicoKeyboard::is_shift_active()
 {
-	return functionKeysState == KeyState::SHIFT_ON;
+	return _function_keys_state == KeyState::SHIFT_ON;
 }
 
 bool PicoKeyboard::is_alpha_active()
 {
-	return functionKeysState == KeyState::ALPHA_ON;
+	return _function_keys_state == KeyState::ALPHA_ON;
 }
 
-void PicoKeyboard::check_for_keyboard_presses()
+void PicoKeyboard::interrupt_callback(uint gpio, uint32_t events)
 {
-	for (uint8_t px = 0; px < outputs.size(); px++) {
-		setPin(px);
-		sleep_ms(10);
-		std::vector<bool> high_pins = getPins();
-		for (uint8_t py = 0; py < high_pins.size(); py++) {
-			if (pressedButtons[px][py] == KeyState::OFF && high_pins[py]) {
-				KeyPress press = coords_to_keypress(px, py, functionKeysState);
-				// std::cout << "\nKey pressed:  " << std::endl; // uncomment to test keys via picoprobe / serial output
-				// print_key(press.key_calculator); // uncomment to test keys via picoprobe / serial output
-				_window_manager->handle_key_down(press); // comment to test keys via picoprobe / serial output
-				pressedButtons[px][py] = functionKeysState;
+	PicoKeyboard::get_instance()->button_pressed(gpio, events);
+}
 
-				if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("SHIFT")) functionKeysState = KeyState::SHIFT_ON;
-				else if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("ALPHA")) functionKeysState = KeyState::ALPHA_ON;
-				else functionKeysState = KeyState::ON;
-			} else if (pressedButtons[px][py] != KeyState::OFF && !high_pins[py]) {
-				KeyPress release = coords_to_keypress(px, py, pressedButtons[px][py]);
-				// std::cout << "\nKey released: " << std::endl; // uncomment to test keys via picoprobe / serial output
-				// print_key(release.key_calculator); // uncomment to test keys via picoprobe / serial output
-				_window_manager->handle_key_up(release); // comment to test keys via picoprobe / serial output
-				pressedButtons[px][py] = KeyState::OFF;
-			}
+void PicoKeyboard::button_pressed(uint interrupt_pin, uint32_t events)
+{
+	gpio_set_irq_enabled(interrupt_pin, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, false); // disable interrupts to prevent retriggering
+	set_pins(0);
+
+	for (uint8_t output_pin = 0; output_pin < _outputs.size(); output_pin++) {
+		gpio_put(_outputs[output_pin], 1);
+		while (!gpio_get(_outputs[output_pin])) {} // wait for output to be high
+		bool interrupt_pin_high = gpio_get(interrupt_pin);
+
+		if (_pressed_buttons[output_pin][interrupt_pin] == KeyState::OFF && interrupt_pin_high) {
+			KeyPress press = coords_to_keypress(output_pin, interrupt_pin, _function_keys_state);
+			_window_manager->handle_key_down(press);
+			_pressed_buttons[output_pin][interrupt_pin] = _function_keys_state;
+
+			if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("SHIFT")) _function_keys_state = KeyState::SHIFT_ON;
+			else if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("ALPHA")) _function_keys_state = KeyState::ALPHA_ON;
+			else _function_keys_state = KeyState::ON;
+		} else if (_pressed_buttons[output_pin][interrupt_pin] != KeyState::OFF && !interrupt_pin_high) {
+			KeyPress release = coords_to_keypress(output_pin, interrupt_pin, _function_keys_state);
+			_window_manager->handle_key_up(release);
+			_pressed_buttons[output_pin][interrupt_pin] = KeyState::OFF;
 		}
+
+		gpio_put(_outputs[output_pin], 0);
 	}
+
+	set_pins(1);
+	gpio_set_irq_enabled(interrupt_pin, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true); // reenable interrupts
 }
 
 void PicoKeyboard::print_key(KEY key)
@@ -119,7 +144,6 @@ KEY PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
 	}
 }
 
-
 KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state)
 {
 	KeyPress keypress = KeyPress();
@@ -131,20 +155,10 @@ KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state)
 	return keypress;
 }
 
-
-void PicoKeyboard::setPin(uint8_t pin)
+void PicoKeyboard::set_pins(bool value)
 {
-	for (uint8_t i = 0; i < outputs.size(); i++) {
-		if (i == pin) gpio_set_dir(outputs[i], GPIO_OUT);
-		else gpio_set_dir(outputs[i], GPIO_IN);
-		gpio_put(outputs[pin], 1);
+	for (uint8_t pin : _outputs) {
+		gpio_put(pin, value);
 	}
-}
-
-std::vector<bool> PicoKeyboard::getPins()
-{
-	std::vector<bool> ret = std::vector<bool>();
-	for (auto& pin : inputs) { ret.push_back(gpio_get(pin)); }
-	return ret;
 }
 #endif

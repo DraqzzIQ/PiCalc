@@ -10,9 +10,15 @@ class IKeyboard
 	IKeyboard();
 	virtual ~IKeyboard(){};
 	/// <summary>
-	/// checks for keyboard presses
+	/// converts raw keycodes to calculator keycodes using the calculator key-layout
 	/// </summary>
-	virtual void check_for_keyboard_presses() = 0;
+	static KEY raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha);
+	/// <summary>
+	/// converts raw keycodes to calculator keycodes using the normal keyboard key-layout
+	/// </summary>
+	static KEY raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha);
+
+	protected:
 	/// <summary>
 	/// checks wether shift is active
 	/// </summary>
@@ -24,17 +30,7 @@ class IKeyboard
 	/// <returns>true if active else false</returns>
 	virtual bool is_alpha_active() = 0;
 	/// <summary>
-	/// converts raw keycodes to calculator keycodes using the calculator key-layout
-	/// </summary>
-	static KEY raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha);
-	/// <summary>
-	/// converts raw keycodes to calculator keycodes using the normal keyboard key-layout
-	/// </summary>
-	static KEY raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha);
-	/// <summary>
 	/// window manager handles the inputs
 	/// </summary>
 	WindowManager* _window_manager;
-
-	private:
 };
