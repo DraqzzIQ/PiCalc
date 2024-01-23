@@ -13,7 +13,6 @@ bool ChatWindow::handle_key_down(KeyPress keypress)
 		add_text("...", false, false, false);
 		on_return_key();
 		_input = "";
-		_text.push_back("");
 		return true;
 	} else if (key == "DEL") {
 		if (_input.size() > 0)

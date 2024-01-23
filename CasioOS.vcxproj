@@ -72,6 +72,9 @@
     <ClInclude Include="src\io\ConfigSerializable.h" />
     <ClInclude Include="src\io\PaintingSerializable.h" />
     <ClInclude Include="src\io\NoteSerializable.h" />
+    <ClInclude Include="src\threading\Threading.h" />
+    <ClInclude Include="src\threading\Thread.h" />
+    <ClInclude Include="src\datastructs\ThreadSafeQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
@@ -116,6 +119,7 @@
     <ClCompile Include="src\io\ConfigSerializable.cpp" />
     <ClCompile Include="src\io\PaintingSerializable.cpp" />
     <ClCompile Include="src\io\NoteSerializable.cpp" />
+    <ClCompile Include="src\threading\Threading.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

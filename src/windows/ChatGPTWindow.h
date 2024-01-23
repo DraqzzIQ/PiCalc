@@ -5,6 +5,7 @@
 #include <http/DesktopHttpClient.h>
 #endif
 
+#include "threading/Threading.h"
 #include "windows/ChatWindow.h"
 #include <regex>
 #ifdef PICO
