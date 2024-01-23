@@ -16,7 +16,6 @@
 class Threading
 {
 	public:
-	Threading();
 	/// <summary>
 	/// returns instance of singleton WindowManager
 	/// </summary>
@@ -30,6 +29,17 @@ class Threading
 #else
 	ThreadSafeQueue<Thread> _queue;
 #endif
+	/// <summary>
+	/// private constructor to prevent instantiation
+	/// </summary>
+	Threading();
+	/// <summary>
+	/// private deconstructor to prevent deletion
+	/// </summary>
+	~Threading();
+	/// <summary>
+	/// private copy constructor and assignmnt operator to prevent copying
+	/// </summary>
 	/// <summary>
 	/// private copy constructor and assignmnt operator to prevent copying
 	/// </summary>
