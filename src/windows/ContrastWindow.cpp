@@ -33,12 +33,10 @@ void ContrastWindow::render()
 	_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Contrast", false);
 	_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, KEY_SET{ 76, 181, 77, 76, 182, 77 }, false);
 	uint8_t bar_x = (30 - contrast) * 2 + 16;
-	for (uint8_t y = 20; y < 28; y++) {
-		_window.set_bit(15, y, true);
-		_window.set_bit(78, y, true);
-		_window.set_bit(bar_x, y, true);
-		_window.set_bit(bar_x + 1, y, true);
-	}
+	_window.draw_vertical_line(15, 20, 8, true);
+	_window.draw_vertical_line(78, 20, 8, true);
+	_window.draw_vertical_line(bar_x, 20, 8, true);
+	_window.draw_vertical_line(bar_x + 1, 20, 8, true);
 	for (uint8_t x = 16; x < 78; x++) {
 		_window.set_bit(x, 20, true);
 		_window.set_bit(x, 27, true);

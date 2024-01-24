@@ -94,6 +94,10 @@ class DynamicBitset
 	/// </summary>
 	void set(uint32_t index, const DynamicBitset& bits);
 	/// <summary>
+	/// sets count bits starting at index to value
+	/// </summary>
+	void set(uint32_t index, uint32_t count, bool value);
+	/// <summary>
 	/// Inserts a bit at index.
 	/// VERY INEFFICIENT
 	/// </summary>

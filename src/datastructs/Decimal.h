@@ -87,6 +87,23 @@ class Decimal
 	Decimal& ran_int(Decimal start, Decimal end);
 
 	/// <summary>
+	/// rectangular to polar coordinates (this = x, other = y)
+	/// </summary>
+	Decimal& pol(Decimal other);
+	/// <summary>
+	/// polar to rectangular coordinates (this = r, other = theta)
+	/// </summary>
+	Decimal& rec(Decimal other);
+	/// <summary>
+	/// greatest common divisor
+	/// </summary>
+	Decimal& gcd(Decimal other);
+	/// <summary>
+	/// least common multiple
+	/// </summary>
+	Decimal& lcm(Decimal other);
+
+	/// <summary>
 	/// turns the value into a KEY_SET and appends it to res
 	/// </summary>
 	/// <param name="res"></param>

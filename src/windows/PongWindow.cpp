@@ -1,19 +1,261 @@
 #include "PongWindow.h"
 
-PongWindow::PongWindow()
+PongWindow::PongWindow():
+	Window()
 {
-	_menu = Menu::GAME;
-	_settings = 0b1000;
+	_menu = Menu::ONLINE;
+	_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Online?", false);
+	_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0: no", false);
+	_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "1: yes", false);
 }
 
 PongWindow::~PongWindow() {}
 
 Frame PongWindow::update_window()
 {
-	return Frame();
+	if (_menu == Menu::GAME) {
+		move_paddles();
+		move_ball();
+		render_game();
+	}
+	return Frame(_window, _screen_symbols);
 }
 
 bool PongWindow::handle_key_down(KeyPress keypress)
 {
-	return true;
+	switch (_menu) {
+	case Menu::ONLINE:
+		if (keypress.key_raw == 0) _online = false;
+		else if (keypress.key_raw == 1) _online = true;
+		else return false;
+		_menu = Menu::DURATION;
+		clear_window();
+		_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Duration? ", false);
+		_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0:S (6)", false);
+		_window.put_chars(48, 8, Graphics::SYMBOLS_6_HIGH, "1:M (11)", false);
+		_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "2:L (16)", false);
+		_window.put_chars(48, 16, Graphics::SYMBOLS_6_HIGH, "3:XL (21)", false);
+		_window.put_chars(0, 24, Graphics::SYMBOLS_6_HIGH, "4:endless", false);
+		return true;
+	case Menu::DURATION:
+		if (keypress.key_raw == 0) _win_points = 6;
+		else if (keypress.key_raw == 1) _win_points = 11;
+		else if (keypress.key_raw == 2) _win_points = 16;
+		else if (keypress.key_raw == 3) _win_points = 21;
+		else if (keypress.key_raw == 4) _win_points = 65535;
+		else return false;
+		_menu = Menu::PLATFORM;
+		clear_window();
+		_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Platform Mode?", false);
+		_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0: easy", false);
+		_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "1: hard", false);
+		return true;
+	case Menu::PLATFORM:
+		if (keypress.key_raw == 0) _platform_easy = true;
+		else if (keypress.key_raw == 1) _platform_easy = false;
+		else return false;
+		_menu = Menu::DIFFICULTY;
+		clear_window();
+		_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Difficulty? ", false);
+		_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0-9", false);
+		return true;
+	case Menu::DIFFICULTY:
+		if (keypress.key_raw < 10) {
+			_paddle_height = 512 - keypress.key_raw * 32;
+			_paddle_speed = 32 + keypress.key_raw * 2;
+			_start_ball_vx = 48 + keypress.key_raw * 4;
+			start_game();
+			return true;
+		}
+		return false;
+	case Menu::GAME:
+#ifdef PICO
+		if (keypress.key_raw == 4) _lpaddle_v = -1;
+		else if (keypress.key_raw == 1) _lpaddle_v = 1;
+		else if (keypress.key_raw == 72) _rpaddle_v = -1;
+		else if (keypress.key_raw == 70) _rpaddle_v = 1;
+		else return false;
+		return true;
+#else
+		if (keypress.key_raw == 122) _lpaddle_v = -1;
+		else if (keypress.key_raw == 102) _lpaddle_v = 1;
+		else if (keypress.key_raw == 167) _rpaddle_v = -1;
+		else if (keypress.key_raw == 168) _rpaddle_v = 1;
+		else return false;
+		return true;
+#endif
+	case Menu::WIN:
+		if (keypress.key_raw == 0) start_game();
+		else if (keypress.key_raw == 1) {
+			_menu = Menu::ONLINE;
+			clear_window();
+			_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Online?", false);
+			_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0: no", false);
+			_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "1: yes", false);
+		} else return false;
+		return true;
+	}
+}
+
+bool PongWindow::handle_key_up(KeyPress keypress)
+{
+	if (_menu == Menu::GAME) {
+		if (!_platform_easy) return true;
+#ifdef PICO
+		if (keypress.key_raw == 4) _lpaddle_v = 0;
+		else if (keypress.key_raw == 1) _lpaddle_v = 0;
+		else if (keypress.key_raw == 72) _rpaddle_v = 0;
+		else if (keypress.key_raw == 70) _rpaddle_v = 0;
+		else return false;
+		return true;
+#else
+		if (keypress.key_raw == 122) _lpaddle_v = 0;
+		else if (keypress.key_raw == 102) _lpaddle_v = 0;
+		else if (keypress.key_raw == 167) _rpaddle_v = 0;
+		else if (keypress.key_raw == 168) _rpaddle_v = 0;
+		else return false;
+		return true;
+#endif
+	} else return false;
+}
+
+void PongWindow::start_game()
+{
+	_menu = Menu::GAME;
+	_lscore = 0;
+	_rscore = 0;
+	_paddle_max_pos = SCREEN_HEIGHT * 64 - _paddle_height;
+	_rpaddle_pos = _paddle_max_pos / 2;
+	_lpaddle_pos = _paddle_max_pos / 2;
+	_ball_x = SCREEN_WIDTH * 32;
+	_ball_y = SCREEN_HEIGHT * 32;
+	_ball_vx = _start_ball_vx;
+	_ball_vy = ((Utils::us_since_boot() % 7) - 2) * 8;
+}
+
+void PongWindow::move_paddles()
+{
+	_lpaddle_pos += _lpaddle_v * _paddle_speed;
+	_rpaddle_pos += _rpaddle_v * _paddle_speed;
+	if (_lpaddle_pos < 0) {
+		if (_platform_easy) {
+			_lpaddle_pos = 0;
+			_lpaddle_v = 0;
+		} else {
+			_lpaddle_pos = -_lpaddle_pos;
+			_lpaddle_v = -_lpaddle_v;
+		}
+	} else if (_lpaddle_pos > _paddle_max_pos) {
+		if (_platform_easy) {
+			_lpaddle_pos = _paddle_max_pos;
+			_lpaddle_v = 0;
+		} else {
+			_lpaddle_pos = 2 * _paddle_max_pos - _lpaddle_pos;
+			_lpaddle_v = -_lpaddle_v;
+		}
+	}
+	if (_rpaddle_pos < 0) {
+		if (_platform_easy) {
+			_rpaddle_pos = 0;
+			_rpaddle_v = 0;
+		} else {
+			_rpaddle_pos = -_rpaddle_pos;
+			_rpaddle_v = -_rpaddle_v;
+		}
+	} else if (_rpaddle_pos > _paddle_max_pos) {
+		if (_platform_easy) {
+			_rpaddle_pos = _paddle_max_pos;
+			_rpaddle_v = 0;
+		} else {
+			_rpaddle_pos = 2 * _paddle_max_pos - _rpaddle_pos;
+			_rpaddle_v = -_rpaddle_v;
+		}
+	}
+}
+
+void PongWindow::move_ball()
+{
+	_ball_x += _ball_vx;
+	_ball_y += _ball_vy;
+	if (_ball_y < 0) {
+		_ball_y = -_ball_y;
+		_ball_vy = -_ball_vy;
+	} else if (_ball_y >= SCREEN_HEIGHT * 64) {
+		_ball_y = SCREEN_HEIGHT * 128 - _ball_y;
+		_ball_vy = -_ball_vy;
+	}
+	if (_ball_x < 64) {
+		if (_ball_y > _lpaddle_pos && _ball_y < _lpaddle_pos + _paddle_height) {
+			_ball_x = -_ball_x;
+			_ball_vx = -_ball_vx + 1;
+			_ball_vy += ((Utils::us_since_boot() % 7) - 2) * 2;
+			_ball_vy += _lpaddle_v * _paddle_speed / 2;
+		} else {
+			_rscore++;
+			_ball_x = SCREEN_WIDTH * 32;
+			_ball_y = SCREEN_HEIGHT * 32;
+			_ball_vx = 64;
+			_ball_vy = ((Utils::us_since_boot() % 7) - 2) * 8;
+		}
+	} else if (_ball_x >= (SCREEN_WIDTH - 1) * 64) {
+		if (_ball_y > _rpaddle_pos && _ball_y < _rpaddle_pos + _paddle_height) {
+			_ball_x = (SCREEN_WIDTH - 1) * 128 - _ball_x;
+			_ball_vx = -_ball_vx;
+			_ball_vy += ((Utils::us_since_boot() % 7) - 2) * 2;
+			_ball_vy += _rpaddle_v * _paddle_speed / 2;
+		} else {
+			_lscore++;
+			_ball_x = SCREEN_WIDTH * 32;
+			_ball_y = SCREEN_HEIGHT * 32;
+			_ball_vx = -64;
+			_ball_vy = ((Utils::us_since_boot() % 7) - 2) * 8;
+		}
+	}
+}
+
+void PongWindow::render_game()
+{
+	clear_window();
+
+	if (_rscore == _win_points) {
+		_menu = Menu::WIN;
+		_window.put_chars(18, 8, Graphics::SYMBOLS_6_HIGH, "Right won!", false);
+		_window.put_chars(18, 16, Graphics::SYMBOLS_6_HIGH, "0: restart", false);
+		_window.put_chars(27, 24, Graphics::SYMBOLS_6_HIGH, "1: menu", false);
+	} else if (_lscore == _win_points) {
+		_menu = Menu::WIN;
+		_window.put_chars(21, 8, Graphics::SYMBOLS_6_HIGH, "Left won!", false);
+		_window.put_chars(18, 16, Graphics::SYMBOLS_6_HIGH, "0: restart", false);
+		_window.put_chars(27, 24, Graphics::SYMBOLS_6_HIGH, "1: menu", false);
+	} else _window.set_bit(_ball_x / 64, _ball_y / 64, true);
+
+	_window.draw_vertical_line(0, _lpaddle_pos / 64, _paddle_height / 64, true);
+	_window.draw_vertical_line(SCREEN_WIDTH - 1, _rpaddle_pos / 64, _paddle_height / 64, true);
+
+	KEY_SET score_key_set = KEY_SET();
+	uint8_t score_width = 0;
+	uint8_t score = _lscore;
+	if (score == 0) {
+		score_key_set.push_back(0);
+		score_width += 4;
+	}
+	while (score > 0) {
+		score_key_set.push_back(score % 10);
+		score /= 10;
+		score_width += 4;
+	}
+	std::reverse(score_key_set.begin(), score_key_set.end());
+	_window.put_chars(48 - score_width, 1, Graphics::SYMBOLS_5_HIGH, score_key_set, false);
+	score_key_set.clear();
+	score = _rscore;
+	if (score == 0) {
+		score_key_set.push_back(0);
+		score_width += 4;
+	}
+	while (score > 0) {
+		score_key_set.push_back(score % 10);
+		score /= 10;
+	}
+	std::reverse(score_key_set.begin(), score_key_set.end());
+	_window.put_chars(50, 1, Graphics::SYMBOLS_5_HIGH, score_key_set, false);
 }

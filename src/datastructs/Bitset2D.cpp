@@ -67,13 +67,6 @@ Bitset2D& Bitset2D::operator=(const Bitset2D& other)
 	return *this;
 }
 
-// Bitset2D Bitset2D::operator+(const Bitset2D& other)
-// {
-//	Bitset2D res(*this);
-//	res.extend_right(other);
-//	return res;
-// }
-
 
 const DynamicBitset& Bitset2D::at(uint32_t index) const
 {
@@ -154,6 +147,11 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY,
 			if (x >= _width) return;
 		}
 	}
+}
+
+void Bitset2D::draw_vertical_line(uint32_t coord_x, uint32_t coord_y, uint32_t length, bool value)
+{
+	_plane[coord_x].set(coord_y, length, value);
 }
 
 void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bool resize_if_needed)

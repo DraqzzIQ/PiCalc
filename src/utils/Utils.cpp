@@ -4,12 +4,21 @@
 std::chrono::steady_clock::time_point Utils::_start_point;
 #endif
 
-void Utils::sleep_for_ms(int milliseconds)
+void Utils::sleep_for_ms(uint64_t milliseconds)
 {
 #ifdef PICO
 	sleep_ms(milliseconds);
 #else
 	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+#endif
+}
+
+void Utils::sleep_for_us(uint64_t microseconds)
+{
+#ifdef PICO
+	sleep_us(microseconds);
+#else
+	std::this_thread::sleep_for(std::chrono::microseconds(microseconds));
 #endif
 }
 

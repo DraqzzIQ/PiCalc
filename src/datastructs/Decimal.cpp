@@ -671,6 +671,29 @@ Decimal& Decimal::ran_int(Decimal start, Decimal end)
 	return *this;
 }
 
+Decimal& Decimal::pol(Decimal other)
+{
+	// TODO
+	return *this;
+}
+
+Decimal& Decimal::rec(Decimal other)
+{
+	// TODO
+	return *this;
+}
+
+Decimal& Decimal::gcd(Decimal other)
+{
+	// TODO
+	return *this;
+}
+
+Decimal& Decimal::lcm(Decimal other)
+{
+	// TODO
+	return *this;
+}
 
 void Decimal::value_to_key_set(KEY_SET& res) const
 {

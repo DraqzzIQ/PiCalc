@@ -5,6 +5,12 @@
 // -simplify
 // -only format Decimal to fraction at the end
 
+// used symbols:
+// 69: +
+// 71: *
+// 72: /
+// 85: !
+
 Number::Number()
 {
 	_value = 0;
@@ -63,7 +69,23 @@ Number* Number::from_key(KEY key)
 
 Number* Number::add(Number* other)
 {
-	// this is guaranteed to be a key after this
+	bool is_key = _value.is_key();
+	if (!is_key && !other->_value.is_key()) {
+		_value += other->_value;
+	} else if (is_key && other->_value.is_key()) {
+	} else {
+		if (is_key && _value.get_key() == 69) {
+		} else if (is_key && _value.get_key() == 72) {
+		} else if (!is_key && other->_value.get_key() != 69 && other->_value.get_key() != 72) {
+			Decimal old_value = _value;
+			_value = other->_value;
+			other->_value = old_value;
+			_children = other->_children;
+			other->_children.clear();
+		}
+	}
+
+
 	if (!_value.is_key()) {
 		if (!other->_value.is_key()) {
 			// both are decimal values
@@ -71,7 +93,7 @@ Number* Number::add(Number* other)
 			other = nullptr;
 			return this;
 		} else {
-			// swap this and other sot that this is a key and other is a decimal value
+			// swap this and other so that this is a key and other is a decimal value
 			Decimal old_value = _value;
 			_value = other->_value;
 			other->_value = old_value;

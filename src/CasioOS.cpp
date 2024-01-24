@@ -23,6 +23,8 @@ IKeyboard* keyboard;
 WindowManager* window_manager;
 MenuWindow* main_menu;
 
+uint64_t last_time = 0;
+
 /// <summary>
 /// starts a thread that will update and render the window manager
 /// </summary>
@@ -41,6 +43,9 @@ void start_main_thread()
 	while (1) {
 		keyboard->check_for_keyboard_presses();
 		window_manager->update();
+		// simple frame rate cap on 30fps
+		if (Utils::us_since_boot() - last_time < 1000000 / FPS) Utils::sleep_for_us(1000000 / FPS - (Utils::us_since_boot() - last_time));
+		last_time = Utils::us_since_boot();
 	}
 }
 

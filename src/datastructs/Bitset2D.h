@@ -88,6 +88,10 @@ class Bitset2D
 	/// </summary>
 	void put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, std::string text, bool resize_if_needed);
 	/// <summary>
+	/// draw a vertical line on the Bitset2D starting at coord_x, coord_y with length length and value value
+	/// </summary>
+	void draw_vertical_line(uint32_t coord_x, uint32_t coord_y, uint32_t length, bool value);
+	/// <summary>
 	/// Overwrite the Bitset2D with other placed on the position coord_x, coord_y
 	/// </summary>
 	void set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bool resize_if_needed);

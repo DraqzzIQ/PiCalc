@@ -20,7 +20,12 @@ class Utils
 	/// sleeps for the given amount of milliseconds
 	/// </summary>
 	/// <param name="milliseconds">milliseconds to sleep</param>
-	static void sleep_for_ms(int milliseconds);
+	static void sleep_for_ms(uint64_t milliseconds);
+	/// <summary>
+	/// sleeps for the given amount of microseconds
+	/// </summary>
+	/// <param name="milliseconds">microseconds to sleep</param>
+	static void sleep_for_us(uint64_t microseconds);
 	/// <summary>
 	/// returns the number of microseconds since boot
 	/// </summary>
