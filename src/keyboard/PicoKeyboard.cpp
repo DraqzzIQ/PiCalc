@@ -6,12 +6,12 @@ PicoKeyboard::PicoKeyboard():
 {
 	stdio_init_all();
 
-	for (auto& pin : outputs) {
+	for (auto& pin : _outputs) {
 		gpio_init(pin);
 		gpio_set_dir(pin, GPIO_OUT);
 	}
 
-	for (auto& pin : inputs) {
+	for (auto& pin : _inputs) {
 		gpio_init(pin);
 		gpio_set_dir(pin, GPIO_IN);
 		gpio_pull_down(pin);
@@ -20,37 +20,37 @@ PicoKeyboard::PicoKeyboard():
 
 bool PicoKeyboard::is_shift_active()
 {
-	return functionKeysState == KeyState::SHIFT_ON;
+	return _function_keys_state == KeyState::SHIFT_ON;
 }
 
 bool PicoKeyboard::is_alpha_active()
 {
-	return functionKeysState == KeyState::ALPHA_ON;
+	return _function_keys_state == KeyState::ALPHA_ON;
 }
 
 void PicoKeyboard::check_for_keyboard_presses()
 {
-	for (uint8_t px = 0; px < outputs.size(); px++) {
-		setPin(px);
+	for (uint8_t px = 0; px < _outputs.size(); px++) {
+		set_pin(px);
 		sleep_ms(10);
-		std::vector<bool> high_pins = getPins();
+		std::vector<bool> high_pins = get_pins();
 		for (uint8_t py = 0; py < high_pins.size(); py++) {
-			if (pressedButtons[px][py] == KeyState::OFF && high_pins[py]) {
-				KeyPress press = coords_to_keypress(px, py, functionKeysState);
+			if (_pressed_buttons[px][py] == KeyState::OFF && high_pins[py]) {
+				KeyPress press = coords_to_keypress(px, py, _function_keys_state);
 				// std::cout << "\nKey pressed:  " << std::endl; // uncomment to test keys via picoprobe / serial output
 				// print_key(press.key_calculator); // uncomment to test keys via picoprobe / serial output
 				_window_manager->handle_key_down(press); // comment to test keys via picoprobe / serial output
-				pressedButtons[px][py] = functionKeysState;
+				_pressed_buttons[px][py] = _function_keys_state;
 
-				if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("SHIFT")) functionKeysState = KeyState::SHIFT_ON;
-				else if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("ALPHA")) functionKeysState = KeyState::ALPHA_ON;
-				else functionKeysState = KeyState::ON;
-			} else if (pressedButtons[px][py] != KeyState::OFF && !high_pins[py]) {
-				KeyPress release = coords_to_keypress(px, py, pressedButtons[px][py]);
+				if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("SHIFT")) _function_keys_state = KeyState::SHIFT_ON;
+				else if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("ALPHA")) _function_keys_state = KeyState::ALPHA_ON;
+				else _function_keys_state = KeyState::ON;
+			} else if (_pressed_buttons[px][py] != KeyState::OFF && !high_pins[py]) {
+				KeyPress release = coords_to_keypress(px, py, _pressed_buttons[px][py]);
 				// std::cout << "\nKey released: " << std::endl; // uncomment to test keys via picoprobe / serial output
 				// print_key(release.key_calculator); // uncomment to test keys via picoprobe / serial output
 				_window_manager->handle_key_up(release); // comment to test keys via picoprobe / serial output
-				pressedButtons[px][py] = KeyState::OFF;
+				_pressed_buttons[px][py] = KeyState::OFF;
 			}
 		}
 	}
@@ -132,19 +132,19 @@ KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state)
 }
 
 
-void PicoKeyboard::setPin(uint8_t pin)
+void PicoKeyboard::set_pin(uint8_t pin)
 {
-	for (uint8_t i = 0; i < outputs.size(); i++) {
-		if (i == pin) gpio_set_dir(outputs[i], GPIO_OUT);
-		else gpio_set_dir(outputs[i], GPIO_IN);
-		gpio_put(outputs[pin], 1);
+	for (uint8_t i = 0; i < _outputs.size(); i++) {
+		if (i == pin) gpio_set_dir(_outputs[i], GPIO_OUT);
+		else gpio_set_dir(_outputs[i], GPIO_IN);
+		gpio_put(_outputs[pin], 1);
 	}
 }
 
-std::vector<bool> PicoKeyboard::getPins()
+std::vector<bool> PicoKeyboard::get_pins()
 {
 	std::vector<bool> ret = std::vector<bool>();
-	for (auto& pin : inputs) { ret.push_back(gpio_get(pin)); }
+	for (auto& pin : _inputs) { ret.push_back(gpio_get(pin)); }
 	return ret;
 }
 #endif
