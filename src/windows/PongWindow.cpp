@@ -61,8 +61,8 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		return true;
 	case Menu::DIFFICULTY:
 		if (keypress.key_raw < 10) {
-			_paddle_height = 512 - keypress.key_raw * 32;
-			_paddle_speed = 32 + keypress.key_raw * 2;
+			_paddle_height = 512 - (keypress.key_raw / 2) * 64;
+			_paddle_speed = 32 + keypress.key_raw * 4;
 			_start_ball_vx = 48 + keypress.key_raw * 4;
 			start_game();
 			return true;
@@ -70,20 +70,31 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		return false;
 	case Menu::GAME:
 #ifdef PICO
-		if (keypress.key_raw == 4) _lpaddle_v = -1;
-		else if (keypress.key_raw == 1) _lpaddle_v = 1;
-		else if (keypress.key_raw == 72) _rpaddle_v = -1;
-		else if (keypress.key_raw == 70) _rpaddle_v = 1;
-		else return false;
-		return true;
+		if (_platform_easy) {
+			if (keypress.key_raw == 4) _lpaddle_v = -1;
+			else if (keypress.key_raw == 1) _lpaddle_v = 1;
+			else if (keypress.key_raw == 72) _rpaddle_v = -1;
+			else if (keypress.key_raw == 70) _rpaddle_v = 1;
+			else return false;
+		} else {
+			if (keypress.key_raw == 4 || keypress.key_raw == 1) _lpaddle_v *= -1;
+			else if (keypress.key_raw == 72 || keypress.key_raw == 70) _rpaddle_v *= -1;
+			else return false;
+		}
 #else
-		if (keypress.key_raw == 122) _lpaddle_v = -1;
-		else if (keypress.key_raw == 102) _lpaddle_v = 1;
-		else if (keypress.key_raw == 167) _rpaddle_v = -1;
-		else if (keypress.key_raw == 168) _rpaddle_v = 1;
-		else return false;
-		return true;
+		if (_platform_easy) {
+			if (keypress.key_raw == 122) _lpaddle_v = -1;
+			else if (keypress.key_raw == 102) _lpaddle_v = 1;
+			else if (keypress.key_raw == 167) _rpaddle_v = -1;
+			else if (keypress.key_raw == 168) _rpaddle_v = 1;
+			else return false;
+		} else {
+			if (keypress.key_raw == 122 || keypress.key_raw == 102) _lpaddle_v *= -1;
+			else if (keypress.key_raw == 167 || keypress.key_raw == 168) _rpaddle_v *= -1;
+			else return false;
+		}
 #endif
+		return true;
 	case Menu::WIN:
 		if (keypress.key_raw == 0) start_game();
 		else if (keypress.key_raw == 1) {
@@ -102,20 +113,15 @@ bool PongWindow::handle_key_up(KeyPress keypress)
 	if (_menu == Menu::GAME) {
 		if (!_platform_easy) return true;
 #ifdef PICO
-		if (keypress.key_raw == 4) _lpaddle_v = 0;
-		else if (keypress.key_raw == 1) _lpaddle_v = 0;
-		else if (keypress.key_raw == 72) _rpaddle_v = 0;
-		else if (keypress.key_raw == 70) _rpaddle_v = 0;
+		if (keypress.key_raw == 4 || keypress.key_raw == 1) _lpaddle_v = 0;
+		else if (keypress.key_raw == 72 || keypress.key_raw == 70) _rpaddle_v = 0;
 		else return false;
-		return true;
 #else
-		if (keypress.key_raw == 122) _lpaddle_v = 0;
-		else if (keypress.key_raw == 102) _lpaddle_v = 0;
-		else if (keypress.key_raw == 167) _rpaddle_v = 0;
-		else if (keypress.key_raw == 168) _rpaddle_v = 0;
+		if (keypress.key_raw == 122 || keypress.key_raw == 102) _lpaddle_v = 0;
+		else if (keypress.key_raw == 167 || keypress.key_raw == 168) _rpaddle_v = 0;
 		else return false;
-		return true;
 #endif
+		return true;
 	} else return false;
 }
 
@@ -127,6 +133,8 @@ void PongWindow::start_game()
 	_paddle_max_pos = SCREEN_HEIGHT * 64 - _paddle_height;
 	_rpaddle_pos = _paddle_max_pos / 2;
 	_lpaddle_pos = _paddle_max_pos / 2;
+	_lpaddle_v = _platform_easy ? 0 : 1;
+	_rpaddle_v = _platform_easy ? 0 : 1;
 	_ball_x = SCREEN_WIDTH * 32;
 	_ball_y = SCREEN_HEIGHT * 32;
 	_ball_vx = _start_ball_vx;
@@ -135,48 +143,52 @@ void PongWindow::start_game()
 
 void PongWindow::move_paddles()
 {
+	// move the paddles
 	_lpaddle_pos += _lpaddle_v * _paddle_speed;
 	_rpaddle_pos += _rpaddle_v * _paddle_speed;
+
+	// check the left paddle for collisions
 	if (_lpaddle_pos < 0) {
 		if (_platform_easy) {
 			_lpaddle_pos = 0;
 			_lpaddle_v = 0;
 		} else {
-			_lpaddle_pos = -_lpaddle_pos;
-			_lpaddle_v = -_lpaddle_v;
+			_lpaddle_pos = 0;
 		}
-	} else if (_lpaddle_pos > _paddle_max_pos) {
+	} else if (_lpaddle_pos >= _paddle_max_pos) {
 		if (_platform_easy) {
 			_lpaddle_pos = _paddle_max_pos;
 			_lpaddle_v = 0;
 		} else {
-			_lpaddle_pos = 2 * _paddle_max_pos - _lpaddle_pos;
-			_lpaddle_v = -_lpaddle_v;
+			_lpaddle_pos = _paddle_max_pos;
 		}
 	}
+
+	// check the right paddle for collisions
 	if (_rpaddle_pos < 0) {
 		if (_platform_easy) {
 			_rpaddle_pos = 0;
 			_rpaddle_v = 0;
 		} else {
-			_rpaddle_pos = -_rpaddle_pos;
-			_rpaddle_v = -_rpaddle_v;
+			_rpaddle_pos = 0;
 		}
-	} else if (_rpaddle_pos > _paddle_max_pos) {
+	} else if (_rpaddle_pos >= _paddle_max_pos) {
 		if (_platform_easy) {
 			_rpaddle_pos = _paddle_max_pos;
 			_rpaddle_v = 0;
 		} else {
-			_rpaddle_pos = 2 * _paddle_max_pos - _rpaddle_pos;
-			_rpaddle_v = -_rpaddle_v;
+			_rpaddle_pos = _paddle_max_pos;
 		}
 	}
 }
 
 void PongWindow::move_ball()
 {
+	// move the ball
 	_ball_x += _ball_vx;
 	_ball_y += _ball_vy;
+
+	// check for collisions with the top and bottom of the screen
 	if (_ball_y < 0) {
 		_ball_y = -_ball_y;
 		_ball_vy = -_ball_vy;
@@ -184,30 +196,32 @@ void PongWindow::move_ball()
 		_ball_y = SCREEN_HEIGHT * 128 - _ball_y;
 		_ball_vy = -_ball_vy;
 	}
+
+	// check for collisions with the paddles and the sides of the screen, on every collision the ball gets faster
 	if (_ball_x < 64) {
-		if (_ball_y > _lpaddle_pos && _ball_y < _lpaddle_pos + _paddle_height) {
+		if (_ball_y >= _lpaddle_pos && _ball_y < _lpaddle_pos + _paddle_height) {
 			_ball_x = -_ball_x;
-			_ball_vx = -_ball_vx + 1;
+			_ball_vx = -_ball_vx + 4;
 			_ball_vy += ((Utils::us_since_boot() % 7) - 2) * 2;
 			_ball_vy += _lpaddle_v * _paddle_speed / 2;
 		} else {
 			_rscore++;
 			_ball_x = SCREEN_WIDTH * 32;
 			_ball_y = SCREEN_HEIGHT * 32;
-			_ball_vx = 64;
+			_ball_vx = _start_ball_vx;
 			_ball_vy = ((Utils::us_since_boot() % 7) - 2) * 8;
 		}
 	} else if (_ball_x >= (SCREEN_WIDTH - 1) * 64) {
-		if (_ball_y > _rpaddle_pos && _ball_y < _rpaddle_pos + _paddle_height) {
+		if (_ball_y >= _rpaddle_pos && _ball_y < _rpaddle_pos + _paddle_height) {
 			_ball_x = (SCREEN_WIDTH - 1) * 128 - _ball_x;
-			_ball_vx = -_ball_vx;
+			_ball_vx = -_ball_vx - 4;
 			_ball_vy += ((Utils::us_since_boot() % 7) - 2) * 2;
 			_ball_vy += _rpaddle_v * _paddle_speed / 2;
 		} else {
 			_lscore++;
 			_ball_x = SCREEN_WIDTH * 32;
 			_ball_y = SCREEN_HEIGHT * 32;
-			_ball_vx = -64;
+			_ball_vx = -_start_ball_vx;
 			_ball_vy = ((Utils::us_since_boot() % 7) - 2) * 8;
 		}
 	}
@@ -217,6 +231,7 @@ void PongWindow::render_game()
 {
 	clear_window();
 
+	// show whether someone won, otherwise draw the ball
 	if (_rscore == _win_points) {
 		_menu = Menu::WIN;
 		_window.put_chars(18, 8, Graphics::SYMBOLS_6_HIGH, "Right won!", false);
@@ -229,9 +244,11 @@ void PongWindow::render_game()
 		_window.put_chars(27, 24, Graphics::SYMBOLS_6_HIGH, "1: menu", false);
 	} else _window.set_bit(_ball_x / 64, _ball_y / 64, true);
 
+	// draw the paddles
 	_window.draw_vertical_line(0, _lpaddle_pos / 64, _paddle_height / 64, true);
 	_window.draw_vertical_line(SCREEN_WIDTH - 1, _rpaddle_pos / 64, _paddle_height / 64, true);
 
+	// draw the left score
 	KEY_SET score_key_set = KEY_SET();
 	uint8_t score_width = 0;
 	uint8_t score = _lscore;
@@ -246,12 +263,11 @@ void PongWindow::render_game()
 	}
 	std::reverse(score_key_set.begin(), score_key_set.end());
 	_window.put_chars(48 - score_width, 1, Graphics::SYMBOLS_5_HIGH, score_key_set, false);
+
+	// draw the right score
 	score_key_set.clear();
 	score = _rscore;
-	if (score == 0) {
-		score_key_set.push_back(0);
-		score_width += 4;
-	}
+	if (score == 0) score_key_set.push_back(0);
 	while (score > 0) {
 		score_key_set.push_back(score % 10);
 		score /= 10;

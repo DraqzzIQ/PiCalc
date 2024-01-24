@@ -45,7 +45,7 @@ class PongWindow: public Window
 	/// </summary>
 	uint16_t _paddle_height = 0;
 	/// <summary>
-	/// max position of the paddles
+	/// lowest allowed position of the paddles
 	/// </summary>
 	uint16_t _paddle_max_pos = 0;
 	/// <summary>
