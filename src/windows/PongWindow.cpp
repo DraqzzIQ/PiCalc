@@ -31,10 +31,10 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		_menu = Menu::DURATION;
 		clear_window();
 		_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Duration? ", false);
-		_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0:S (6)", false);
-		_window.put_chars(48, 8, Graphics::SYMBOLS_6_HIGH, "1:M (11)", false);
-		_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "2:L (16)", false);
-		_window.put_chars(48, 16, Graphics::SYMBOLS_6_HIGH, "3:XL (21)", false);
+		_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0:S(6)", false);
+		_window.put_chars(48, 8, Graphics::SYMBOLS_6_HIGH, "1:M(11)", false);
+		_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "2:L(16)", false);
+		_window.put_chars(48, 16, Graphics::SYMBOLS_6_HIGH, "3:XL(21)", false);
 		_window.put_chars(0, 24, Graphics::SYMBOLS_6_HIGH, "4:endless", false);
 		return true;
 	case Menu::DURATION:

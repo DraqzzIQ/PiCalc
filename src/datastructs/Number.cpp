@@ -5,12 +5,6 @@
 // -simplify
 // -only format Decimal to fraction at the end
 
-// used symbols:
-// 69: +
-// 71: *
-// 72: /
-// 85: !
-
 Number::Number()
 {
 	_value = 0;
@@ -64,6 +58,13 @@ Number* Number::from_key(KEY key)
 {
 	Number* number = new Number();
 	number->_value.set_key(key);
+	return number;
+}
+
+Number* Number::ran()
+{
+	Number* number = new Number();
+	number->_value.ran();
 	return number;
 }
 
@@ -304,6 +305,30 @@ Number* Number::atanh()
 	return this;
 }
 
+Number* Number::from_angle(uint8_t mode)
+{
+	if (mode == 1) {
+		multiply(new Number(180));
+		divide(from_key(156));
+	} else if (mode == 2) {
+		multiply(new Number(9));
+		divide(new Number(10));
+	}
+	return this;
+}
+
+Number* Number::to_angle(uint8_t mode)
+{
+	if (mode == 1) {
+		multiply(from_key(156));
+		divide(new Number(180));
+	} else if (mode == 2) {
+		multiply(new Number(10));
+		divide(new Number(9));
+	}
+	return this;
+}
+
 
 Number* Number::round()
 {
@@ -389,118 +414,151 @@ void Number::simplify()
 	return;
 }
 
-Decimal Number::to_value() const
+bool Number::to_value()
+{
+	if (contains_key()) return false;
+	to_value_no_check();
+	return true;
+}
+
+void Number::to_value(std::vector<Number*>& variables)
+{
+	replace_variables(variables);
+	to_value_no_check();
+}
+
+bool Number::contains_key() const
+{
+	if (_value.is_key()) return true;
+	for (Number* child : _children) {
+		if (child->contains_key()) return true;
+	}
+	return false;
+}
+
+void Number::replace_variables(std::vector<Number*>& variables)
 {
 	if (_value.is_key()) {
-		Decimal res;
-		switch (_value.get_key()) {
-		case 69:
-			res = 0;
-			for (Number* child : _children) res += child->to_value();
-			break;
-		case 71:
-			res = 1;
-			for (Number* child : _children) res *= child->to_value();
-			break;
-		case 72:
-			res = _children[0]->to_value() / _children[1]->to_value();
-			break;
-		case 85:
-			res = _children[0]->to_value().factorial();
-			break;
-		case 106:
-			res = _children[0]->to_value().abs();
-			break;
-		case 109:
-			res = _children[0]->to_value().log(_children[1]->to_value());
-			break;
-		case 111:
-			res = _children[0]->to_value().sqrt();
-			break;
-		case 113:
-			res = _children[0]->to_value() ^= _children[1]->to_value();
-			break;
-		case 115:
-			res = _children[0]->to_value().ln();
-			break;
-		case 118:
-			res = _children[0]->to_value().sin();
-			break;
-		case 119:
-			res = _children[0]->to_value().cos();
-			break;
-		case 120:
-			res = _children[0]->to_value().tan();
-			break;
-		case 134:
-			res = _children[0]->to_value().root(_children[1]->to_value());
-			break;
-		case 136:
-			res = _children[0]->to_value().exp();
-			break;
-		case 138:
-			res = _children[0]->to_value().asin();
-			break;
-		case 139:
-			res = _children[0]->to_value().acos();
-			break;
-		case 140:
-			res = _children[0]->to_value().atan();
-			break;
-		case 152:
-			res = 0;
-			break;
-		case 153:
-			res = 0;
-			break;
-		case 154:
-			res = _children[0]->to_value().round();
-			break;
-		case 155:
-			res.ran();
-			break;
-		case 156:
-			res = Decimal::PI;
-			break;
-		case 160:
-			res = 0;
-			break;
-		case 161:
-			res = 0;
-			break;
-		case 162:
-			res = _children[0]->to_value().to_int();
-			break;
-		case 163:
-			res = _children[0]->to_value().floor();
-			break;
-		case 164:
-			res.ran_int(_children[0]->to_value(), _children[1]->to_value());
-			break;
-		case 165:
-			res = Decimal::EULER;
-			break;
-		case 190:
-			res = _children[0]->to_value().sinh();
-			break;
-		case 191:
-			res = _children[0]->to_value().cosh();
-			break;
-		case 192:
-			res = _children[0]->to_value().tanh();
-			break;
-		case 193:
-			res = _children[0]->to_value().asinh();
-			break;
-		case 194:
-			res = _children[0]->to_value().acosh();
-			break;
-		case 195:
-			res = _children[0]->to_value().atanh();
-			break;
+		if (_value.get_key() < 69) {
+			operator=(variables.at(_value.get_key()));
+			replace_variables(variables);
+		} else {
+			for (Number* child : _children) child->replace_variables(variables);
 		}
-		return res;
-	} else return _value;
+	}
+}
+
+void Number::to_value_no_check()
+{
+	for (Number* child : _children) child->to_value_no_check();
+	switch (_value.get_key()) {
+	case 69:
+		_value = 0;
+		for (Number* child : _children) _value += child->_value;
+		break;
+	case 71:
+		_value = 1;
+		for (Number* child : _children) _value *= child->_value;
+		break;
+	case 72:
+		_value = _children[0]->_value;
+		_value /= _children[1]->_value;
+		break;
+	case 85:
+		_value = _children[0]->_value.factorial();
+		break;
+	case 106:
+		_value = _children[0]->_value.abs();
+		break;
+	case 109:
+		_value = _children[0]->_value.log(_children[1]->_value);
+		break;
+	case 111:
+		_value = _children[0]->_value.sqrt();
+		break;
+	case 113:
+		_value = _children[0]->_value;
+		_value ^= _children[1]->to_value();
+		break;
+	case 115:
+		_value = _children[0]->_value.ln();
+		break;
+	case 118:
+		_value = _children[0]->_value.sin();
+		break;
+	case 119:
+		_value = _children[0]->_value.cos();
+		break;
+	case 120:
+		_value = _children[0]->_value.tan();
+		break;
+	case 134:
+		_value = _children[1]->_value.root(_children[0]->_value);
+		break;
+	case 135:
+		_value.set_value(10, 0);
+		_value ^= _children[0]->_value;
+		break;
+	case 136:
+		_value = _children[0]->_value.exp();
+		break;
+	case 138:
+		_value = _children[0]->_value.asin();
+		break;
+	case 139:
+		_value = _children[0]->_value.acos();
+		break;
+	case 140:
+		_value = _children[0]->_value.atan();
+		break;
+	case 152:
+		_value = _children[0]->_value.pol(_children[1]->_value);
+		break;
+	case 153:
+		_value = _children[0]->_value.rec(_children[1]->_value);
+		break;
+	case 156:
+		_value = Decimal::PI;
+		break;
+	case 160:
+		_value = _children[0]->_value.gcd(_children[1]->_value);
+		break;
+	case 161:
+		_value = _children[0]->_value.lcm(_children[1]->_value);
+		break;
+	case 162:
+		_value = _children[0]->_value.to_int();
+		break;
+	case 163:
+		_value = _children[0]->_value.floor();
+		break;
+	case 164:
+		_value = _children[0]->_value.ran_int(_children[1]->_value);
+		break;
+	case 165:
+		_value = Decimal::EULER;
+		break;
+	case 190:
+		_value = _children[0]->_value.sinh();
+		break;
+	case 191:
+		_value = _children[0]->_value.cosh();
+		break;
+	case 192:
+		_value = _children[0]->_value.tanh();
+		break;
+	case 193:
+		_value = _children[0]->_value.asinh();
+		break;
+	case 194:
+		_value = _children[0]->_value.acosh();
+		break;
+	case 195:
+		_value = _children[0]->_value.atanh();
+		break;
+	}
+	for (Number* child : _children) delete child;
+	_children.clear();
 }
 
 void Number::to_key_set(KEY_SET& result) const
@@ -528,7 +586,7 @@ void Number::to_key_set(KEY_SET& result) const
 	}
 }
 
-std::vector<KEY_SET> Number::get_all_representations()
+std::vector<KEY_SET> Number::get_all_representations(std::vector<Number*>& variables)
 {
 	auto results = std::vector<KEY_SET>();
 	simplify();
@@ -551,7 +609,9 @@ std::vector<KEY_SET> Number::get_all_representations()
 		results.push_back(result);
 	}
 
-	results.push_back(to_value().to_key_set(14));
+	Number res = *this;
+	res.to_value(variables);
+	results.push_back(res._value.to_key_set(14));
 
 	return results;
 }

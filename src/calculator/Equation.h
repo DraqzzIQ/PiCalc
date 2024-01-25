@@ -91,7 +91,7 @@ class Equation
 	/// calculate the equation
 	/// </summary>
 	/// <returns>result</returns>
-	Number* to_number();
+	Number* to_number(uint16_t settings);
 
 	private:
 	/// <summary>
@@ -188,6 +188,10 @@ class Equation
 	/// pointer to the list of variables used in the equation
 	/// </summary>
 	std::vector<Number*> _variables;
+	/// <summary>
+	/// settings variable
+	/// </summary>
+	uint16_t _settings;
 	/// <summary>
 	/// Node Used for the Calculation
 	/// </summary>

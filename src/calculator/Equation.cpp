@@ -160,8 +160,9 @@ void Equation::set_variable_list(std::vector<Number*> variables)
 	_variables = variables;
 }
 
-Number* Equation::to_number()
+Number* Equation::to_number(uint16_t settings)
 {
+	_settings = settings;
 	_calculate_index = 0;
 	Number* res = to_number_part(95);
 	render_equation();
@@ -580,12 +581,12 @@ Number* Equation::to_number_part(KEY expected_ending)
 				case 74: calculation.push_back(CalculateNode(to_number_part(75), 95, _calculate_index)); break;
 				case 114: calculation.push_back(CalculateNode(to_number_part(75)->log(), 95, _calculate_index)); break;
 				case 115: calculation.push_back(CalculateNode(to_number_part(75)->ln(), 95, _calculate_index)); break;
-				case 118: calculation.push_back(CalculateNode(to_number_part(75)->sin(), 95, _calculate_index)); break;
-				case 119: calculation.push_back(CalculateNode(to_number_part(75)->cos(), 95, _calculate_index)); break;
-				case 120: calculation.push_back(CalculateNode(to_number_part(75)->tan(), 95, _calculate_index)); break;
-				case 138: calculation.push_back(CalculateNode(to_number_part(75)->asin(), 95, _calculate_index)); break;
-				case 139: calculation.push_back(CalculateNode(to_number_part(75)->acos(), 95, _calculate_index)); break;
-				case 140: calculation.push_back(CalculateNode(to_number_part(75)->atan(), 95, _calculate_index)); break;
+				case 118: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->sin(), 95, _calculate_index)); break;
+				case 119: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->cos(), 95, _calculate_index)); break;
+				case 120: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->tan(), 95, _calculate_index)); break;
+				case 138: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->asin(), 95, _calculate_index)); break;
+				case 139: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->acos(), 95, _calculate_index)); break;
+				case 140: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->atan(), 95, _calculate_index)); break;
 				case 152: calculation.push_back(CalculateNode(to_number_part(83)->pol(to_number_part(75)), 95, _calculate_index)); break;
 				case 153: calculation.push_back(CalculateNode(to_number_part(83)->rec(to_number_part(75)), 95, _calculate_index)); break;
 				case 154: calculation.push_back(CalculateNode(to_number_part(75)->round(), 95, _calculate_index)); break;
@@ -594,12 +595,12 @@ Number* Equation::to_number_part(KEY expected_ending)
 				case 162: calculation.push_back(CalculateNode(to_number_part(75)->to_int(), 95, _calculate_index)); break;
 				case 163: calculation.push_back(CalculateNode(to_number_part(75)->floor(), 95, _calculate_index)); break;
 				case 164: calculation.push_back(CalculateNode(to_number_part(83)->ran_int(to_number_part(75)), 95, _calculate_index)); break;
-				case 190: calculation.push_back(CalculateNode(to_number_part(75)->sinh(), 95, _calculate_index)); break;
-				case 191: calculation.push_back(CalculateNode(to_number_part(75)->cosh(), 95, _calculate_index)); break;
-				case 192: calculation.push_back(CalculateNode(to_number_part(75)->tanh(), 95, _calculate_index)); break;
-				case 193: calculation.push_back(CalculateNode(to_number_part(75)->asinh(), 95, _calculate_index)); break;
-				case 194: calculation.push_back(CalculateNode(to_number_part(75)->acosh(), 95, _calculate_index)); break;
-				case 195: calculation.push_back(CalculateNode(to_number_part(75)->atanh(), 95, _calculate_index)); break;
+				case 190: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->sinh(), 95, _calculate_index)); break;
+				case 191: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->cosh(), 95, _calculate_index)); break;
+				case 192: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->tanh(), 95, _calculate_index)); break;
+				case 193: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->asinh(), 95, _calculate_index)); break;
+				case 194: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->acosh(), 95, _calculate_index)); break;
+				case 195: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->atanh(), 95, _calculate_index)); break;
 				}
 			} else if (value == expected_ending) {
 				break;
@@ -608,11 +609,10 @@ Number* Equation::to_number_part(KEY expected_ending)
 				return new Number();
 			} else if (Chars::in_key_set(value, _allowed_calculate_operations) || (value > 189 && value < 236)) {
 				calculation.push_back(CalculateNode(new Number(), value, _calculate_index));
-			} else {
-				// constants
-				switch (value) {
-				case 10:;
-				}
+			} else if (value > 9 && value < 69) {
+				calculation.push_back(CalculateNode(Number::from_key(value), 95, _calculate_index));
+			} else if (value == 155) {
+				calculation.push_back(CalculateNode(Number::ran(), 95, _calculate_index));
 			}
 			if (Error::error_thrown()) {
 				_cursor_index = _calculate_index;

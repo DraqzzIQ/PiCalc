@@ -69,14 +69,14 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 				case 126: _equation_selected->ac(); break;
 				case 73:
 					// ERROR: 3(1/4), 3*(1/4)
-					_result = _equation_selected->to_number();
+					_result = _equation_selected->to_number(_setup);
 					if (Error::error_thrown()) {
 						set_menu(Menu::Error);
 						Error::error_handled();
 						calculated = false;
 					} else {
 						_result_selected = 0;
-						_result_key_sets = _result.get_all_representations();
+						_result_key_sets = _result.get_all_representations(_variables);
 						_result_equation.set_key_set(_result_key_sets.at(0));
 						_result_rendered = _result_equation.get_rendered_equation();
 						calculated = true;

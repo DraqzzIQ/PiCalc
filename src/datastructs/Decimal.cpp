@@ -467,6 +467,7 @@ Decimal& Decimal::ln()
 	for (uint8_t i = 3; add_changed((top *= y) / i); i += 2) {}
 	operator*=(2);
 	operator+=(Decimal(exp) * LN10);
+	return *this;
 }
 
 Decimal& Decimal::log(Decimal other)
@@ -586,7 +587,6 @@ Decimal& Decimal::atanh()
 	return *this;
 }
 
-
 Decimal& Decimal::round()
 {
 	if (_exp < 0) {
@@ -665,7 +665,7 @@ Decimal& Decimal::ran()
 	return *this;
 }
 
-Decimal& Decimal::ran_int(Decimal start, Decimal end)
+Decimal& Decimal::ran_int(Decimal end)
 {
 	// TODO
 	return *this;

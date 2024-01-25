@@ -84,7 +84,7 @@ class Decimal
 	Decimal& abs();
 	Decimal& negate();
 	Decimal& ran();
-	Decimal& ran_int(Decimal start, Decimal end);
+	Decimal& ran_int(Decimal end);
 
 	/// <summary>
 	/// rectangular to polar coordinates (this = x, other = y)

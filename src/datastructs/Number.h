@@ -44,6 +44,11 @@ class Number
 	/// create a Number from a KEY
 	/// </summary>
 	static Number* from_key(KEY key);
+	/// <summary>
+	/// random Number between 0 and 1, 3 digits precision
+	/// </summary>
+	/// <returns></returns>
+	static Number* ran();
 
 	/// <summary>
 	/// add other to this
@@ -156,6 +161,14 @@ class Number
 	/// atanh of this
 	/// </summary>
 	Number* atanh();
+	/// <summary>
+	/// converts this Number from mode to degrees, where 0 = degrees, 1 = radians, 2 = gradians
+	/// </summary>
+	Number* from_angle(uint8_t mode);
+	/// <summary>
+	/// converts this Number to mode from degrees, where 0 = degrees, 1 = radians, 2 = gradians
+	/// </summary>
+	Number* to_angle(uint8_t mode);
 
 	/// <summary>
 	/// round this to the nearest integer
@@ -214,14 +227,18 @@ class Number
 	/// <summary>
 	/// return a single decimal representing this (often looses precision)
 	/// </summary>
-	Decimal to_value() const;
+	bool to_value();
+	void to_value(std::vector<Number*>& variables);
 	void to_key_set(KEY_SET& result) const;
 	/// <summary>
 	/// returns all possible representations of this as a KEY_SET
 	/// </summary>
-	std::vector<KEY_SET> get_all_representations();
+	std::vector<KEY_SET> get_all_representations(std::vector<Number*>& variables);
 
 	private:
+	bool contains_key() const;
+	void to_value_no_check();
+	void replace_variables(std::vector<Number*>& variables);
 	/// <summary>
 	/// clones this number without cloning its children (only adresses of Numbers in children are copied)
 	/// </summary>
