@@ -1,5 +1,6 @@
 #pragma once
 #include "options/WindowMenuOption.h"
+#include "windows/BatteryWindow.h"
 #include "windows/ContrastWindow.h"
 #include "windows/MenuWindow.h"
 #include "windows/SysInfoWindow.h"

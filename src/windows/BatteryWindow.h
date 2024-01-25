@@ -1,14 +1,16 @@
 #pragma once
-#ifdef PICO
 #include "Window.h"
+#include "datastructs/Decimal.h"
+#ifdef PICO
+#include "hardware/adc.h"
 #include "pico/stdlib.h"
+#endif
+
 
 class BatteryWindow: public Window
 {
 	public:
 	BatteryWindow();
 	~BatteryWindow();
-	Frame updateWindow();
+	Frame update_window();
 };
-
-#endif

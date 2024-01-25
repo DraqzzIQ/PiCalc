@@ -729,13 +729,16 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 {
 	KEY_SET res;
 	maximize_exp();
-	uint8_t digits = count_digits(_val);
-	int16_t comma_pos = _exp + digits;
-	int16_t missing_digits = (digits > -_exp ? digits + 1 : -_exp + 2) - max_size;
 	if (_val < 0) max_size--;
-	// TODO: sometimes scientific notation shows less di gits than normal notation, both show less than count
+	uint8_t digits = count_digits(_val);
+	// number of digits that would be lost if it was converted without scientific notation
+	int16_t missing_digits = digits > -_exp ? (digits > max_size ? digits - max_size + 1 : 0) : -_exp - max_size - 2;
+	// number of digits that would be lost if it was converted with scientific notation
+	int16_t sci_missing_digits = 1000;
+	// int16_t sci_missing_digits = max_size - (exp_count_digits() + (_exp < 0) + 3);
+	//  TODO: sometimes scientific notation shows less digits than normal notation, both show less than count
 
-	if (comma_pos > max_size || missing_digits > max_size - (exp_count_digits() + (_exp < 0) + 3)) {
+	if (_exp + digits > max_size || missing_digits > sci_missing_digits) {
 		// decimal can't be represented without scientific notation while satisfying the max_size and count
 		_exp += digits - 1;
 		if (_exp == 0) res.push_back(0);
