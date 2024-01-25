@@ -186,6 +186,9 @@
     <ClInclude Include="src\datastructs\ThreadSafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\windows\BatteryWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp">
@@ -314,7 +317,10 @@
     <ClCompile Include="src\windows\ContrastWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-     <ClCompile Include="src\threading\Threading.cpp">
+    <ClCompile Include="src\threading\Threading.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\BatteryWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -10,11 +10,12 @@ class SettingsWindow: public MenuWindow
 	SettingsWindow():
 		MenuWindow()
 	{
-		options = std::vector<MenuOptionBase*>(4);
+		options = std::vector<MenuOptionBase*>(5);
 		options[0] = new WindowMenuOption<SysInfoWindow>("System Info");
 		options[1] = new WindowMenuOption<Window>("Wifi");
 		options[2] = new WindowMenuOption<Window>("Secrets");
 		options[3] = new WindowMenuOption<ContrastWindow>("Contrast");
+		options[4] = new WindowMenuOption<BatteryWindow>("Battery");
 
 		create_menu();
 	}

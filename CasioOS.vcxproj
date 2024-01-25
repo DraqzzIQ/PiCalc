@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\windows\BatteryWindow.h" />
     <ClInclude Include="src\constant\Chars.h" />
     <ClInclude Include="src\constant\Constants.h" />
     <ClInclude Include="src\constant\Error.h" />
@@ -77,6 +78,7 @@
     <ClInclude Include="src\datastructs\ThreadSafeQueue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\windows\BatteryWindow.cpp" />
     <ClCompile Include="src\CasioOS.cpp" />
     <ClCompile Include="src\constant\Chars.cpp" />
     <ClCompile Include="src\constant\Constants.cpp" />
