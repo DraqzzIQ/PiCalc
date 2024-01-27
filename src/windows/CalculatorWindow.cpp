@@ -17,37 +17,37 @@ CalculatorWindow::~CalculatorWindow() {}
 
 Frame CalculatorWindow::update_window()
 {
-	if (_menu != Menu::None) return Frame(_menu_rendered, _screen_symbols);
+	if (_menu != Menu::None) return Frame(_menu_rendered);
 
 	switch (_mode) {
 	case Mode::COMP:
 		clear_window();
 		add_to_window(_equation_selected->get_rendered_equation(), 0, 0);
 		if (calculated) add_to_window(_result_rendered, SCREEN_WIDTH - _result_rendered.width(), SCREEN_HEIGHT - _result_rendered.height());
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	case Mode::STAT:
 		add_to_window(Graphics::create_text("STAT"), 0, 0);
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	case Mode::TABLE:
 		add_to_window(Graphics::create_text("TABLE"), 0, 0);
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	case Mode::DIST:
 		add_to_window(Graphics::create_text("DIST"), 0, 0);
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	case Mode::VERIF:
 		add_to_window(Graphics::create_text("VERIF"), 0, 0);
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	case Mode::BASE_N:
 		add_to_window(Graphics::create_text("BASE_N"), 0, 0);
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	case Mode::EQ_SOLV:
 		add_to_window(Graphics::create_text("EQ_SOLV"), 0, 0);
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	case Mode::GRAPH:
 		add_to_window(Graphics::create_text("GRAPH"), 0, 0);
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	default:
-		return Frame(_window, _screen_symbols);
+		return Frame(_window);
 	}
 }
 

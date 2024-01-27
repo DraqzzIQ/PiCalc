@@ -18,7 +18,7 @@ ConsoleRenderer::ConsoleRenderer()
 #endif
 }
 
-void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
+void ConsoleRenderer::render(Frame frame, bool force_rerender)
 {
 	if (!force_rerender && already_rendered(frame)) return;
 
@@ -29,8 +29,8 @@ void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
 	out += get_display_border();
 	out += "\n# ";
 
-	for (uint32_t i = 0; i < frame.screen_symbols.size(); i++) {
-		if (frame.screen_symbols[i]) {
+	for (uint32_t i = 0; i < 15; i++) {
+		if (frame.get_screen_symbol(i)) {
 			out += Graphics::SCREEN_SYMBOLS[i];
 		} else {
 			out += std::string(Graphics::SCREEN_SYMBOLS[i].length(), ' ');

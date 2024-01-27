@@ -13,4 +13,10 @@ class BatteryWindow: public Window
 	BatteryWindow();
 	~BatteryWindow();
 	Frame update_window();
+
+	private:
+	uint64_t _timer;
+	Decimal _voltage;
+
+	void update();
 };

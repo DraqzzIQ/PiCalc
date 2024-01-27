@@ -18,7 +18,7 @@ PaintWindow::~PaintWindow() = default;
 Frame PaintWindow::update_window()
 {
 	draw_preview(_painted).copy(_corner_x, _corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
-	return Frame(_rendered, _screen_symbols);
+	return Frame(_rendered);
 }
 
 Bitset2D PaintWindow::draw_preview(Bitset2D target)

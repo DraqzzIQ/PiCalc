@@ -2,7 +2,6 @@
 
 SysInfoWindow::SysInfoWindow()
 {
-	_screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true);
 }
 
 Frame SysInfoWindow::update_window()
@@ -15,5 +14,5 @@ Frame SysInfoWindow::update_window()
 
 	create_menu();
 	_corner_y = _current_page * 4 * _line_height;
-	return Frame(get_render_canvas(), _screen_symbols);
+	return Frame(get_render_canvas(), 0xFFFF);
 }

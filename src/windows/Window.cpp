@@ -4,14 +4,13 @@
 Window::Window()
 {
 	clear_window();
-	clear_symbols();
 }
 
 Window::~Window() {}
 
 Frame Window::update_window()
 {
-	return Frame(get_render_canvas(), _screen_symbols);
+	return Frame(get_render_canvas());
 }
 
 bool Window::handle_key_down(KeyPress keypress)
@@ -67,16 +66,6 @@ void Window::put_text(std::string text, FONT font, int corner_x, int corner_y)
 void Window::clear_window()
 {
 	_window = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
-}
-
-void Window::clear_symbols()
-{
-	_screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), false);
-}
-
-void Window::change_symbol(std::string symbol, bool state)
-{
-	_screen_symbols.set(std::find(Graphics::SCREEN_SYMBOLS.begin(), Graphics::SCREEN_SYMBOLS.end(), symbol) - Graphics::SCREEN_SYMBOLS.begin(), state);
 }
 
 void Window::scroll_left()

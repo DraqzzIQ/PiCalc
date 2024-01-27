@@ -4,6 +4,7 @@
 #include "renderers/IRenderer.h"
 #include "threading/Threading.h"
 #include "utils/Utils.h"
+#include "windows/BatteryWindow.h"
 #include "windows/MainMenuWindow.h"
 #include "windows/WindowManager.h"
 #include <iostream>
@@ -23,8 +24,6 @@ IKeyboard* keyboard;
 WindowManager* window_manager;
 MenuWindow* main_menu;
 
-uint64_t last_time = 0;
-
 /// <summary>
 /// starts a thread that will update and render the window manager
 /// </summary>
@@ -40,6 +39,7 @@ void start_main_thread()
 	});
 	t.detach();
 #endif
+	uint64_t last_time = 0;
 	while (1) {
 		keyboard->check_for_keyboard_presses();
 		window_manager->update();

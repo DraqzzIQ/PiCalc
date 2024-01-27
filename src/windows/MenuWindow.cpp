@@ -15,7 +15,7 @@ Frame MenuWindow::update_window()
 {
 	_corner_y = current_page * 4 * line_height;
 
-	return Frame(get_render_canvas(), _screen_symbols);
+	return Frame(get_render_canvas());
 }
 
 void MenuWindow::create_menu()

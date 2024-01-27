@@ -86,6 +86,14 @@ class WindowManager
 	WindowManager(const WindowManager&);
 	WindowManager& operator=(const WindowManager&);
 	/// <summary>
+	/// tracks if shift is pressed
+	/// </summary>
+	bool _shift = false;
+	/// <summary>
+	/// tracks if alpha is pressed
+	/// </summary>
+	bool _alpha = false;
+	/// <summary>
 	/// the instance
 	/// </summary>
 	static WindowManager* _instance;

@@ -3,17 +3,40 @@
 
 
 struct Frame {
-	Bitset2D pixels;
-	DynamicBitset screen_symbols;
+	// TODO: use ptr for pixels
 
-	Frame(const Bitset2D& pixels, const DynamicBitset& screen_symbols)
+	/// <summary>
+	/// bitset describing the pixels of the frame
+	/// </summary>
+	Bitset2D pixels;
+	/// <summary>
+	/// represents all 15 usable screen symbols (0-14), 15, 16, 17 (^, v, Disp) are reserved for the battery symbol <para/>
+	/// also, shift & alpha (0 & 1) will be overwrittern
+	/// </summary>
+	uint16_t screen_symbols;
+
+	Frame(const Bitset2D& pixels, uint16_t screen_symbols)
 	{
 		this->pixels = pixels;
 		this->screen_symbols = screen_symbols;
 	}
+	Frame(const Bitset2D& pixels)
+	{
+		this->pixels = pixels;
+		this->screen_symbols = 0;
+	}
 	Frame()
 	{
 		this->pixels = Bitset2D();
-		this->screen_symbols = DynamicBitset();
+		this->screen_symbols = 0;
+	}
+	void set_screen_symbol(uint8_t index, bool value)
+	{
+		if (value) screen_symbols |= (1 << index);
+		else screen_symbols &= ~(1 << index);
+	}
+	bool get_screen_symbol(uint8_t index) const
+	{
+		return (screen_symbols >> index) & 1;
 	}
 };

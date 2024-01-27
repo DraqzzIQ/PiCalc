@@ -18,7 +18,7 @@ Frame PongWindow::update_window()
 		move_ball();
 		render_game();
 	}
-	return Frame(_window, _screen_symbols);
+	return Frame(_window);
 }
 
 bool PongWindow::handle_key_down(KeyPress keypress)

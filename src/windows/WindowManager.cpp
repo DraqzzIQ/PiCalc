@@ -43,13 +43,19 @@ void WindowManager::close_window(bool dispose)
 void WindowManager::update(bool force_rerender)
 {
 	for (size_t i = 0; i < IRenderer::Renderers.size(); i++) {
-		if (!_windows.empty()) IRenderer::Renderers.at(i)->render(_windows.top()->update_window(), force_rerender);
-		else IRenderer::Renderers.at(i)->render(Frame(Graphics::LOGO_SCREEN, DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true)), force_rerender);
+		if (!_windows.empty()) {
+			Frame frame = _windows.top()->update_window();
+			frame.set_screen_symbol(0, _shift);
+			frame.set_screen_symbol(1, _alpha);
+			IRenderer::Renderers.at(i)->render(frame, force_rerender);
+		} else IRenderer::Renderers.at(i)->render(Frame(Graphics::LOGO_SCREEN, 0xFFFF), force_rerender);
 	}
 }
 
 void WindowManager::handle_key_down(KeyPress keypress)
 {
+	_shift = keypress.shift;
+	_alpha = keypress.alpha;
 	if (keypress.shift && keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("AC")) {
 #ifdef PICO
 		gpio_put(28, 0);
@@ -63,5 +69,7 @@ void WindowManager::handle_key_down(KeyPress keypress)
 
 void WindowManager::handle_key_up(KeyPress keypress)
 {
+	_shift = keypress.shift;
+	_alpha = keypress.alpha;
 	if (_windows.size() > 0) _windows.top()->handle_key_up(keypress);
 }

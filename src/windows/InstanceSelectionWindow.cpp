@@ -9,7 +9,7 @@ Frame InstanceSelectionWindow::update_window()
 {
 	_corner_y = _current_page * 32;
 
-	return Frame(get_render_canvas(), _screen_symbols);
+	return Frame(get_render_canvas());
 }
 
 bool InstanceSelectionWindow::handle_key_down(KeyPress keypress)

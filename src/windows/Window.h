@@ -59,10 +59,6 @@ class Window
 	/// </summary>
 	int _corner_y = 0;
 	/// <summary>
-	/// saves, which symbols on the lcd should be displayed
-	/// </summary>
-	DynamicBitset _screen_symbols;
-	/// <summary>
 	/// extracts the part of the window that is rendered which is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
 	/// </summary>
 	/// <returns>canvas to render</returns>
@@ -83,16 +79,6 @@ class Window
 	/// clears the window
 	/// </summary>
 	void clear_window();
-	/// <summary>
-	/// clears all on-screen symbols from the lcd
-	/// </summary>
-	void clear_symbols();
-	/// <summary>
-	/// changes, whether a symbol shoud be displayed on the LCD
-	/// </summary>
-	/// <param name="symbol">symbol to change state</param>
-	/// <param name="state">state to change symbol to</param>
-	void change_symbol(std::string symbol, bool state);
 	/// <summary>
 	/// scrolls the window to the left
 	/// </summary>

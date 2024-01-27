@@ -20,7 +20,7 @@ class ConsoleRenderer: public IRenderer
 	/// renders the given frame to the console
 	/// </summary>
 	/// <param name="frame">frame to render</param>
-	void render(const Frame& frame, bool force_rerender);
+	void render(Frame frame, bool force_rerender);
 
 	private:
 	/// <summary>
