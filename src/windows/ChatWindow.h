@@ -5,8 +5,8 @@ class ChatWindow: public TextWindow
 {
 	public:
 	~ChatWindow();
-	bool handle_key_down(KeyPress keypress);
-	Frame update_window();
+	bool handle_key_down(KeyPress keypress) override;
+	void update_window() override;
 	/// <summary>
 	/// splits a string into multiple lines fitting the screen
 	/// </summary>

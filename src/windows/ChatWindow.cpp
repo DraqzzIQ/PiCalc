@@ -28,7 +28,7 @@ bool ChatWindow::handle_key_down(KeyPress keypress)
 	return false;
 }
 
-Frame ChatWindow::update_window()
+void ChatWindow::update_window()
 {
 	if (Utils::us_since_boot() > _last_blink_time + 500000) {
 		_last_blink_time = Utils::us_since_boot();
@@ -38,24 +38,24 @@ Frame ChatWindow::update_window()
 	clear_window();
 	create_menu();
 
-	_corner_y = _current_page * 4 * _line_height;
-
-	return Frame(get_render_canvas());
+	_frame.corner_y = _current_page * 4 * _line_height;
 }
 
 void ChatWindow::create_menu()
 {
 	for (uint32_t i = 0; i < _text.size(); i++) {
-		add_to_window(Graphics::create_text(_text[i], Graphics::SYMBOLS_6_HIGH, _text_spacing), 0, 1 + i * _line_height);
+		_window.put_chars(0, 1 + i * _line_height, Graphics::SYMBOLS_6_HIGH, _text[i], true);
 	}
 	if (_show_cursor) {
-		if (_text.size() == 0)
-			add_to_window(Bitset2D(2, 9, true), 0, 0);
-		else {
-			uint16_t cursor_x = Utils::get_string_as_pixel_width(_text.back(), Graphics::SYMBOLS_6_HIGH, _text_spacing);
+		if (_text.size() == 0) {
+			_window.draw_vertical_line(0, 0, 9, true);
+			_window.draw_vertical_line(1, 0, 9, true);
+		} else {
+			uint16_t cursor_x = Utils::get_string_as_pixel_width(_text.back(), Graphics::SYMBOLS_6_HIGH, 1);
 			uint16_t cursor_y = (_text.size() - 1) * _line_height;
 
-			add_to_window(Bitset2D(2, 9, true), cursor_x, cursor_y);
+			_window.draw_vertical_line(cursor_x, cursor_y, 9, true);
+			_window.draw_vertical_line(cursor_x + 1, cursor_y, 9, true);
 		}
 	}
 }

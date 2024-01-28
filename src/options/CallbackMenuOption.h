@@ -13,25 +13,25 @@ class CallbackMenuOption: public MenuOptionBase
 		this->_value = value;
 		this->_callback = callback;
 	}
-	~CallbackMenuOption() = default;
+	~CallbackMenuOption() override = default;
 
-	void on_select()
+	void on_select() override
 	{
 		_callback(_value);
 		delete this;
 	}
 
-	void on_shift_select()
+	void on_shift_select() override
 	{
 		on_select();
 	}
 
-	std::string get_display_name()
+	std::string get_display_name() override
 	{
 		return _display_name;
 	}
 
-	bool open_window()
+	bool open_window() override
 	{
 		return false;
 	}

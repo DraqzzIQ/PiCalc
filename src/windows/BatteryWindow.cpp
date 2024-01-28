@@ -1,7 +1,6 @@
 #include "BatteryWindow.h"
 
-BatteryWindow::BatteryWindow():
-	Window()
+BatteryWindow::BatteryWindow()
 {
 	_timer = 0;
 	_voltage = Decimal(4201365, -6);
@@ -19,7 +18,7 @@ BatteryWindow::~BatteryWindow()
 {
 }
 
-Frame BatteryWindow::update_window()
+void BatteryWindow::update_window()
 {
 	clear_window();
 
@@ -40,7 +39,6 @@ Frame BatteryWindow::update_window()
 #else
 	_window.put_chars(58, 8, Graphics::SYMBOLS_6_HIGH, KEY_SET{ 15, 40, 51, 58, 44 }, false);
 #endif
-	return Frame(_window);
 }
 
 void BatteryWindow::update()

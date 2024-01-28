@@ -1,7 +1,7 @@
 #include "InputWindow.h"
 
 
-InputWindow::InputWindow(std::string promt, std::function<void(std::string)> callback)
+InputWindow::InputWindow(KEY_SET promt, std::function<void(std::string)> callback)
 {
 	_blink_timer = Utils::us_since_boot();
 	_prompt = promt;
@@ -12,56 +12,50 @@ InputWindow::~InputWindow()
 {
 }
 
-Frame InputWindow::update_window()
+void InputWindow::update_window()
 {
 	clear_window();
-	add_to_window(Graphics::create_text(_prompt), 1, 1);
-	add_to_window(Graphics::create_text(_input), 1, 15);
-	Bitset2D rendered = add_cursor(_window);
-	return Frame(rendered);
+	_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, _prompt, false);
+	_window.put_chars(1, 15, Graphics::SYMBOLS_6_HIGH, _input, false);
+	add_cursor(_window);
 }
+
 bool InputWindow::handle_key_down(KeyPress keypress)
 {
-	std::string key = Chars::KEY_MAP[keypress.key_keyboard];
-	if (key == "RETURN") {
-		if (_input.length() > 0) {
+	if (keypress.key_keyboard == 250) {
+		// RETURN
+		if (_input.size() > 0) {
 			WindowManager::get_instance()->close_window(false);
 			_callback(_input);
 			delete this;
 		}
-	} else if (key == "DEL") {
+	} else if (keypress.key_keyboard == 125) {
+		// DEL
 		if (_cursor_index > 0) {
-			_input = _input.substr(0, _input.length() - 1);
+			_input.pop_back();
 			_cursor_index--;
 		}
-	} else if (_input.length() >= 15) {
+	} else if (_input.size() >= 15) {
 		return true;
 	} else {
 		_cursor_index++;
-		_input += key;
+		_input.push_back(keypress.key_keyboard);
 	}
 	return true;
 }
 
-Bitset2D InputWindow::add_cursor(Bitset2D bitset)
+void InputWindow::add_cursor(Bitset2D& bitset)
 {
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
 		_blink_timer += 500000;
 		_cursor_on = !_cursor_on;
 	}
-	if (!_cursor_on || _cursor_index > 15) {
-		return bitset;
-	}
-	for (uint32_t i = 0; i < 9; i++) {
-		bitset.set_bit(_cursor_index * 6 + 1, 15 + i, true);
-	}
-	for (uint32_t i = 0; i < 9; i++) {
-		bitset.set_bit(_cursor_index * 6 + 2, 15 + i, true);
-	}
-	return bitset;
+	if (!_cursor_on || _cursor_index > 15) return;
+	_window.draw_vertical_line(_cursor_index * 6 + 1, 15, 9, true);
+	_window.draw_vertical_line(_cursor_index * 6 + 2, 15, 9, true);
 }
 
-void InputWindow::input(std::string promt, std::function<void(std::string)> callback)
+void InputWindow::input(KEY_SET promt, std::function<void(std::string)> callback)
 {
 	WindowManager::get_instance()->add_window(new InputWindow(promt, callback));
 }

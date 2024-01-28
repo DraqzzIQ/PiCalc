@@ -15,7 +15,7 @@ class PaintWindow: public Window
 	public:
 	PaintWindow();
 	~PaintWindow();
-	Frame update_window() override;
+	void update_window() override;
 	bool handle_key_down(KeyPress keypress) override;
 
 	private:
@@ -47,8 +47,6 @@ class PaintWindow: public Window
 	void scroll_right();
 	void scroll_up();
 	void scroll_down();
-
-	Bitset2D draw_preview(Bitset2D target);
 
 	Bitset2D _painted;
 	Bitset2D _rendered;

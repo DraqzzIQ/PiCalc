@@ -12,8 +12,8 @@ class NotesWindow: public TextWindow
 	public:
 	NotesWindow();
 	~NotesWindow();
-	Frame update_window();
-	bool handle_key_down(KeyPress keypress);
+	void update_window() override;
+	bool handle_key_down(KeyPress keypress) override;
 
 	private:
 	/// <summary>

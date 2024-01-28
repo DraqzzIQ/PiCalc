@@ -1,7 +1,6 @@
 #include "PongWindow.h"
 
-PongWindow::PongWindow():
-	Window()
+PongWindow::PongWindow()
 {
 	_menu = Menu::ONLINE;
 	_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Online?", false);
@@ -11,14 +10,13 @@ PongWindow::PongWindow():
 
 PongWindow::~PongWindow() {}
 
-Frame PongWindow::update_window()
+void PongWindow::update_window()
 {
 	if (_menu == Menu::GAME) {
 		move_paddles();
 		move_ball();
 		render_game();
 	}
-	return Frame(_window);
 }
 
 bool PongWindow::handle_key_down(KeyPress keypress)

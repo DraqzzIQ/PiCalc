@@ -6,7 +6,7 @@ class SysInfoWindow: public TextWindow
 {
 	public:
 	SysInfoWindow();
-	Frame update_window();
+	void update_window() override;
 
 	private:
 };

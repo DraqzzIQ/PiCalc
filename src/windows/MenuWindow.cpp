@@ -11,16 +11,16 @@ MenuWindow::~MenuWindow()
 	options.clear();
 }
 
-Frame MenuWindow::update_window()
+void MenuWindow::update_window()
 {
-	_corner_y = current_page * 4 * line_height;
-
-	return Frame(get_render_canvas());
+	_frame.corner_y = current_page * 4 * line_height;
 }
 
 void MenuWindow::create_menu()
 {
-	for (size_t i = 0; i < options.size(); i++) { add_to_window(Graphics::create_text(std::to_string(i) + ":" + options[i]->get_display_name(), Graphics::SYMBOLS_6_HIGH, 1), 1, 1 + i * line_height); }
+	for (size_t i = 0; i < options.size(); i++) {
+		_window.put_chars(1, 1 + i * line_height, Graphics::SYMBOLS_6_HIGH, std::to_string(i) + ":" + options[i]->get_display_name(), true);
+	}
 }
 
 int MenuWindow::pages_count() const
@@ -32,8 +32,9 @@ bool MenuWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_raw == 167) scroll_up();
 	else if (keypress.key_raw == 168) scroll_down();
-	else if (keypress.key_raw == 169) scroll_left();
-	else if (keypress.key_raw == 170) scroll_right();
+	else if (keypress.key_raw == 169) {
+		if (_frame.corner_x > 0) _frame.corner_x--;
+	} else if (keypress.key_raw == 170) _frame.corner_x++;
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size() && keypress.shift) options[keypress.key_raw]->on_shift_select();
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size()) options[keypress.key_raw]->on_select();
 	else return false;

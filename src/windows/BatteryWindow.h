@@ -12,7 +12,7 @@ class BatteryWindow: public Window
 	public:
 	BatteryWindow();
 	~BatteryWindow();
-	Frame update_window();
+	void update_window() override;
 
 	private:
 	uint64_t _timer;

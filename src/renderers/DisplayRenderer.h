@@ -1,4 +1,5 @@
 #pragma once
+// TODO: make this work and make battery level showing work
 #ifdef PICO
 #include "constant/LCDConstants.h"
 #include "hardware/i2c.h"
@@ -21,16 +22,16 @@ class DisplayRenderer: public IRenderer
 	/// renders the given frame to the display
 	/// </summary>
 	/// <param name="frame">frame to render</param>
-	void render(const Frame& frame, bool force_rerender);
+	void render(const Frame& frame, bool force_rerender) override;
 	/// <summary>
 	/// sets the contrast of the lcd
 	/// </summary>
 	/// <param name="value">0-127</param>
-	void set_contrast(uint8_t value);
+	void set_contrast(uint8_t value) override;
 	/// <summary>
 	/// get the current contrast of the lcd
 	/// </summary>
-	uint8_t get_contrast();
+	uint8_t get_contrast() override;
 
 	private:
 	/// <summary>

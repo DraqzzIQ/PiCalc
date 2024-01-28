@@ -5,17 +5,15 @@ InstanceSelectionWindow::InstanceSelectionWindow()
 	_window_manager = WindowManager::get_instance();
 }
 
-Frame InstanceSelectionWindow::update_window()
+void InstanceSelectionWindow::update_window()
 {
-	_corner_y = _current_page * 32;
-
-	return Frame(get_render_canvas());
+	_frame.corner_y = _current_page * 32;
 }
 
 bool InstanceSelectionWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) scroll_up();
-	else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) scroll_down();
+	if (keypress.key_raw == 167) scroll_up();
+	else if (keypress.key_raw == 168) scroll_down();
 	else if (keypress.key_raw < 10 && keypress.key_raw < _instances.size()) {
 		_window_manager->minimize_window();
 		_window_manager->add_window(_instances[keypress.key_raw]);
@@ -27,9 +25,9 @@ bool InstanceSelectionWindow::handle_key_down(KeyPress keypress)
 void InstanceSelectionWindow::setup(std::vector<Window*> instances)
 {
 	_window.clear();
-	for (uint32_t i = 0; i < instances.size(); i++) {
-		add_to_window(instances[i]->get_preview(), 0, i * 32);
-		add_to_window(Graphics::create_text(std::to_string(i)), 91, i * 32 + 22);
+	for (uint16_t i = 0; i < instances.size(); i++) {
+		_window.set(0, i * 32, instances[i]->get_preview(), true);
+		_window.put_number_aligned_right(91, i * 32 + 22, Graphics::SYMBOLS_6_HIGH, i);
 	}
 	_instances = instances;
 }

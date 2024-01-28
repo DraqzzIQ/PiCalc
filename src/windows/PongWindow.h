@@ -16,9 +16,9 @@ class PongWindow: public Window
 	public:
 	PongWindow();
 	~PongWindow();
-	Frame update_window();
-	bool handle_key_down(KeyPress keypress);
-	bool handle_key_up(KeyPress keypress);
+	void update_window() override;
+	bool handle_key_down(KeyPress keypress) override;
+	bool handle_key_up(KeyPress keypress) override;
 
 	private:
 	enum class Menu {

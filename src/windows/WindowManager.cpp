@@ -44,7 +44,7 @@ void WindowManager::update(bool force_rerender)
 {
 	for (size_t i = 0; i < IRenderer::Renderers.size(); i++) {
 		if (!_windows.empty()) {
-			Frame frame = _windows.top()->update_window();
+			Frame& frame = _windows.top()->update_and_get_frame();
 			frame.set_screen_symbol(0, _shift);
 			frame.set_screen_symbol(1, _alpha);
 			IRenderer::Renderers.at(i)->render(frame, force_rerender);

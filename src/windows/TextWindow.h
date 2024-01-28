@@ -9,9 +9,10 @@
 class TextWindow: public Window
 {
 	public:
+	TextWindow();
 	~TextWindow();
-	bool handle_key_down(KeyPress keypress);
-	Frame update_window();
+	bool handle_key_down(KeyPress keypress) override;
+	void update_window() override;
 
 	/// <summary>
 	/// scrolls the text up
@@ -43,8 +44,4 @@ class TextWindow: public Window
 	/// height of a text line
 	/// </summary>
 	const int _line_height = 8;
-	/// <summary>
-	/// spacing between characters
-	/// </summary>
-	uint8_t _text_spacing = 1;
 };

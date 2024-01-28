@@ -19,12 +19,12 @@ class MenuWindow: public Window
 	/// called when the window gets rerendered
 	/// </summary>
 	/// <returns>pixels to render</returns>
-	Frame update_window();
+	void update_window() override;
 	/// <summary>
 	/// handles keydown events
 	/// </summary>
 	/// <param name="key">key that got pressed</param>
-	bool handle_key_down(KeyPress keypress);
+	bool handle_key_down(KeyPress keypress) override;
 	/// <summary>
 	/// window manager to add windows to
 	/// </summary>

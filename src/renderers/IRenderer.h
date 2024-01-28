@@ -16,7 +16,7 @@ class IRenderer
 	/// renders the given frame
 	/// </summary>
 	/// <param name="frame">frame to render</param>
-	virtual void render(Frame frame, bool force_rerender) = 0;
+	virtual void render(const Frame& frame, bool force_rerender) = 0;
 	/// <summary>
 	/// sets the contrast of the display on the pico, does nothing on other platforms
 	/// </summary>
@@ -30,7 +30,7 @@ class IRenderer
 	/// </summary>
 	/// <param name="frame">frame to check</param>
 	/// <returns>true if same else false</returns>
-	bool already_rendered(Frame frame);
+	bool already_rendered(const Frame& frame);
 
 	/// <summary>
 	/// holds all renderers
@@ -38,8 +38,8 @@ class IRenderer
 	static std::vector<IRenderer*> Renderers;
 
 	private:
-	/// <summary>
-	/// currently rendered frame
-	/// </summary>
-	Frame _rendered_frame;
+	Bitset2D _rendered_pixels;
+	uint16_t _rendered_screen_symbols = 0;
+	uint32_t _rendered_corner_x = 0;
+	uint32_t _rendered_corner_y = 0;
 };

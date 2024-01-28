@@ -11,8 +11,7 @@
 class MainMenuWindow: public MenuWindow
 {
 	public:
-	MainMenuWindow():
-		MenuWindow()
+	MainMenuWindow()
 	{
 		options = std::vector<MenuOptionBase*>(7);
 		options[0] = new WindowMenuOption<CalculatorWindow>("Calculator");

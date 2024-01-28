@@ -26,7 +26,7 @@ class ChatGPTWindow: public ChatWindow
 	~ChatGPTWindow();
 
 	private:
-	void on_return_key();
+	void on_return_key() override;
 	void request(std::string query);
 	std::string extract_answer(std::string);
 	const std::string _base_url = "https://api.openai.com";

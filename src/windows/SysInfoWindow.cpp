@@ -4,7 +4,7 @@ SysInfoWindow::SysInfoWindow()
 {
 }
 
-Frame SysInfoWindow::update_window()
+void SysInfoWindow::update_window()
 {
 	_text = std::vector<std::string>(3);
 
@@ -13,6 +13,6 @@ Frame SysInfoWindow::update_window()
 	_text[2] = "Free Heap: " + std::to_string(Utils::get_free_heap());
 
 	create_menu();
-	_corner_y = _current_page * 4 * _line_height;
-	return Frame(get_render_canvas(), 0xFFFF);
+	_frame.corner_y = _current_page * 4 * _line_height;
+	_frame.screen_symbols = 0xFFFF;
 }

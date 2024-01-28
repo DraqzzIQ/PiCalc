@@ -1,40 +1,41 @@
 #include "windows/TextWindow.h"
 #include "TextWindow.h"
 
+TextWindow::TextWindow()
+{
+}
+
 TextWindow::~TextWindow() {}
 
 bool TextWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("up")) {
+	if (keypress.key_raw == 167) {
 		scroll_up();
 		return true;
-	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) {
+	} else if (keypress.key_raw == 168) {
 		scroll_down();
 		return true;
-	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("left")) {
-		scroll_left();
+	} else if (keypress.key_raw == 169) {
+		if (_frame.corner_x > 0) _frame.corner_x--;
 		return true;
-	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) {
-		scroll_right();
+	} else if (keypress.key_raw == 170) {
+		_frame.corner_x++;
 		return true;
 	}
 	return false;
 }
 
-Frame TextWindow::update_window()
+void TextWindow::update_window()
 {
 	clear_window();
 	create_menu();
-
-	_corner_y = _current_page * 4 * _line_height;
-
-	return Frame(get_render_canvas());
+	_frame.corner_y = _current_page * 4 * _line_height;
 }
 
 void TextWindow::create_menu()
 {
 	for (uint32_t i = 0; i < _text.size(); i++) {
-		add_to_window(Graphics::create_text(_text[i], Graphics::SYMBOLS_6_HIGH, _text_spacing), 0, 1 + i * _line_height);
+		_window.put_chars(0, 1 + i * _line_height, Graphics::SYMBOLS_6_HIGH, _text[i], true);
 	}
 }
 

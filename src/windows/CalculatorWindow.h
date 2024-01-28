@@ -11,8 +11,8 @@ class CalculatorWindow: public Window
 	public:
 	CalculatorWindow();
 	~CalculatorWindow();
-	Frame update_window();
-	bool handle_key_down(KeyPress keypress);
+	void update_window() override;
+	bool handle_key_down(KeyPress keypress) override;
 
 	private:
 	enum class Menu {

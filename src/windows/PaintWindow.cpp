@@ -15,28 +15,23 @@ PaintWindow::PaintWindow()
 
 PaintWindow::~PaintWindow() = default;
 
-Frame PaintWindow::update_window()
+void PaintWindow::update_window()
 {
-	draw_preview(_painted).copy(_corner_x, _corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, _rendered);
-	return Frame(_rendered);
-}
+	_window = _painted;
 
-Bitset2D PaintWindow::draw_preview(Bitset2D target)
-{
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
 		_blink_timer += 500000;
 		_preview = !_preview;
 	}
 
 	switch (_tool) {
-	case Tool::LINE: draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
-	case Tool::RECTANGLE: draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
-	case Tool::CIRCLE: draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, target); break;
+	case Tool::LINE: draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, _window); break;
+	case Tool::RECTANGLE: draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, _window); break;
+	case Tool::CIRCLE: draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, _preview, _brush_size, _window); break;
 	default:
-		if (_erase) draw_rectangle(_cursor_x - _brush_size / 2, _cursor_y - _brush_size / 2, _cursor_x + _brush_size / 2, _cursor_y + _brush_size / 2, _preview, 1, target);
-		else draw(_cursor_x, _cursor_y, _preview, _brush_size, target);
+		if (_erase) draw_rectangle(_cursor_x - _brush_size / 2, _cursor_y - _brush_size / 2, _cursor_x + _brush_size / 2, _cursor_y + _brush_size / 2, _preview, 1, _window);
+		else draw(_cursor_x, _cursor_y, _preview, _brush_size, _window);
 	}
-	return target;
 }
 
 void PaintWindow::draw(uint32_t x, uint32_t y, bool value, uint8_t size, Bitset2D& bitset)
@@ -332,7 +327,7 @@ void PaintWindow::open_load_menu()
 void PaintWindow::open_save_menu()
 {
 	InputWindow::input(
-		"Enter filename: ",
+		KEY_SET{ 14, 53, 59, 44, 57, 80, 45, 48, 51, 44, 53, 40, 52, 44, 84 },
 		[this](std::string filename) {
 			if (filename.rfind(".bmp") == std::string::npos) {
 				filename += ".bmp";

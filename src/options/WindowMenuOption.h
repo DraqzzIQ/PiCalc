@@ -20,18 +20,18 @@ class WindowMenuOption: public MenuOptionBase
 		this->display_name = display_name;
 		this->window_manager = WindowManager::get_instance();
 	}
-	~WindowMenuOption(){};
+	~WindowMenuOption() override{};
 	/// <summary>
 	/// called when option is selected
 	/// </summary>
-	void on_select()
+	void on_select() override
 	{
 		if (!open_window()) window_manager->add_window(new T());
 	}
 	/// <summary>
 	/// called when option is selected with shift active
 	/// </summary>
-	void on_shift_select()
+	void on_shift_select() override
 	{
 		window_manager->add_window(new T());
 	}
@@ -40,7 +40,7 @@ class WindowMenuOption: public MenuOptionBase
 	/// otherwise opens an InstanceSelectionWindow
 	/// returns true if a window was opened else false
 	/// </summary>
-	bool open_window()
+	bool open_window() override
 	{
 		if (!window_manager->has_window<T>()) return false;
 
@@ -60,7 +60,7 @@ class WindowMenuOption: public MenuOptionBase
 	/// gets the display name
 	/// </summary>
 	/// <returns>display name</returns>
-	std::string get_display_name()
+	std::string get_display_name() override
 	{
 		return display_name;
 	}
