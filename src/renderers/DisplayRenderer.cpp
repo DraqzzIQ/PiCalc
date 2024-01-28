@@ -28,17 +28,11 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 	uint16_t index = 3;
 	uint8_t screen_symbol_index = 0;
 
-	uint32_t x_end = frame.corner_x + frame.pixels.width();
+	uint32_t x_end = frame.corner_x + SCREEN_WIDTH;
 	for (uint32_t x = frame.corner_x; x < x_end; x++) {
-		std::vector<uint8_t> bytes = frame.pixels.at(x).get_bytes();
+		std::vector<uint8_t> bytes(4, 0);
+		if (x < frame.pixels.width()) bytes = frame.pixels.at(x).get_bytes(frame.corner_y);
 
-		bytes[3] >>= 1;
-		if (bytes[2] & 1) bytes[3] |= 0x80;
-		bytes[2] >>= 1;
-		if (bytes[1] & 1) bytes[2] |= 0x80;
-		bytes[1] >>= 1;
-		if (bytes[0] & 1) bytes[1] |= 0x80;
-		bytes[0] >>= 1;
 		if (x < 82) {
 			if(x == screen_symbol_positions[screen_symbol_index] && frame.get_screen_symbol(screen_symbol_index++)) bytes[0] |= 0x80;
 		} else if (x == 88) {

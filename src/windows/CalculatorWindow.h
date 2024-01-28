@@ -39,7 +39,6 @@ class CalculatorWindow: public Window
 		Drg
 	};
 	Menu _menu = Menu::None;
-	Bitset2D _menu_rendered;
 	/// <summary>
 	/// right to left:
 	/// 0: Input (Math2d, Linear)

@@ -3,6 +3,7 @@
 
 // TODO: add round brush
 // TODO: brightness
+// TODO: show tool in screen_symbols
 
 
 PaintWindow::PaintWindow()
@@ -11,6 +12,7 @@ PaintWindow::PaintWindow()
 	_cursor_x = SCREEN_WIDTH / 2;
 	_cursor_y = SCREEN_HEIGHT / 2;
 	_blink_timer = Utils::us_since_boot();
+	_frame.corner_y = 0;
 }
 
 PaintWindow::~PaintWindow() = default;
@@ -327,7 +329,7 @@ void PaintWindow::open_load_menu()
 void PaintWindow::open_save_menu()
 {
 	InputWindow::input(
-		KEY_SET{ 14, 53, 59, 44, 57, 80, 45, 48, 51, 44, 53, 40, 52, 44, 84 },
+		"Enter Filename:",
 		[this](std::string filename) {
 			if (filename.rfind(".bmp") == std::string::npos) {
 				filename += ".bmp";

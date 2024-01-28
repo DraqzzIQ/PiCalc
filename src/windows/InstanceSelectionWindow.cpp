@@ -5,11 +5,6 @@ InstanceSelectionWindow::InstanceSelectionWindow()
 	_window_manager = WindowManager::get_instance();
 }
 
-void InstanceSelectionWindow::update_window()
-{
-	_frame.corner_y = _current_page * 32;
-}
-
 bool InstanceSelectionWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_raw == 167) scroll_up();
@@ -22,22 +17,28 @@ bool InstanceSelectionWindow::handle_key_down(KeyPress keypress)
 	return true;
 }
 
-void InstanceSelectionWindow::setup(std::vector<Window*> instances)
+void InstanceSelectionWindow::setup(const std::vector<Window*>& instances)
 {
-	_window.clear();
-	for (uint16_t i = 0; i < instances.size(); i++) {
-		_window.set(0, i * 32, instances[i]->get_preview(), true);
-		_window.put_number_aligned_right(91, i * 32 + 22, Graphics::SYMBOLS_6_HIGH, i);
-	}
 	_instances = instances;
+	render();
 }
 
 void InstanceSelectionWindow::scroll_up()
 {
 	if (_current_page > 0) _current_page--;
+	render();
 }
 
 void InstanceSelectionWindow::scroll_down()
 {
 	if (_current_page < _instances.size() - 1) _current_page++;
+	render();
+}
+
+void InstanceSelectionWindow::render()
+{
+	Window* window = _instances[_current_page];
+	window->copy_frame(_frame);
+	_window = window->get_window();
+	_window.put_number_aligned_right(SCREEN_WIDTH - 1, 0, Graphics::SYMBOLS_6_HIGH, _current_page + 1);
 }

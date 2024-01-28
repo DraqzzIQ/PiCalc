@@ -12,8 +12,15 @@ struct Frame {
 	/// also, shift & alpha (0 & 1) will be overwrittern
 	/// </summary>
 	uint16_t screen_symbols;
+	/// <summary>
+	/// x coordinate of the top left corner of the frame
+	/// </summary>
 	uint32_t corner_x = 0;
-	uint32_t corner_y = 0;
+	/// <summary>
+	/// y coordinate of the top left corner of the frame<para/>
+	/// IMPORTANT: defaults to 1, as rendering is most efficient if this is 8n+1, can be changed if needed
+	/// </summary>
+	uint32_t corner_y = 1;
 
 	Frame(const Bitset2D& pixels, uint16_t screen_symbols):
 		pixels(pixels)

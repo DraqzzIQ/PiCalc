@@ -22,8 +22,8 @@ void CalculatorWindow::update_window()
 	switch (_mode) {
 	case Mode::COMP:
 		clear_window();
-		_window.set(0, 0, _equation_selected->get_rendered_equation(), false);
-		if (calculated) _window.set(SCREEN_WIDTH - _result_rendered.width(), SCREEN_HEIGHT - _result_rendered.height(), _result_rendered, false);
+		_window.set(0, 1, _equation_selected->get_rendered_equation(), false);
+		if (calculated) _window.set(SCREEN_WIDTH - _result_rendered.width(), SCREEN_HEIGHT - _result_rendered.height() + 1, _result_rendered, false);
 		return;
 	case Mode::STAT:
 		return;
@@ -244,20 +244,20 @@ void CalculatorWindow::set_menu(Menu menu)
 {
 	// TODO: change strings to keycode vectors
 	_menu = menu;
-	_menu_rendered = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+	clear_window();
 	switch (menu) {
 	case Menu::Error:
-		_menu_rendered = Error::render_error();
+		_window = Error::render_error();
 		break;
 	case Menu::Mode:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 241, 12, 24, 22, 25 }, false);
-		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 242, 28, 29, 10, 29 }, false);
-		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 243, 29, 10, 11, 21, 14 }, false);
-		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 244, 16, 27, 10, 25, 17 }, false);
-		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 245, 13, 18, 28, 29 }, false);
-		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 246, 31, 14, 27, 18, 15 }, false);
-		_menu_rendered.put_chars(1, 24, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 247, 11, 10, 28, 14, 23 }, false);
-		_menu_rendered.put_chars(48, 24, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 248, 28, 24, 21, 31, 14 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 241, 12, 24, 22, 25 }, false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 242, 28, 29, 10, 29 }, false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 243, 29, 10, 11, 21, 14 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 244, 16, 27, 10, 25, 17 }, false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 245, 13, 18, 28, 29 }, false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 246, 31, 14, 27, 18, 15 }, false);
+		_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 247, 11, 10, 28, 14, 23 }, false);
+		_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 248, 28, 24, 21, 31, 14 }, false);
 		break;
 	case Menu::Mode_Stat:
 		// TODO
@@ -266,66 +266,66 @@ void CalculatorWindow::set_menu(Menu menu)
 		// TODO
 		break;
 	case Menu::Setup_Pg1:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 241, 84, 18, 53, 55, 60, 59 }, false);
-		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 242, 84, 24, 60, 59, 55, 60, 59 }, false);
-		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 243, 84, 13, 44, 46 }, false);
-		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 244, 84, 27, 40, 43 }, false);
-		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 245, 84, 16, 57, 40 }, false);
-		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 246, 84, 15, 48, 63 }, false);
-		_menu_rendered.put_chars(1, 24, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 247, 84, 28, 42, 48 }, false);
-		_menu_rendered.put_chars(48, 24, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 248, 84, 23, 54, 57, 52 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 241, 84, 18, 53, 55, 60, 59 }, false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 242, 84, 24, 60, 59, 55, 60, 59 }, false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 243, 84, 13, 44, 46 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 244, 84, 27, 40, 43 }, false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 245, 84, 16, 57, 40 }, false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 246, 84, 15, 48, 63 }, false);
+		_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 247, 84, 28, 42, 48 }, false);
+		_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 248, 84, 23, 54, 57, 52 }, false);
 		break;
 	case Menu::Setup_Pg2:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 40, 41, 175, 42 }, false);
-		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 43, 175, 42 }, false);
-		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 28, 29, 10, 29 }, false);
-		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 25, 44, 57, 13 }, false);
-		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 10, 41, 10, 60, 59 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 40, 41, 175, 42 }, false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 43, 175, 42 }, false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 28, 29, 10, 29 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 25, 44, 57, 13 }, false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 10, 41, 10, 60, 59 }, false);
 		break;
 	case Menu::Setup_Input:
 	case Menu::Setup_Output:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 2, 13 }, false);
-		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 21, 48, 53, 44, 40, 57 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 2, 13 }, false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 21, 48, 53, 44, 40, 57 }, false);
 		break;
 	case Menu::Setup_Fix:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 15, 48, 63, 80, 0, 180, 9 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 15, 48, 63, 80, 0, 180, 9 }, false);
 		break;
 	case Menu::Setup_Sci:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 28, 42, 48, 80, 0, 180, 9 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 28, 42, 48, 80, 0, 180, 9 }, false);
 		break;
 	case Menu::Setup_Norm:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 23, 54, 57, 52, 80, 1, 180, 2 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 23, 54, 57, 52, 80, 1, 180, 2 }, false);
 		break;
 	case Menu::Setup_Stat:
-		_menu_rendered.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 17, 66, 60, 45, 48, 46, 50, 44, 48, 59, 86 }, false);
-		_menu_rendered.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 14, 18, 23 }, false);
-		_menu_rendered.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 10, 30, 28 }, false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 17, 66, 60, 45, 48, 46, 50, 44, 48, 59, 86 }, false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 14, 18, 23 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 10, 30, 28 }, false);
 		break;
 	case Menu::Setup_PerD:
-		_menu_rendered.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 25, 44, 57, 48, 54, 43, 81, 80, 13, 40, 57, 58, 59, 86 }, false);
-		_menu_rendered.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 14, 18, 23 }, false);
-		_menu_rendered.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 10, 30, 28 }, false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 25, 44, 57, 48, 54, 43, 81, 80, 13, 40, 57, 58, 59, 86 }, false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 14, 18, 23 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 10, 30, 28 }, false);
 		break;
 	case Menu::Setup_TurnOff:
-		_menu_rendered.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 10, 41, 58, 42, 47, 40, 51, 59, 40, 60, 59, 54, 52, 40, 59, 81 }, false);
-		_menu_rendered.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 1, 0, 80, 22, 48, 53, 81 }, false);
-		_menu_rendered.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 6, 0, 80, 22, 48, 53, 81 }, false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 10, 41, 58, 42, 47, 40, 51, 59, 40, 60, 59, 54, 52, 40, 59, 81 }, false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 1, 0, 80, 22, 48, 53, 81 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 6, 0, 80, 22, 48, 53, 81 }, false);
 		break;
 	case Menu::Hyp:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 58, 48, 53, 47 }, false);
-		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 42, 54, 58, 47 }, false);
-		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 59, 40, 53, 47 }, false);
-		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 58, 48, 53, 47, 70, 1 }, false);
-		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 42, 54, 58, 47, 70, 1 }, false);
-		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 59, 40, 53, 47, 70, 1 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 58, 48, 53, 47 }, false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 42, 54, 58, 47 }, false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 59, 40, 53, 47 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 58, 48, 53, 47, 70, 1 }, false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 42, 54, 58, 47, 70, 1 }, false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 59, 40, 53, 47, 70, 1 }, false);
 		break;
 	case Menu::Verify:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 73 }, false);
-		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 178 }, false);
-		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 88 }, false);
-		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 89 }, false);
-		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 176 }, false);
-		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 177 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 73 }, false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 178 }, false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 88 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 89 }, false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 176 }, false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 177 }, false);
 		break;
 	case Menu::Stat:
 		// TODO
@@ -334,17 +334,17 @@ void CalculatorWindow::set_menu(Menu menu)
 		// TODO
 		break;
 	case Menu::Base:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 40, 53, 43 }, false);
-		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 54, 57 }, false);
-		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 63, 54, 57 }, false);
-		_menu_rendered.put_chars(48, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 63, 53, 54, 57 }, false);
-		_menu_rendered.put_chars(1, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 53, 54, 59 }, false);
-		_menu_rendered.put_chars(48, 16, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 53, 44, 46 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 40, 53, 43 }, false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 54, 57 }, false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 63, 54, 57 }, false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 63, 53, 54, 57 }, false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 53, 54, 59 }, false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 53, 44, 46 }, false);
 		break;
 	case Menu::Drg:
-		_menu_rendered.put_chars(1, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 187 }, false);
-		_menu_rendered.put_chars(48, 0, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 188 }, false);
-		_menu_rendered.put_chars(1, 8, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 186 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 187 }, false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 188 }, false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 186 }, false);
 		break;
 	default:
 		break;

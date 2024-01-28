@@ -1,7 +1,7 @@
 #include "InputWindow.h"
 
 
-InputWindow::InputWindow(KEY_SET promt, std::function<void(std::string)> callback)
+InputWindow::InputWindow(std::string promt, std::function<void(std::string)> callback)
 {
 	_blink_timer = Utils::us_since_boot();
 	_prompt = promt;
@@ -55,7 +55,7 @@ void InputWindow::add_cursor(Bitset2D& bitset)
 	_window.draw_vertical_line(_cursor_index * 6 + 2, 15, 9, true);
 }
 
-void InputWindow::input(KEY_SET promt, std::function<void(std::string)> callback)
+void InputWindow::input(std::string promt, std::function<void(std::string)> callback)
 {
 	WindowManager::get_instance()->add_window(new InputWindow(promt, callback));
 }

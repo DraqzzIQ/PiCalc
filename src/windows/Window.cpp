@@ -38,10 +38,17 @@ void Window::lost_focus()
 
 void Window::clear_window()
 {
-	_window = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+	_window = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT + 1, false);
 }
 
-const Bitset2D& Window::get_preview()
+void Window::copy_frame(Frame& frame) const
+{
+	frame.corner_x = _frame.corner_x;
+	frame.corner_y = _frame.corner_y;
+	frame.screen_symbols = _frame.screen_symbols;
+}
+
+const Bitset2D& Window::get_window() const
 {
 	return _window;
 }

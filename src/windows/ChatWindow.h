@@ -1,7 +1,8 @@
 #pragma once
-#include "windows/TextWindow.h"
+#include "utils/Utils.h"
+#include "windows/NotesWindow.h"
 
-class ChatWindow: public TextWindow
+class ChatWindow: public NotesWindow
 {
 	public:
 	~ChatWindow();

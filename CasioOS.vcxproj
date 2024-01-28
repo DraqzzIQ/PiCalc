@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\options\TextMenuOption.h" />
     <ClInclude Include="src\windows\BatteryWindow.h" />
     <ClInclude Include="src\constant\Chars.h" />
     <ClInclude Include="src\constant\Constants.h" />
@@ -54,7 +55,6 @@
     <ClInclude Include="src\windows\PongWindow.h" />
     <ClInclude Include="src\windows\SettingsWindow.h" />
     <ClInclude Include="src\windows\SysInfoWindow.h" />
-    <ClInclude Include="src\windows\TextWindow.h" />
     <ClInclude Include="src\windows\Window.h" />
     <ClInclude Include="src\windows\WindowManager.h" />
     <ClInclude Include="src\http\IHttpClient.h" />
@@ -78,7 +78,6 @@
     <ClInclude Include="src\datastructs\ThreadSafeQueue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\windows\BatteryWindow.cpp" />
     <ClCompile Include="src\CasioOS.cpp" />
     <ClCompile Include="src\constant\Chars.cpp" />
     <ClCompile Include="src\constant\Error.cpp" />
@@ -105,8 +104,6 @@
     <ClCompile Include="src\windows\InstanceSelectionWindow.cpp" />
     <ClCompile Include="src\windows\MenuWindow.cpp" />
     <ClCompile Include="src\windows\PongWindow.cpp" />
-    <ClCompile Include="src\windows\SysInfoWindow.cpp" />
-    <ClCompile Include="src\windows\TextWindow.cpp" />
     <ClCompile Include="src\windows\Window.cpp" />
     <ClCompile Include="src\windows\WindowManager.cpp" />
     <ClCompile Include="src\http\DesktopHttpClient.cpp" />

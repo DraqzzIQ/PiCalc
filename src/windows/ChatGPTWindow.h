@@ -1,10 +1,4 @@
 #pragma once
-#ifdef PICO
-#include <http/PicoHttpClient.h>
-#else
-#include <http/DesktopHttpClient.h>
-#endif
-
 #include "threading/Threading.h"
 #include "windows/ChatWindow.h"
 #include <regex>

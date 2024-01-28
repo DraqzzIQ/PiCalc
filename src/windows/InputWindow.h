@@ -7,15 +7,15 @@
 class InputWindow: public Window
 {
 	public:
-	InputWindow(KEY_SET promt, std::function<void(std::string)> callback);
+	InputWindow(std::string promt, std::function<void(std::string)> callback);
 	~InputWindow();
 	void update_window() override;
 	bool handle_key_down(KeyPress keypress) override;
 
-	static void input(KEY_SET prompt, std::function<void(std::string)> callback);
+	static void input(std::string prompt, std::function<void(std::string)> callback);
 
 	private:
-	KEY_SET _prompt;
+	std::string _prompt;
 	std::string _input;
 
 	uint32_t _cursor_index = 0;

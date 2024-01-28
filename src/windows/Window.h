@@ -44,10 +44,13 @@ class Window
 	/// </summary>
 	virtual void lost_focus();
 	/// <summary>
+	/// copy all data except for the pixels to the given frame
+	/// </summary>
+	void copy_frame(Frame& frame) const;
+	/// <summary>
 	/// return _window as const reference
 	/// </summary>
-	/// <returns></returns>
-	const Bitset2D& get_preview();
+	const Bitset2D& get_window() const;
 
 	protected:
 	/// <summary>
