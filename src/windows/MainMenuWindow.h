@@ -6,6 +6,7 @@
 #include "windows/PaintWindow.h"
 #include "windows/PongWindow.h"
 #include "windows/SettingsWindow.h"
+#include "windows/TetrisWindow.h"
 #include "windows/WolframAlphaWindow.h"
 
 class MainMenuWindow: public MenuWindow
@@ -14,14 +15,15 @@ class MainMenuWindow: public MenuWindow
 	MainMenuWindow():
 		MenuWindow()
 	{
-		options = std::vector<MenuOptionBase*>(7);
+		options = std::vector<MenuOptionBase*>(8);
 		options[0] = new WindowMenuOption<CalculatorWindow>("Calculator");
 		options[1] = new WindowMenuOption<WolframAlphaWindow>("Wolfram Alpha");
 		options[2] = new WindowMenuOption<ChatGPTWindow>("ChadGPT");
 		options[3] = new WindowMenuOption<NotesWindow>("Notes");
 		options[4] = new WindowMenuOption<PongWindow>("Pong");
 		options[5] = new WindowMenuOption<PaintWindow>("Paint");
-		options[6] = new WindowMenuOption<SettingsWindow>("Settings");
+		options[6] = new WindowMenuOption<TetrisWindow>("Tetris");
+		options[7] = new WindowMenuOption<SettingsWindow>("Settings");
 
 		create_menu();
 	}

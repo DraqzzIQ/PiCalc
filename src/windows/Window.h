@@ -33,6 +33,12 @@ class Window
 	/// <param name="key">key that got released</param>
 	virtual bool handle_key_up(KeyPress keypress);
 	/// <summary>
+	/// returns the rendered window
+	/// </summary>
+	Bitset2D get_preview();
+
+	protected:
+	/// <summary>
 	/// calles when window is displayed
 	/// </summary>
 	virtual void got_focus();
@@ -40,12 +46,6 @@ class Window
 	/// called when window is not displayed anymore
 	/// </summary>
 	virtual void lost_focus();
-	/// <summary>
-	/// returns the rendered window
-	/// </summary>
-	Bitset2D get_preview();
-
-	protected:
 	/// <summary>
 	/// Bitset2D describing the window
 	/// </summary>
