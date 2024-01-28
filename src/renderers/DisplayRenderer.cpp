@@ -10,8 +10,14 @@ DisplayRenderer::DisplayRenderer()
 
 void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 {
-	if (!force_rerender && already_rendered(frame))
-		return;
+	if (_timer + 500000 > Utils::us_since_boot()) {
+		_timer = Utils::us_since_boot();
+		Utils::update_voltage();
+		if (Utils::voltage > 360000) _battery_symbols = 0b11;
+		else if (Utils::voltage > 320000) _battery_symbols = 0b10;
+		else if (_battery_symbols == 0b00) _battery_symbols = 0b11;
+		else _battery_symbols = 0b00;
+	} else if (!force_rerender && already_rendered(frame)) return;
 
 	// 3 commands + 4 bytes per column
 	uint8_t command[387];
@@ -22,10 +28,10 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 	uint16_t index = 3;
 	uint8_t screen_symbol_index = 0;
 
-	for (uint8_t j = 0; j < frame.pixels.width(); j++) {
-		std::vector<uint8_t> bytes = frame.pixels[j].get_bytes();
+	uint32_t x_end = frame.corner_x + frame.pixels.width();
+	for (uint32_t x = frame.corner_x; x < x_end; x++) {
+		std::vector<uint8_t> bytes = frame.pixels.at(x).get_bytes();
 
-		// comment this
 		bytes[3] >>= 1;
 		if (bytes[2] & 1) bytes[3] |= 0x80;
 		bytes[2] >>= 1;
@@ -33,8 +39,13 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 		bytes[1] >>= 1;
 		if (bytes[0] & 1) bytes[1] |= 0x80;
 		bytes[0] >>= 1;
-		if (j == screen_symbol_positions[screen_symbol_index] && frame.screen_symbols.size() > screen_symbol_index && frame.screen_symbols.at(screen_symbol_index++) == 1) bytes[0] |= 0x80;
-		// to here
+		if (x < 82) {
+			if(x == screen_symbol_positions[screen_symbol_index] && frame.get_screen_symbol(screen_symbol_index++)) bytes[0] |= 0x80;
+		} else if (x == 88) {
+			if (_battery_symbols & 0b10) bytes[0] |= 0x80;
+		} else if (x == 89) {
+			if (_battery_symbols & 0b01) bytes[0] |= 0x80;
+		} else if (x == 93 && Utils::charging) bytes[0] |= 0x80;
 
 		for (uint8_t i = 0; i < 4; i++) {
 			command[index++] = reverse_byte(bytes[i]);

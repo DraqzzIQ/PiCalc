@@ -13,10 +13,4 @@ class BatteryWindow: public Window
 	BatteryWindow();
 	~BatteryWindow();
 	void update_window() override;
-
-	private:
-	uint64_t _timer;
-	Decimal _voltage;
-
-	void update();
 };

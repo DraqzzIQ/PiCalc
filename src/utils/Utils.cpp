@@ -1,5 +1,8 @@
 #include "utils/Utils.h"
 
+uint32_t Utils::voltage = 500000;
+bool Utils::charging = false;
+
 #ifndef PICO
 std::chrono::steady_clock::time_point Utils::_start_point;
 #endif
@@ -75,4 +78,12 @@ std::vector<std::string> Utils::split_string(std::string string_to_split, char d
 uint32_t Utils::get_string_as_pixel_width(std::string text, FONT& table, uint16_t spacing)
 {
 	return Graphics::create_text(text, table, spacing).width();
+}
+
+void Utils::update_voltage()
+{
+#ifdef PICO
+	voltage = 115 * adc_read();
+	charging = gpio_get(27);
+#endif
 }

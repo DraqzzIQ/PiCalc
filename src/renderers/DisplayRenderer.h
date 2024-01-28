@@ -66,6 +66,8 @@ class DisplayRenderer: public IRenderer
 	/// current contrast of the display
 	/// </summary>
 	uint8_t _contrast = 14;
+	uint64_t _timer = 0;
+	uint8_t _battery_symbols = 0b11;
 
 	const std::vector<uint8_t> screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
 };

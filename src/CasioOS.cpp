@@ -59,14 +59,23 @@ int main(int argc, char* argv[])
 	gpio_init(28);
 	gpio_set_dir(28, GPIO_OUT);
 	gpio_put(28, 1);
-	// Enable UART so we can print status output
+
+	// set up the battery voltage measuring pin (GPIO 26)
+	adc_init();
+	adc_gpio_init(26);
+	adc_select_input(0);
+
+	// set up the charging indication pin (GPIO 27)
+	gpio_init(27);
+	gpio_set_dir(27, GPIO_IN);
+
+	// Enable UART so status output can be printed
 	stdio_init_all();
 	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl;
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
 	if (!I2CUtils::device_availible(LCD_DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
-	else
-		new DisplayRenderer();
+	else new DisplayRenderer();
 #else
 	new ConsoleRenderer();
 #endif
