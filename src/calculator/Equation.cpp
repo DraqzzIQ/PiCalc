@@ -107,12 +107,20 @@ void Equation::move_cursor_right()
 
 void Equation::move_cursor_up()
 {
+	// TODO
 	for (uint32_t i = _cursor_index - 1; i > 0; i--) {
 		if (_equation.at(i) == 237) {
 			_cursor_index = i;
 			render_equation();
 			return;
-		} else if (_equation.at(i) == 238) {
+		} else if (_equation.at(i) == 239) {
+			uint32_t new_line_index = i;
+			i--;
+			while (i > 0 && _equation.at(i) != 239) i--;
+			_cursor_index -= new_line_index;
+			if (i + _cursor_index > new_line_index) _cursor_index = new_line_index;
+			else _cursor_index += i;
+			render_equation();
 			return;
 		}
 	}
@@ -120,12 +128,19 @@ void Equation::move_cursor_up()
 
 void Equation::move_cursor_down()
 {
+	// TODO
 	for (uint32_t i = _cursor_index; i < _equation.size(); i++) {
 		if (_equation.at(i) == 237) {
 			_cursor_index = i + 1;
 			render_equation();
 			return;
-		} else if (Chars::in_key_set(_equation.at(i), _symbols)) {
+		} else if (_equation.at(i) == 239) {
+			uint32_t new_line_index = i;
+			i--;
+			while (i < 0 && _equation.at(i) != 239) i--;
+			_cursor_index -= new_line_index;
+			if (i + _cursor_index > new_line_index) _cursor_index = new_line_index;
+			else _cursor_index += i;
 			return;
 		}
 	}
@@ -459,11 +474,22 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, new_y_origin + 2 + diff);
 		}
 
+		// symbol keys
 		else if (value == 237 || value == 238) {
 			break;
 		}
 
-		// any other symbol
+		// newline
+		else if (value == 239) {
+			if (type == 0) {
+				int32_t new_y_origin = 0;
+				symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, 0, equation_part.height(), 1, 0);
+				equation_part.extend_down(1, false);
+				equation_part.extend_down(symbol_matrix);
+			} else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+		}
+
+		// any other KEY
 		else {
 			if (table.count(value) != 0) symbol_matrix = table.at(value);
 			else symbol_matrix = table.at(86);
