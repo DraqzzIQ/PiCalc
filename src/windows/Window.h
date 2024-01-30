@@ -36,9 +36,13 @@ class Window
 	/// <param name="key">key that got released</param>
 	virtual bool handle_key_up(KeyPress keypress);
 	/// <summary>
-	/// returns the rendered window
+	/// copy all data except for the pixels to the given frame
 	/// </summary>
-	Bitset2D get_preview();
+	void copy_frame(Frame& frame) const;
+	/// <summary>
+	/// return _window as const reference
+	/// </summary>
+	const Bitset2D& get_window() const;
 
 	protected:
 	/// <summary>
@@ -49,14 +53,6 @@ class Window
 	/// called when window is not displayed anymore
 	/// </summary>
 	virtual void lost_focus();
-	/// <summary>
-	/// copy all data except for the pixels to the given frame
-	/// </summary>
-	void copy_frame(Frame& frame) const;
-	/// <summary>
-	/// return _window as const reference
-	/// </summary>
-	const Bitset2D& get_window() const;
 
 	protected:
 	/// <summary>

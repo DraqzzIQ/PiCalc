@@ -9,7 +9,7 @@ class TetrisWindow: public Window
 	TetrisWindow();
 	~TetrisWindow();
 
-	Frame update_window() override;
+	void update_window() override;
 	bool handle_key_down(KeyPress keypress) override;
 
 	private:

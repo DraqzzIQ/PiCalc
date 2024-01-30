@@ -13,25 +13,25 @@ TetrisWindow::~TetrisWindow()
 {
 }
 
-Frame TetrisWindow::update_window()
+void TetrisWindow::update_window()
 {
 	clear_window();
 
-	add_to_window(Graphics::create_text("Hold:", Graphics::SYMBOLS_6_HIGH), 3, 0);
-	add_to_window(_hold_piece, 14, 7);
+	_window.put_chars(3, 1, Graphics::SYMBOLS_6_HIGH, "Hold:", true);
+	_window.set(14, 8, _hold_piece, true);
 
-	add_to_window(Graphics::create_text("Score:", Graphics::SYMBOLS_6_HIGH), 2, 15);
-	add_to_window(Graphics::create_text(std::to_string(_score), Graphics::SYMBOLS_6_HIGH), 3, 23);
+	_window.put_chars(2, 16, Graphics::SYMBOLS_6_HIGH, "Score:", true);
+	_window.put_chars(3, 24, Graphics::SYMBOLS_6_HIGH, std::to_string(_score), true);
 
-	add_to_window(Bitset2D(2, 31, true), _board_offset - 2, 0);
-	add_to_window(_board, _board_offset, 0);
-	add_to_window(Bitset2D(2, 31, true), _board_offset + _board_width, 0);
+	_window.set(_board_offset - 2, 1, Bitset2D(2, 31, true), true);
+	_window.set(_board_offset, 1, _board, true);
+	_window.set(_board_offset + _board_width, 1, Bitset2D(2, 31, true), true);
 
-	add_to_window(Graphics::create_text("Next:", Graphics::SYMBOLS_6_HIGH), _board_offset + _board_width + 5, 0);
-	add_to_window(_next_piece, _board_offset + _board_width + 16, 7);
+	_window.put_chars(_board_offset + _board_width + 5, 1, Graphics::SYMBOLS_6_HIGH, "Next:", true);
+	_window.set(_board_offset + _board_width + 16, 8, _next_piece, true);
 
-	add_to_window(Graphics::create_text("Lines:", Graphics::SYMBOLS_6_HIGH), _board_offset + _board_width + 3, 15);
-	add_to_window(Graphics::create_text(std::to_string(_lines), Graphics::SYMBOLS_6_HIGH), _board_offset + _board_width + 4, 23);
+	_window.put_chars(_board_offset + _board_width + 3, 16, Graphics::SYMBOLS_6_HIGH, "Lines:", true);
+	_window.put_chars(_board_offset + _board_width + 4, 24, Graphics::SYMBOLS_6_HIGH, std::to_string(_lines), true);
 
 
 	for (uint8_t i = 0; i < _falling_piece.width(); i++) {
@@ -46,8 +46,6 @@ Frame TetrisWindow::update_window()
 		move_piece_down();
 		_last_update = Utils::us_since_boot();
 	}
-
-	return Frame(_window, _screen_symbols);
 }
 
 bool TetrisWindow::handle_key_down(KeyPress keypress)
