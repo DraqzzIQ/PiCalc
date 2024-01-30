@@ -26,7 +26,6 @@ const std::map<std::string, KEY> Chars::CHAR_TO_KEYCODE = {
 	{ "M", 22 },
 	{ "N", 23 },
 	{ "O", 24 },
-	{ "O", 24 },
 	{ "P", 25 },
 	{ "Q", 26 },
 	{ "R", 27 },
@@ -168,6 +167,7 @@ const std::map<std::string, KEY> Chars::CHAR_TO_KEYCODE = {
 	{ "Intg", 163 },
 	{ "RanInt", 164 },
 	{ "euler", 165 },
+	{ "ceil", 166 },
 	{ "up", 167 },
 	{ "down", 168 },
 	{ "left", 169 },
@@ -252,7 +252,6 @@ const std::map<std::string, KEY> Chars::CHAR_TO_KEYCODE = {
 	{ "dark8", 248 },
 	{ "dark9", 249 },
 	{ "RETURN", 250 },
-	{ "ceil", 251 }
 };
 
 const std::vector<std::string> Chars::KEY_MAP = {
@@ -422,7 +421,7 @@ const std::vector<std::string> Chars::KEY_MAP = {
 	"Intg",
 	"RanInt",
 	"euler",
-	"",
+	"ceil",
 	"up",
 	"down",
 	"left",
@@ -507,7 +506,6 @@ const std::vector<std::string> Chars::KEY_MAP = {
 	"dark8",
 	"dark9",
 	"RETURN",
-	"ceil",
 };
 
 const std::map<KEY, KEY> Chars::KEY_MAP_SHIFT = {

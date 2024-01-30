@@ -1,7 +1,6 @@
 #include "ContrastWindow.h"
 
-ContrastWindow::ContrastWindow():
-	Window()
+ContrastWindow::ContrastWindow()
 {
 	render();
 }
@@ -30,16 +29,16 @@ void ContrastWindow::render()
 {
 	uint8_t contrast = get_contrast();
 	clear_window();
-	_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Contrast", false);
-	_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, KEY_SET{ 76, 181, 77, 76, 182, 77 }, false);
+	_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, KEY_SET{ 12, 54, 53, 59, 57, 40, 58, 59 }, false);
+	_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, KEY_SET{ 76, 181, 77, 76, 182, 77 }, false);
 	uint8_t bar_x = (30 - contrast) * 2 + 16;
-	_window.draw_vertical_line(15, 20, 8, true);
-	_window.draw_vertical_line(78, 20, 8, true);
-	_window.draw_vertical_line(bar_x, 20, 8, true);
-	_window.draw_vertical_line(bar_x + 1, 20, 8, true);
+	_window.draw_vertical_line(15, 21, 8, true);
+	_window.draw_vertical_line(78, 21, 8, true);
+	_window.draw_vertical_line(bar_x, 21, 8, true);
+	_window.draw_vertical_line(bar_x + 1, 21, 8, true);
 	for (uint8_t x = 16; x < 78; x++) {
-		_window.set_bit(x, 20, true);
-		_window.set_bit(x, 27, true);
+		_window.set_bit(x, 21, true);
+		_window.set_bit(x, 28, true);
 	}
 }
 

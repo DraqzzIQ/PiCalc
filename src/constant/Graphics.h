@@ -18,7 +18,7 @@ class Graphics
 	~Graphics();
 
 	/// <summary>
-	/// creates a Bitset2D text from string
+	/// creates a Bitset2D text from string<para/>
 	/// DEPRECATED: use Bitset2D::put_chars instead
 	/// </summary>
 	/// <param name="text">text to be transformed</param>
@@ -27,7 +27,7 @@ class Graphics
 	/// <returns>converted text</returns>
 	static Bitset2D create_text(const std::string& text, FONT& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
 	/// <summary>
-	/// creates a Bitset2D text from KEY_SET
+	/// creates a Bitset2D text from KEY_SET<para/>
 	/// DEPRECATED: use Bitset2D::put_chars instead
 	/// </summary>
 	/// <param name="text">text to be transformed</param>
@@ -48,6 +48,6 @@ class Graphics
 	static FONT SYMBOLS_5_HIGH;
 
 	static const std::map<KEY, KEY_SET> key_text;
-	// TODO: enum
+
 	static const std::vector<std::string> SCREEN_SYMBOLS;
 };

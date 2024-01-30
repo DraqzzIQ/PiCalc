@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #ifdef PICO
+#include "hardware/adc.h"
 #include "pico/stdlib.h"
 #include <malloc.h>
 #else
@@ -48,9 +49,21 @@ class Utils
 	/// </summary>
 	static uint32_t get_string_as_pixel_width(std::string text, FONT& table, uint16_t spacing = 1);
 	/// <summary>
+	/// update the Battery Voltage stored in voltage and whether the battery is charged (stored in charging)
+	/// </summary>
+	static void update_voltage();
+	/// <summary>
+	/// the current Battery Voltage, with 5 decimal places
+	/// </summary>
+	static uint32_t voltage;
+	/// <summary>
+	/// stores whether the battery is currently charging
+	/// </summary>
+	static bool charging;
+#ifndef PICO
+	/// <summary>
 	/// sets the start point for the us_since_boot function
 	/// </summary>
-#ifndef PICO
 	static void set_time_start_point();
 #endif
 	private:

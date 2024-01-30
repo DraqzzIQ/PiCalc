@@ -149,6 +149,23 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY,
 	}
 }
 
+void Bitset2D::put_number_aligned_right(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, uint16_t number)
+{
+	if (coord_x >= _width || coord_y >= _height || coord_x < 4) return;
+	coord_x -= 4;
+	if (number == 0) {
+		set(coord_x, coord_y, font.at(0), false);
+		return;
+	}
+
+	while (number > 0) {
+		set(coord_x, coord_y, font.at(number % 10), false);
+		number /= 10;
+		if (coord_x < 6) return;
+		coord_x -= 6;
+	}
+}
+
 void Bitset2D::draw_vertical_line(uint32_t coord_x, uint32_t coord_y, uint32_t length, bool value)
 {
 	_plane[coord_x].set(coord_y, length, value);

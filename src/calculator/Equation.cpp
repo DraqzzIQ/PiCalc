@@ -47,7 +47,7 @@ Bitset2D Equation::get_rendered_equation(bool complete)
 	// change _show_cursor every 500ms if cursor is active
 	if (!_cursor_active) _show_cursor = false;
 	else if (Utils::us_since_boot() > _last_blink_time + 500000) {
-		_last_blink_time += 500000;
+		_last_blink_time = Utils::us_since_boot();
 		_show_cursor = !_show_cursor;
 	}
 

@@ -8,8 +8,7 @@
 class SettingsWindow: public MenuWindow
 {
 	public:
-	SettingsWindow():
-		MenuWindow()
+	SettingsWindow()
 	{
 		options = std::vector<MenuOptionBase*>(5);
 		options[0] = new WindowMenuOption<SysInfoWindow>("System Info");

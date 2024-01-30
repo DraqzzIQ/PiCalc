@@ -5,14 +5,14 @@ class InstanceSelectionWindow: public Window
 {
 	public:
 	InstanceSelectionWindow();
-	Frame update_window();
-	bool handle_key_down(KeyPress keypress);
-	void setup(std::vector<Window*> instances);
+	bool handle_key_down(KeyPress keypress) override;
+	void setup(const std::vector<Window*>& instances);
 
 	private:
 	std::vector<Window*> _instances;
 	WindowManager* _window_manager;
-	int _current_page = 0;
+	uint8_t _current_page = 0;
 	void scroll_up();
 	void scroll_down();
+	void render();
 };

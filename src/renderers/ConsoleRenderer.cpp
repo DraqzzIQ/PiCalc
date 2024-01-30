@@ -29,8 +29,8 @@ void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
 	out += get_display_border();
 	out += "\n# ";
 
-	for (uint32_t i = 0; i < frame.screen_symbols.size(); i++) {
-		if (frame.screen_symbols[i]) {
+	for (uint32_t i = 0; i < 15; i++) {
+		if (frame.get_screen_symbol(i)) {
 			out += Graphics::SCREEN_SYMBOLS[i];
 		} else {
 			out += std::string(Graphics::SCREEN_SYMBOLS[i].length(), ' ');
@@ -38,13 +38,15 @@ void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
 		out += "  ";
 	}
 
-	out += std::string(113, ' ');
+	out += std::string(125, ' ');
 	out += "#\n";
 
-	for (uint32_t i = 0; i < SCREEN_HEIGHT; i++) {
+	uint32_t x_end = frame.corner_x + SCREEN_WIDTH;
+	uint32_t y_end = frame.corner_y + SCREEN_HEIGHT;
+	for (uint32_t y = frame.corner_y; y < y_end; y++) {
 		out += "# ";
-		for (uint32_t j = 0; j < SCREEN_WIDTH; j++) {
-			if (frame.pixels.get_bit(j, i)) out += '\xFE';
+		for (uint32_t x = frame.corner_x; x < x_end; x++) {
+			if (x < frame.pixels.width() && y < frame.pixels.height() && frame.pixels.get_bit(x, y)) out += '\xFE';
 			else out += " ";
 			out += " ";
 		}

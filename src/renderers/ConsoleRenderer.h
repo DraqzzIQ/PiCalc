@@ -15,12 +15,11 @@ class ConsoleRenderer: public IRenderer
 {
 	public:
 	ConsoleRenderer();
-
 	/// <summary>
 	/// renders the given frame to the console
 	/// </summary>
 	/// <param name="frame">frame to render</param>
-	void render(const Frame& frame, bool force_rerender);
+	void render(const Frame& frame, bool force_rerender) override;
 
 	private:
 	/// <summary>

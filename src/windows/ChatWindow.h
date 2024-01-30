@@ -1,12 +1,13 @@
 #pragma once
-#include "windows/TextWindow.h"
+#include "utils/Utils.h"
+#include "windows/NotesWindow.h"
 
-class ChatWindow: public TextWindow
+class ChatWindow: public NotesWindow
 {
 	public:
 	~ChatWindow();
-	bool handle_key_down(KeyPress keypress);
-	Frame update_window();
+	bool handle_key_down(KeyPress keypress) override;
+	void update_window() override;
 	/// <summary>
 	/// splits a string into multiple lines fitting the screen
 	/// </summary>

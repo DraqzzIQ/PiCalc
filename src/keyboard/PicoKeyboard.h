@@ -20,19 +20,19 @@ class PicoKeyboard: public IKeyboard
 	/// <summary>
 	/// checks for keyboard presses
 	/// </summary>
-	void check_for_keyboard_presses();
+	void check_for_keyboard_presses() override;
 
 	protected:
 	/// <summary>
 	/// checks wether shift is active
 	/// </summary>
 	/// <returns>true if pressed else false</returns>
-	bool is_shift_active();
+	bool is_shift_active() override;
 	/// <summary>
 	/// checks wether alpha is active
 	/// </summary>
 	/// <returns>true if pressed else false</returns>
-	bool is_alpha_active();
+	bool is_alpha_active() override;
 
 	private:
 	/// <summary>

@@ -1,24 +1,22 @@
 #include "PongWindow.h"
 
-PongWindow::PongWindow():
-	Window()
+PongWindow::PongWindow()
 {
 	_menu = Menu::ONLINE;
-	_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Online?", false);
-	_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0: no", false);
-	_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "1: yes", false);
+	_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Online?", false);
+	_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "0: no", false);
+	_window.put_chars(0, 17, Graphics::SYMBOLS_6_HIGH, "1: yes", false);
 }
 
 PongWindow::~PongWindow() {}
 
-Frame PongWindow::update_window()
+void PongWindow::update_window()
 {
 	if (_menu == Menu::GAME) {
 		move_paddles();
 		move_ball();
 		render_game();
 	}
-	return Frame(_window, _screen_symbols);
 }
 
 bool PongWindow::handle_key_down(KeyPress keypress)
@@ -30,12 +28,12 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		else return false;
 		_menu = Menu::DURATION;
 		clear_window();
-		_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Duration? ", false);
-		_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0:S(6)", false);
-		_window.put_chars(48, 8, Graphics::SYMBOLS_6_HIGH, "1:M(11)", false);
-		_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "2:L(16)", false);
-		_window.put_chars(48, 16, Graphics::SYMBOLS_6_HIGH, "3:XL(21)", false);
-		_window.put_chars(0, 24, Graphics::SYMBOLS_6_HIGH, "4:endless", false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Duration? ", false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "0:S(6)", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "1:M(11)", false);
+		_window.put_chars(0, 17, Graphics::SYMBOLS_6_HIGH, "2:L(16)", false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "3:XL(21)", false);
+		_window.put_chars(0, 25, Graphics::SYMBOLS_6_HIGH, "4:endless", false);
 		return true;
 	case Menu::DURATION:
 		if (keypress.key_raw == 0) _win_points = 6;
@@ -46,9 +44,9 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		else return false;
 		_menu = Menu::PLATFORM;
 		clear_window();
-		_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Platform Mode?", false);
-		_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0: easy", false);
-		_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "1: hard", false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Platform Mode?", false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "0: easy", false);
+		_window.put_chars(0, 17, Graphics::SYMBOLS_6_HIGH, "1: hard", false);
 		return true;
 	case Menu::PLATFORM:
 		if (keypress.key_raw == 0) _platform_easy = true;
@@ -56,8 +54,8 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		else return false;
 		_menu = Menu::DIFFICULTY;
 		clear_window();
-		_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Difficulty? ", false);
-		_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0-9", false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Difficulty? ", false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "0-9", false);
 		return true;
 	case Menu::DIFFICULTY:
 		if (keypress.key_raw < 10) {
@@ -100,9 +98,9 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		else if (keypress.key_raw == 1) {
 			_menu = Menu::ONLINE;
 			clear_window();
-			_window.put_chars(0, 0, Graphics::SYMBOLS_6_HIGH, "Online?", false);
-			_window.put_chars(0, 8, Graphics::SYMBOLS_6_HIGH, "0: no", false);
-			_window.put_chars(0, 16, Graphics::SYMBOLS_6_HIGH, "1: yes", false);
+			_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Online?", false);
+			_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "0: no", false);
+			_window.put_chars(0, 17, Graphics::SYMBOLS_6_HIGH, "1: yes", false);
 		} else return false;
 		return true;
 	}
@@ -234,19 +232,19 @@ void PongWindow::render_game()
 	// show whether someone won, otherwise draw the ball
 	if (_rscore == _win_points) {
 		_menu = Menu::WIN;
-		_window.put_chars(18, 8, Graphics::SYMBOLS_6_HIGH, "Right won!", false);
-		_window.put_chars(18, 16, Graphics::SYMBOLS_6_HIGH, "0: restart", false);
-		_window.put_chars(27, 24, Graphics::SYMBOLS_6_HIGH, "1: menu", false);
+		_window.put_chars(18, 9, Graphics::SYMBOLS_6_HIGH, "Right won!", false);
+		_window.put_chars(18, 17, Graphics::SYMBOLS_6_HIGH, "0: restart", false);
+		_window.put_chars(27, 25, Graphics::SYMBOLS_6_HIGH, "1: menu", false);
 	} else if (_lscore == _win_points) {
 		_menu = Menu::WIN;
-		_window.put_chars(21, 8, Graphics::SYMBOLS_6_HIGH, "Left won!", false);
-		_window.put_chars(18, 16, Graphics::SYMBOLS_6_HIGH, "0: restart", false);
-		_window.put_chars(27, 24, Graphics::SYMBOLS_6_HIGH, "1: menu", false);
-	} else _window.set_bit(_ball_x / 64, _ball_y / 64, true);
+		_window.put_chars(21, 9, Graphics::SYMBOLS_6_HIGH, "Left won!", false);
+		_window.put_chars(18, 17, Graphics::SYMBOLS_6_HIGH, "0: restart", false);
+		_window.put_chars(27, 25, Graphics::SYMBOLS_6_HIGH, "1: menu", false);
+	} else _window.set_bit(_ball_x / 64, _ball_y / 64 + 1, true);
 
 	// draw the paddles
-	_window.draw_vertical_line(0, _lpaddle_pos / 64, _paddle_height / 64, true);
-	_window.draw_vertical_line(SCREEN_WIDTH - 1, _rpaddle_pos / 64, _paddle_height / 64, true);
+	_window.draw_vertical_line(0, _lpaddle_pos / 64 + 1, _paddle_height / 64, true);
+	_window.draw_vertical_line(SCREEN_WIDTH - 1, _rpaddle_pos / 64 + 1, _paddle_height / 64, true);
 
 	// draw the left score
 	KEY_SET score_key_set = KEY_SET();

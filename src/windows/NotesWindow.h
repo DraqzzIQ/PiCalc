@@ -4,16 +4,14 @@
 #include "utils/Utils.h"
 #include "windows/InputWindow.h"
 #include "windows/MenuWindow.h"
-#include "windows/TextWindow.h"
 #include <functional>
 
-class NotesWindow: public TextWindow
+class NotesWindow: public Window
 {
 	public:
 	NotesWindow();
-	~NotesWindow();
-	Frame update_window();
-	bool handle_key_down(KeyPress keypress);
+	void update_window() override;
+	bool handle_key_down(KeyPress keypress) override;
 
 	private:
 	/// <summary>

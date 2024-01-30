@@ -13,54 +13,49 @@
 class MenuWindow: public Window
 {
 	public:
-	MenuWindow();
+	MenuWindow(FONT& font, bool count = true);
+	MenuWindow(bool count = true);
 	~MenuWindow();
 	/// <summary>
-	/// called when the window gets rerendered
+	/// handles key presses
 	/// </summary>
-	/// <returns>pixels to render</returns>
-	Frame update_window();
+	bool handle_key_down(KeyPress keypress) override;
 	/// <summary>
-	/// handles keydown events
-	/// </summary>
-	/// <param name="key">key that got pressed</param>
-	bool handle_key_down(KeyPress keypress);
-	/// <summary>
-	/// window manager to add windows to
-	/// </summary>
-	WindowManager* window_manager;
-	/// <summary>
-	/// container for all options
-	/// </summary>
-	std::vector<MenuOptionBase*> options;
-	/// <summary>
-	/// max number of options per page
-	/// </summary>
-	const int options_per_page = 4;
-	/// <summary>
-	/// index of currently selected page
-	/// </summary>
-	int current_page = 0;
-	/// <summary>
-	/// height of an option line
-	/// </summary>
-	const int line_height = 8;
-	/// <summary>
-	/// creates the menu out of the options
+	/// creates the menu out of the text
 	/// </summary>
 	void create_menu();
 	/// <summary>
-	/// number of pages
-	/// </summary>
-	int pages_count() const;
-	/// <summary>
-	/// scrolls the menu up
+	/// scrolls the text up
 	/// </summary>
 	void scroll_up();
 	/// <summary>
-	/// scrolls the menu down
+	/// scrolls the text down
 	/// </summary>
 	void scroll_down();
+	/// <summary>
+	/// container for all text lines
+	/// </summary>
+	std::vector<MenuOptionBase*> options;
 
 	private:
+	/// <summary>
+	/// font to be used
+	/// </summary>
+	FONT& _font;
+	/// <summary>
+	/// height of each line
+	/// </summary>
+	uint8_t _line_height;
+	/// <summary>
+	/// lines per page
+	/// </summary>
+	uint8_t _lines_per_page;
+	/// <summary>
+	/// current page
+	/// </summary>
+	uint8_t _page = 0;
+	/// <summary>
+	/// whether to count the lines
+	/// </summary>
+	bool _count;
 };

@@ -11,8 +11,8 @@ class CalculatorWindow: public Window
 	public:
 	CalculatorWindow();
 	~CalculatorWindow();
-	Frame update_window();
-	bool handle_key_down(KeyPress keypress);
+	void update_window() override;
+	bool handle_key_down(KeyPress keypress) override;
 
 	private:
 	enum class Menu {
@@ -39,7 +39,6 @@ class CalculatorWindow: public Window
 		Drg
 	};
 	Menu _menu = Menu::None;
-	Bitset2D _menu_rendered;
 	/// <summary>
 	/// right to left:
 	/// 0: Input (Math2d, Linear)

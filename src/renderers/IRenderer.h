@@ -38,8 +38,8 @@ class IRenderer
 	static std::vector<IRenderer*> Renderers;
 
 	private:
-	/// <summary>
-	/// currently rendered frame
-	/// </summary>
-	Frame _rendered_frame;
+	Bitset2D _rendered_pixels;
+	uint16_t _rendered_screen_symbols = 0;
+	uint32_t _rendered_corner_x = 0;
+	uint32_t _rendered_corner_y = 0;
 };

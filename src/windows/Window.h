@@ -17,10 +17,13 @@ class Window
 	Window();
 	~Window();
 	/// <summary>
-	/// called when the window gets rerendered
+	/// updates the window and returns the frame
 	/// </summary>
-	/// <returns>Frame to render</returns>
-	virtual Frame update_window();
+	Frame& update_and_get_frame();
+	/// <summary>
+	/// called when the window gets rerendered, should update _window and _frame (the Bitset2D in _frame points to _window)
+	/// </summary>
+	virtual void update_window();
 	/// <summary>
 	/// handles keydown events
 	/// returns true, if the keypress was handled
@@ -47,58 +50,25 @@ class Window
 	/// </summary>
 	virtual void lost_focus();
 	/// <summary>
+	/// copy all data except for the pixels to the given frame
+	/// </summary>
+	void copy_frame(Frame& frame) const;
+	/// <summary>
+	/// return _window as const reference
+	/// </summary>
+	const Bitset2D& get_window() const;
+
+	protected:
+	/// <summary>
 	/// Bitset2D describing the window
 	/// </summary>
 	Bitset2D _window;
 	/// <summary>
-	/// x coordinate of the upper left corner of the part of the canvas that is rendered
+	/// Frame thet is returned on update_and_get_frame(), the Bitset2D in it points to _window
 	/// </summary>
-	int _corner_x = 0;
-	/// <summary>
-	/// y coordinate of the upper left corner of the part of the canvas that is rendered
-	/// </summary>
-	int _corner_y = 0;
-	/// <summary>
-	/// saves, which symbols on the lcd should be displayed
-	/// </summary>
-	DynamicBitset _screen_symbols;
-	/// <summary>
-	/// extracts the part of the window that is rendered which is defined by the corner coordinates and <see cref="SCREEN_WIDTH"/> and <see cref="SCREEN_HEIGHT"/>
-	/// </summary>
-	/// <returns>canvas to render</returns>
-	Bitset2D get_render_canvas();
-	/// <summary>
-	/// adds a graphic in form of a Bitset2D (like text) at given coordinates to the screen
-	/// </summary>
-	void add_to_window(const Bitset2D& graphic, int corner_x, int corner_y);
-	/// <summary>
-	/// put text on the screen
-	/// </summary>
-	void put_text(KEY_SET text, FONT font, int corner_x, int corner_y);
-	/// <summary>
-	/// put text on the screen
-	/// </summary>
-	void put_text(std::string text, FONT font, int corner_x, int corner_y);
+	Frame _frame;
 	/// <summary>
 	/// clears the window
 	/// </summary>
 	void clear_window();
-	/// <summary>
-	/// clears all on-screen symbols from the lcd
-	/// </summary>
-	void clear_symbols();
-	/// <summary>
-	/// changes, whether a symbol shoud be displayed on the LCD
-	/// </summary>
-	/// <param name="symbol">symbol to change state</param>
-	/// <param name="state">state to change symbol to</param>
-	void change_symbol(std::string symbol, bool state);
-	/// <summary>
-	/// scrolls the window to the left
-	/// </summary>
-	void scroll_left();
-	/// <summary>
-	/// scrolls the window to the right
-	/// </summary>
-	void scroll_right();
 };

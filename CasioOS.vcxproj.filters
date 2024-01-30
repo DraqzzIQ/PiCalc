@@ -84,9 +84,6 @@
     <ClInclude Include="src\windows\SysInfoWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\windows\TextWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\windows\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -189,15 +186,15 @@
     <ClInclude Include="src\windows\BatteryWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\options\TextMenuOption.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\constant\Chars.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\constant\Constants.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\datastructs\Bitset2D.cpp">
@@ -243,12 +240,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\MenuWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\windows\SysInfoWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\windows\TextWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\Window.cpp">
@@ -318,9 +309,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\threading\Threading.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\windows\BatteryWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,17 +1,22 @@
 #include "windows/Window.h"
 #include "Window.h"
 
-Window::Window()
+Window::Window():
+	_frame(Frame(_window))
 {
 	clear_window();
-	clear_symbols();
 }
 
 Window::~Window() {}
 
-Frame Window::update_window()
+Frame& Window::update_and_get_frame()
 {
-	return Frame(get_render_canvas(), _screen_symbols);
+	update_window();
+	return _frame;
+}
+
+void Window::update_window()
+{
 }
 
 bool Window::handle_key_down(KeyPress keypress)
@@ -31,65 +36,19 @@ void Window::lost_focus()
 {
 }
 
-Bitset2D Window::get_render_canvas()
-{
-	if (_corner_x = 0 && _corner_y == 0) {
-		if (_window.width() < SCREEN_WIDTH || _window.height() < SCREEN_HEIGHT) {
-			Bitset2D canvas = _window;
-			canvas.extend_down(SCREEN_HEIGHT - _window.height(), false);
-			canvas.extend_right(SCREEN_WIDTH - _window.width(), false);
-			return canvas;
-		} else return _window;
-	}
-
-	Bitset2D canvas;
-	_window.copy(_corner_x, _corner_y, SCREEN_WIDTH, SCREEN_HEIGHT, canvas);
-	if (canvas.width() < SCREEN_WIDTH) canvas.extend_right(SCREEN_WIDTH - canvas.width(), false);
-	if (canvas.height() < SCREEN_HEIGHT) canvas.extend_down(SCREEN_HEIGHT - canvas.height(), false);
-	return canvas;
-}
-
-void Window::add_to_window(const Bitset2D& graphic, int corner_x, int corner_y)
-{
-	_window.set(corner_x, corner_y, graphic, true);
-}
-
-void Window::put_text(KEY_SET text, FONT font, int corner_x, int corner_y)
-{
-	_window.put_chars(corner_x, corner_y, font, text, true);
-}
-
-void Window::put_text(std::string text, FONT font, int corner_x, int corner_y)
-{
-	_window.put_chars(corner_x, corner_y, font, text, true);
-}
-
 void Window::clear_window()
 {
-	_window = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+	_window = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT + 1, false);
 }
 
-void Window::clear_symbols()
+void Window::copy_frame(Frame& frame) const
 {
-	_screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), false);
+	frame.corner_x = _frame.corner_x;
+	frame.corner_y = _frame.corner_y;
+	frame.screen_symbols = _frame.screen_symbols;
 }
 
-void Window::change_symbol(std::string symbol, bool state)
-{
-	_screen_symbols.set(std::find(Graphics::SCREEN_SYMBOLS.begin(), Graphics::SCREEN_SYMBOLS.end(), symbol) - Graphics::SCREEN_SYMBOLS.begin(), state);
-}
-
-void Window::scroll_left()
-{
-	if (_corner_x > 0) _corner_x -= SCREEN_WIDTH;
-}
-
-void Window::scroll_right()
-{
-	if (_corner_x + SCREEN_WIDTH < _window.width()) _corner_x += SCREEN_WIDTH;
-}
-
-Bitset2D Window::get_preview()
+const Bitset2D& Window::get_window() const
 {
 	return _window;
 }

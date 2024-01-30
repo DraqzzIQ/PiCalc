@@ -100,9 +100,35 @@ uint32_t DynamicBitset::size() const
 	return _bit_count;
 }
 
-std::vector<uint8_t> DynamicBitset::get_bytes() const
+std::vector<uint8_t> DynamicBitset::get_bytes(uint32_t start) const
 {
-	return _bits;
+	std::vector<uint8_t> bytes(4, 0);
+	if (start % 8 == 0) {
+		start /= 8;
+		bytes[3] = _bits[start + 3] >> 1;
+		if (_bits[start + 2] & 1) bytes[3] |= 0x80;
+		bytes[2] = _bits[start + 2] >> 1;
+		if (_bits[start + 1] & 1) bytes[2] |= 0x80;
+		bytes[1] = _bits[start + 1] >> 1;
+		if (_bits[start] & 1) bytes[1] |= 0x80;
+		bytes[0] = _bits[start] >> 1;
+		return bytes;
+	}
+	start--;
+	if (start % 8 == 0) {
+		start /= 8;
+		std::copy(_bits.begin() + start, _bits.begin() + start + 4, bytes.begin());
+		return bytes;
+	}
+
+	uint8_t shift = start % 8;
+	start /= 8;
+	uint8_t mask = ~((1 << (7 - shift)) - 1);
+	for (uint8_t i = 0; i < 4; i++) {
+		bytes[i] = _bits[start + i] << shift;
+		bytes[i] |= _bits[start + i + 1] & mask;
+	}
+	return bytes;
 }
 
 DynamicBitset DynamicBitset::copy(uint32_t start, uint32_t width) const
