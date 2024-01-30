@@ -99,7 +99,7 @@ class Equation
 	/// </summary>
 	static const KEY_SET _allowed_calculate_operations;
 	/// <summary>
-	/// all Keys that end with an open rounded bracket
+	/// all keys that have an opening breacket at the end (which is not automatically closed like logn, including a raw opening bracket)
 	/// </summary>
 	static const KEY_SET _single_bracket_open_keys;
 	/// <summary>
@@ -107,7 +107,7 @@ class Equation
 	/// </summary>
 	static const KEY_SET _values_before_exponent;
 	/// <summary>
-	/// all symbols that need one or more children
+	/// all Symbols that need to be ended by SYMBOL_END
 	/// </summary>
 	static const KEY_SET _symbols;
 
@@ -197,7 +197,7 @@ class Equation
 	/// </summary>
 	struct CalculateNode {
 		Number* value = nullptr;
-		uint8_t operation = 95;
+		uint8_t operation = 0;
 		int32_t equation_index = -1;
 	};
 

@@ -1,9 +1,10 @@
 #include "calculator/Equation.h"
 
-const KEY_SET Equation::_allowed_calculate_operations = { 69, 70, 71, 72, 74, 75, 85, 98, 114, 115, 116, 118, 119, 120, 130, 138, 139, 140, 152, 153, 154, 159, 162, 163, 164 };
-const KEY_SET Equation::_single_bracket_open_keys = { 74, 114, 115, 118, 119, 120, 138, 139, 140, 152, 153, 154, 160, 161, 162, 163, 164, 190, 191, 192, 193, 194, 195 };
-const KEY_SET Equation::_values_before_exponent = { 75, 85, 102, 106, 109, 110, 111, 127, 128, 131, 155, 156, 165, 186, 187, 188 };
-const KEY_SET Equation::_symbols = { 106, 109, 110, 111, 113, 131, 133, 134, 135, 136 };
+// TIME
+const KEY_SET Equation::_allowed_calculate_operations = { 11, 12, 43, 45, 177, 215, 247 };
+const KEY_SET Equation::_single_bracket_open_keys = { 24, 26, 40, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 159, 161, 164, 165, 166, 167, 168, 170 };
+const KEY_SET Equation::_values_before_exponent = { 41, 33, 29, 11, 15, 16, 17, 18, 171, 178, 169, 172, 173, 174, 175, 176 };
+const KEY_SET Equation::_symbols = { 11, 15, 16, 17, 18, 21, 22, 23, 25, 27 };
 
 Equation::Equation()
 {
@@ -70,15 +71,15 @@ void Equation::del()
 		_equation.erase(_equation.begin() + _cursor_index);
 		while (true) {
 			val = _equation.at(_cursor_index);
-			if (val == 237) _equation.erase(_equation.begin() + _cursor_index);
-			else if (val == 238) {
+			if (val == 190) _equation.erase(_equation.begin() + _cursor_index);
+			else if (val == 191) {
 				_equation.erase(_equation.begin() + _cursor_index);
 				break;
 			} else if (Chars::in_key_set(val, _symbols)) {
-				while (_equation.at(_cursor_index) != 238) _cursor_index++;
+				while (_equation.at(_cursor_index) != 191) _cursor_index++;
 			} else _cursor_index++;
 		}
-	} else if (val != 237 && val != 238) {
+	} else if (val != 190 && val != 191) {
 		_equation.erase(_equation.begin() + _cursor_index);
 	}
 	render_equation();
@@ -109,14 +110,14 @@ void Equation::move_cursor_up()
 {
 	// TODO
 	for (uint32_t i = _cursor_index - 1; i > 0; i--) {
-		if (_equation.at(i) == 237) {
+		if (_equation.at(i) == 190) {
 			_cursor_index = i;
 			render_equation();
 			return;
-		} else if (_equation.at(i) == 239) {
+		} else if (_equation.at(i) == 10) {
 			uint32_t new_line_index = i;
 			i--;
-			while (i > 0 && _equation.at(i) != 239) i--;
+			while (i > 0 && _equation.at(i) != 10) i--;
 			_cursor_index -= new_line_index;
 			if (i + _cursor_index > new_line_index) _cursor_index = new_line_index;
 			else _cursor_index += i;
@@ -130,14 +131,14 @@ void Equation::move_cursor_down()
 {
 	// TODO
 	for (uint32_t i = _cursor_index; i < _equation.size(); i++) {
-		if (_equation.at(i) == 237) {
+		if (_equation.at(i) == 190) {
 			_cursor_index = i + 1;
 			render_equation();
 			return;
-		} else if (_equation.at(i) == 239) {
+		} else if (_equation.at(i) == 10) {
 			uint32_t new_line_index = i;
 			i--;
-			while (i < 0 && _equation.at(i) != 239) i--;
+			while (i < 0 && _equation.at(i) != 10) i--;
 			_cursor_index -= new_line_index;
 			if (i + _cursor_index > new_line_index) _cursor_index = new_line_index;
 			else _cursor_index += i;
@@ -150,20 +151,20 @@ void Equation::add_value(KEY keypress)
 {
 	// TODO: restrictions
 	switch (keypress) {
-	case 106: add_value_raw(106, 1); break;
-	case 107: add_value_raw(113, 1, false, KEY_SET{ 3 }); break;
-	case 108: add_value_raw(113, 1, false, KEY_SET{ 116, 1 }); break;
-	case 109: add_value_raw(109, 2, true); break;
-	case 110: add_value_raw(110, 2, true); break;
-	case 111: add_value_raw(111, 1); break;
-	case 112: add_value_raw(113, 1, false, KEY_SET{ 2 }); break;
-	case 113: add_value_raw(113, 1); break;
-	case 131: add_value_raw(131, 3, true); break;
-	case 132: add_value_raw(134, 2, true); break;
-	case 133: add_value_raw(133, 1); break; // condition
-	case 134: add_value_raw(134, 2, true); break;
-	case 135: add_value_raw(135, 1); break;
-	case 136: add_value_raw(136, 1); break;
+	case 11: add_value_raw(11, 1); break;
+	case 13: add_value_raw(22, 1, false, KEY_SET{ 51 }); break;
+	case 14: add_value_raw(22, 1, false, KEY_SET{ 28, 49 }); break;
+	case 15: add_value_raw(15, 2, true); break;
+	case 16: add_value_raw(16, 2, true); break;
+	case 18: add_value_raw(18, 1); break;
+	case 20: add_value_raw(22, 1, false, KEY_SET{ 50 }); break;
+	case 22: add_value_raw(22, 1); break;
+	case 17: add_value_raw(17, 3, true); break;
+	case 19: add_value_raw(23, 2, false, KEY_SET{ 51 }); break;
+	case 21: add_value_raw(21, 1); break; // condition
+	case 23: add_value_raw(23, 2, true); break;
+	case 25: add_value_raw(25, 1); break;
+	case 27: add_value_raw(27, 1); break;
 	default: _equation.insert(_equation.begin() + _cursor_index++, keypress); break;
 	}
 	render_equation();
@@ -179,7 +180,7 @@ Number* Equation::to_number(uint16_t settings)
 {
 	_settings = settings;
 	_calculate_index = 0;
-	Number* res = to_number_part(95);
+	Number* res = to_number_part(0);
 	render_equation();
 	return res;
 }
@@ -234,8 +235,8 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// any symbol with an open bracket at the end
-		if (Chars::in_key_set(value, _single_bracket_open_keys) && value != 74) {
-			// only render the text before the bracket, then change the value to 74 for the other case to render the actual bracket
+		if (Chars::in_key_set(value, _single_bracket_open_keys) && value != 40) {
+			// only render the text before the bracket, then change the value to 40 for the other case to render the actual bracket
 			KEY_SET keys = Graphics::key_text.at(value);
 			for (uint8_t j = 0; j < keys.size(); j++) {
 				symbol_matrix.extend_right(table.at(keys.at(j)));
@@ -244,11 +245,11 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			symbol_matrix.extend_up(y_origin, false);
 			symbol_matrix.extend_down(equation_part.height() - symbol_matrix.height(), false);
 			equation_part.extend_right(symbol_matrix);
-			value = 74;
+			value = 40;
 		}
 
 		// open bracket
-		if (value == 74) {
+		if (value == 40) {
 			// render everything until the closing bracket
 			int32_t new_y_origin = 0;
 			_render_index++;
@@ -256,7 +257,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			symbol_matrix.pop_back_x();
 
 			// add opening bracket
-			if (symbol_matrix.height() == 6) symbol_matrix.extend_left(Graphics::SYMBOLS_6_HIGH.at(74));
+			if (symbol_matrix.height() == 6) symbol_matrix.extend_left(Graphics::SYMBOLS_6_HIGH.at(40));
 			else {
 				DynamicBitset bracket_raw(2, false);
 				bracket_raw.extend(symbol_matrix.height() - 4, true);
@@ -275,8 +276,8 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// closed bracket
-		else if (value == 75) {
-			if (equation_part.height() == 6) equation_part.extend_right(Graphics::SYMBOLS_6_HIGH.at(75));
+		else if (value == 41) {
+			if (equation_part.height() == 6) equation_part.extend_right(Graphics::SYMBOLS_6_HIGH.at(41));
 			else {
 				DynamicBitset bracket_raw(2, false);
 				bracket_raw.extend(equation_part.height() - 4, true);
@@ -303,7 +304,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// Abs
-		else if (value == 106) {
+		else if (value == 11) {
 			int32_t new_y_origin = 0;
 			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 5);
 			symbol_matrix.extend_up(1, false);
@@ -317,7 +318,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// logn
-		else if (value == 109) {
+		else if (value == 15) {
 			symbol_matrix.extend_right(table.at(51));
 			symbol_matrix.extend_right(1, false);
 			symbol_matrix.extend_right(table.at(54));
@@ -355,7 +356,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// fraction or mixedfraction
-		else if (value == 110 || value == 131) {
+		else if (value == 16 || value == 17) {
 			// render top and bottom
 			uint8_t fraction_line_height = (font_height == 9) ? 3 : 2;
 			int32_t new_y_origin = 0;
@@ -393,8 +394,8 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, top.height() - fraction_line_height);
 		}
 
-		// root2
-		else if (value == 111) {
+		// Sqrt
+		else if (value == 18) {
 			int32_t new_y_origin = 0;
 			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 4);
 			symbol_matrix.extend_right(1, false);
@@ -418,12 +419,13 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// x^n
-		else if (value == 113 || value == 135 || value == 136) {
+		else if (value == 22 || value == 25 || value == 27) {
 			int32_t new_y_origin = 0;
-			if (value == 135) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(135), 0);
-			else if (value == 136) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(165), 0);
+			if (value == 25) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(25), 0);
+			else if (value == 27) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(27), 0);
 			else {
-				if (_render_index == 0 || !(_equation.at(_render_index - 1) < 69 || Chars::in_key_set(_equation.at(_render_index - 1), _values_before_exponent) != 0)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(95), 0);
+				KEY last_val = _equation.at(_render_index - 1);
+				if (_render_index == 0 || !(last_val > 47 && last_val < 58 || last_val > 64 && last_val < 91 || last_val > 96 && last_val < 123) && !Chars::in_key_set(last_val, _values_before_exponent)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(127), 0);
 				else equation_part.pop_back_x();
 			}
 			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_inside, equation_part.width(), 4, 2);
@@ -431,13 +433,13 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// *10^n
-		else if (value == 127) {
-			symbol_matrix = table.at(127);
+		else if (value == 171) {
+			symbol_matrix = table.at(171);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
 		// periodic
-		else if (value == 133) {
+		else if (value == 21) {
 			int32_t new_y_origin = 0;
 			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width(), 0);
 			symbol_matrix.extend_up(1, false);
@@ -446,7 +448,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// rootn
-		else if (value == 134) {
+		else if (value == 23) {
 			int32_t new_y_origin = 0;
 			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_inside, equation_part.width(), 2, 2);
 			symbol_matrix.extend_down(7, false);
@@ -475,12 +477,12 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// symbol keys
-		else if (value == 237 || value == 238) {
+		else if (value == 190 || value == 191) {
 			break;
 		}
 
 		// newline
-		else if (value == 239) {
+		else if (value == 10) {
 			if (type == 0) {
 				int32_t new_y_origin = 0;
 				symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, 0, equation_part.height(), 1, 0);
@@ -492,7 +494,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		// any other KEY
 		else {
 			if (table.count(value) != 0) symbol_matrix = table.at(value);
-			else symbol_matrix = table.at(86);
+			else symbol_matrix = table.at(63);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
@@ -512,7 +514,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		else if (cursor_alignment == 2) _cursor_data.y -= equation_part.height() - y_origin;
 	}
 	if (equation_part.width() == 1 && type == 1) {
-		equation_part.extend_right(table.at(95));
+		equation_part.extend_right(table.at(127));
 		equation_part.extend_right(1, false);
 	}
 	return equation_part;
@@ -548,7 +550,7 @@ void Equation::add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_fir
 		uint32_t i = _cursor_index++;
 		for (; i > 0; i--) {
 			KEY val = _equation.at(i - 1);
-			if (!(val < 10 || val == 82 || val == 127)) break;
+			if (!(val > 47 && val < 58 || val == 44 || val == 172)) break;
 			add_value_to_first_child = true;
 		}
 		_equation.insert(_equation.begin() + i, value);
@@ -557,15 +559,15 @@ void Equation::add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_fir
 		_equation.insert(_equation.begin() + _cursor_index, first_child.begin(), first_child.end());
 		_cursor_index += first_child.size();
 	}
-	_equation.insert(_equation.begin() + _cursor_index, 238);
-	for (; child_cnt > 1; child_cnt--) _equation.insert(_equation.begin() + _cursor_index, 237);
+	_equation.insert(_equation.begin() + _cursor_index, 191);
+	for (; child_cnt > 1; child_cnt--) _equation.insert(_equation.begin() + _cursor_index, 190);
 	if (add_value_to_first_child) _cursor_index++;
 }
 
 
 Number* Equation::to_number_part(KEY expected_ending)
 {
-	if (expected_ending != 95) _calculate_index++;
+	if (expected_ending != 0) _calculate_index++;
 	std::vector<CalculateNode> calculation;
 	bool numExpected = true;
 	NumberParser number_parser = NumberParser();
@@ -573,72 +575,79 @@ Number* Equation::to_number_part(KEY expected_ending)
 		KEY value = _equation.at(_calculate_index);
 
 		if (!number_parser.add_digit(value)) {
-			if (number_parser.get_value_cnt() != 0) calculation.push_back(CalculateNode(number_parser.get_number(), 95, number_parser.get_value_cnt()));
+			if (number_parser.get_value_cnt() != 0) calculation.push_back(CalculateNode(number_parser.get_number(), 0, number_parser.get_value_cnt()));
 
-			if (Chars::in_key_set(value, _symbols)) {
-				switch (value) {
-				case 95: Error::throw_error(Error::ErrorType::SYNTAX_ERROR); break;
-				case 106: calculation.push_back(CalculateNode(to_number_part(238)->abs(), 95, _calculate_index)); break;
-				case 109: {
-					Number* result = to_number_part(237);
-					calculation.push_back(CalculateNode(to_number_part(238)->log(result), 95, _calculate_index));
-					break;
-				}
-				case 110: calculation.push_back(CalculateNode(to_number_part(237)->divide(to_number_part(238)), 95, _calculate_index)); break;
-				case 111: calculation.push_back(CalculateNode(to_number_part(238)->sqrt(), 95, _calculate_index)); break;
-				case 131: calculation.push_back(CalculateNode(to_number_part(237)->add(to_number_part(237)->divide(to_number_part(238))), 95, _calculate_index)); break;
-				case 134: {
-					Number* result = to_number_part(237);
-					calculation.push_back(CalculateNode(to_number_part(238)->root(result), 95, _calculate_index));
-					break; //!
-				}
-				case 135: calculation.push_back(CalculateNode(to_number_part(238)->pow10(), 95, _calculate_index)); break;
-				case 136: calculation.push_back(CalculateNode(to_number_part(238)->exp(), 95, _calculate_index)); break;
-				default:
-					if (calculation.size() == 0 || calculation.back().operation != 95) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-					switch (value) {
-					case 113: calculation.back().value->pow(to_number_part(238)); break;
-					case 85: calculation.back().value->factorial(); break;
-					case 98: calculation.back().value->percent(); break;
-					}
-				}
-			} else if (Chars::in_key_set(value, _single_bracket_open_keys)) {
-				switch (value) {
-				case 74: calculation.push_back(CalculateNode(to_number_part(75), 95, _calculate_index)); break;
-				case 114: calculation.push_back(CalculateNode(to_number_part(75)->log(), 95, _calculate_index)); break;
-				case 115: calculation.push_back(CalculateNode(to_number_part(75)->ln(), 95, _calculate_index)); break;
-				case 118: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->sin(), 95, _calculate_index)); break;
-				case 119: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->cos(), 95, _calculate_index)); break;
-				case 120: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->tan(), 95, _calculate_index)); break;
-				case 138: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->asin(), 95, _calculate_index)); break;
-				case 139: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->acos(), 95, _calculate_index)); break;
-				case 140: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->atan(), 95, _calculate_index)); break;
-				case 152: calculation.push_back(CalculateNode(to_number_part(83)->pol(to_number_part(75)), 95, _calculate_index)); break;
-				case 153: calculation.push_back(CalculateNode(to_number_part(83)->rec(to_number_part(75)), 95, _calculate_index)); break;
-				case 154: calculation.push_back(CalculateNode(to_number_part(75)->round(), 95, _calculate_index)); break;
-				case 160: calculation.push_back(CalculateNode(to_number_part(83)->gcd(to_number_part(75)), 95, _calculate_index)); break;
-				case 161: calculation.push_back(CalculateNode(to_number_part(83)->lcm(to_number_part(75)), 95, _calculate_index)); break;
-				case 162: calculation.push_back(CalculateNode(to_number_part(75)->to_int(), 95, _calculate_index)); break;
-				case 163: calculation.push_back(CalculateNode(to_number_part(75)->floor(), 95, _calculate_index)); break;
-				case 164: calculation.push_back(CalculateNode(to_number_part(83)->ran_int(to_number_part(75)), 95, _calculate_index)); break;
-				case 190: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->sinh(), 95, _calculate_index)); break;
-				case 191: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->cosh(), 95, _calculate_index)); break;
-				case 192: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->tanh(), 95, _calculate_index)); break;
-				case 193: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->asinh(), 95, _calculate_index)); break;
-				case 194: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->acosh(), 95, _calculate_index)); break;
-				case 195: calculation.push_back(CalculateNode(to_number_part(75)->to_angle((_settings >> 2) & 3)->atanh(), 95, _calculate_index)); break;
-				}
-			} else if (value == expected_ending) {
+			switch (value) {
+			// symbols that need to be ended with SYMBOL_END
+			case 0: Error::throw_error(Error::ErrorType::SYNTAX_ERROR); break;
+			case 11: calculation.push_back(CalculateNode(to_number_part(191)->abs(), 0, _calculate_index)); break;
+			case 15: {
+				Number* result = to_number_part(190);
+				calculation.push_back(CalculateNode(to_number_part(191)->log(result), 0, _calculate_index));
 				break;
-			} else if (value == 75 || value == 83 || value == 237 || value == 238) {
-				Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
-				return new Number();
-			} else if (Chars::in_key_set(value, _allowed_calculate_operations) || (value > 189 && value < 236)) {
-				calculation.push_back(CalculateNode(new Number(), value, _calculate_index));
-			} else if (value > 9 && value < 69) {
-				calculation.push_back(CalculateNode(Number::from_key(value), 95, _calculate_index));
-			} else if (value == 155) {
-				calculation.push_back(CalculateNode(Number::ran(), 95, _calculate_index));
+			}
+			case 16: calculation.push_back(CalculateNode(to_number_part(190)->divide(to_number_part(191)), 0, _calculate_index)); break;
+			case 18: calculation.push_back(CalculateNode(to_number_part(191)->sqrt(), 0, _calculate_index)); break;
+			case 17: calculation.push_back(CalculateNode(to_number_part(190)->add(to_number_part(190)->divide(to_number_part(191))), 0, _calculate_index)); break;
+			case 23: {
+				Number* result = to_number_part(190);
+				calculation.push_back(CalculateNode(to_number_part(191)->root(result), 0, _calculate_index));
+				break; //!
+			}
+			case 25: calculation.push_back(CalculateNode(to_number_part(191)->pow10(), 0, _calculate_index)); break;
+			case 27: calculation.push_back(CalculateNode(to_number_part(191)->exp(), 0, _calculate_index)); break;
+			// Symbols that have an open bracket at the end
+			case 40: calculation.push_back(CalculateNode(to_number_part(41), 0, _calculate_index)); break;
+			case 24: calculation.push_back(CalculateNode(to_number_part(41)->log(), 0, _calculate_index)); break;
+			case 26: calculation.push_back(CalculateNode(to_number_part(41)->ln(), 0, _calculate_index)); break;
+			case 129: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->sin(), 0, _calculate_index)); break;
+			case 130: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->cos(), 0, _calculate_index)); break;
+			case 131: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->tan(), 0, _calculate_index)); break;
+			case 132: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->asin(), 0, _calculate_index)); break;
+			case 133: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->acos(), 0, _calculate_index)); break;
+			case 134: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->atan(), 0, _calculate_index)); break;
+			case 135: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->sinh(), 0, _calculate_index)); break;
+			case 136: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->cosh(), 0, _calculate_index)); break;
+			case 137: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->tanh(), 0, _calculate_index)); break;
+			case 138: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->asinh(), 0, _calculate_index)); break;
+			case 139: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->acosh(), 0, _calculate_index)); break;
+			case 140: calculation.push_back(CalculateNode(to_number_part(41)->to_angle((_settings >> 2) & 3)->atanh(), 0, _calculate_index)); break;
+			case 165: calculation.push_back(CalculateNode(to_number_part(59)->pol(to_number_part(41)), 0, _calculate_index)); break;
+			case 167: calculation.push_back(CalculateNode(to_number_part(59)->rec(to_number_part(41)), 0, _calculate_index)); break;
+			case 169: calculation.push_back(CalculateNode(to_number_part(41)->round(), 0, _calculate_index)); break;
+			case 160: calculation.push_back(CalculateNode(to_number_part(59)->gcd(to_number_part(41)), 0, _calculate_index)); break;
+			case 161: calculation.push_back(CalculateNode(to_number_part(59)->lcm(to_number_part(41)), 0, _calculate_index)); break;
+			case 162: calculation.push_back(CalculateNode(to_number_part(41)->to_int(), 0, _calculate_index)); break;
+			case 163: calculation.push_back(CalculateNode(to_number_part(41)->floor(), 0, _calculate_index)); break;
+			case 164: calculation.push_back(CalculateNode(to_number_part(59)->ran_int(to_number_part(41)), 0, _calculate_index)); break;
+			// random
+			case 155: calculation.push_back(CalculateNode(to_number_part(191)->ran(), 0, _calculate_index)); break;
+			// symbols that perform an operation on the last number
+			case 113:
+				if (calculation.empty() || calculation.back().operation != 0) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+				calculation.back().value->pow(to_number_part(191));
+				break;
+			case 85:
+				if (calculation.empty() || calculation.back().operation != 0) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+				calculation.back().value->factorial();
+				break;
+			case 98:
+				if (calculation.empty() || calculation.back().operation != 0) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+				calculation.back().value->percent();
+				break;
+
+			default:
+				// TODO: euler, degree, radians
+				if (value == expected_ending) {
+					break;
+				} else if (value == 41 || value == 59 || value == 190 || value == 191) {
+					Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
+					return new Number();
+				} else if (Chars::in_key_set(value, _allowed_calculate_operations)) {
+					calculation.push_back(CalculateNode(new Number(), value, _calculate_index));
+				} else if (value > 64 && value < 91 || value > 96 && value < 123) {
+					calculation.push_back(CalculateNode(Number::from_key(value), 0, _calculate_index));
+				}
 			}
 			if (Error::error_thrown()) {
 				_cursor_index = _calculate_index;
@@ -646,7 +655,7 @@ Number* Equation::to_number_part(KEY expected_ending)
 			}
 		}
 	}
-	if (number_parser.get_value_cnt() != 0) calculation.push_back(CalculateNode(number_parser.get_number(), 95, number_parser.get_value_cnt()));
+	if (number_parser.get_value_cnt() != 0) calculation.push_back(CalculateNode(number_parser.get_number(), 0, number_parser.get_value_cnt()));
 
 	if (calculation.size() == 0) {
 		Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
@@ -660,13 +669,13 @@ Number* Equation::to_number_part(KEY expected_ending)
 	bool operation = true;
 	for (uint32_t i = 0; i < calculation.size(); i++) {
 		uint8_t op = calculation.at(i).operation;
-		if (op != 95) {
+		if (op != 0) {
 			if (!operation) operation = true;
 			else {
-				if (op == 70 || op == 116) {
+				if (op == 45 || op == 28) {
 					negative = !negative;
 					calculation.erase(calculation.begin() + i--);
-				} else if (op != 69) {
+				} else if (op != 43) {
 					Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 					_cursor_index = i;
 					return new Number();
@@ -684,18 +693,18 @@ Number* Equation::to_number_part(KEY expected_ending)
 	// multiplication without sign
 	operation = true;
 	for (uint32_t i = 0; i < calculation.size(); i++) {
-		if (calculation.at(i).operation != 95) {
+		if (calculation.at(i).operation != 0) {
 			operation = true;
 		} else {
 			if (!operation) {
-				// automatic brackets
+				// TODO: automatic brackets
 				// if (i > 1 && calculation.at(i - 2).operation == 72) {
-				//	equation.insert(equation.begin() + calculation.at(i).equation_index + add_i + 1, new EquationNode{ 75 });
-				//	equation.insert(equation.begin() + calculation.at(i - 1).equation_index + add_i++, new EquationNode{ 74 });
+				//	equation.insert(equation.begin() + calculation.at(i).equation_index + add_i + 1, new EquationNode{ 41 });
+				//	equation.insert(equation.begin() + calculation.at(i - 1).equation_index + add_i++, new EquationNode{ 40 });
 				//}
 				// if (equation.at(calculation.at(i).equation_index + add_i)->value == 110) {
-				//	equation.insert(equation.begin() + calculation.at(i).equation_index + add_i + 1, new EquationNode{ 75 });
-				//	equation.insert(equation.begin() + calculation.at(i).equation_index + add_i++, new EquationNode{ 74 });
+				//	equation.insert(equation.begin() + calculation.at(i).equation_index + add_i + 1, new EquationNode{ 41 });
+				//	equation.insert(equation.begin() + calculation.at(i).equation_index + add_i++, new EquationNode{ 40 });
 				//}
 				calculation.at(i - 1).value->multiply(calculation.at(i).value);
 				calculation.erase(calculation.begin() + i--);
@@ -708,10 +717,10 @@ Number* Equation::to_number_part(KEY expected_ending)
 
 	// multiplication and division
 	for (uint32_t i = 0; i < calculation.size(); i++) {
-		if (calculation.at(i).operation != 95) {
-			if (calculation.at(i).operation == 71) calculation.at(i - 1).value->multiply(calculation.at(i + 1).value);
-			else if (calculation.at(i).operation == 72) calculation.at(i - 1).value->divide(calculation.at(i + 1).value);
-			else if (calculation.at(i).operation == 130) calculation.at(i - 1).value->mod(calculation.at(i + 1).value);
+		if (calculation.at(i).operation != 0) {
+			if (calculation.at(i).operation == 215) calculation.at(i - 1).value->multiply(calculation.at(i + 1).value);
+			else if (calculation.at(i).operation == 247) calculation.at(i - 1).value->divide(calculation.at(i + 1).value);
+			else if (calculation.at(i).operation == 12) calculation.at(i - 1).value->mod(calculation.at(i + 1).value);
 			else continue;
 			calculation.erase(calculation.begin() + i);
 			calculation.erase(calculation.begin() + i--);
@@ -720,9 +729,9 @@ Number* Equation::to_number_part(KEY expected_ending)
 
 	// addition and subtraction
 	for (uint32_t i = 0; i < calculation.size(); i++) {
-		if (calculation.at(i).operation != 95) {
-			if (calculation.at(i).operation == 69) calculation.at(i - 1).value->add(calculation.at(i + 1).value);
-			else if (calculation.at(i).operation == 70) calculation.at(i - 1).value->subtract(calculation.at(i + 1).value);
+		if (calculation.at(i).operation != 0) {
+			if (calculation.at(i).operation == 43) calculation.at(i - 1).value->add(calculation.at(i + 1).value);
+			else if (calculation.at(i).operation == 45) calculation.at(i - 1).value->subtract(calculation.at(i + 1).value);
 			else continue;
 			calculation.erase(calculation.begin() + i);
 			calculation.erase(calculation.begin() + i--);
