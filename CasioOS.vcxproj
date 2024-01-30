@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
-    <ClCompile Include="src\constant\Chars.cpp" />
     <ClCompile Include="src\constant\Error.cpp" />
     <ClCompile Include="src\datastructs\Bitset2D.cpp" />
     <ClCompile Include="src\datastructs\Decimal.cpp" />

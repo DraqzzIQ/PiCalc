@@ -8,7 +8,7 @@ class NumberParser
 	~NumberParser();
 
 	void clear_number();
-	bool add_digit(const KEY digit);
+	bool add_digit(KEY digit);
 	uint8_t get_value_cnt();
 	Number* get_number();
 

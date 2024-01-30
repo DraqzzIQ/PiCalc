@@ -37,18 +37,16 @@ void PicoKeyboard::check_for_keyboard_presses()
 		for (uint8_t py = 0; py < high_pins.size(); py++) {
 			if (_pressed_buttons[px][py] == KeyState::OFF && high_pins[py]) {
 				KeyPress press = coords_to_keypress(px, py, _function_keys_state);
-				// std::cout << "\nKey pressed:  " << std::endl; // uncomment to test keys via picoprobe / serial output
-				// print_key(press.key_calculator); // uncomment to test keys via picoprobe / serial output
+				// std::cout << "\nKey pressed: " << unsigned(press.key_calculator) << std::endl; // uncomment to test keys via picoprobe / serial output
 				_window_manager->handle_key_down(press); // comment to test keys via picoprobe / serial output
 				_pressed_buttons[px][py] = _function_keys_state;
 
-				if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("SHIFT")) _function_keys_state = KeyState::SHIFT_ON;
-				else if (press.key_raw == Chars::CHAR_TO_KEYCODE.at("ALPHA")) _function_keys_state = KeyState::ALPHA_ON;
+				if (press.key_raw == 1) _function_keys_state = KeyState::SHIFT_ON;
+				else if (press.key_raw == 2) _function_keys_state = KeyState::ALPHA_ON;
 				else _function_keys_state = KeyState::ON;
 			} else if (_pressed_buttons[px][py] != KeyState::OFF && !high_pins[py]) {
 				KeyPress release = coords_to_keypress(px, py, _pressed_buttons[px][py]);
-				// std::cout << "\nKey released: " << std::endl; // uncomment to test keys via picoprobe / serial output
-				// print_key(release.key_calculator); // uncomment to test keys via picoprobe / serial output
+				// std::cout << "\nKey released: " << unsigned(release.key_calculator) << std::endl; // uncomment to test keys via picoprobe / serial output
 				_window_manager->handle_key_up(release); // comment to test keys via picoprobe / serial output
 				_pressed_buttons[px][py] = KeyState::OFF;
 			}
@@ -56,66 +54,136 @@ void PicoKeyboard::check_for_keyboard_presses()
 	}
 }
 
-void PicoKeyboard::print_key(KEY key)
-{
-	for (int i = 0; i < Chars::KEY_MAP.size(); i++) {
-		if (i == key) { std::cout << Chars::KEY_MAP[i] << std::endl; }
-	}
-}
-
 KEY PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
 {
 	switch (10 * x + y) {
-	case 0: return Chars::CHAR_TO_KEYCODE.at("SHIFT");
-	case 1: return Chars::CHAR_TO_KEYCODE.at("Abs");
-	case 2: return Chars::CHAR_TO_KEYCODE.at("fraction");
-	case 3: return Chars::CHAR_TO_KEYCODE.at("(-)");
-	case 4: return Chars::CHAR_TO_KEYCODE.at("RCL");
-	case 5: return Chars::CHAR_TO_KEYCODE.at("7");
-	case 6: return Chars::CHAR_TO_KEYCODE.at("4");
-	case 7: return Chars::CHAR_TO_KEYCODE.at("1");
-	case 8: return Chars::CHAR_TO_KEYCODE.at("0");
-	case 10: return Chars::CHAR_TO_KEYCODE.at("ALPHA");
-	case 11: return Chars::CHAR_TO_KEYCODE.at("x^3");
-	case 12: return Chars::CHAR_TO_KEYCODE.at("root2");
-	case 13: return Chars::CHAR_TO_KEYCODE.at("time");
-	case 14: return Chars::CHAR_TO_KEYCODE.at("ENG");
-	case 15: return Chars::CHAR_TO_KEYCODE.at("8");
-	case 16: return Chars::CHAR_TO_KEYCODE.at("5");
-	case 17: return Chars::CHAR_TO_KEYCODE.at("2");
-	case 18: return Chars::CHAR_TO_KEYCODE.at(",");
-	case 20: return Chars::CHAR_TO_KEYCODE.at("left");
-	case 21: return Chars::CHAR_TO_KEYCODE.at("down");
-	case 22: return Chars::CHAR_TO_KEYCODE.at("x^2");
-	case 23: return Chars::CHAR_TO_KEYCODE.at("hyp");
-	case 24: return Chars::CHAR_TO_KEYCODE.at("(");
-	case 25: return Chars::CHAR_TO_KEYCODE.at("9");
-	case 26: return Chars::CHAR_TO_KEYCODE.at("6");
-	case 27: return Chars::CHAR_TO_KEYCODE.at("3");
-	case 28: return Chars::CHAR_TO_KEYCODE.at("*10^n");
-	case 30: return Chars::CHAR_TO_KEYCODE.at("up");
-	case 31: return Chars::CHAR_TO_KEYCODE.at("x^-1");
-	case 32: return Chars::CHAR_TO_KEYCODE.at("x^n");
-	case 33: return Chars::CHAR_TO_KEYCODE.at("sin");
-	case 34: return Chars::CHAR_TO_KEYCODE.at(")");
-	case 35: return Chars::CHAR_TO_KEYCODE.at("DEL");
-	case 36: return Chars::CHAR_TO_KEYCODE.at("multiply");
-	case 37: return Chars::CHAR_TO_KEYCODE.at("+");
-	case 38: return Chars::CHAR_TO_KEYCODE.at("Ans");
-	case 40: return Chars::CHAR_TO_KEYCODE.at("right");
-	case 41: return Chars::CHAR_TO_KEYCODE.at("logn");
-	case 42: return Chars::CHAR_TO_KEYCODE.at("log10");
-	case 43: return Chars::CHAR_TO_KEYCODE.at("cos");
-	case 44: return Chars::CHAR_TO_KEYCODE.at("S<>D");
-	case 45: return Chars::CHAR_TO_KEYCODE.at("AC");
-	case 46: return Chars::CHAR_TO_KEYCODE.at("divide");
-	case 47: return Chars::CHAR_TO_KEYCODE.at("-");
-	case 48: return Chars::CHAR_TO_KEYCODE.at("=");
-	case 50: return Chars::CHAR_TO_KEYCODE.at("MODE");
-	case 52: return Chars::CHAR_TO_KEYCODE.at("ln");
-	case 53: return Chars::CHAR_TO_KEYCODE.at("tan");
-	case 54: return Chars::CHAR_TO_KEYCODE.at("M+");
-	default: return Chars::CHAR_TO_KEYCODE.at("unknown");
+	case 0: return 1;
+	case 1: return 11;
+	case 2: return 16;
+	case 3: return 28;
+	case 4: return 141;
+	case 5: return 55;
+	case 6: return 52;
+	case 7: return 49;
+	case 8: return 48;
+	case 10: return 2;
+	case 11: return 13;
+	case 12: return 18;
+	case 13: return 29;
+	case 14: return 143;
+	case 15: return 56;
+	case 16: return 53;
+	case 17: return 50;
+	case 18: return 44;
+	case 20: return 5;
+	case 21: return 4;
+	case 22: return 20;
+	case 23: return 31;
+	case 24: return 40;
+	case 25: return 57;
+	case 26: return 54;
+	case 27: return 51;
+	case 28: return 171;
+	case 30: return 3;
+	case 31: return 14;
+	case 32: return 22;
+	case 33: return 129;
+	case 34: return 41;
+	case 35: return 153;
+	case 36: return 215;
+	case 37: return 43;
+	case 38: return 178;
+	case 40: return 6;
+	case 41: return 15;
+	case 42: return 24;
+	case 43: return 130;
+	case 44: return 145;
+	case 45: return 155;
+	case 46: return 247;
+	case 47: return 45;
+	case 48: return 61;
+	case 50: return 7;
+	case 52: return 26;
+	case 53: return 131;
+	case 54: return 147;
+	default: return 0;
+	}
+}
+
+KEY PicoKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
+{
+	if (shift) {
+		if (raw_key > 47 && raw_key < 58) return raw_key;
+		switch (raw_key) {
+		case 11: return 'A';
+		case 13: return 'B';
+		case 14: return 'C';
+		case 15: return 'D';
+		case 16: return 'E';
+		case 18: return 'F';
+		case 20: return 'G';
+		case 22: return 'H';
+		case 24: return 'I';
+		case 26: return 'J';
+		case 28: return 'K';
+		case 29: return 'L';
+		case 31: return 'M';
+		case 129: return 'N';
+		case 130: return 'O';
+		case 131: return 'P';
+		case 141: return 'Q';
+		case 143: return 'R';
+		case 40: return 'S';
+		case 41: return 'T';
+		case 145: return 'U';
+		case 147: return 'V';
+		case 215: return 'W';
+		case 247: return 'X';
+		case 43: return 'Y';
+		case 45: return 'Z';
+		case 44: return ';';
+		case 171: return '!';
+		case 178: return '?';
+		case 61: return '\n';
+		default: return 0;
+		}
+	} else {
+		if (raw_key > 47 && raw_key < 58) return raw_key;
+		switch (raw_key) {
+		case 11: return 'a';
+		case 13: return 'b';
+		case 14: return 'c';
+		case 15: return 'd';
+		case 16: return 'e';
+		case 18: return 'f';
+		case 20: return 'g';
+		case 22: return 'h';
+		case 24: return 'i';
+		case 26: return 'j';
+		case 28: return 'k';
+		case 29: return 'l';
+		case 31: return 'm';
+		case 129: return 'n';
+		case 130: return 'o';
+		case 131: return 'p';
+		case 141: return 'q';
+		case 143: return 'r';
+		case 40: return 's';
+		case 41: return 't';
+		case 145: return 'u';
+		case 147: return 'v';
+		case 153: return 153; // DEL
+		case 155: return 155; // AC
+		case 215: return 'w';
+		case 247: return 'x';
+		case 43: return 'y';
+		case 45: return 'z';
+		case 44: return ',';
+		case 171: return '.';
+		case 178: return ' ';
+		case 61: return '\n';
+		default: return 0;
+		}
 	}
 }
 

@@ -129,7 +129,7 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY,
 	}
 }
 
-void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, std::string text, bool resize_if_needed)
+void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, const std::string& text, bool resize_if_needed)
 {
 	uint32_t x = coord_x;
 	uint32_t y = coord_y;

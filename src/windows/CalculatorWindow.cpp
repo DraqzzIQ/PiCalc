@@ -231,9 +231,6 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 		case 4:
 			set_menu(Menu::Setup_PerD);
 			break;
-		case 5:
-			set_menu(Menu::Setup_TurnOff);
-			break;
 		}
 		break;
 	}
@@ -250,14 +247,14 @@ void CalculatorWindow::set_menu(Menu menu)
 		_window = Error::render_error();
 		break;
 	case Menu::Mode:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 241, 12, 24, 22, 25 }, false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 242, 28, 29, 10, 29 }, false);
-		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 243, 29, 10, 11, 21, 14 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 244, 16, 27, 10, 25, 17 }, false);
-		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 245, 13, 18, 28, 29 }, false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 246, 31, 14, 27, 18, 15 }, false);
-		_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 247, 11, 10, 28, 14, 23 }, false);
-		_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 248, 28, 24, 21, 31, 14 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, "\306COMP", false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, "\307STAT", false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, "\310TABLE", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, "\311DIST", false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, "\312VERIF", false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, "\313BASE-N", false);
+		_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, "\314EQ-SOLVE", false);
+		_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, "\315GRAPH", false);
 		break;
 	case Menu::Mode_Stat:
 		// TODO
@@ -266,66 +263,60 @@ void CalculatorWindow::set_menu(Menu menu)
 		// TODO
 		break;
 	case Menu::Setup_Pg1:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 241, 84, 18, 53, 55, 60, 59 }, false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 242, 84, 24, 60, 59, 55, 60, 59 }, false);
-		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 243, 84, 13, 44, 46 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 244, 84, 27, 40, 43 }, false);
-		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 245, 84, 16, 57, 40 }, false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 246, 84, 15, 48, 63 }, false);
-		_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 247, 84, 28, 42, 48 }, false);
-		_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 248, 84, 23, 54, 57, 52 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:Input", false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:Output", false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:Deg", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:Rad", false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_6_HIGH, "5:Gra", false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "6:Fix", false);
+		_window.put_chars(1, 25, Graphics::SYMBOLS_6_HIGH, "7:Sci", false);
+		_window.put_chars(48, 25, Graphics::SYMBOLS_6_HIGH, "8:Norm", false);
 		break;
 	case Menu::Setup_Pg2:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 40, 41, 175, 42 }, false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 43, 175, 42 }, false);
-		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 28, 29, 10, 29 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 25, 44, 57, 13 }, false);
-		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 10, 41, 10, 60, 59 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:ab/c", false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:d/c", false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:STAT", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:PerD", false);
 		break;
 	case Menu::Setup_Input:
 	case Menu::Setup_Output:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 2, 13 }, false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 21, 48, 53, 44, 40, 57 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:Mth2D", false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:Linear", false);
 		break;
 	case Menu::Setup_Fix:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 15, 48, 63, 80, 0, 180, 9 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "Fix 0~9", false);
 		break;
 	case Menu::Setup_Sci:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 28, 42, 48, 80, 0, 180, 9 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "Sci 0~9", false);
 		break;
 	case Menu::Setup_Norm:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 23, 54, 57, 52, 80, 1, 180, 2 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "Norm 1~2", false);
 		break;
 	case Menu::Setup_Stat:
-		_window.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 17, 66, 60, 45, 48, 46, 50, 44, 48, 59, 86 }, false);
-		_window.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 14, 18, 23 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 10, 30, 28 }, false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Häufigkeit?", false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "1:EIN", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "2:AUS", false);
 		break;
 	case Menu::Setup_PerD:
-		_window.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 25, 44, 57, 48, 54, 43, 81, 80, 13, 40, 57, 58, 59, 86 }, false);
-		_window.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 14, 18, 23 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 10, 30, 28 }, false);
-		break;
-	case Menu::Setup_TurnOff:
-		_window.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 10, 41, 58, 42, 47, 40, 51, 59, 40, 60, 59, 54, 52, 40, 59, 81 }, false);
-		_window.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 1, 0, 80, 22, 48, 53, 81 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 6, 0, 80, 22, 48, 53, 81 }, false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Period. Darst.?", false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "1:EIN", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "2:AUS", false);
 		break;
 	case Menu::Hyp:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 58, 48, 53, 47 }, false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 42, 54, 58, 47 }, false);
-		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 59, 40, 53, 47 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 58, 48, 53, 47, 70, 1 }, false);
-		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 42, 54, 58, 47, 70, 1 }, false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 59, 40, 53, 47, 70, 1 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:sinh", false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:cosh", false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:tanh", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:sinh\16", false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_6_HIGH, "5:cosh\16", false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "6:tanh\16", false);
 		break;
 	case Menu::Verify:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 73 }, false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 178 }, false);
-		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 88 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 89 }, false);
-		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 176 }, false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 177 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:=", false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:\266", false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:>", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:<", false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_6_HIGH, "5:\267", false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "6:\270", false);
 		break;
 	case Menu::Stat:
 		// TODO
@@ -334,17 +325,18 @@ void CalculatorWindow::set_menu(Menu menu)
 		// TODO
 		break;
 	case Menu::Base:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 40, 53, 43 }, false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 54, 57 }, false);
-		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 63, 54, 57 }, false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 4, 84, 63, 53, 54, 57 }, false);
-		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 5, 84, 53, 54, 59 }, false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 6, 84, 53, 44, 46 }, false);
+		// TODO: Page 2
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:and", false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:or", false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:xor", false);
+		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:xnor", false);
+		_window.put_chars(1, 17, Graphics::SYMBOLS_6_HIGH, "5:Not", false);
+		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "6:Neg", false);
 		break;
 	case Menu::Drg:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 1, 84, 187 }, false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 2, 84, 188 }, false);
-		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, KEY_SET{ 3, 84, 186 }, false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:°", false);
+		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:\256", false);
+		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:\257", false);
 		break;
 	default:
 		break;

@@ -67,7 +67,7 @@ void Equation::del()
 {
 	if (_cursor_index == 0) return;
 	KEY val = _equation.at(--_cursor_index);
-	if (Chars::in_key_set(val, _symbols)) {
+	if (Utils::in_key_set(val, _symbols)) {
 		_equation.erase(_equation.begin() + _cursor_index);
 		while (true) {
 			val = _equation.at(_cursor_index);
@@ -75,7 +75,7 @@ void Equation::del()
 			else if (val == 191) {
 				_equation.erase(_equation.begin() + _cursor_index);
 				break;
-			} else if (Chars::in_key_set(val, _symbols)) {
+			} else if (Utils::in_key_set(val, _symbols)) {
 				while (_equation.at(_cursor_index) != 191) _cursor_index++;
 			} else _cursor_index++;
 		}
@@ -235,7 +235,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		}
 
 		// any symbol with an open bracket at the end
-		if (Chars::in_key_set(value, _single_bracket_open_keys) && value != 40) {
+		if (Utils::in_key_set(value, _single_bracket_open_keys) && value != 40) {
 			// only render the text before the bracket, then change the value to 40 for the other case to render the actual bracket
 			KEY_SET keys = Graphics::key_text.at(value);
 			for (uint8_t j = 0; j < keys.size(); j++) {
@@ -425,7 +425,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			else if (value == 27) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(27), 0);
 			else {
 				KEY last_val = _equation.at(_render_index - 1);
-				if (_render_index == 0 || !(last_val > 47 && last_val < 58 || last_val > 64 && last_val < 91 || last_val > 96 && last_val < 123) && !Chars::in_key_set(last_val, _values_before_exponent)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(127), 0);
+				if (_render_index == 0 || !(last_val > 47 && last_val < 58 || last_val > 64 && last_val < 91 || last_val > 96 && last_val < 123) && !Utils::in_key_set(last_val, _values_before_exponent)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(127), 0);
 				else equation_part.pop_back_x();
 			}
 			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_inside, equation_part.width(), 4, 2);
@@ -643,7 +643,7 @@ Number* Equation::to_number_part(KEY expected_ending)
 				} else if (value == 41 || value == 59 || value == 190 || value == 191) {
 					Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 					return new Number();
-				} else if (Chars::in_key_set(value, _allowed_calculate_operations)) {
+				} else if (Utils::in_key_set(value, _allowed_calculate_operations)) {
 					calculation.push_back(CalculateNode(new Number(), value, _calculate_index));
 				} else if (value > 64 && value < 91 || value > 96 && value < 123) {
 					calculation.push_back(CalculateNode(Number::from_key(value), 0, _calculate_index));

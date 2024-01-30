@@ -40,6 +40,10 @@ class Utils
 	/// </summary>
 	static uint32_t get_free_heap();
 	/// <summary>
+	/// returns true if the KEY is in the KEY_SET
+	/// </summary>
+	static bool in_key_set(KEY value, const KEY_SET& vector);
+	/// <summary>
 	/// splits a string on a character
 	/// </summary>
 	static std::vector<std::string> split_string(std::string string_to_split, char delimiter);

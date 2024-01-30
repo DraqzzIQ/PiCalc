@@ -15,7 +15,7 @@ class WindowMenuOption: public MenuOptionBase
 	/// </summary>
 	/// <param name="display_name">name of that option</param>
 	/// <param name="window_manager">window_manager to add windows to</param>
-	WindowMenuOption(const std::string name)
+	WindowMenuOption(const std::string& name)
 	{
 		display_name = name;
 		_window_manager = WindowManager::get_instance();

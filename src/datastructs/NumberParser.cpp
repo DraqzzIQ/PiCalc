@@ -18,25 +18,26 @@ void NumberParser::clear_number()
 	_value_cnt = 0;
 }
 
-bool NumberParser::add_digit(const KEY digit)
+bool NumberParser::add_digit(KEY digit)
 {
 	// TODO: numbers with more than 18 digits
 	if (_state & 0b00100000) {
-		if (digit < 10) {
+		if (digit > 47 && digit < 58) {
 			if (std::abs(_val) < Decimal::powers_of_ten[DECIMAL_VALUE_PRECISION - 1]) {
 				_exp--;
 				if (-_exp == DECIMAL_EXP_MAX) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 				_state++;
-				_val = _val * 10 + digit;
+				_val = _val * 10 + (digit - 48);
 			}
-		} else if (digit == 238) {
+		} else if (digit == 191) {
 			if (!(_state & 0b00011111)) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			_state ^= 0b00100000;
 		} else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 	} else {
 		// periodic digits placed, but periodic inactive
 		if (_state & 0b00011111) return false;
-		if (digit < 10) { // key is digit
+		if (digit > 47 && digit < 58) { // key is digit
+			digit -= 48;
 			if (_state & 0b10000000) {
 				if (std::abs(_exp) >= Decimal::powers_of_ten[DECIMAL_EXP_PRECISION - 1]) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 				else {
@@ -57,18 +58,18 @@ bool NumberParser::add_digit(const KEY digit)
 					if (_exp == DECIMAL_EXP_MAX) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 				}
 			}
-		} else if (digit == 69) {                 // key is +
+		} else if (digit == 43) {                // key is +
 			if (!(_state & 0b10000000) || _value_cnt & 0b10000000) return false;
-		} else if (digit == 70 || digit == 116) { // key is -
+		} else if (digit == 28 || digit == 45) { // key is -
 			if (_state & 0b10000000 && !(_value_cnt & 0b10000000)) _value_cnt ^= 0b01000000;
 			else return false;
-		} else if (digit == 82) { // key is comma
+		} else if (digit == 44) { // key is comma
 			if (_state & 0b11000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			_state |= 0b01000000;
-		} else if (digit == 127) { // key is exp
+		} else if (digit == 171) { // key is *10^n
 			if (_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			_state |= 0b10000000;
-		} else if (digit == 133) { // key is periodic
+		} else if (digit == 21) { // key is periodic
 			if (!(_state & 0b01000000) || _state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			else _state |= 0b00100000;
 		} else {

@@ -61,6 +61,11 @@ uint32_t Utils::get_free_heap()
 #endif
 }
 
+bool Utils::in_key_set(KEY value, const KEY_SET& vector)
+{
+	return std::count(vector.begin(), vector.end(), value);
+}
+
 std::vector<std::string> Utils::split_string(std::string string_to_split, char delimiter)
 {
 	std::vector<std::string> result = std::vector<std::string>(1);

@@ -23,8 +23,8 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 {
 	switch (_menu) {
 	case Menu::ONLINE:
-		if (keypress.key_raw == 0) _online = false;
-		else if (keypress.key_raw == 1) _online = true;
+		if (keypress.key_raw == '0') _online = false;
+		else if (keypress.key_raw == '1') _online = true;
 		else return false;
 		_menu = Menu::DURATION;
 		clear_window();
@@ -36,11 +36,11 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		_window.put_chars(0, 25, Graphics::SYMBOLS_6_HIGH, "4:endless", false);
 		return true;
 	case Menu::DURATION:
-		if (keypress.key_raw == 0) _win_points = 6;
-		else if (keypress.key_raw == 1) _win_points = 11;
-		else if (keypress.key_raw == 2) _win_points = 16;
-		else if (keypress.key_raw == 3) _win_points = 21;
-		else if (keypress.key_raw == 4) _win_points = 65535;
+		if (keypress.key_raw == '0') _win_points = 6;
+		else if (keypress.key_raw == '1') _win_points = 11;
+		else if (keypress.key_raw == '2') _win_points = 16;
+		else if (keypress.key_raw == '3') _win_points = 21;
+		else if (keypress.key_raw == '4') _win_points = 65535;
 		else return false;
 		_menu = Menu::PLATFORM;
 		clear_window();
@@ -49,8 +49,8 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		_window.put_chars(0, 17, Graphics::SYMBOLS_6_HIGH, "1: hard", false);
 		return true;
 	case Menu::PLATFORM:
-		if (keypress.key_raw == 0) _platform_easy = true;
-		else if (keypress.key_raw == 1) _platform_easy = false;
+		if (keypress.key_raw == '0') _platform_easy = true;
+		else if (keypress.key_raw == '1') _platform_easy = false;
 		else return false;
 		_menu = Menu::DIFFICULTY;
 		clear_window();
@@ -58,7 +58,7 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "0-9", false);
 		return true;
 	case Menu::DIFFICULTY:
-		if (keypress.key_raw < 10) {
+		if ((keypress.key_raw -= 48) < 10) {
 			_paddle_height = 512 - (keypress.key_raw / 2) * 64;
 			_paddle_speed = 32 + keypress.key_raw * 4;
 			_start_ball_vx = 48 + keypress.key_raw * 4;
@@ -69,33 +69,33 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 	case Menu::GAME:
 #ifdef PICO
 		if (_platform_easy) {
-			if (keypress.key_raw == 4) _lpaddle_v = -1;
-			else if (keypress.key_raw == 1) _lpaddle_v = 1;
-			else if (keypress.key_raw == 72) _rpaddle_v = -1;
-			else if (keypress.key_raw == 70) _rpaddle_v = 1;
+			if (keypress.key_raw == '4') _lpaddle_v = -1;
+			else if (keypress.key_raw == '1') _lpaddle_v = 1;
+			else if (keypress.key_raw == 247) _rpaddle_v = -1;
+			else if (keypress.key_raw == '-') _rpaddle_v = 1;
 			else return false;
 		} else {
-			if (keypress.key_raw == 4 || keypress.key_raw == 1) _lpaddle_v *= -1;
-			else if (keypress.key_raw == 72 || keypress.key_raw == 70) _rpaddle_v *= -1;
+			if (keypress.key_raw == '4' || keypress.key_raw == '1') _lpaddle_v *= -1;
+			else if (keypress.key_raw == 247 || keypress.key_raw == '-') _rpaddle_v *= -1;
 			else return false;
 		}
 #else
 		if (_platform_easy) {
-			if (keypress.key_raw == 122) _lpaddle_v = -1;
-			else if (keypress.key_raw == 102) _lpaddle_v = 1;
-			else if (keypress.key_raw == 167) _rpaddle_v = -1;
-			else if (keypress.key_raw == 168) _rpaddle_v = 1;
+			if (keypress.key_keyboard == 'W') _lpaddle_v = -1;
+			else if (keypress.key_keyboard == 'S') _lpaddle_v = 1;
+			else if (keypress.key_keyboard == 3) _rpaddle_v = -1;
+			else if (keypress.key_keyboard == 4) _rpaddle_v = 1;
 			else return false;
 		} else {
-			if (keypress.key_raw == 122 || keypress.key_raw == 102) _lpaddle_v *= -1;
-			else if (keypress.key_raw == 167 || keypress.key_raw == 168) _rpaddle_v *= -1;
+			if (keypress.key_keyboard == 'W' || keypress.key_keyboard == 'S') _lpaddle_v *= -1;
+			else if (keypress.key_keyboard == 3 || keypress.key_keyboard == 4) _rpaddle_v *= -1;
 			else return false;
 		}
 #endif
 		return true;
 	case Menu::WIN:
-		if (keypress.key_raw == 0) start_game();
-		else if (keypress.key_raw == 1) {
+		if (keypress.key_raw == '0') start_game();
+		else if (keypress.key_raw == '1') {
 			_menu = Menu::ONLINE;
 			clear_window();
 			_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Online?", false);
@@ -111,12 +111,12 @@ bool PongWindow::handle_key_up(KeyPress keypress)
 	if (_menu == Menu::GAME) {
 		if (!_platform_easy) return true;
 #ifdef PICO
-		if (keypress.key_raw == 4 || keypress.key_raw == 1) _lpaddle_v = 0;
-		else if (keypress.key_raw == 72 || keypress.key_raw == 70) _rpaddle_v = 0;
+		if (keypress.key_raw == '4' || keypress.key_raw == '1') _lpaddle_v = 0;
+		else if (keypress.key_raw == 247 || keypress.key_raw == '-') _rpaddle_v = 0;
 		else return false;
 #else
-		if (keypress.key_raw == 122 || keypress.key_raw == 102) _lpaddle_v = 0;
-		else if (keypress.key_raw == 167 || keypress.key_raw == 168) _rpaddle_v = 0;
+		if (keypress.key_keyboard == 'W' || keypress.key_keyboard == 'S') _lpaddle_v = 0;
+		else if (keypress.key_keyboard == 3 || keypress.key_keyboard == 4) _rpaddle_v = 0;
 		else return false;
 #endif
 		return true;

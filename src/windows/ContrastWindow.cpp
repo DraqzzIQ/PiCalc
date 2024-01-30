@@ -7,17 +7,17 @@ ContrastWindow::ContrastWindow()
 
 bool ContrastWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == 170) {
+	if (keypress.key_raw == 6) {
 		uint8_t contrast = get_contrast();
 		if (contrast > 0) set_contrast(contrast - 1);
 		render();
 		return true;
-	} else if (keypress.key_raw == 169) {
+	} else if (keypress.key_raw == 5) {
 		uint8_t contrast = get_contrast();
 		if (contrast < 30) set_contrast(contrast + 1);
 		render();
 		return true;
-	} else if (keypress.key_raw == 73) {
+	} else if (keypress.key_raw == '=') {
 		set_contrast(14);
 		render();
 		return true;
@@ -29,8 +29,8 @@ void ContrastWindow::render()
 {
 	uint8_t contrast = get_contrast();
 	clear_window();
-	_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, KEY_SET{ 12, 54, 53, 59, 57, 40, 58, 59 }, false);
-	_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, KEY_SET{ 76, 181, 77, 76, 182, 77 }, false);
+	_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Contrast:", false);
+	_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, KEY_SET{ 91, 186, 93, 91, 187, 93 }, false);
 	uint8_t bar_x = (30 - contrast) * 2 + 16;
 	_window.draw_vertical_line(15, 21, 8, true);
 	_window.draw_vertical_line(78, 21, 8, true);

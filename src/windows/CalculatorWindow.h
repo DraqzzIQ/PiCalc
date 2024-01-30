@@ -30,7 +30,6 @@ class CalculatorWindow: public Window
 		Setup_Norm,
 		Setup_Stat,
 		Setup_PerD,
-		Setup_TurnOff,
 		Hyp,
 		Verify,
 		Stat,
@@ -50,7 +49,6 @@ class CalculatorWindow: public Window
 	/// 13: fraction (mixed / not mixed)
 	/// 14: Stat (On, Off)
 	/// 15: PerD (Peridoic, round)
-	/// 16: TurnOff (10 Min, 60 Min)
 	/// </summary>
 	uint16_t _setup = 0;
 
