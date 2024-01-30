@@ -107,14 +107,14 @@ Bitset2D& Bitset2D::copy(uint32_t x_start, uint32_t y_start, uint32_t width, uin
 }
 
 
-void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, KEY_SET text, bool resize_if_needed)
+void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, KEY_SET text, bool resize_if_needed)
 {
 	// TODO: Same code, simplify
 	uint32_t x = coord_x;
 	uint32_t y = coord_y;
 	for (uint32_t i = 0; i < text.size(); i++) {
 		if (text[i] == 10) {
-			y += font.at(0).height();
+			y += font.at('0').height();
 			if (y >= _height) {
 				if (resize_if_needed) extend_down(y - _height + 1, false);
 				else return;
@@ -129,13 +129,13 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY,
 	}
 }
 
-void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, const std::string& text, bool resize_if_needed)
+void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, const std::string& text, bool resize_if_needed)
 {
 	uint32_t x = coord_x;
 	uint32_t y = coord_y;
 	for (uint32_t i = 0; i < text.size(); i++) {
 		if (text[i] == 10) {
-			y += font.at(0).height();
+			y += font.at('0').height();
 			if (y >= _height) {
 				if (resize_if_needed) extend_down(y - _height + 1, false);
 				else return;
@@ -150,17 +150,17 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY,
 	}
 }
 
-void Bitset2D::put_number_aligned_right(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, uint16_t number)
+void Bitset2D::put_number_aligned_right(uint32_t coord_x, uint32_t coord_y, FONT& font, uint16_t number)
 {
 	if (coord_x >= _width || coord_y >= _height || coord_x < 4) return;
 	coord_x -= 4;
 	if (number == 0) {
-		set(coord_x, coord_y, font.at(0), false);
+		set(coord_x, coord_y, font.at('0'), false);
 		return;
 	}
 
 	while (number > 0) {
-		set(coord_x, coord_y, font.at(number % 10), false);
+		set(coord_x, coord_y, font.at((number % 10) + 48), false);
 		number /= 10;
 		if (coord_x < 6) return;
 		coord_x -= 6;

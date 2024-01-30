@@ -1,10 +1,6 @@
 #pragma once
-#include "Chars.h"
 #include "constant/Constants.h"
 #include "datastructs/Bitset2D.h"
-#include <map>
-#include <string>
-#include <vector>
 
 using FONT = const std::map<KEY, Bitset2D>;
 

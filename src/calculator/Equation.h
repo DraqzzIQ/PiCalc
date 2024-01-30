@@ -1,16 +1,10 @@
 #pragma once
+#include "constant/Constants.h"
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Number.h"
 #include "datastructs/NumberParser.h"
-#include "keyboard/KeyPress.h"
 #include "utils/Utils.h"
-#include "windows/Window.h"
-#include <algorithm>
-#include <cmath>
-#include <map>
-#include <string>
-#include <vector>
 
 
 class Equation
