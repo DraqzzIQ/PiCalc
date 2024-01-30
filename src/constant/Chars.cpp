@@ -132,7 +132,7 @@ lowercase (and uppercase single characters): normal characters
 124	|
 125	}
 126	~
-127 EMPTY
+127 empty
 128	euro
 129 SIN
 130	COS
@@ -192,8 +192,8 @@ lowercase (and uppercase single characters): normal characters
 184	!=
 185	CURSOR
 186	BIG_ARROW_LEFT
-187	SMALL_ARROW_LEFT
-188	BIG_ARROW_RIGHT
+187	BIG_ARROW_RIGHT
+188	SMALL_ARROW_LEFT
 189	SMALL_ARROW_RIGHT
 190	NEXT_VAL
 191	SYMBOL_END

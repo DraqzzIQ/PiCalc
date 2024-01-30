@@ -36,7 +36,6 @@ class Graphics
 	/// <returns>converted text</returns>
 	static Bitset2D create_text(const KEY_SET text, FONT& table = SYMBOLS_9_HIGH, const uint16_t spacing = 1);
 
-	static const Bitset2D EMPTY_SCREEN;
 	static const Bitset2D LOGO_SCREEN;
 
 	static FONT SYMBOLS_9_HIGH;
@@ -48,6 +47,4 @@ class Graphics
 	static FONT SYMBOLS_5_HIGH;
 
 	static const std::map<KEY, KEY_SET> key_text;
-
-	static const std::vector<std::string> SCREEN_SYMBOLS;
 };

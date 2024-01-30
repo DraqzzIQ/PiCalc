@@ -1,5 +1,7 @@
 #include "renderers/ConsoleRenderer.h"
 
+const std::vector<std::string> ConsoleRenderer::SCREEN_SYMBOLS = { "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT", "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp" };
+
 ConsoleRenderer::ConsoleRenderer()
 {
 #ifdef _WIN32
@@ -31,9 +33,9 @@ void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
 
 	for (uint32_t i = 0; i < 15; i++) {
 		if (frame.get_screen_symbol(i)) {
-			out += Graphics::SCREEN_SYMBOLS[i];
+			out += SCREEN_SYMBOLS[i];
 		} else {
-			out += std::string(Graphics::SCREEN_SYMBOLS[i].length(), ' ');
+			out += std::string(SCREEN_SYMBOLS[i].length(), ' ');
 		}
 		out += "  ";
 	}

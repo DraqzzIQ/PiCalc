@@ -31,4 +31,6 @@ class ConsoleRenderer: public IRenderer
 	/// </summary>
 	/// <returns>string containing #</returns>
 	std::string get_display_border();
+
+	static const std::vector<std::string> SCREEN_SYMBOLS;
 };
