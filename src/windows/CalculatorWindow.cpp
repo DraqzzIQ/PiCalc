@@ -89,7 +89,7 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 				case 141: break; // RCL
 				case 149: break; // CONST
 				case 162: break; // STAT/DIST
-				case ':': break; // :
+				case ':': break;
 				case 30: break;  // FACT
 				case 143: break; // ENG
 				case 144: break; // <-
