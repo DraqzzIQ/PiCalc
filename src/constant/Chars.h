@@ -152,8 +152,8 @@ lowercase (and uppercase single characters): normal characters
 147	M+
 148	M-
 149	CONST
-150	ALPHA_CONV
-151	SHIFT_CONV
+150	SHIFT_CONV
+151	ALPHA_CONV
 152	CLR
 153	DEL
 154	INS

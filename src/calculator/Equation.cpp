@@ -220,7 +220,7 @@ void Equation::render_equation()
 
 Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, uint8_t type)
 {
-	uint8_t font_height = table.at(0).height();
+	uint8_t font_height = table.at('0').height();
 	Bitset2D equation_part(1, font_height, false);
 	bool cursor_inside = false;
 	y_origin = 0;

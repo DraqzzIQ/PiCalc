@@ -4,7 +4,7 @@ MenuWindow::MenuWindow(FONT& font, bool count):
 	_font(font)
 {
 	_count = count;
-	_line_height = _font.at(0).height() + 2;
+	_line_height = _font.at('0').height() + 2;
 	_lines_per_page = (SCREEN_HEIGHT + 2) / _line_height;
 }
 
@@ -12,7 +12,7 @@ MenuWindow::MenuWindow(bool count):
 	_font(Graphics::SYMBOLS_6_HIGH)
 {
 	_count = count;
-	_line_height = _font.at(0).height() + 2;
+	_line_height = _font.at('0').height() + 2;
 	_lines_per_page = (SCREEN_HEIGHT + 2) / _line_height;
 }
 

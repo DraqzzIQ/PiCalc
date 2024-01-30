@@ -48,19 +48,19 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 {
 	switch (_menu) {
 	case Menu::None:
-		if (keypress.key_calculator == 129) set_menu(Menu::Setup_Pg1);
-		else if (keypress.key_calculator == 105) set_menu(Menu::Mode);
+		if (keypress.key_calculator == 8) set_menu(Menu::Setup_Pg1);
+		else if (keypress.key_calculator == 7) set_menu(Menu::Mode);
 		else {
 			switch (_mode) {
 			case Mode::COMP:
 				switch (keypress.key_calculator) {
-				case 170: _equation_selected->move_cursor_right(); break;
-				case 169: _equation_selected->move_cursor_left(); break;
-				case 167: _equation_selected->move_cursor_up(); break;
-				case 168: _equation_selected->move_cursor_down(); break;
-				case 125: _equation_selected->del(); break;
-				case 126: _equation_selected->ac(); break;
-				case 73:
+				case 3: _equation_selected->move_cursor_up(); break;
+				case 4: _equation_selected->move_cursor_down(); break;
+				case 5: _equation_selected->move_cursor_left(); break;
+				case 6: _equation_selected->move_cursor_right(); break;
+				case 153: _equation_selected->del(); break;
+				case 155: _equation_selected->ac(); break;
+				case '=':
 					// ERROR: 3(1/4), 3*(1/4)
 					_result = _equation_selected->to_number(_setup);
 					if (Error::error_thrown()) {
@@ -75,89 +75,83 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 						calculated = true;
 					}
 					break;
-				case 189: break; // unknown
-				case 103: break; // SHIFT
-				case 104: break; // ALPHA
-				case 123:        // S<>D
+				case 0: break; // unknown
+				case 1: break; // SHIFT
+				case 2: break; // ALPHA
+				case 145:      // S<>D
 					if (!calculated) break;
 					_result_selected++;
 					if (_result_selected == _result_key_sets.size()) _result_selected = 0;
 					_result_equation.set_key_set(_result_key_sets.at(_result_selected));
 					_result_rendered = _result_equation.get_rendered_equation();
 					break;
-				case 141: break; // STO
-				case 121: break; // RCL
-				case 145: break; // CONST
-				case 173: break; // STAT/DIST
-				case 84: break;  // :
-				case 137: break; // FACT
-				case 222: break; // ENG
-				case 142: break; // <-
-				case 146: break; // CONV
-				case 159: break; // Conv
-				case 117: break; // hyp
-				case 147: break; // CLR
-				case 171: break; // VERIFY
-				case 172: break; // BASE
-				case 148: break; // INS
-				case 157: break; // DRG
-				case 124: break; // M+
-				case 144: break; // M-
-				case 149: break; // OFF
-				case 158: break; // wav=
+				case 142: break; // STO
+				case 141: break; // RCL
+				case 149: break; // CONST
+				case 162: break; // STAT/DIST
+				case ':': break; // :
+				case 30: break;  // FACT
+				case 143: break; // ENG
+				case 144: break; // <-
+				case 150: break; // SHIFT_CONV
+				case 151: break; // ALPHA_CONV
+				case 31: break;  // hyp
+				case 152: break; // CLR
+				case 157: break; // VERIFY
+				case 163: break; // BASE
+				case 154: break; // INS
+				case 179: break; // DRG
+				case 147: break; // M+
+				case 148: break; // M-
+				case 180: break; // wav=
 				default: _equation_selected->add_value(keypress.key_calculator);
 				}
 			}
 		}
 		break;
 	case Menu::Error:
-		if (keypress.key_calculator == 126) {
+		if (keypress.key_calculator == 155) {
 			_menu = Menu::None;
 			calculated = false;
 			_equation_selected->ac();
-		} else if (keypress.key_calculator == 170) {
-			_menu = Menu::None;
-			calculated = false;
-		} else if (keypress.key_calculator == 169) {
+		} else if (keypress.key_calculator == 5 || keypress.key_calculator == 6) {
 			_menu = Menu::None;
 			calculated = false;
 		}
 		break;
 	case Menu::Mode:
 		switch (keypress.key_calculator) {
-		case 1:
+		case '1':
 			_mode = Mode::COMP;
 			set_menu(Menu::None);
 			break;
-		case 2:
+		case '2':
 			_mode = Mode::STAT;
 			set_menu(Menu::Mode_Stat);
 			break;
-		case 3:
+		case '3':
 			_mode = Mode::TABLE;
 			set_menu(Menu::None);
 			break;
-		case 4:
+		case '4':
 			_mode = Mode::DIST;
 			set_menu(Menu::Mode_Dist);
 			break;
-		case 5:
+		case '5':
 			_mode = Mode::VERIF;
 			set_menu(Menu::None);
 			break;
-		case 6:
+		case '6':
 			_mode = Mode::BASE_N;
 			set_menu(Menu::None);
 			break;
-		case 7:
+		case '7':
 			_mode = Mode::EQ_SOLV;
 			set_menu(Menu::None);
 			break;
-		case 8:
+		case '8':
 			_mode = Mode::GRAPH;
 			set_menu(Menu::None);
-			break;
-		default:
 			break;
 		}
 		break;
@@ -174,61 +168,59 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 		// TODO
 		break;
 	case Menu::Setup_Pg1:
-		if (keypress.key_calculator == 126) {
+		if (keypress.key_calculator == 155) {
 			set_menu(Menu::None);
 			calculated = false;
 		}
 		switch (keypress.key_calculator) {
-		case 1:
+		case '1':
 			set_menu(Menu::Setup_Input);
 			break;
-		case 2:
+		case '2':
 			set_menu(Menu::Setup_Output);
 			break;
-		case 3:
+		case '3':
 			_setup |= 1 << 2;
 			_setup &= ~(1 << 3);
 			_menu = Menu::None;
 			break;
-		case 4:
+		case '4':
 			_setup &= ~(1 << 2);
 			_setup &= ~(1 << 3);
 			_menu = Menu::None;
 			break;
-		case 5:
+		case '5':
 			_setup &= ~(1 << 2);
 			_setup |= 1 << 3;
 			_menu = Menu::None;
 			break;
-		case 6:
+		case '6':
 			set_menu(Menu::Setup_Fix);
 			break;
-		case 7:
+		case '7':
 			set_menu(Menu::Setup_Sci);
 			break;
-		case 8:
+		case '8':
 			set_menu(Menu::Setup_Norm);
-			break;
-		default:
 			break;
 		}
 		break;
 	case Menu::Setup_Pg2:
-		if (keypress.key_calculator == 126) {
+		if (keypress.key_calculator == 155) {
 			set_menu(Menu::None);
 			calculated = false;
 		}
 		switch (keypress.key_calculator) {
-		case 1:
+		case '1':
 			_setup |= 1 << 13;
 			break;
-		case 2:
+		case '2':
 			_setup &= ~(1 << 13);
 			break;
-		case 3:
+		case '3':
 			set_menu(Menu::Setup_Stat);
 			break;
-		case 4:
+		case '4':
 			set_menu(Menu::Setup_PerD);
 			break;
 		}
@@ -253,7 +245,7 @@ void CalculatorWindow::set_menu(Menu menu)
 		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, "\311DIST", false);
 		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, "\312VERIF", false);
 		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, "\313BASE-N", false);
-		_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, "\314EQ-SOLVE", false);
+		_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, "\314EQ-SLV", false);
 		_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, "\315GRAPH", false);
 		break;
 	case Menu::Mode_Stat:

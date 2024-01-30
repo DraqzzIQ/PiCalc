@@ -29,7 +29,7 @@ KEY IKeyboard::raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha)
 		case 145: return 146;
 		case 147: return 148;
 		case 55: return 149;
-		case 56: return 151;
+		case 56: return 150;
 		case 57: return 152;
 		case 153: return 154;
 		case 155: return 156;
@@ -59,7 +59,7 @@ KEY IKeyboard::raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha)
 		case 41: return 88;
 		case 145: return 89;
 		case 147: return 77;
-		case 56: return 150;
+		case 56: return 151;
 		case 215: return 159;
 		case 247: return 161;
 		case 43: return 165;

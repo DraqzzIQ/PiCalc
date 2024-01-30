@@ -81,13 +81,13 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		}
 #else
 		if (_platform_easy) {
-			if (keypress.key_keyboard == 'W') _lpaddle_v = -1;
-			else if (keypress.key_keyboard == 'S') _lpaddle_v = 1;
+			if (keypress.key_keyboard == 'w') _lpaddle_v = -1;
+			else if (keypress.key_keyboard == 's') _lpaddle_v = 1;
 			else if (keypress.key_keyboard == 3) _rpaddle_v = -1;
 			else if (keypress.key_keyboard == 4) _rpaddle_v = 1;
 			else return false;
 		} else {
-			if (keypress.key_keyboard == 'W' || keypress.key_keyboard == 'S') _lpaddle_v *= -1;
+			if (keypress.key_keyboard == 'w' || keypress.key_keyboard == 's') _lpaddle_v *= -1;
 			else if (keypress.key_keyboard == 3 || keypress.key_keyboard == 4) _rpaddle_v *= -1;
 			else return false;
 		}
@@ -115,7 +115,7 @@ bool PongWindow::handle_key_up(KeyPress keypress)
 		else if (keypress.key_raw == 247 || keypress.key_raw == '-') _rpaddle_v = 0;
 		else return false;
 #else
-		if (keypress.key_keyboard == 'W' || keypress.key_keyboard == 'S') _lpaddle_v = 0;
+		if (keypress.key_keyboard == 'w' || keypress.key_keyboard == 's') _lpaddle_v = 0;
 		else if (keypress.key_keyboard == 3 || keypress.key_keyboard == 4) _rpaddle_v = 0;
 		else return false;
 #endif
@@ -251,11 +251,11 @@ void PongWindow::render_game()
 	uint8_t score_width = 0;
 	uint8_t score = _lscore;
 	if (score == 0) {
-		score_key_set.push_back(0);
+		score_key_set.push_back('0');
 		score_width += 4;
 	}
 	while (score > 0) {
-		score_key_set.push_back(score % 10);
+		score_key_set.push_back((score % 10) + 48);
 		score /= 10;
 		score_width += 4;
 	}
@@ -265,9 +265,9 @@ void PongWindow::render_game()
 	// draw the right score
 	score_key_set.clear();
 	score = _rscore;
-	if (score == 0) score_key_set.push_back(0);
+	if (score == 0) score_key_set.push_back('0');
 	while (score > 0) {
-		score_key_set.push_back(score % 10);
+		score_key_set.push_back((score % 10) + 48);
 		score /= 10;
 	}
 	std::reverse(score_key_set.begin(), score_key_set.end());

@@ -135,14 +135,15 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, const s
 	uint32_t y = coord_y;
 	for (uint32_t i = 0; i < text.size(); i++) {
 		if (text[i] == 10) {
-			y += font.at('0').height();
+			y += font.at(0).height();
 			if (y >= _height) {
 				if (resize_if_needed) extend_down(y - _height + 1, false);
 				else return;
 			}
 			x = coord_x;
 		} else {
-			Bitset2D rendered = font.at(text[i]);
+			KEY key = text[i];
+			Bitset2D rendered = font.contains(key) ? font.at(key) : font.at(0);
 			set(x, y, rendered, resize_if_needed);
 			x += rendered.width() + 1;
 			if (x >= _width) return;
