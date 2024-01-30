@@ -53,6 +53,10 @@ class Window
 	/// called when window is not displayed anymore
 	/// </summary>
 	virtual void lost_focus();
+	/// <summary>
+	/// returns the rendered window
+	/// </summary>
+	Bitset2D get_preview();
 
 	protected:
 	/// <summary>
