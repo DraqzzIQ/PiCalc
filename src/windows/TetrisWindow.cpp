@@ -76,6 +76,7 @@ void TetrisWindow::spawn_piece()
 	if (touching_piece()) {
 		// game over
 		_board = Bitset2D(_board_width, 31, false);
+		_hold_piece.clear();
 		_score = 0;
 		_lines = 0;
 	}
