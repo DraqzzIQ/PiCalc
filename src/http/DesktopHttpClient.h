@@ -1,17 +1,17 @@
 #pragma once
 #ifndef PICO
 #include "http/IHttpClient.h"
-#include <httplib/httplib.h>
+#include <httplib.h>
 
-class DesktopHttpClient: IHttpClient
+class DesktopHttpClient: public IHttpClient
 {
 	public:
-	DesktopHttpClient(std::string baseUrl);
-	HttpResponse get(HttpRequest req, std::string path);
-	HttpResponse post(HttpRequest req, std::string path);
-	void set_bearer_auth_token(std::string token);
+	DesktopHttpClient(std::string _base_url);
+	HttpResponse get(std::string path, HttpRequest req) override;
+	HttpResponse post(std::string path, HttpRequest req) override;
+	void set_bearer_auth_token(std::string token) override;
 
 	private:
-	httplib::Client client;
+	httplib::Client _client;
 };
 #endif

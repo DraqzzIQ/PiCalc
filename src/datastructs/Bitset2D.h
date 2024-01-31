@@ -1,13 +1,14 @@
 #pragma once
+#include "constant/Constants.h"
 #include "datastructs/DynamicBitset.h"
-#include <cstdint>
-#include <vector>
 
 /// <summary>
 /// Utility for 2D bitsets.
 /// </summary>
 class Bitset2D
 {
+	using FONT = const std::map<KEY, Bitset2D>;
+
 	public:
 	/// <summary>
 	/// Default constructor
@@ -50,11 +51,11 @@ class Bitset2D
 	/// Assignment operator.
 	/// </summary>
 	Bitset2D& operator=(const Bitset2D& other);
-	/// <summary>
-	/// appends two bitset_2ds together
-	/// Very Inefficient due to return by value
-	/// </summary>
-	Bitset2D operator+(const Bitset2D& other);
+	///// <summary>
+	///// appends two bitset_2ds together
+	///// Very Inefficient due to return by value
+	///// </summary>
+	// Bitset2D operator+(const Bitset2D& other);
 
 	/// <summary>
 	/// Returns the bit at index.
@@ -75,11 +76,24 @@ class Bitset2D
 	/// <summary>
 	/// copy part of the Bitset2D from start to end to another Bitset2d
 	/// </summary>
-	/// <param name="start">start Index (inclusive)</param>
-	/// <param name="end">end Index (exclusive)</param>
-	/// <returns>new Bitset2D</returns>
-	Bitset2D copy(uint32_t start, uint32_t end) const;
+	Bitset2D& copy(uint32_t x_start, uint32_t y_start, uint32_t width, uint32_t height, Bitset2D& destination) const;
 
+	/// <summary>
+	/// put a KEY_SET on the Bitset2D starting at coord_x, coord_y
+	/// </summary>
+	void put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, KEY_SET text, bool resize_if_needed);
+	/// <summary>
+	/// put a string on the Bitset2D starting at coord_x, coord_y
+	/// </summary>
+	void put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, const std::string& text, bool resize_if_needed);
+	/// <summary>
+	/// put a uint16_t with the top left corner at coord_x, coord_y
+	/// </summary>
+	void put_number_aligned_right(uint32_t coord_x, uint32_t coord_y, FONT& font, uint16_t number);
+	/// <summary>
+	/// draw a vertical line on the Bitset2D starting at coord_x, coord_y with length length and value value
+	/// </summary>
+	void draw_vertical_line(uint32_t coord_x, uint32_t coord_y, uint32_t length, bool value);
 	/// <summary>
 	/// Overwrite the Bitset2D with other placed on the position coord_x, coord_y
 	/// </summary>
@@ -168,11 +182,20 @@ class Bitset2D
 	/// <summary>
 	/// Converts a 2D bitset to a string
 	/// </summary>
-	std::string to_string();
+	std::string to_string() const;
 	/// <summary>
 	/// Converts a 2D bitset to a string with formatting
 	/// </summary>
-	std::string to_string_formatted();
+	std::string to_string_formatted() const;
+	/// <summary>
+	/// Converts a 2D bitset to a vector of uint8_ts of a bmp file
+	/// </summary>
+	std::vector<uint8_t> to_bmp();
+
+	/// <summary>
+	/// Converts bytes of a bmp file to a 2D bitset
+	/// </summary>
+	void from_bmp(std::vector<uint8_t> bytes);
 
 	private:
 	/// <summary>

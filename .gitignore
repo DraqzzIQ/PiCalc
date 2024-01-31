@@ -377,3 +377,9 @@ CppProperties.json
 /cmake-build-debug/
 
 poetry.lock
+
+.idea
+.idea/*
+
+secrets
+Graphics Designer/result.txt

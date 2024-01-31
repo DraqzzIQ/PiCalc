@@ -15,12 +15,11 @@ class ConsoleRenderer: public IRenderer
 {
 	public:
 	ConsoleRenderer();
-
 	/// <summary>
-	/// renders the given pixels to the console
+	/// renders the given frame to the console
 	/// </summary>
-	/// <param name="pixels">pixels to render</param>
-	void render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender);
+	/// <param name="frame">frame to render</param>
+	void render(const Frame& frame, bool force_rerender) override;
 
 	private:
 	/// <summary>
@@ -32,4 +31,6 @@ class ConsoleRenderer: public IRenderer
 	/// </summary>
 	/// <returns>string containing #</returns>
 	std::string get_display_border();
+
+	static const std::vector<std::string> SCREEN_SYMBOLS;
 };

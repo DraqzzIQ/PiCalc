@@ -67,13 +67,6 @@ Bitset2D& Bitset2D::operator=(const Bitset2D& other)
 	return *this;
 }
 
-Bitset2D Bitset2D::operator+(const Bitset2D& other)
-{
-	Bitset2D res(*this);
-	res.extend_right(other);
-	return res;
-}
-
 
 const DynamicBitset& Bitset2D::at(uint32_t index) const
 {
@@ -101,15 +94,84 @@ bool Bitset2D::get_bit(uint32_t coord_x, uint32_t coord_y) const
 	return _plane.at(coord_x).at(coord_y);
 }
 
-Bitset2D Bitset2D::copy(uint32_t start, uint32_t end) const
+Bitset2D& Bitset2D::copy(uint32_t x_start, uint32_t y_start, uint32_t width, uint32_t height, Bitset2D& destination) const
 {
-	Bitset2D res = Bitset2D();
-	res._width = end - start;
-	res._height = _height;
-	std::copy(_plane.begin() + start, _plane.begin() + end, res._plane.begin());
-	return res;
+	destination.clear();
+	if (x_start >= _width || y_start >= _height) return destination;
+	width += x_start;
+	if (width > _width) width = _width;
+	if (y_start + height > _height) height = _height - y_start;
+	destination._height = height;
+	for (; x_start < width; x_start++) destination.push_back(_plane[x_start].copy_unsafe(y_start, height));
+	return destination;
 }
 
+
+void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, KEY_SET text, bool resize_if_needed)
+{
+	// TODO: Same code, simplify
+	uint32_t x = coord_x;
+	uint32_t y = coord_y;
+	for (uint32_t i = 0; i < text.size(); i++) {
+		if (text[i] == 10) {
+			y += font.at('0').height();
+			if (y >= _height) {
+				if (resize_if_needed) extend_down(y - _height + 1, false);
+				else return;
+			}
+			x = coord_x;
+		} else {
+			Bitset2D rendered = font.at(text[i]);
+			set(x, y, rendered, resize_if_needed);
+			x += rendered.width() + 1;
+			if (x >= _width) return;
+		}
+	}
+}
+
+void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, const std::string& text, bool resize_if_needed)
+{
+	uint32_t x = coord_x;
+	uint32_t y = coord_y;
+	for (uint32_t i = 0; i < text.size(); i++) {
+		if (text[i] == 10) {
+			y += font.at(0).height();
+			if (y >= _height) {
+				if (resize_if_needed) extend_down(y - _height + 1, false);
+				else return;
+			}
+			x = coord_x;
+		} else {
+			KEY key = text[i];
+			Bitset2D rendered = font.contains(key) ? font.at(key) : font.at(0);
+			set(x, y, rendered, resize_if_needed);
+			x += rendered.width() + 1;
+			if (x >= _width) return;
+		}
+	}
+}
+
+void Bitset2D::put_number_aligned_right(uint32_t coord_x, uint32_t coord_y, FONT& font, uint16_t number)
+{
+	if (coord_x >= _width || coord_y >= _height || coord_x < 4) return;
+	coord_x -= 4;
+	if (number == 0) {
+		set(coord_x, coord_y, font.at('0'), false);
+		return;
+	}
+
+	while (number > 0) {
+		set(coord_x, coord_y, font.at((number % 10) + 48), false);
+		number /= 10;
+		if (coord_x < 6) return;
+		coord_x -= 6;
+	}
+}
+
+void Bitset2D::draw_vertical_line(uint32_t coord_x, uint32_t coord_y, uint32_t length, bool value)
+{
+	_plane[coord_x].set(coord_y, length, value);
+}
 
 void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bool resize_if_needed)
 {
@@ -120,7 +182,8 @@ void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bo
 		if (other._width + coord_x > _width) { extend_right(other._width + coord_x - _width, false); }
 		if (other._height + coord_y > _height) { extend_down(other._height + coord_y - _height, false); }
 	}
-	for (uint32_t i = 0; i < other._width; i++) { _plane[i + coord_x].set(coord_y, other.at(i)); }
+	uint32_t len = other._width < _width - coord_x ? other._width : _width - coord_x;
+	for (uint32_t i = 0; i < len; i++) { _plane[i + coord_x].set(coord_y, other.at(i)); }
 }
 
 void Bitset2D::set_column(uint32_t coord_x, const DynamicBitset& other)
@@ -249,19 +312,21 @@ void Bitset2D::extend_up(const Bitset2D& other)
 
 void Bitset2D::extend_up(uint32_t length, bool value)
 {
-	for (uint32_t i = 0; i < _width; i++) { _plane[i].extend_left(length, value); }
+	for (uint32_t i = 0; i < _width; i++) {
+		_plane[i].extend_left(length, value);
+	}
 	_height += length;
 }
 
 
-std::string Bitset2D::to_string()
+std::string Bitset2D::to_string() const
 {
 	std::string s = "";
 	for (uint32_t i = 0; i < _plane.size(); i++) { s += _plane[i].to_string(); }
 	return s;
 }
 
-std::string Bitset2D::to_string_formatted()
+std::string Bitset2D::to_string_formatted() const
 {
 	uint32_t max_size = 0;
 	for (uint32_t i = 0; i < _plane.size(); i++) {
@@ -280,4 +345,65 @@ std::string Bitset2D::to_string_formatted()
 		s += "\n";
 	}
 	return s;
+}
+std::vector<uint8_t> Bitset2D::to_bmp()
+{
+	std::vector<uint8_t> bmp;
+	uint32_t width = _width;
+	uint32_t height = _height;
+	uint32_t row_size = (width * 3 + 3) & (~3);
+	uint32_t size = row_size * height + 54;
+	bmp.resize(size);
+	bmp[0] = 'B';
+	bmp[1] = 'M';
+	bmp[2] = size;
+	bmp[3] = size >> 8;
+	bmp[4] = size >> 16;
+	bmp[5] = size >> 24;
+	bmp[10] = 54;
+	bmp[14] = 40;
+	bmp[18] = width;
+	bmp[19] = width >> 8;
+	bmp[20] = width >> 16;
+	bmp[21] = width >> 24;
+	bmp[22] = height;
+	bmp[23] = height >> 8;
+	bmp[24] = height >> 16;
+	bmp[25] = height >> 24;
+	bmp[26] = 1;
+	bmp[28] = 24;
+
+	for (uint32_t i = 0; i < height; i++) {
+		for (uint32_t j = 0; j < width; j++) {
+			uint32_t index = 54 + (height - 1 - i) * row_size + j * 3;
+			bmp[index] = _plane[j][i] ? 0 : 255;
+			bmp[index + 1] = _plane[j][i] ? 0 : 255;
+			bmp[index + 2] = _plane[j][i] ? 0 : 255;
+		}
+	}
+
+	return bmp;
+}
+
+void Bitset2D::from_bmp(std::vector<uint8_t> bytes)
+{
+	if (bytes.empty()) {
+		clear();
+		return;
+	}
+
+	uint32_t width = bytes[18] | (bytes[19] << 8) | (bytes[20] << 16) | (bytes[21] << 24);
+	uint32_t height = bytes[22] | (bytes[23] << 8) | (bytes[24] << 16) | (bytes[25] << 24);
+
+	Bitset2D bitset(width, height, false);
+
+	for (uint32_t i = 0; i < height; i++) {
+		for (uint32_t j = 0; j < width; j++) {
+			uint32_t index = 54 + (height - 1 - i) * ((width * 3 + 3) & (~3)) + j * 3;
+			bool value = !(bytes[index] == 255 && bytes[index + 1] == 255 && bytes[index + 2] == 255);
+			bitset.set_bit(j, i, value);
+		}
+	}
+
+	*this = bitset;
 }

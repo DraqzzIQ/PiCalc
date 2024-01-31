@@ -1,47 +1,26 @@
 import tkinter as tk
-import math
+from math import floor
+from pyperclip import copy
 
 
 def motion(event):
     if 0 <= event.x < width * cell_size and 0 <= event.y < height * cell_size:
-        start_x = math.floor(event.x / cell_size)
-        start_y = math.floor(event.y / cell_size)
-        for delta_x in range(size):
-            for delta_y in range(size):
+        start_x = floor(event.x / cell_size)
+        start_y = floor(event.y / cell_size)
+        for delta_x in range(pen_size):
+            for delta_y in range(pen_size):
                 if start_x + delta_x < width and start_y + delta_y < height:
                     w.itemconfig(fields[start_x + delta_x][start_y + delta_y], fill="black" if draw else "white")
 
 
-def tool(event):
+def changeTool(event):
     global draw
     draw = not draw
 
 
-def save(event):
-    # saveString = str([[1 if w.itemcget(fields[cx][cy], "fill") == "black" else 0 for cy in range(height)] for cx in range(width)]).replace("[", "{").replace("]", "}")
-    output = [["1" if w.itemcget(fields[cx][cy], "fill") == "black" else "0" for cy in range(height)] for cx in range(width)]
-    output_str = []
-    print(output)
-    for cx in range(width):
-        for i in range(7-((height-1) % 8)):
-            output[cx].append("0")
-        output_str.append("".join(output[cx]))
-
-    for cx in output_str:
-        print(str([("0b" + cx[i:i+8]) for i in range(0, len(cx), 8)]).replace("[", "{").replace("]", "}").replace("'", ""), end=", ")
-    # print(output_str)
-    # saveString = str()
-    # print(saveString + "\n")
-    # pyperclip.copy("\t{ " + name + ", " + saveString + "},")
-
-def close():
-    save(0)
-    root.destroy()
-
-
-def updateSize(event):
+def updateCellSize(event):
     global fields, cell_size, padding
-    cell_size = min(math.floor(root.winfo_width()/width), math.floor(root.winfo_height()/height))
+    cell_size = min(floor(root.winfo_width()/width), floor(root.winfo_height()/height))
     padding = cell_size // 10
 
     w.config(width=width * cell_size, height=height * cell_size)
@@ -55,7 +34,7 @@ def addColumn(event):
     global width
     width += 1
     fields.append([w.create_rectangle(0, 0, 0, 0, fill="white") for _ in range(height)])
-    updateSize(0)
+    updateCellSize(0)
 
 
 def removeColumn(event):
@@ -66,7 +45,7 @@ def removeColumn(event):
             print(cy)
             w.delete(fields[-1][cy])
         del fields[-1]
-        updateSize(0)
+        updateCellSize(0)
         print(fields, height)
 
 
@@ -75,7 +54,7 @@ def addRow(event):
     height += 1
     for cx in range(width):
         fields[cx].append(w.create_rectangle(0, 0, 0, 0, fill="white"))
-    updateSize(0)
+    updateCellSize(0)
 
 
 def removeRow(event):
@@ -85,18 +64,18 @@ def removeRow(event):
         for cx in range(width):
             w.delete(fields[cx][-1])
             del fields[cx][-1]
-        updateSize(0)
+        updateCellSize(0)
         print(fields, height)
 
 
 def increasePenSize(event):
-    global size
-    size += 1
+    global pen_size
+    pen_size += 1
 
 
 def decreasePenSize(event):
-    global size
-    size -= 1
+    global pen_size
+    pen_size -= 1
 
 
 def start(width_in, height_in):
@@ -114,49 +93,60 @@ def start(width_in, height_in):
             fields[cx].append(w.create_rectangle(0, 0, 0, 0, fill="white"))
 
 
+def getString():
+    output = [["1" if w.itemcget(fields[cx][cy], "fill") == "black" else "0" for cy in range(height)] for cx in range(width)]
+    output_str = f"{{ {name}, Bitset2D({width}, {height}, {{"
+    for row in output:
+        row.extend("0" * 7)
+        output_str += "{"
+        for i in range(0, len(row) - 7, 8):
+            output_str += "0b" + "".join(row[i:i + 8]) + ", "
+        output_str = output_str[:-2]
+        output_str += "}, "
+    output_str = output_str[:-2] + "})}, "
+    return output_str
+
+
+def save(event):
+    output_str = getString()
+    print(output_str)
+    copy(output_str)
+
+
+def close():
+    save(0)
+    root.destroy()
+
+
 def reopen(event):
     global name
-    global width
-    global height
     global fields
-
-    saveString = str([[1 if w.itemcget(fields[cx][cy], "fill") == "black" else 0 for cy in range(height)] for cx in range(width)]).replace("[", "{").replace("]", "}")
-    file.write("\t{ " + str(name) + ", " + saveString + "},\n")
-
-    for cx in range(width):
-        fields.append([])
-        for cy in range(height):
-            w.itemconfig(fields[cx][cy], fill="white")
-
-    # start(width, height)
+    output_str = getString()
+    file.write(output_str + "\n")
     name += 1
-
     print("name: " + str(name))
 
-def close_multiple():
-    reopen(0)
-    root.destroy()
+    for cx in range(width):
+        for cy in range(height):
+            w.itemconfig(fields[cx][cy], fill="white")
 
 
 def reopen_unknown(event):
     global name
-    global width
-    global height
     global fields
-
-    saveString = str([[1 if w.itemcget(fields[cx][cy], "fill") == "black" else 0 for cy in range(height)] for cx in range(width)]).replace("[", "{").replace("]", "}")
-    file.write("\t{ " + str(name) + ", " + saveString + "}, //?\n")
-
+    output_str = getString()
+    file.write(output_str + "//?\n")
+    name += 1
+    print("name: " + str(name))
 
     for cx in range(width):
-        fields.append([])
         for cy in range(height):
             w.itemconfig(fields[cx][cy], fill="white")
 
-    # start(width, height)
-    name += 1
 
-    print("name: " + str(name))
+def close_multiple():
+    reopen(0)
+    root.destroy()
 
 
 root = tk.Tk()
@@ -166,49 +156,46 @@ screen_height = root.winfo_screenheight()
 root.geometry(f"{screen_width//2}x{screen_height//2}+{500}+{20}")
 w = tk.Canvas(root, width=0, height=0, bg="grey")
 
-
 draw = True
-size = 1
+pen_size = 1
+cell_size = 0
+padding = 0
 fields = []
+
 start_type = input("start type? (1 = single width + height, 2 = import, 3 = multiple): ")
 
 if start_type == "1":
     name = input("name: ")
-    # width = int(input("width: "))
-    # height = int(input("height: "))
-
-    width = 5
-    height = 9
+    width = int(input("width: "))
+    height = int(input("height: "))
     start(width, height)
 
     root.bind("<Escape>", save)
+    root.bind("<Return>", save)
     root.protocol("WM_DELETE_WINDOW", close)
 
 elif start_type == "2":
-    importListRaw = input("input List: ")
-    importList = [["black" if b == "1" else "white" for b in l.split(", ")] for l in importListRaw[2:-2].split("}, {")]
-    width = len(importList)
-    height = len(importList[0])
-
-
-    fields = []
-    for x in range(width):
-        fields.append([])
-        for y in range(height):
-            fields[x].append(w.create_rectangle(0, 0, 0, 0, fill=importList[x][y]))
-
-    root.bind("<Escape>", save)
-    root.protocol("WM_DELETE_WINDOW", close)
+    print("not working yet")
+    # TODO
+    # importListRaw = input("input List: ")
+    # importList = [["black" if b == "1" else "white" for b in l.split(", ")] for l in importListRaw[2:-2].split("}, {")]
+    # width = len(importList)
+    # height = len(importList[0])
+    #
+    # fields = []
+    # for x in range(width):
+    #     fields.append([])
+    #     for y in range(height):
+    #         fields[x].append(w.create_rectangle(0, 0, 0, 0, fill=importList[x][y]))
+    #
+    # root.bind("<Escape>", save)
+    # root.bind("<Return>", save)
+    # root.protocol("WM_DELETE_WINDOW", close)
 
 elif start_type == "3":
     name = int(input("start name: "))
-    # width = int(input("width: "))
-    # height = int(input("height: "))
-
-    # name = 16
-    width = 5
-    height = 9
-
+    width = int(input("width: "))
+    height = int(input("height: "))
     start(width, height)
 
     file = open("result.txt", "w")
@@ -217,11 +204,15 @@ elif start_type == "3":
     root.bind("<Return>", reopen)
     root.protocol("WM_DELETE_WINDOW", close_multiple)
 
+else:
+    print("please enter a valid mode")
+    exit()
+
 
 w.bind("<ButtonPress-1>", motion)
 w.bind("<B1-Motion>", motion)
-root.bind("<space>", tool)
-root.bind("<Configure>", updateSize)
+root.bind("<space>", changeTool)
+root.bind("<Configure>", updateCellSize)
 root.bind("<Right>", addColumn)
 root.bind("<Left>", removeColumn)
 root.bind("<Down>", addRow)

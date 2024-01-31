@@ -18,7 +18,7 @@ struct ci {
 } // namespace detail
 } // namespace httplib
 #else
-#include <httplib/httplib.h>
+#include <httplib.h>
 #endif
 
 using Headers = std::multimap<std::string, std::string, httplib::detail::ci>;

@@ -7,12 +7,14 @@
 class IKeyboard
 {
 	public:
-	IKeyboard(WindowManager* window_manager);
+	IKeyboard();
 	virtual ~IKeyboard(){};
 	/// <summary>
 	/// checks for keyboard presses
 	/// </summary>
 	virtual void check_for_keyboard_presses() = 0;
+
+	protected:
 	/// <summary>
 	/// checks wether shift is active
 	/// </summary>
@@ -26,11 +28,7 @@ class IKeyboard
 	/// <summary>
 	/// converts raw keycodes to calculator keycodes using the calculator key-layout
 	/// </summary>
-	static uint8_t raw_key_to_calculator_key(uint8_t raw_key, bool shift, bool alpha);
-	/// <summary>
-	/// converts raw keycodes to calculator keycodes using the normal keyboard key-layout
-	/// </summary>
-	static uint8_t raw_key_to_keyboard_key(uint8_t raw_key, bool shift, bool alpha);
+	static KEY raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha);
 	/// <summary>
 	/// window manager handles the inputs
 	/// </summary>

@@ -1,3 +1,6 @@
+#ifdef PICO
+
+
 #pragma once
 #include "http/PicoHttpClient.h"
 #include "lwip/init.h"
@@ -209,3 +212,4 @@ PicoHttpClient::~PicoHttpClient()
 
 	cyw43_arch_deinit();
 }
+#endif

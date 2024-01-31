@@ -1,8 +1,17 @@
 #include "windows/WindowManager.h"
 
-WindowManager::WindowManager(std::vector<IRenderer*>* renderers)
+WindowManager* WindowManager::_instance = nullptr;
+
+WindowManager* WindowManager::get_instance()
 {
-	_renderers = renderers;
+	if (!_instance)
+		_instance = new WindowManager();
+
+	return _instance;
+}
+
+WindowManager::WindowManager()
+{
 }
 
 void WindowManager::add_window(Window* window)
@@ -21,33 +30,46 @@ void WindowManager::minimize_window()
 	}
 }
 
-void WindowManager::close_window()
+void WindowManager::close_window(bool dispose)
 {
 	if (!_windows.empty()) {
 		Window* top = _windows.top();
 		_windows.pop();
-		delete top;
+		if (dispose)
+			delete top;
 	}
 }
 
 void WindowManager::update(bool force_rerender)
 {
-	for (size_t i = 0; i < _renderers->size(); i++) {
-		if (!_windows.empty()) _renderers->at(i)->render(_windows.top()->update_window(), _windows.top()->screen_symbols, force_rerender);
-		else _renderers->at(i)->render(Graphics::LOGO_SCREEN, DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), true), force_rerender);
+	for (size_t i = 0; i < IRenderer::Renderers.size(); i++) {
+		if (!_windows.empty()) {
+			Frame& frame = _windows.top()->update_and_get_frame();
+			frame.set_screen_symbol(0, _shift);
+			frame.set_screen_symbol(1, _alpha);
+			IRenderer::Renderers.at(i)->render(frame, force_rerender);
+		} else IRenderer::Renderers.at(i)->render(Frame(Graphics::LOGO_SCREEN, 0xFFFF), force_rerender);
 	}
 }
 
 void WindowManager::handle_key_down(KeyPress keypress)
 {
-	if (keypress.alpha && keypress.key_raw == Chars::KEY_MAP.at("AC")) {
-		if (_windows.size() > 1) minimize_window();
-	} else if (keypress.alpha && keypress.key_raw == Chars::KEY_MAP.at("DEL")) {
+	_shift = keypress.shift;
+	_alpha = keypress.alpha;
+	if (keypress.shift && keypress.key_raw == 155) {
+#ifdef PICO
+		gpio_put(28, 0);
+#endif
+	} else if (keypress.alpha && keypress.key_raw == 153) {
+		if (_windows.size() > 0) minimize_window();
+	} else if (keypress.shift && keypress.key_raw == 153) {
 		if (_windows.size() > 1) close_window();
 	} else if (_windows.size() > 0) _windows.top()->handle_key_down(keypress);
 }
 
 void WindowManager::handle_key_up(KeyPress keypress)
 {
+	_shift = keypress.shift;
+	_alpha = keypress.alpha;
 	if (_windows.size() > 0) _windows.top()->handle_key_up(keypress);
 }

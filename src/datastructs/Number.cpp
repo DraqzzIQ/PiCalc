@@ -1,406 +1,636 @@
 #include "Number.h"
 
+// TODO:
+// update chars
+// -output periodic numbers
+// -simplify
+// -only format Decimal to fraction at the end
+
 Number::Number()
 {
-	_rounded = 0;
-	_root = new NumberNode();
+	_value = 0;
+	_children = std::vector<Number*>();
 }
 
-
-Number::Number(const double value)
+Number::Number(int64_t value, int16_t exp)
 {
-	_rounded = value;
-	_root = new NumberNode();
-	_root->value = _rounded;
+	_value.set_value(value, exp);
+	_children = std::vector<Number*>();
 }
 
-Number::Number(const std::string value)
+Number::Number(int64_t value, int16_t exp, uint8_t periodic)
 {
-	_rounded = std::stod(value);
-	_root = new NumberNode();
-	_root->value = _rounded;
+	exp += periodic;
+	value -= value / Decimal::powers_of_ten[periodic];
+
+	_value.set_key(247);
+	_children = std::vector<Number*>{
+		new Number(value, exp),
+		new Number(Decimal::powers_of_ten[periodic] - 1, 0)
+	};
 }
 
-Number::Number(const Number& other)
+Number::Number(const Number* other)
 {
-	_rounded = other._rounded;
-	_root = new NumberNode();
-	_root->value = _rounded;
+	operator=(other);
+}
+
+Number::Number(Decimal value)
+{
+	_value = value;
+	_children = std::vector<Number*>();
 }
 
 Number::~Number()
 {
-	delete _root;
+	for (Number* child : _children)
+		delete child;
 }
 
-Number Number::operator+(const Number& other)
+Number* Number::operator=(const Number* other)
 {
-	Number result = Number(_rounded + other._rounded);
-	return result;
+	_value = other->_value;
+	_children = std::vector<Number*>();
+	for (Number* child : other->_children) _children.push_back(child->deep_clone());
+	return this;
 }
 
-Number Number::operator-(const Number& other)
+Number* Number::from_key(KEY key)
 {
-	Number result = Number(_rounded - other._rounded);
-	return result;
+	Number* number = new Number();
+	number->_value.set_key(key);
+	return number;
 }
 
-Number Number::operator*(const Number& other)
+Number* Number::ran()
 {
-	Number result = Number(_rounded * other._rounded);
-	return result;
+	Number* number = new Number();
+	number->_value.ran();
+	return number;
 }
 
-Number Number::operator/(const Number& other)
+Number* Number::add(Number* other)
 {
-	Number result = Number(_rounded / other._rounded);
-	return result;
+	bool is_key = _value.is_key();
+	if (!is_key && !other->_value.is_key()) {
+		_value += other->_value;
+	} else if (is_key && other->_value.is_key()) {
+	} else {
+		if (is_key && _value.get_key() == 43) {
+		} else if (is_key && _value.get_key() == 247) {
+		} else if (!is_key && other->_value.get_key() != 43 && other->_value.get_key() != 247) {
+			Decimal old_value = _value;
+			_value = other->_value;
+			other->_value = old_value;
+			_children = other->_children;
+			other->_children.clear();
+		}
+	}
+
+
+	if (!_value.is_key()) {
+		if (!other->_value.is_key()) {
+			// both are decimal values
+			_value += other->_value;
+			other = nullptr;
+			return this;
+		} else {
+			// swap this and other so that this is a key and other is a decimal value
+			Decimal old_value = _value;
+			_value = other->_value;
+			other->_value = old_value;
+			_children = other->_children;
+			other->_children.clear();
+		}
+	}
+
+	if (other->_value.is_key()) {
+		if (other->_value.get_key() == 43) {
+			for (Number* child : other->_children) add(child);
+		} else {
+			_children.push_back(other);
+		}
+	} else {
+		if (_value.get_key() == 43) {
+			for (Number* child : _children) {
+				if (!child->_value.is_key()) {
+					child->_value += other->_value;
+					other = nullptr;
+					return this;
+				} else if (child->_value.get_key() == 247 && !child->_children.at(1)->_value.is_key()) {
+					child->_children.at(1)->add(other);
+					other = nullptr;
+					return this;
+				}
+			}
+			_children.push_back(other);
+		} else if (_value.get_key() == 247 && !_children.at(1)->_value.is_key()) {
+			_children.at(1)->add(other);
+		} else {
+			_children.push_back(other);
+		}
+	}
+
+	other = nullptr;
+	return this;
 }
 
-Number Number::operator%(const Number& other)
+Number* Number::subtract(Number* other)
 {
-	Number result = Number(std::fmod(_rounded, other._rounded));
-	return result;
+	add(other->negate());
+	return this;
 }
 
-Number Number::operator^(const Number& other)
+Number* Number::multiply(Number* other)
 {
-	Number result = Number(std::pow(_rounded, other._rounded));
-	return result;
+	if (!_value.is_key() && !other->_value.is_key()) {
+		_value *= other->_value;
+	} else if (_value.get_key() == 215 && other->_value.get_key() == 215) {
+		for (Number* child : other->_children) _children.push_back(child);
+	} else if (_value.get_key() == 215) {
+		_children.push_back(other);
+	} else if (other->_value.get_key() == 215) {
+		_children = std::vector<Number*>{ clone() };
+		for (Number* child : other->_children) _children.push_back(child);
+		_value.set_key(215);
+	} else {
+		_children = std::vector<Number*>{ clone(), other->clone() };
+		_value.set_key(215);
+	}
+	other = nullptr;
+	return this;
 }
 
-Number Number::operator+(const double& other)
+Number* Number::divide(Number* other)
 {
-	Number result = Number(_rounded + other);
-	return result;
+	_children = std::vector<Number*>{ clone(), other->clone() };
+	_value.set_key(247);
+	other = nullptr;
+	return this;
 }
 
-Number Number::operator-(const double& other)
+Number* Number::mod(Number* other)
 {
-	Number result = Number(_rounded - other);
-	return result;
-}
-
-Number Number::operator*(const double& other)
-{
-	Number result = Number(_rounded * other);
-	return result;
-}
-
-Number Number::operator/(const double& other)
-{
-	Number result = Number(_rounded / other);
-	return result;
-}
-
-Number Number::operator%(const double& other)
-{
-	Number result = Number(std::fmod(_rounded, other));
-	return result;
-}
-
-Number Number::operator^(const double& other)
-{
-	Number result = Number(std::pow(_rounded, other));
-	return result;
-}
-
-Number Number::operator-()
-{
-	Number result = Number(-_rounded);
-	return result;
-}
-
-Number& Number::operator+=(const Number& other)
-{
-	_rounded += other._rounded;
-	return *this;
-}
-
-Number& Number::operator-=(const Number& other)
-{
-	_rounded -= other._rounded;
-	return *this;
-}
-
-Number& Number::operator*=(const Number& other)
-{
-	_rounded *= other._rounded;
-	return *this;
-}
-
-Number& Number::operator/=(const Number& other)
-{
-	_rounded /= other._rounded;
-	return *this;
-}
-
-Number& Number::operator%=(const Number& other)
-{
-	_rounded = std::fmod(_rounded, other._rounded);
-	return *this;
-}
-
-Number& Number::operator^=(const Number& other)
-{
-	_rounded = std::pow(_rounded, other._rounded);
-	return *this;
-}
-
-Number& Number::operator=(const Number& other)
-{
-	_rounded = other._rounded;
-	return *this;
-}
-
-Number& Number::operator+=(const double& other)
-{
-	_rounded += other;
-	return *this;
-}
-
-Number& Number::operator-=(const double& other)
-{
-	_rounded -= other;
-	return *this;
-}
-
-Number& Number::operator*=(const double& other)
-{
-	_rounded *= other;
-	return *this;
-}
-
-Number& Number::operator/=(const double& other)
-{
-	_rounded /= other;
-	return *this;
-}
-
-Number& Number::operator%=(const double& other)
-{
-	_rounded = std::fmod(_rounded, other);
-	return *this;
-}
-
-Number& Number::operator^=(const double& other)
-{
-	_rounded = std::pow(_rounded, other);
-	return *this;
-}
-
-Number& Number::operator=(const double& other)
-{
-	_rounded = other;
-	return *this;
-}
-
-Number& Number::log()
-{
-	_rounded = std::log10(_rounded);
-	return *this;
+	to_value();
+	other->to_value();
+	_value %= other->_value;
+	delete other;
+	return this;
 }
 
 
-Number& Number::log(const double& other)
+Number* Number::ln()
 {
-	_rounded = std::log10(_rounded) / std::log10(other);
-	return *this;
+	_children = std::vector<Number*>{ Number::from_key(165), clone() };
+	_value.set_key(209);
+	return this;
+}
+
+Number* Number::log()
+{
+	_children = std::vector<Number*>{ new Number(1, 1), clone() };
+	_value.set_key(209);
+	return this;
+}
+
+Number* Number::log(Number* other)
+{
+	_children = std::vector<Number*>{ other, clone() };
+	_value.set_key(209);
+	other = nullptr;
+	return this;
+}
+
+Number* Number::exp()
+{
+	_children = std::vector<Number*>{ clone(), Number::from_key(165) };
+	_value.set_key(113);
+	return this;
+}
+
+Number* Number::pow10()
+{
+	_children = std::vector<Number*>{ clone(), new Number(1, 1) };
+	_value.set_key(113);
+	return this;
+}
+
+Number* Number::pow(Number* other)
+{
+	_children = std::vector<Number*>{ clone(), other };
+	_value.set_key(113);
+	other = nullptr;
+	return this;
+}
+
+Number* Number::sqrt()
+{
+	_children = std::vector<Number*>{ new Number(2, 0), clone() };
+	_value.set_key(134);
+	return this;
+}
+
+Number* Number::root(Number* other)
+{
+	_children = std::vector<Number*>{ other, clone() };
+	_value.set_key(134);
+	other = nullptr;
+	return this;
+}
+
+Number* Number::factorial()
+{
+	to_value();
+	_value.factorial();
+	return this;
 }
 
 
-Number& Number::log(const Number& other)
+Number* Number::sin()
 {
-	_rounded = std::log10(_rounded) / std::log10(other._rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::ln()
+Number* Number::cos()
 {
-	_rounded = std::log(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::sin()
+Number* Number::tan()
 {
-	_rounded = std::sin(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::cos()
+Number* Number::asin()
 {
-	_rounded = std::cos(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::tan()
+Number* Number::acos()
 {
-	_rounded = std::tan(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::asin()
+Number* Number::atan()
 {
-	_rounded = std::asin(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::acos()
+Number* Number::sinh()
 {
-	_rounded = std::acos(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::atan()
+Number* Number::cosh()
 {
-	_rounded = std::atan(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::sinh()
+Number* Number::tanh()
 {
-	_rounded = std::sinh(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::cosh()
+Number* Number::asinh()
 {
-	_rounded = std::cosh(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::tanh()
+Number* Number::acosh()
 {
-	_rounded = std::tanh(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::asinh()
+Number* Number::atanh()
 {
-	_rounded = std::asinh(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::acosh()
+Number* Number::from_angle(uint8_t mode)
 {
-	_rounded = std::acosh(_rounded);
-	return *this;
+	if (mode == 1) {
+		multiply(new Number(180));
+		divide(from_key(156));
+	} else if (mode == 2) {
+		multiply(new Number(9));
+		divide(new Number(10));
+	}
+	return this;
 }
 
-Number& Number::atanh()
+Number* Number::to_angle(uint8_t mode)
 {
-	_rounded = std::atanh(_rounded);
-	return *this;
+	if (mode == 1) {
+		multiply(from_key(156));
+		divide(new Number(180));
+	} else if (mode == 2) {
+		multiply(new Number(10));
+		divide(new Number(9));
+	}
+	return this;
 }
 
-Number& Number::round()
+
+Number* Number::round()
 {
-	_rounded = std::round(_rounded);
-	return *this;
+	to_value();
+	_value.round();
+	return this;
 }
 
-Number& Number::floor()
+Number* Number::floor()
 {
-	_rounded = std::floor(_rounded);
-	return *this;
+	to_value();
+	_value.floor();
+	return this;
 }
 
-Number& Number::ceil()
+Number* Number::ceil()
 {
-	_rounded = std::ceil(_rounded);
-	return *this;
+	to_value();
+	_value.ceil();
+	return this;
 }
 
-Number& Number::abs()
+Number* Number::abs()
 {
-	_rounded = std::abs(_rounded);
-	return *this;
+	to_value();
+	_value.abs();
+	return this;
 }
 
-Number& Number::to_int()
+Number* Number::to_int()
 {
-	_rounded = (int)_rounded;
-	return *this;
+	to_value();
+	_value.to_int();
+	return this;
 }
 
-Number& Number::negate()
+Number* Number::negate()
 {
-	_rounded = -_rounded;
-	return *this;
+	if (_value.is_key()) {
+		multiply(new Number(-1, 0));
+		return this;
+	} else {
+		_value.negate();
+		return this;
+	}
 }
 
-Number& Number::pow(const Number& other)
+Number* Number::percent()
 {
-	_rounded = std::pow(_rounded, other._rounded);
-	return *this;
+	divide(new Number(100, 0));
+	return this;
 }
 
-Number& Number::pow(const double& other)
+
+Number* Number::pol(Number* other)
 {
-	_rounded = std::pow(_rounded, other);
-	return *this;
+	return this;
 }
 
-Number& Number::factorial()
+Number* Number::rec(Number* other)
 {
-	_rounded = std::tgamma(_rounded + 1);
-	return *this;
+	return this;
 }
 
-Number& Number::sqrt()
+Number* Number::gcd(Number* other)
 {
-	_rounded = std::sqrt(_rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::root(const Number& other)
+Number* Number::lcm(Number* other)
 {
-	_rounded = std::pow(_rounded, 1 / other._rounded);
-	return *this;
+	return this;
 }
 
-Number& Number::root(const double& other)
+Number* Number::ran_int(Number* other)
 {
-	_rounded = std::pow(_rounded, 1 / other);
-	return *this;
+	return this;
 }
 
-Number Number::pol(const Number& first, const Number& second)
+void Number::simplify()
 {
-	Number result = Number(std::sqrt(first._rounded * first._rounded + second._rounded * second._rounded));
-	return result;
+	// TODO: simplify and show periodic
+	return;
 }
 
-Number Number::rec(const Number& first, const Number& second)
+bool Number::to_value()
 {
-	Number result = Number(std::cos(first._rounded) * second._rounded);
-	return result;
+	if (contains_key()) return false;
+	to_value_no_check();
+	return true;
 }
 
-Number Number::gcd(const Number& first, const Number& second)
+void Number::to_value(std::vector<Number*>& variables)
 {
-	// gcd (greatest common divisor)
-	return Number();
+	replace_variables(variables);
+	to_value_no_check();
 }
 
-Number Number::lcm(const Number& first, const Number& second)
+bool Number::contains_key() const
 {
-	// lcm (least common multiple)
-	return Number();
+	if (_value.is_key()) return true;
+	for (Number* child : _children) {
+		if (child->contains_key()) return true;
+	}
+	return false;
 }
 
-Number Number::ran_int(const Number& first, const Number& second)
+void Number::replace_variables(std::vector<Number*>& variables)
 {
-	// random int
-	return Number();
+	if (_value.is_key()) {
+		if (_value.get_key() < 43) {
+			operator=(variables.at(_value.get_key()));
+			replace_variables(variables);
+		} else {
+			for (Number* child : _children) child->replace_variables(variables);
+		}
+	}
 }
 
-double Number::get_value() const
+void Number::to_value_no_check()
 {
-	return _rounded;
+	for (Number* child : _children) child->to_value_no_check();
+	switch (_value.get_key()) {
+	case 43:
+		_value = 0;
+		for (Number* child : _children) _value += child->_value;
+		break;
+	case 215:
+		_value = 1;
+		for (Number* child : _children) _value *= child->_value;
+		break;
+	case 247:
+		_value = _children[0]->_value;
+		_value /= _children[1]->_value;
+		break;
+	case 85:
+		_value = _children[0]->_value.factorial();
+		break;
+	case 106:
+		_value = _children[0]->_value.abs();
+		break;
+	case 109:
+		_value = _children[0]->_value.log(_children[1]->_value);
+		break;
+	case 111:
+		_value = _children[0]->_value.sqrt();
+		break;
+	case 113:
+		_value = _children[0]->_value;
+		_value ^= _children[1]->to_value();
+		break;
+	case 115:
+		_value = _children[0]->_value.ln();
+		break;
+	case 118:
+		_value = _children[0]->_value.sin();
+		break;
+	case 119:
+		_value = _children[0]->_value.cos();
+		break;
+	case 120:
+		_value = _children[0]->_value.tan();
+		break;
+	case 134:
+		_value = _children[1]->_value.root(_children[0]->_value);
+		break;
+	case 135:
+		_value.set_value(10, 0);
+		_value ^= _children[0]->_value;
+		break;
+	case 136:
+		_value = _children[0]->_value.exp();
+		break;
+	case 138:
+		_value = _children[0]->_value.asin();
+		break;
+	case 139:
+		_value = _children[0]->_value.acos();
+		break;
+	case 140:
+		_value = _children[0]->_value.atan();
+		break;
+	case 152:
+		_value = _children[0]->_value.pol(_children[1]->_value);
+		break;
+	case 153:
+		_value = _children[0]->_value.rec(_children[1]->_value);
+		break;
+	case 156:
+		_value = Decimal::PI;
+		break;
+	case 160:
+		_value = _children[0]->_value.gcd(_children[1]->_value);
+		break;
+	case 161:
+		_value = _children[0]->_value.lcm(_children[1]->_value);
+		break;
+	case 162:
+		_value = _children[0]->_value.to_int();
+		break;
+	case 163:
+		_value = _children[0]->_value.floor();
+		break;
+	case 164:
+		_value = _children[0]->_value.ran_int(_children[1]->_value);
+		break;
+	case 165:
+		_value = Decimal::EULER;
+		break;
+	case 190:
+		_value = _children[0]->_value.sinh();
+		break;
+	case 191:
+		_value = _children[0]->_value.cosh();
+		break;
+	case 192:
+		_value = _children[0]->_value.tanh();
+		break;
+	case 193:
+		_value = _children[0]->_value.asinh();
+		break;
+	case 194:
+		_value = _children[0]->_value.acosh();
+		break;
+	case 195:
+		_value = _children[0]->_value.atanh();
+		break;
+	}
+	for (Number* child : _children) delete child;
+	_children.clear();
 }
 
-Bitset2D Number::render() const
+void Number::to_key_set(KEY_SET& result) const
 {
-	return Graphics::create_text(std::to_string(_rounded));
+	if (_value.is_key()) {
+		KEY key = _value.get_key();
+		if (key == 43) result.push_back(74);
+		if (key == 247) {
+			result.push_back(110);
+			_children[0]->to_key_set(result);
+			result.push_back(237);
+			_children[1]->to_key_set(result);
+			result.push_back(238);
+		} else {
+			for (Number* child : _children) {
+				child->to_key_set(result);
+				result.push_back(_value.get_key());
+			}
+		}
+		if (key == 43) result.back() = 75;
+		else if (key != 247) result.pop_back();
+	} else {
+		KEY_SET val = _value.to_key_set(16);
+		result.insert(result.end(), val.begin(), val.end());
+	}
+}
+
+std::vector<KEY_SET> Number::get_all_representations(std::vector<Number*>& variables)
+{
+	auto results = std::vector<KEY_SET>();
+	simplify();
+	if (_value.is_key()) {
+		KEY_SET result;
+		KEY key = _value.get_key();
+		if (key == 247) {
+			result.push_back(110);
+			_children[0]->to_key_set(result);
+			result.push_back(237);
+			_children[1]->to_key_set(result);
+			result.push_back(238);
+		} else {
+			for (Number* child : _children) {
+				child->to_key_set(result);
+				result.push_back(_value.get_key());
+			}
+		}
+		result.pop_back();
+		results.push_back(result);
+	}
+
+	Number res = *this;
+	res.to_value(variables);
+	results.push_back(res._value.to_key_set(14));
+
+	return results;
+}
+
+
+Number* Number::clone() const
+{
+	Number* clone = new Number(_value);
+	for (Number* child : _children) clone->_children.push_back(child);
+	return clone;
+}
+
+Number* Number::deep_clone() const
+{
+	if (_value.is_key()) {
+		Number* clone = new Number();
+		clone->_value = _value;
+		for (Number* child : _children) clone->_children.push_back(child->deep_clone());
+		return clone;
+	} else return new Number(_value);
 }

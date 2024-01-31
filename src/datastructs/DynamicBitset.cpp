@@ -7,12 +7,6 @@ DynamicBitset::DynamicBitset()
 	_bit_count = 0;
 }
 
-DynamicBitset::DynamicBitset(uint32_t count)
-{
-	_bits = std::vector<uint8_t>((count + 7) / 8);
-	_bit_count = count;
-}
-
 DynamicBitset::DynamicBitset(uint32_t count, bool value)
 {
 	_bits = std::vector<uint8_t>((count + 7) / 8, value ? 0xFF : 0x00);
@@ -54,10 +48,10 @@ DynamicBitset::~DynamicBitset() {}
 
 DynamicBitset DynamicBitset::from_bits(uint8_t bits, uint32_t count)
 {
-	DynamicBitset bs;
-	bs._bits = std::vector<uint8_t>((count + 7) / 8, bits);
-	bs._bit_count = count;
-	return bs;
+	DynamicBitset res;
+	res._bits = std::vector<uint8_t>((count + 7) / 8, bits);
+	res._bit_count = count;
+	return res;
 }
 
 
@@ -71,11 +65,13 @@ bool DynamicBitset::operator[](uint32_t i) const
 
 bool DynamicBitset::operator==(const DynamicBitset& other) const
 {
+	if (_bit_count != other._bit_count) return false;
 	return _bits == other._bits;
 }
 
 bool DynamicBitset::operator!=(const DynamicBitset& other) const
 {
+	if (_bit_count != other._bit_count) return true;
 	return _bits != other._bits;
 }
 
@@ -104,36 +100,81 @@ uint32_t DynamicBitset::size() const
 	return _bit_count;
 }
 
-std::vector<uint8_t> DynamicBitset::get_bytes() const
+std::vector<uint8_t> DynamicBitset::get_bytes(uint32_t start) const
 {
-	return _bits;
+	// TODO: move to DisplayRenderer, handle too small bitsets
+	std::vector<uint8_t> bytes(4, 0);
+	if (start % 8 == 0) {
+		start /= 8;
+		bytes[3] = _bits[start + 3] >> 1;
+		if (_bits[start + 2] & 1) bytes[3] |= 0x80;
+		bytes[2] = _bits[start + 2] >> 1;
+		if (_bits[start + 1] & 1) bytes[2] |= 0x80;
+		bytes[1] = _bits[start + 1] >> 1;
+		if (_bits[start] & 1) bytes[1] |= 0x80;
+		bytes[0] = _bits[start] >> 1;
+		return bytes;
+	}
+	start--;
+	if (start % 8 == 0) {
+		start /= 8;
+		std::copy(_bits.begin() + start, _bits.begin() + start + 4, bytes.begin());
+		return bytes;
+	}
+
+	uint8_t shift = start % 8;
+	start /= 8;
+	uint8_t mask = ~((1 << (7 - shift)) - 1);
+	for (uint8_t i = 0; i < 4; i++) {
+		bytes[i] = _bits[start + i] << shift;
+		bytes[i] |= _bits[start + i + 1] & mask;
+	}
+	return bytes;
 }
 
+DynamicBitset DynamicBitset::copy(uint32_t start, uint32_t width) const
+{
+	DynamicBitset res = DynamicBitset();
+	if (start >= _bit_count) return res;
+	if (start + width > _bit_count) width = _bit_count;
+	else width += start;
+	for (; start < width; start++) res.push_back(at(start));
+	return res;
+}
+
+DynamicBitset DynamicBitset::copy_unsafe(uint32_t start, uint32_t width) const
+{
+	DynamicBitset res = DynamicBitset();
+	width += start;
+	for (; start < width; start++) res.push_back(at(start));
+	return res;
+}
 
 void DynamicBitset::set(uint32_t index, bool value)
 {
 #ifdef IS_DEBUG_BUILD
 	if (index >= _bit_count) { throw std::out_of_range("DynamicBitset::set"); }
 #endif
-	if (value) {
-		_bits[index / 8] |= (1 << (7 - (index % 8)));
-	} else {
-		_bits[index / 8] &= ~(1 << (7 - (index % 8)));
-	}
+	if (value) _bits[index / 8] |= (1 << (7 - (index % 8)));
+	else _bits[index / 8] &= ~(1 << (7 - (index % 8)));
 }
 
-void DynamicBitset::set(uint32_t index, const DynamicBitset& bits)
+void DynamicBitset::set(uint32_t index, const DynamicBitset& other)
 {
 #ifdef IS_DEBUG_BUILD
-	if (index + bits.size() > _bit_count) { throw std::out_of_range("DynamicBitset::set"); }
+	if (index + other._bit_count > _bit_count) { throw std::out_of_range("DynamicBitset::set"); }
 #endif
-	if (index % 8 == 0) {
-		for (uint32_t i = 0; i < bits.size() / 8; i++) { _bits[index / 8 + i] = bits._bits[i]; }
-		for (uint32_t i = 0; i < bits.size() % 8; i++) { set(index + bits.size() - bits.size() % 8 + i, bits[bits.size() - bits.size() % 8 + i]); }
-		return;
-	}
+	uint32_t len = other._bit_count < _bit_count - index ? other._bit_count : _bit_count - index;
+	for (uint32_t i = 0; i < len; i++) set(index + i, other[i]);
+}
 
-	for (uint32_t i = 0; i < bits.size(); i++) { set(index + i, bits[i]); }
+void DynamicBitset::set(uint32_t index, uint32_t count, bool value)
+{
+#ifdef IS_DEBUG_BUILD
+	if (index + count > _bit_count) { throw std::out_of_range("DynamicBitset::set"); }
+#endif
+	count += index;
+	for (; index < count; index++) set(index, value);
 }
 
 void DynamicBitset::insert(uint32_t index, bool bit)
@@ -142,21 +183,17 @@ void DynamicBitset::insert(uint32_t index, bool bit)
 	if (index > _bit_count) { throw std::out_of_range("DynamicBitset::insert"); }
 #endif
 	// If the last byte is full, add a new one
-	if (_bit_count % 8 == 0) { _bits.push_back(0x00); }
+	if (_bit_count % 8 != 0) _bits.push_back(0x00);
+
 	// Shift all bits after i one to the right
 	for (uint32_t i = _bit_count; i > index; i--) {
-		if (at(i - 1)) {
-			_bits[i / 8] |= (1 << (7 - (i % 8)));
-		} else {
-			_bits[i / 8] &= ~(1 << (7 - (i % 8)));
-		}
+		if (at(i - 1)) _bits[i / 8] |= (1 << (7 - (i % 8)));
+		else _bits[i / 8] &= ~(1 << (7 - (i % 8)));
 	}
+
 	// Insert the new bit
-	if (bit) {
-		_bits[index / 8] |= (1 << (7 - (index % 8)));
-	} else {
-		_bits[index / 8] &= ~(1 << (7 - (index % 8)));
-	}
+	if (bit) _bits[index / 8] |= (1 << (7 - (index % 8)));
+	else _bits[index / 8] &= ~(1 << (7 - (index % 8)));
 	_bit_count++;
 }
 
@@ -165,12 +202,6 @@ void DynamicBitset::insert(uint32_t index, const DynamicBitset& bits)
 #ifdef IS_DEBUG_BUILD
 	if (index > _bit_count) { throw std::out_of_range("DynamicBitset::insert"); }
 #endif
-	if (index % 8 == 0) {
-		_bits.insert(_bits.begin() + index / 8, bits._bits.begin(), bits._bits.begin() + bits.size() / 8);
-		for (uint32_t i = 0; i < bits.size() % 8; i++) { insert(index + bits.size() - bits.size() % 8 + i, bits[bits.size() - bits.size() % 8 + i]); }
-		return;
-	}
-
 	for (uint32_t i = 0; i < bits.size(); i++) { insert(index + i, bits[i]); }
 }
 
@@ -181,21 +212,13 @@ void DynamicBitset::erase(uint32_t index)
 #endif
 	// Shift all bits after i one to the left
 	for (uint32_t i = index; i < _bit_count - 1; i++) {
-		if (operator[](i + 1)) {
-			_bits[i / 8] |= (1 << (7 - (i % 8)));
-		} else {
-			_bits[i / 8] &= ~(1 << (7 - (i % 8)));
-		}
+		if (at(i + 1)) _bits[i / 8] |= (1 << (7 - (i % 8)));
+		else _bits[i / 8] &= ~(1 << (7 - (i % 8)));
 	}
 	_bit_count--;
+
 	// If the last byte is empty, remove it
 	if (_bit_count % 8 == 0) { _bits.pop_back(); }
-}
-
-void DynamicBitset::resize(uint32_t count)
-{
-	_bits.resize((count + 7) / 8, 0x00);
-	_bit_count = count;
 }
 
 void DynamicBitset::clear()
@@ -208,12 +231,24 @@ void DynamicBitset::clear()
 void DynamicBitset::push_back(bool bit)
 {
 	// If the last byte is full, add a new one
-	if (_bit_count % 8 == 0) { _bits.push_back(0x00); }
-	if (bit) {
-		_bits[_bits.size() - 1] |= (1 << (7 - (_bit_count % 8)));
-	} else {
-		_bits[_bits.size() - 1] &= ~(1 << (7 - (_bit_count % 8)));
+	if (_bit_count % 8 == 0) _bits.push_back(bit ? 0x80 : 0x00);
+	else {
+		if (bit) _bits[_bits.size() - 1] |= (1 << (7 - (_bit_count % 8)));
+		else _bits[_bits.size() - 1] &= ~(1 << (7 - (_bit_count % 8)));
 	}
+	_bit_count++;
+}
+
+void DynamicBitset::push_front(bool bit)
+{
+	if (_bit_count % 8 == 0) _bits.push_back(0x00);
+	// Shift all bits one to the right
+	for (uint32_t i = _bit_count; i > 0; i--) {
+		if (at(i - 1)) _bits[i / 8] |= (1 << (7 - (i % 8)));
+		else _bits[i / 8] &= ~(1 << (7 - (i % 8)));
+	}
+	if (bit) _bits[0] |= 0x80;
+	else _bits[0] &= 0x7f;
 	_bit_count++;
 }
 
@@ -227,14 +262,21 @@ void DynamicBitset::pop_back()
 	if (_bit_count % 8 == 0) { _bits.pop_back(); }
 }
 
+void DynamicBitset::pop_front()
+{
+#ifdef IS_DEBUG_BUILD
+	if (_bit_count == 0) { throw std::out_of_range("DynamicBitset::pop_front"); }
+#endif
+	// Shift all bits one to the left
+	_bit_count--;
+	for (uint32_t i = 0; i < _bit_count; i++) {
+		if (at(i + 1)) _bits[i / 8] |= (1 << (7 - (i % 8)));
+		else _bits[i / 8] &= ~(1 << (7 - (i % 8)));
+	}
+}
+
 void DynamicBitset::extend(const DynamicBitset& other)
 {
-	if (_bit_count % 8 == 0) {
-		_bits.insert(_bits.end(), other._bits.begin(), other._bits.end());
-		_bit_count += other._bit_count;
-		return;
-	}
-
 	for (uint32_t i = 0; i < other._bit_count; i++) { push_back(other[i]); }
 }
 
@@ -245,15 +287,12 @@ void DynamicBitset::extend(uint32_t length, bool value)
 
 void DynamicBitset::extend_left(const DynamicBitset& other)
 {
-	DynamicBitset beginning(other);
-	for (uint32_t i = 0; i < _bit_count; i++) { beginning.push_back(at(i)); }
-	_bits = beginning._bits;
-	_bit_count = beginning._bit_count;
+	for (uint32_t i = 0; i < other._bit_count; i++) { push_front(other[i]); }
 }
 
 void DynamicBitset::extend_left(uint32_t length, bool value)
 {
-	extend_left(DynamicBitset(length, value));
+	for (; length > 0; length--) push_front(value);
 }
 
 

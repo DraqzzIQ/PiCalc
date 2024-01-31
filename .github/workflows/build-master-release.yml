@@ -1,0 +1,169 @@
+# This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
+name: build master in release mode
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Prerelease'
+        required: true
+        default: true
+        type: boolean
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+  
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: CasioOS.sln
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+  PRERELEASE: ${{!contains(inputs.prerelease, 'false')}}
+
+permissions:
+  contents: write
+
+jobs:
+  linux-build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install SDL2
+      run: sudo apt install libsdl2-dev -y
+
+    - name: Configure CMake
+      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DRPI_PICO=OFF
+
+    - name: Build
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Upload build
+      uses: actions/upload-artifact@v3
+      with:
+        name: builds
+        path: ${{github.workspace}}/build/CasioOS
+      
+  pico-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Cache SDK
+      id: cache-sdk
+      uses: actions/cache@v3
+      with:
+        path: ${{github.workspace}}/pico-sdk
+        key: ${{ runner.os }}-pico-sdk
+        
+    - name: Install Pico SDK Dependencies
+      run: |
+        sudo apt install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib -y
+        pip3 install pycryptodomex
+        git submodule update --init
+  
+    - name: Clone Pico SDK
+      if: steps.cache-sdk.outputs.cache-hit != 'true'
+      run: git clone https://github.com/raspberrypi/pico-sdk.git ${{github.workspace}}/pico-sdk
+    - name: Configure Pico SDK
+      if: steps.cache-sdk.outputs.cache-hit != 'true'
+      run: |
+        cd ${{github.workspace}}/pico-sdk 
+        git submodule update --init
+      
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DRPI_PICO=ON -DPICO_SDK_PATH=${{github.workspace}}/pico-sdk
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      
+    - name: Upload build
+      uses: actions/upload-artifact@v3
+      with:
+        name: builds
+        path: ${{github.workspace}}/build/CasioOS.uf2
+
+  windows-build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Upload build
+      uses: actions/upload-artifact@v3
+      with:
+        name: builds
+        path: ${{github.workspace}}/x64/Release/CasioOS.exe
+
+  create-release:
+    runs-on: ubuntu-latest
+
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success')  && github.event_name != 'pull_request' }}
+    needs: [linux-build, pico-build, windows-build]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+    - name: Download builds
+      uses: actions/download-artifact@v3
+      with:
+        name: builds
+        path: ${{github.workspace}}/builds
+    
+    - name: Display structure of downloaded files
+      run: ls -R
+
+    - name: Rename builds
+      run: |
+        mv ${{github.workspace}}/builds/CasioOS ${{github.workspace}}/builds/CasioOS-linux-x64
+        mv ${{github.workspace}}/builds/CasioOS.uf2 ${{github.workspace}}/builds/CasioOS-pico.uf2
+        mv ${{github.workspace}}/builds/CasioOS.exe ${{github.workspace}}/builds/CasioOS-win-x64.exe
+
+    - name: Bump version and push tag
+      id: release_tag
+      uses: anothrNick/github-tag-action@1.67.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        PRERELEASE_SUFFIX: alpha
+        DEFAULT_BUMP: minor
+        VERBOSE: true
+
+    - name: Release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        files: |
+          ${{github.workspace}}/builds/CasioOS-linux-x64
+          ${{github.workspace}}/builds/CasioOS-pico.uf2
+          ${{github.workspace}}/builds/CasioOS-win-x64.exe
+        prerelease: ${{env.PRERELEASE}}
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: ${{steps.release_tag.outputs.new_tag}}

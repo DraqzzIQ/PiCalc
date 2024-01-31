@@ -37,6 +37,36 @@ add_subdirectory(src)
 add_subdirectory(lib)
 # Linux, (Windows)
 
+
+# SECRETS
+#check if file exists
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/secrets")
+    # Read from file
+    file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/secrets" SECRETS_LIST)
+
+    # Set during configuration
+    list(GET SECRETS_LIST 0 WOLFRAMALPHA_APPID)
+    list(GET SECRETS_LIST 1 OPENAI_API_KEY)
+
+    # Extract values after the equal sign
+    string(REGEX REPLACE "WOLFRAMALPHA_APPID=(.*)" "\\1" WOLFRAMALPHA_APPID "${WOLFRAMALPHA_APPID}")
+    string(REGEX REPLACE "OPENAI_API_KEY=(.*)" "\\1" OPENAI_API_KEY "${OPENAI_API_KEY}")
+    # Replace new line and other unwanted chars
+    string(STRIP "${WOLFRAMALPHA_APPID}" WOLFRAMALPHA_APPID)
+    string(STRIP "${OPENAI_API_KEY}" OPENAI_API_KEY)
+
+    message(STATUS "Secrets have been loaded from file.")
+else()
+    # Use default values if the file is not found
+    message(WARNING "Secrets file not found, using default values.")
+    set(WOLFRAMALPHA_APPID "DEMO")
+    set(OPENAI_API_KEY "DEMO")
+endif()
+# Define secrets compile time
+add_compile_definitions(WOLFRAMALPHA_APPID="${WOLFRAMALPHA_APPID}")
+add_compile_definitions(OPENAI_API_KEY="${OPENAI_API_KEY}")
+
+
 # Pico
 # cmake -DRPI_PICO=ON to compile
 if(RPI_PICO)
@@ -45,12 +75,7 @@ if(RPI_PICO)
 
     # Add pico_stdlib library which aggregates commonly used features
     # pico_cyw43_arch_none is nessessary for accessing the CYW4343W WiFi chip and it's LED
-    target_link_libraries(${PROJECT_NAME} pico_stdlib 
-                #pico_cyw43_arch
-                hardware_i2c 
-                pico_mbedtls
-                pico_cyw43_arch_lwip_threadsafe_background
-                )
+    target_link_libraries(${PROJECT_NAME} pico_stdlib pico_cyw43_arch_none hardware_i2c pico_multicore hardware_adc pico_mbedtls pico_cyw43_arch_lwip_threadsafe_background)
 
     # create map/bin/hex/uf2 file in addition to ELF.
     pico_add_extra_outputs(${PROJECT_NAME})

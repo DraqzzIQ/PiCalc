@@ -19,75 +19,104 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\options\TextMenuOption.h" />
+    <ClInclude Include="src\windows\BatteryWindow.h" />
     <ClInclude Include="src\constant\Chars.h" />
     <ClInclude Include="src\constant\Constants.h" />
+    <ClInclude Include="src\constant\Error.h" />
     <ClInclude Include="src\datastructs\Bitset2D.h" />
+    <ClInclude Include="src\datastructs\Decimal.h" />
     <ClInclude Include="src\datastructs\DynamicBitset.h" />
     <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
+    <ClInclude Include="src\datastructs\Frame.h" />
     <ClInclude Include="src\datastructs\Number.h" />
+    <ClInclude Include="src\datastructs\NumberParser.h" />
+    <ClInclude Include="src\http\HttpParams.h" />
+    <ClInclude Include="src\http\PicoHttpClient.h" />
+    <ClInclude Include="src\io\SDCardController.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />
     <ClInclude Include="src\keyboard\SDLKeyboard.h" />
     <ClInclude Include="src\constant\LCDConstants.h" />
-    <ClInclude Include="src\options\CalculatorOption.h" />
-    <ClInclude Include="src\options\MenuOption.h" />
-    <ClInclude Include="src\options\SettingsOption.h" />
-    <ClInclude Include="src\options\SysInfoOption.h" />
+    <ClInclude Include="src\options\WindowMenuOption.h" />
+    <ClInclude Include="src\options\MenuOptionBase.h" />
     <ClInclude Include="src\renderers\ConsoleRenderer.h" />
     <ClInclude Include="src\renderers\DisplayRenderer.h" />
     <ClInclude Include="src\renderers\IRenderer.h" />
     <ClInclude Include="src\utils\I2CUtils.h" />
     <ClInclude Include="src\utils\Utils.h" />
     <ClInclude Include="src\windows\CalculatorWindow.h" />
+    <ClInclude Include="src\windows\ContrastWindow.h" />
     <ClInclude Include="src\windows\InstanceSelectionWindow.h" />
     <ClInclude Include="src\windows\MainMenuWindow.h" />
     <ClInclude Include="src\windows\MenuWindow.h" />
+    <ClInclude Include="src\windows\PongWindow.h" />
     <ClInclude Include="src\windows\SettingsWindow.h" />
     <ClInclude Include="src\windows\SysInfoWindow.h" />
-    <ClInclude Include="src\windows\TextWindow.h" />
     <ClInclude Include="src\windows\Window.h" />
     <ClInclude Include="src\windows\WindowManager.h" />
-    <ClInclude Include="lib\httplib\httplib.h" />
     <ClInclude Include="src\http\IHttpClient.h" />
     <ClInclude Include="src\http\DesktopHttpClient.h" />
     <ClInclude Include="src\http\HttpHeaders.h" />
     <ClInclude Include="src\http\HttpRequest.h" />
     <ClInclude Include="src\http\HttpResponse.h" />
+    <ClInclude Include="src\windows\WolframAlphaWindow.h" />
+    <ClInclude Include="src\windows\ChatGPTWindow.h" />
+    <ClInclude Include="src\windows\ChatWindow.h" />
+    <ClInclude Include="src\windows\InputWindow.h" />
+    <ClInclude Include="src\windows\PaintWindow.h" />
+    <ClInclude Include="src\windows\NotesWindow.h" />
+    <ClInclude Include="src\options\CallbackMenuOption.h" />
+    <ClInclude Include="src\io\ISerializable.h" />
+    <ClInclude Include="src\io\ConfigSerializable.h" />
+    <ClInclude Include="src\io\PaintingSerializable.h" />
+    <ClInclude Include="src\io\NoteSerializable.h" />
+    <ClInclude Include="src\threading\Threading.h" />
+    <ClInclude Include="src\threading\Thread.h" />
+    <ClInclude Include="src\datastructs\ThreadSafeQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
-    <ClCompile Include="src\constant\Chars.cpp" />
-    <ClCompile Include="src\constant\Constants.cpp" />
+    <ClCompile Include="src\constant\Error.cpp" />
     <ClCompile Include="src\datastructs\Bitset2D.cpp" />
+    <ClCompile Include="src\datastructs\Decimal.cpp" />
     <ClCompile Include="src\datastructs\DynamicBitset.cpp" />
     <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />
     <ClCompile Include="src\datastructs\Number.cpp" />
+    <ClCompile Include="src\datastructs\NumberParser.cpp" />
     <ClCompile Include="src\http\IHttpClient.cpp" />
+    <ClCompile Include="src\http\PicoHttpClient.cpp" />
+    <ClCompile Include="src\io\SDCardController.cpp" />
     <ClCompile Include="src\keyboard\IKeyboard.cpp" />
     <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
     <ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
-    <ClCompile Include="src\options\CalculatorOption.cpp" />
-    <ClCompile Include="src\options\MenuOption.cpp" />
-    <ClCompile Include="src\options\SettingsOption.cpp" />
-    <ClCompile Include="src\options\SysInfoOption.cpp" />
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp" />
     <ClCompile Include="src\renderers\DisplayRenderer.cpp" />
     <ClCompile Include="src\renderers\IRenderer.cpp" />
     <ClCompile Include="src\utils\I2CUtils.cpp" />
     <ClCompile Include="src\utils\Utils.cpp" />
     <ClCompile Include="src\windows\CalculatorWindow.cpp" />
+    <ClCompile Include="src\windows\ContrastWindow.cpp" />
     <ClCompile Include="src\windows\InstanceSelectionWindow.cpp" />
-    <ClCompile Include="src\windows\MainMenuWindow.cpp" />
     <ClCompile Include="src\windows\MenuWindow.cpp" />
-    <ClCompile Include="src\windows\SettingsWindow.cpp" />
-    <ClCompile Include="src\windows\SysInfoWindow.cpp" />
-    <ClCompile Include="src\windows\TextWindow.cpp" />
+    <ClCompile Include="src\windows\PongWindow.cpp" />
     <ClCompile Include="src\windows\Window.cpp" />
     <ClCompile Include="src\windows\WindowManager.cpp" />
     <ClCompile Include="src\http\DesktopHttpClient.cpp" />
+    <ClCompile Include="src\windows\WolframAlphaWindow.cpp" />
+    <ClCompile Include="src\windows\ChatGPTWindow.cpp" />
+    <ClCompile Include="src\windows\ChatWindow.cpp" />
+    <ClCompile Include="src\windows\InputWindow.cpp" />
+    <ClCompile Include="src\windows\PaintWindow.cpp" />
+    <ClCompile Include="src\windows\NotesWindow.cpp" />
+    <ClCompile Include="src\io\ISerializable.cpp" />
+    <ClCompile Include="src\io\ConfigSerializable.cpp" />
+    <ClCompile Include="src\io\PaintingSerializable.cpp" />
+    <ClCompile Include="src\io\NoteSerializable.cpp" />
+    <ClCompile Include="src\threading\Threading.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -186,7 +215,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;lib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -210,7 +239,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;lib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

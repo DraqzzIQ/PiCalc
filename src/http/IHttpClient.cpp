@@ -1,6 +1,5 @@
 #include "http/IHttpClient.h"
 
-IHttpClient::IHttpClient(std::string baseUrl)
+IHttpClient::IHttpClient(std::string _base_url)
 {
-	this->baseUrl = baseUrl;
 }

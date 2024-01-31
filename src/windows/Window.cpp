@@ -1,67 +1,54 @@
 #include "windows/Window.h"
+#include "Window.h"
 
-Window::Window()
+Window::Window():
+	_frame(Frame(_window))
 {
 	clear_window();
-	clear_symbols();
 }
 
 Window::~Window() {}
 
-Bitset2D Window::update_window()
+Frame& Window::update_and_get_frame()
 {
-	return get_render_canvas();
+	update_window();
+	return _frame;
 }
 
-// TODO: replace with get()
-Bitset2D Window::get_render_canvas()
+void Window::update_window()
 {
-	Bitset2D canvas;
-
-	for (uint32_t i = 0; i < SCREEN_WIDTH; i++) {
-		DynamicBitset column(SCREEN_HEIGHT, false);
-
-		for (uint32_t j = 0; j < SCREEN_HEIGHT; j++) {
-			if (corner_x + i < window.width() && corner_y + j < window.height()) column.set(j, (window[corner_x + i][corner_y + j]));
-		}
-		canvas.push_back(column);
-	}
-	return canvas;
 }
 
-void Window::add_to_window(const Bitset2D& graphic, int corner_x, int corner_y)
+bool Window::handle_key_down(KeyPress keypress)
 {
-	window.set(corner_x, corner_y, graphic, true);
+	return false;
+}
+bool Window::handle_key_up(KeyPress keypress)
+{
+	return false;
+}
+
+void Window::got_focus()
+{
+}
+
+void Window::lost_focus()
+{
 }
 
 void Window::clear_window()
 {
-	window = Bitset2D(SCREEN_WIDTH, DynamicBitset(SCREEN_HEIGHT, false));
+	_window = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT + 1, false);
 }
 
-void Window::clear_symbols()
+void Window::copy_frame(Frame& frame) const
 {
-	screen_symbols = DynamicBitset(Graphics::SCREEN_SYMBOLS.size(), false);
+	frame.corner_x = _frame.corner_x;
+	frame.corner_y = _frame.corner_y;
+	frame.screen_symbols = _frame.screen_symbols;
 }
 
-void Window::change_symbol(std::string symbol, bool state)
+const Bitset2D& Window::get_window() const
 {
-	screen_symbols.set(std::find(Graphics::SCREEN_SYMBOLS.begin(), Graphics::SCREEN_SYMBOLS.end(), symbol) - Graphics::SCREEN_SYMBOLS.begin(), state);
+	return _window;
 }
-
-void Window::scroll_left()
-{
-	if (corner_x > 0) corner_x -= SCREEN_WIDTH;
-}
-
-void Window::scroll_right()
-{
-	if (corner_x + SCREEN_WIDTH < window.width()) corner_x += SCREEN_WIDTH;
-}
-
-void Window::handle_key_down(KeyPress keypress) {}
-void Window::handle_key_up(KeyPress keypress) {}
-
-void Window::got_focus() {}
-
-void Window::lost_focus() {}

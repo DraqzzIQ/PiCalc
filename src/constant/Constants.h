@@ -1,11 +1,12 @@
 #pragma once
-#include "datastructs/DynamicBitset.h"
+#include <map>
 #include <string>
 #include <vector>
 
-const int SCREEN_WIDTH = 96;
-const int SCREEN_HEIGHT = 31;
-const int OPTIONS_COLUMNS = 2;
-const int OPTIONS_ROWS = 3;
+using KEY = uint8_t;
+using KEY_SET = std::vector<KEY>;
 
+constexpr uint8_t SCREEN_WIDTH = 96;
+constexpr uint8_t SCREEN_HEIGHT = 31;
+constexpr uint8_t FPS = 30;
 const std::string OS_VERSION = "0.0.1";

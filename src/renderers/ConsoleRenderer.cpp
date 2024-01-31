@@ -1,13 +1,15 @@
 #include "renderers/ConsoleRenderer.h"
 
+const std::vector<std::string> ConsoleRenderer::SCREEN_SYMBOLS = { "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT", "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp" };
+
 ConsoleRenderer::ConsoleRenderer()
 {
 #ifdef _WIN32
 	HWND console = GetConsoleWindow();
 	RECT r;
-	GetWindowRect(console, &r);                          // stores the console's current dimensions
+	GetWindowRect(console, &r);
 
-	MoveWindow(console, r.left, r.top, 1600, 600, TRUE); // 800 width, 100 height
+	MoveWindow(console, r.left, r.top, 1600, 605, TRUE);
 
 	// Windows exe fix
 	DWORD consoleMode;
@@ -18,9 +20,9 @@ ConsoleRenderer::ConsoleRenderer()
 #endif
 }
 
-void ConsoleRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender)
+void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
 {
-	if (!force_rerender && already_rendered(pixels, screen_symbols)) return;
+	if (!force_rerender && already_rendered(frame)) return;
 
 	set_cursor_top_left();
 
@@ -29,22 +31,24 @@ void ConsoleRenderer::render(const Bitset2D& pixels, const DynamicBitset& screen
 	out += get_display_border();
 	out += "\n# ";
 
-	for (uint32_t i = 0; i < screen_symbols.size(); i++) {
-		if (screen_symbols[i]) {
-			out += Graphics::SCREEN_SYMBOLS[i];
+	for (uint32_t i = 0; i < 15; i++) {
+		if (frame.get_screen_symbol(i)) {
+			out += SCREEN_SYMBOLS[i];
 		} else {
-			out += std::string(Graphics::SCREEN_SYMBOLS[i].length(), ' ');
+			out += std::string(SCREEN_SYMBOLS[i].length(), ' ');
 		}
 		out += "  ";
 	}
 
-	out += std::string(113, ' ');
+	out += std::string(125, ' ');
 	out += "#\n";
 
-	for (uint32_t i = 0; i < SCREEN_HEIGHT; i++) {
+	uint32_t x_end = frame.corner_x + SCREEN_WIDTH;
+	uint32_t y_end = frame.corner_y + SCREEN_HEIGHT;
+	for (uint32_t y = frame.corner_y; y < y_end; y++) {
 		out += "# ";
-		for (uint32_t j = 0; j < SCREEN_WIDTH; j++) {
-			if (pixels.at(j)[i]) out += '\xFE';
+		for (uint32_t x = frame.corner_x; x < x_end; x++) {
+			if (x < frame.pixels.width() && y < frame.pixels.height() && frame.pixels.get_bit(x, y)) out += '\xFE';
 			else out += " ";
 			out += " ";
 		}

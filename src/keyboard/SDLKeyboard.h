@@ -1,13 +1,9 @@
 #pragma once
 #ifndef PICO
-#include "constant/Chars.h"
+#include "utils/Utils.h"
 #include "keyboard/IKeyboard.h"
 #include "windows/WindowManager.h"
-#ifdef _WIN32
-#include <SDL.h>
-#else
 #include <SDL2/SDL.h>
-#endif
 #include <iostream>
 
 /// <summary>
@@ -19,22 +15,23 @@ class SDLKeyboard: public IKeyboard
 	/// <summary>
 	/// constructs a new keyboard-listener
 	/// </summary>
-	/// <param name="window_manager">windowmanager do send keyevents to</param>
-	SDLKeyboard(WindowManager* window_manager);
+	SDLKeyboard();
 	/// <summary>
 	/// checks for keyboard presses
 	/// </summary>
-	void check_for_keyboard_presses();
+	void check_for_keyboard_presses() override;
+
+	protected:
 	/// <summary>
 	/// checks wether shift is active
 	/// </summary>
 	/// <returns>true if pressed else false</returns>
-	bool is_shift_active();
+	bool is_shift_active() override;
 	/// <summary>
 	/// checks wether alpha is active
 	/// </summary>
 	/// <returns>true if pressed else false</returns>
-	bool is_alpha_active();
+	bool is_alpha_active() override;
 
 	private:
 	/// <summary>
@@ -58,12 +55,17 @@ class SDLKeyboard: public IKeyboard
 	/// </summary>
 	/// <param name="key">scancode</param>
 	/// <returns>keycode</returns>
-	uint8_t scancode_to_key_keyboard(SDL_Event* _event);
+	KEY scancode_to_key_keyboard(SDL_Event* _event);
 	/// <summary>
 	/// converts SDL scancodes to calculator keycodes using the calculator key-layout, but ignores shift + alpha
 	/// </summary>
 	/// <param name="key">scancode</param>
 	/// <returns>keycode</returns>
-	uint8_t scancode_to_key_raw(SDL_Event* _event);
+	KEY scancode_to_key_raw(SDL_Event* _event);
+	/// <summary>
+	/// checks wether right alt is active
+	/// </summary>
+	/// <returns>true if pressed else false</returns>
+	bool is_ralt_active();
 };
 #endif

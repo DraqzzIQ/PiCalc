@@ -6,12 +6,12 @@
 class IHttpClient
 {
 	public:
-	IHttpClient(std::string baseUrl);
-	virtual HttpResponse get(HttpRequest req, std::string path) = 0;
-	virtual HttpResponse post(HttpRequest req, std::string path) = 0;
+	IHttpClient(std::string _base_url);
+	virtual HttpResponse get(std::string path, HttpRequest req) = 0;
+	virtual HttpResponse post(std::string path, HttpRequest req) = 0;
 	virtual void set_bearer_auth_token(std::string token) = 0;
 	virtual ~IHttpClient(){};
 
 	private:
-	std::string baseUrl;
+	std::string _base_url;
 };

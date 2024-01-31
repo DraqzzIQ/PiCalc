@@ -1,3 +1,4 @@
+#ifdef PICO
 #pragma once
 #include "http/HttpRequest.h"
 #include "http/HttpResponse.h"
@@ -10,7 +11,6 @@
 #include "pico/cyw43_arch.h"
 #include "pico/stdlib.h"
 #include <string>
-#define CERT
 
 enum HttpMethod {
 	Get,
@@ -114,3 +114,4 @@ class PicoHttpClient: public IHttpClient
 	struct altcp_tls_config* tls_config = NULL;
 	struct altcp_pcb* tls_client = NULL;
 };
+#endif

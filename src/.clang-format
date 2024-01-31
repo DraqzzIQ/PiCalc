@@ -77,7 +77,7 @@ BreakBeforeConceptDeclarations: Always
 BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: AfterColon
-BreakInheritanceList: AfterColon
+BreakInheritanceList: AfterComma
 BreakStringLiterals: false
 ColumnLimit: 0
 CommentPragmas: "^ IWYU pragma:"

@@ -1,109 +1,251 @@
 #pragma once
-#include "constant/Chars.h"
+#include "constant/Constants.h"
+#include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Bitset2D.h"
-#include <cmath>
-#include <string>
-#include <vector>
-
+#include "datastructs/Decimal.h"
+#include "utils/Utils.h"
 
 class Number
 {
 	public:
+	/// <summary>
+	/// create an empty Number
+	/// </summary>
 	Number();
-	Number(const double value);
-	Number(const std::string value);
-	Number(const Number& other);
+	/// <summary>
+	/// create a Number with given value and exponent
+	/// </summary>
+	Number(int64_t value, int16_t exp);
+	/// <summary>
+	/// create a Number with given value, exponent and number of periodic digits
+	/// </summary>
+	Number(int64_t value, int16_t exp, uint8_t periodic);
+	/// <summary>
+	/// create a Number by copying another
+	/// </summary>
+	Number(const Number* other);
+	/// <summary>
+	/// create a Number from a Decimal
+	/// </summary>
+	/// <param name="value"></param>
+	Number(Decimal value);
+	/// <summary>
+	/// destroy the Number and clear allocated Memory
+	/// </summary>
 	~Number();
+	/// <summary>
+	/// copy other to this
+	/// </summary>
+	Number* operator=(const Number* other);
+	/// <summary>
+	/// create a Number from a KEY
+	/// </summary>
+	static Number* from_key(KEY key);
+	/// <summary>
+	/// random Number between 0 and 1, 3 digits precision
+	/// </summary>
+	/// <returns></returns>
+	static Number* ran();
 
-	Number operator+(const Number& other);
-	Number operator-(const Number& other);
-	Number operator*(const Number& other);
-	Number operator/(const Number& other);
-	Number operator%(const Number& other);
-	Number operator^(const Number& other);
+	/// <summary>
+	/// add other to this
+	/// IMPORTANT: does not clone => other is deleted after this operation
+	/// </summary>
+	Number* add(Number* other);
+	/// <summary>
+	/// subtract other from this
+	/// IMPORTANT: does not clone => other is deleted after this operation
+	/// </summary>
+	Number* subtract(Number* other);
+	/// <summary>
+	/// multiply this with other
+	/// IMPORTANT: does not clone => other is deleted after this operation
+	/// </summary>
+	Number* multiply(Number* other);
+	/// <summary>
+	/// divide this by other
+	/// IMPORTANT: does not clone => other is deleted after this operation
+	/// </summary>
+	Number* divide(Number* other);
+	/// <summary>
+	/// calculate the remainder of this divided by other
+	/// IMPORTANT: does not clone => other is deleted after this operation
+	/// </summary>
+	Number* mod(Number* other);
 
-	Number operator+(const double& other);
-	Number operator-(const double& other);
-	Number operator*(const double& other);
-	Number operator/(const double& other);
-	Number operator%(const double& other);
-	Number operator^(const double& other);
+	/// <summary>
+	/// natural logarithm of this
+	/// </summary>
+	Number* ln();
+	/// <summary>
+	/// logarithm base 10 of this
+	/// </summary>
+	Number* log();
+	/// <summary>
+	/// logarithm base other of this
+	/// </summary>
+	Number* log(Number* other);
+	/// <summary>
+	/// raises e to the power of this
+	/// </summary>
+	Number* exp();
+	/// <summary>
+	/// raises 10 to the power of this
+	/// </summary>
+	Number* pow10();
+	/// <summary>
+	/// raises this to the power of other
+	/// </summary>
+	Number* pow(Number* other);
+	/// <summary>
+	/// calculates the square root of this
+	/// </summary>
+	Number* sqrt();
+	/// <summary>
+	/// calculates the other root of this
+	/// </summary>
+	Number* root(Number* other);
+	/// <summary>
+	/// calculates the factorial of this
+	/// </summary>
+	Number* factorial();
 
-	Number operator-();
+	/// <summary>
+	/// sin of this
+	/// </summary>
+	Number* sin();
+	/// <summary>
+	/// cos of this
+	/// </summary>
+	Number* cos();
+	/// <summary>
+	/// tan of this
+	/// </summary>
+	Number* tan();
+	/// <summary>
+	/// asin of this
+	/// </summary>
+	Number* asin();
+	/// <summary>
+	/// acos of this
+	/// </summary>
+	Number* acos();
+	/// <summary>
+	/// atan of this
+	/// </summary>
+	Number* atan();
+	/// <summary>
+	/// sinh of this
+	/// </summary>
+	Number* sinh();
+	/// <summary>
+	/// cosh of this
+	/// </summary>
+	Number* cosh();
+	/// <summary>
+	/// tanh of this
+	/// </summary>
+	Number* tanh();
+	/// <summary>
+	/// asinh of this
+	/// </summary>
+	Number* asinh();
+	/// <summary>
+	/// acosh of this
+	/// </summary>
+	Number* acosh();
+	/// <summary>
+	/// atanh of this
+	/// </summary>
+	Number* atanh();
+	/// <summary>
+	/// converts this Number from mode to degrees, where 0 = degrees, 1 = radians, 2 = gradians
+	/// </summary>
+	Number* from_angle(uint8_t mode);
+	/// <summary>
+	/// converts this Number to mode from degrees, where 0 = degrees, 1 = radians, 2 = gradians
+	/// </summary>
+	Number* to_angle(uint8_t mode);
 
-	Number& operator+=(const Number& other);
-	Number& operator-=(const Number& other);
-	Number& operator*=(const Number& other);
-	Number& operator/=(const Number& other);
-	Number& operator%=(const Number& other);
-	Number& operator^=(const Number& other);
-	Number& operator=(const Number& other);
+	/// <summary>
+	/// round this to the nearest integer
+	/// </summary>
+	Number* round();
+	/// <summary>
+	/// round this down to the nearest integer
+	/// </summary>
+	Number* floor();
+	/// <summary>
+	/// round this up to the nearest integer
+	/// </summary>
+	Number* ceil();
+	/// <summary>
+	/// absolute value of this
+	/// </summary>
+	Number* abs();
+	/// <summary>
+	/// cuts off the decimal part of this
+	/// </summary>
+	Number* to_int();
+	/// <summary>
+	/// changes the sign of this
+	/// </summary>
+	Number* negate();
+	/// <summary>
+	/// divides this by 100
+	/// </summary>
+	Number* percent();
 
-	Number& operator+=(const double& other);
-	Number& operator-=(const double& other);
-	Number& operator*=(const double& other);
-	Number& operator/=(const double& other);
-	Number& operator%=(const double& other);
-	Number& operator^=(const double& other);
-	Number& operator=(const double& other);
+	/// <summary>
+	/// rectangular to polar coordinates (this = x, other = y)
+	/// </summary>
+	Number* pol(Number* other);
+	/// <summary>
+	/// polar to rectangular coordinates (this = r, other = theta)
+	/// </summary>
+	Number* rec(Number* other);
+	/// <summary>
+	/// greatest common divisor
+	/// </summary>
+	Number* gcd(Number* other);
+	/// <summary>
+	/// least common multiple
+	/// </summary>
+	Number* lcm(Number* other);
+	/// <summary>
+	/// random integer between this and other (both inclusive)
+	/// </summary>
+	Number* ran_int(Number* other);
 
-	Number& log();
-	Number& log(const double& other);
-	Number& log(const Number& other);
-	Number& ln();
-
-	Number& sin();
-	Number& cos();
-	Number& tan();
-	Number& asin();
-	Number& acos();
-	Number& atan();
-	Number& sinh();
-	Number& cosh();
-	Number& tanh();
-	Number& asinh();
-	Number& acosh();
-	Number& atanh();
-
-	Number& round();
-	Number& floor();
-	Number& ceil();
-	Number& abs();
-	Number& to_int();
-	Number& negate();
-
-	Number& pow(const Number& other);
-	Number& pow(const double& other);
-	Number& factorial();
-
-	Number& sqrt();
-	Number& root(const Number& other);
-	Number& root(const double& other);
-
-	static Number pol(const Number& first, const Number& second);
-	static Number rec(const Number& first, const Number& second);
-	static Number gcd(const Number& first, const Number& second);
-	static Number lcm(const Number& first, const Number& second);
-	static Number ran_int(const Number& first, const Number& second);
-
-	double get_value() const;
-	Bitset2D render() const;
+	/// <summary>
+	/// simplyfiy this as much as possible without losing any precision
+	/// </summary>
+	void simplify();
+	/// <summary>
+	/// return a single decimal representing this (often looses precision)
+	/// </summary>
+	bool to_value();
+	void to_value(std::vector<Number*>& variables);
+	void to_key_set(KEY_SET& result) const;
+	/// <summary>
+	/// returns all possible representations of this as a KEY_SET
+	/// </summary>
+	std::vector<KEY_SET> get_all_representations(std::vector<Number*>& variables);
 
 	private:
-	struct NumberNode {
-		double value = 0;
-		NumberNode* first = nullptr;
-		NumberNode* second = nullptr;
+	bool contains_key() const;
+	void to_value_no_check();
+	void replace_variables(std::vector<Number*>& variables);
+	/// <summary>
+	/// clones this number without cloning its children (only adresses of Numbers in children are copied)
+	/// </summary>
+	Number* clone() const;
+	/// <summary>
+	/// clone this Number recursively
+	/// </summary>
+	Number* deep_clone() const;
 
-		~NumberNode()
-		{
-			if (first != nullptr) delete first;
-			if (second != nullptr) delete second;
-		}
-	};
-
-	NumberNode* _root;
-
-	double _rounded;
+	Decimal _value;
+	std::vector<Number*> _children;
 };

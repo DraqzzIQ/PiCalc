@@ -4,9 +4,9 @@
 /// KeyPress
 /// </summary>
 struct KeyPress {
-	uint8_t key_calculator;
-	uint8_t key_keyboard;
-	uint8_t key_raw;
+	KEY key_calculator;
+	KEY key_keyboard;
+	KEY key_raw;
 	bool shift;
 	bool alpha;
 };

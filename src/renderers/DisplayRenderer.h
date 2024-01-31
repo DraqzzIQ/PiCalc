@@ -1,10 +1,11 @@
 #pragma once
+// TODO: make this work and make battery level showing work
 #ifdef PICO
-#include "renderers/IRenderer.h"
 #include "constant/LCDConstants.h"
-#include "utils/Utils.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
+#include "renderers/IRenderer.h"
+#include "utils/Utils.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -18,10 +19,19 @@ class DisplayRenderer: public IRenderer
 	DisplayRenderer();
 
 	/// <summary>
-	/// renders the given pixels to the console
+	/// renders the given frame to the display
 	/// </summary>
-	/// <param name="pixels">pixels to render</param>
-	void render(const Bitset2D& pixels, const DynamicBitset& screen_symbols, bool force_rerender);
+	/// <param name="frame">frame to render</param>
+	void render(const Frame& frame, bool force_rerender) override;
+	/// <summary>
+	/// sets the contrast of the lcd
+	/// </summary>
+	/// <param name="value">0-127</param>
+	void set_contrast(uint8_t value) override;
+	/// <summary>
+	/// get the current contrast of the lcd
+	/// </summary>
+	uint8_t get_contrast() override;
 
 	private:
 	/// <summary>
@@ -48,5 +58,17 @@ class DisplayRenderer: public IRenderer
 	/// loads the x (column) address
 	/// </summary>
 	uint8_t load_x_address(uint8_t column_address, uint8_t command_following);
+	/// <summary>
+	/// reverses the bits in a byte
+	/// </summary>
+	uint8_t reverse_byte(uint8_t b);
+	/// <summary>
+	/// current contrast of the display
+	/// </summary>
+	uint8_t _contrast = 14;
+	uint64_t _timer = 0;
+	uint8_t _battery_symbols = 0b11;
+
+	const std::vector<uint8_t> screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
 };
 #endif
