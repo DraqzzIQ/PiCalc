@@ -50,16 +50,16 @@ void TetrisWindow::update_window()
 
 bool TetrisWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("left")) {
+	if (keypress.key_raw == 5) {
 		move_piece_left();
-	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("right")) {
+	} else if (keypress.key_raw == 6) {
 		move_piece_right();
-	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("down")) {
+	} else if (keypress.key_raw == 4) {
 		_score += 1;
 		move_piece_down();
-	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("=")) {
+	} else if (keypress.key_raw == 61) {
 		hold();
-	} else if (keypress.key_raw == Chars::CHAR_TO_KEYCODE.at("SHIFT")) {
+	} else if (keypress.key_raw == 1) {
 		rotate_piece();
 	}
 

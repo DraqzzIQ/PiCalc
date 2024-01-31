@@ -2,7 +2,6 @@
 #include "datastructs/Bitset2D.h"
 #include "utils/Utils.h"
 #include "windows/Window.h"
-#include "constant/Chars.h"
 
 class TetrisWindow: public Window
 {
