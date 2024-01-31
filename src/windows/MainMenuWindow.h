@@ -18,7 +18,7 @@ class MainMenuWindow: public MenuWindow
 		// temporarily disabled
 		options[1] = new WindowMenuOption<Window>("Wolfram Alpha");
 		options[2] = new WindowMenuOption<Window>("ChadGPT");
-		options[3] = new WindowMenuOption<Window>("Notes");
+		options[3] = new WindowMenuOption<NotesWindow>("Notes");
 		options[4] = new WindowMenuOption<PongWindow>("Pong");
 		options[5] = new WindowMenuOption<PaintWindow>("Paint");
 		options[6] = new WindowMenuOption<SettingsWindow>("Settings");

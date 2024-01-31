@@ -1,5 +1,4 @@
 #pragma once
-#include "calculator/Equation.h"
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "windows/Window.h"

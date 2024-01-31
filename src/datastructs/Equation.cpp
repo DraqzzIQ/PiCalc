@@ -1,4 +1,4 @@
-#include "calculator/Equation.h"
+#include "Equation.h"
 
 // TIME
 const KEY_SET Equation::_allowed_calculate_operations = { 11, 12, 43, 45, 177, 215, 247 };

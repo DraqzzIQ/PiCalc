@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\datastructs\Equation.h" />
     <ClInclude Include="src\options\TextMenuOption.h" />
     <ClInclude Include="src\windows\BatteryWindow.h" />
     <ClInclude Include="src\constant\Chars.h" />
@@ -85,6 +86,7 @@
     <ClCompile Include="src\datastructs\DynamicBitset.cpp" />
     <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />
+    <ClCompile Include="src\datastructs\Equation.cpp" />
     <ClCompile Include="src\datastructs\Number.cpp" />
     <ClCompile Include="src\datastructs\NumberParser.cpp" />
     <ClCompile Include="src\http\IHttpClient.cpp" />

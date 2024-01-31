@@ -1,7 +1,7 @@
 #pragma once
-#include "calculator/Equation.h"
 #include "constant/Error.h"
 #include "constant/Graphics.h"
+#include "datastructs/Equation.h"
 // #include "datastructs/Number.h"
 #include "windows/Window.h"
 #include <iostream>
