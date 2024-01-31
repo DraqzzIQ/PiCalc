@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Constants.h"
 #include "constant/Graphics.h"
 #include <iostream>
 #include <vector>
@@ -39,6 +40,10 @@ class Utils
 	/// returns the free heap size in bytes
 	/// </summary>
 	static uint32_t get_free_heap();
+	/// <summary>
+	/// returns true if the KEY is in the KEY_SET
+	/// </summary>
+	static bool in_key_set(KEY value, const KEY_SET& vector);
 	/// <summary>
 	/// splits a string on a character
 	/// </summary>

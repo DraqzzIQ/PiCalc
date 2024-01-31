@@ -8,87 +8,67 @@ IKeyboard::IKeyboard()
 KEY IKeyboard::raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha)
 {
 	if (shift) {
-		if (!Chars::KEY_MAP_SHIFT.contains(raw_key)) return Chars::KEY_MAP_SHIFT.at(Chars::CHAR_TO_KEYCODE.at("unknown"));
-		return Chars::KEY_MAP_SHIFT.at(raw_key);
+		switch (raw_key) {
+		case 7: return 8;
+		case 11: return 12;
+		case 14: return 33;
+		case 16: return 17;
+		case 18: return 19;
+		case 20: return 21;
+		case 22: return 23;
+		case 24: return 25;
+		case 26: return 27;
+		case 29: return 30;
+		case 129: return 132;
+		case 130: return 133;
+		case 131: return 134;
+		case 141: return 142;
+		case 143: return 144;
+		case 40: return 37;
+		case 41: return 59;
+		case 145: return 146;
+		case 147: return 148;
+		case 55: return 149;
+		case 56: return 150;
+		case 57: return 152;
+		case 153: return 154;
+		case 155: return 156;
+		case 54: return 157;
+		case 215: return 158;
+		case 247: return 160;
+		case 49: return 162;
+		case 51: return 163;
+		case 43: return 164;
+		case 45: return 166;
+		case 48: return 168;
+		case 44: return 169;
+		case 171: return 172;
+		case 178: return 179;
+		case 73: return 180;
+		default: return 0;
+		}
 	} else if (alpha) {
-		if (!Chars::KEY_MAP_ALPHA.contains(raw_key)) return Chars::KEY_MAP_ALPHA.at(Chars::CHAR_TO_KEYCODE.at("unknown"));
-		return Chars::KEY_MAP_ALPHA.at(raw_key);
+		switch (raw_key) {
+		case 13: return 58;
+		case 28: return 65;
+		case 29: return 66;
+		case 31: return 67;
+		case 129: return 68;
+		case 130: return 69;
+		case 131: return 70;
+		case 41: return 88;
+		case 145: return 89;
+		case 147: return 77;
+		case 56: return 151;
+		case 215: return 159;
+		case 247: return 161;
+		case 43: return 165;
+		case 45: return 167;
+		case 44: return 170;
+		case 171: return 173;
+		default: return 0;
+		}
 	} else {
 		return raw_key;
 	}
-}
-
-KEY IKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
-{
-	if (shift) {
-		if (raw_key < 10) return raw_key;
-		switch (raw_key) {
-		case 106: return Chars::CHAR_TO_KEYCODE.at("A");
-		case 107: return Chars::CHAR_TO_KEYCODE.at("B");
-		case 108: return Chars::CHAR_TO_KEYCODE.at("C");
-		case 109: return Chars::CHAR_TO_KEYCODE.at("D");
-		case 110: return Chars::CHAR_TO_KEYCODE.at("E");
-		case 111: return Chars::CHAR_TO_KEYCODE.at("F");
-		case 112: return Chars::CHAR_TO_KEYCODE.at("G");
-		case 113: return Chars::CHAR_TO_KEYCODE.at("H");
-		case 114: return Chars::CHAR_TO_KEYCODE.at("I");
-		case 115: return Chars::CHAR_TO_KEYCODE.at("J");
-		case 116: return Chars::CHAR_TO_KEYCODE.at("K");
-		case 102: return Chars::CHAR_TO_KEYCODE.at("L");
-		case 117: return Chars::CHAR_TO_KEYCODE.at("M");
-		case 118: return Chars::CHAR_TO_KEYCODE.at("N");
-		case 119: return Chars::CHAR_TO_KEYCODE.at("O");
-		case 120: return Chars::CHAR_TO_KEYCODE.at("P");
-		case 121: return Chars::CHAR_TO_KEYCODE.at("Q");
-		case 122: return Chars::CHAR_TO_KEYCODE.at("R");
-		case 74: return Chars::CHAR_TO_KEYCODE.at("S");
-		case 75: return Chars::CHAR_TO_KEYCODE.at("T");
-		case 123: return Chars::CHAR_TO_KEYCODE.at("U");
-		case 124: return Chars::CHAR_TO_KEYCODE.at("V");
-		case 71: return Chars::CHAR_TO_KEYCODE.at("W");
-		case 72: return Chars::CHAR_TO_KEYCODE.at("X");
-		case 69: return Chars::CHAR_TO_KEYCODE.at("Y");
-		case 70: return Chars::CHAR_TO_KEYCODE.at("Z");
-		case 82: return Chars::CHAR_TO_KEYCODE.at(";");
-		case 127: return Chars::CHAR_TO_KEYCODE.at("!");
-		case 128: return Chars::CHAR_TO_KEYCODE.at("?");
-		case 73: return Chars::CHAR_TO_KEYCODE.at("RETURN");
-		}
-	} else {
-		if (raw_key < 10) return raw_key;
-		switch (raw_key) {
-		case 106: return Chars::CHAR_TO_KEYCODE.at("a");
-		case 107: return Chars::CHAR_TO_KEYCODE.at("b");
-		case 108: return Chars::CHAR_TO_KEYCODE.at("c");
-		case 109: return Chars::CHAR_TO_KEYCODE.at("d");
-		case 110: return Chars::CHAR_TO_KEYCODE.at("e");
-		case 111: return Chars::CHAR_TO_KEYCODE.at("f");
-		case 112: return Chars::CHAR_TO_KEYCODE.at("g");
-		case 113: return Chars::CHAR_TO_KEYCODE.at("h");
-		case 114: return Chars::CHAR_TO_KEYCODE.at("i");
-		case 115: return Chars::CHAR_TO_KEYCODE.at("j");
-		case 116: return Chars::CHAR_TO_KEYCODE.at("k");
-		case 102: return Chars::CHAR_TO_KEYCODE.at("l");
-		case 117: return Chars::CHAR_TO_KEYCODE.at("m");
-		case 118: return Chars::CHAR_TO_KEYCODE.at("n");
-		case 119: return Chars::CHAR_TO_KEYCODE.at("o");
-		case 120: return Chars::CHAR_TO_KEYCODE.at("p");
-		case 121: return Chars::CHAR_TO_KEYCODE.at("q");
-		case 122: return Chars::CHAR_TO_KEYCODE.at("r");
-		case 74: return Chars::CHAR_TO_KEYCODE.at("s");
-		case 75: return Chars::CHAR_TO_KEYCODE.at("t");
-		case 123: return Chars::CHAR_TO_KEYCODE.at("u");
-		case 124: return Chars::CHAR_TO_KEYCODE.at("v");
-		case 71: return Chars::CHAR_TO_KEYCODE.at("w");
-		case 72: return Chars::CHAR_TO_KEYCODE.at("x");
-		case 69: return Chars::CHAR_TO_KEYCODE.at("y");
-		case 70: return Chars::CHAR_TO_KEYCODE.at("z");
-		case 82: return Chars::CHAR_TO_KEYCODE.at(",");
-		case 127: return Chars::CHAR_TO_KEYCODE.at(".");
-		case 128: return Chars::CHAR_TO_KEYCODE.at(" ");
-		case 73: return Chars::CHAR_TO_KEYCODE.at("RETURN");
-		case 125: return Chars::CHAR_TO_KEYCODE.at("DEL");
-		}
-	}
-	return Chars::CHAR_TO_KEYCODE.at("unknown");
 }

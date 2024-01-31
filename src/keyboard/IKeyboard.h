@@ -30,10 +30,6 @@ class IKeyboard
 	/// </summary>
 	static KEY raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha);
 	/// <summary>
-	/// converts raw keycodes to calculator keycodes using the normal keyboard key-layout
-	/// </summary>
-	static KEY raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha);
-	/// <summary>
 	/// window manager handles the inputs
 	/// </summary>
 	WindowManager* _window_manager;

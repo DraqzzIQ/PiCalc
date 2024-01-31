@@ -1,15 +1,14 @@
 #pragma once
+#include "constant/Constants.h"
 #include "datastructs/DynamicBitset.h"
-#include <constant/Chars.h>
-#include <cstdint>
-#include <map>
-#include <vector>
 
 /// <summary>
 /// Utility for 2D bitsets.
 /// </summary>
 class Bitset2D
 {
+	using FONT = const std::map<KEY, Bitset2D>;
+
 	public:
 	/// <summary>
 	/// Default constructor
@@ -82,15 +81,15 @@ class Bitset2D
 	/// <summary>
 	/// put a KEY_SET on the Bitset2D starting at coord_x, coord_y
 	/// </summary>
-	void put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, KEY_SET text, bool resize_if_needed);
+	void put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, KEY_SET text, bool resize_if_needed);
 	/// <summary>
 	/// put a string on the Bitset2D starting at coord_x, coord_y
 	/// </summary>
-	void put_chars(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, std::string text, bool resize_if_needed);
+	void put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, const std::string& text, bool resize_if_needed);
 	/// <summary>
 	/// put a uint16_t with the top left corner at coord_x, coord_y
 	/// </summary>
-	void put_number_aligned_right(uint32_t coord_x, uint32_t coord_y, const std::map<KEY, Bitset2D>& font, uint16_t number);
+	void put_number_aligned_right(uint32_t coord_x, uint32_t coord_y, FONT& font, uint16_t number);
 	/// <summary>
 	/// draw a vertical line on the Bitset2D starting at coord_x, coord_y with length length and value value
 	/// </summary>

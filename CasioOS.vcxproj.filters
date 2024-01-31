@@ -197,9 +197,6 @@
     <ClCompile Include="src\CasioOS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\constant\Chars.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\datastructs\Bitset2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -102,6 +102,7 @@ uint32_t DynamicBitset::size() const
 
 std::vector<uint8_t> DynamicBitset::get_bytes(uint32_t start) const
 {
+	// TODO: move to DisplayRenderer, handle too small bitsets
 	std::vector<uint8_t> bytes(4, 0);
 	if (start % 8 == 0) {
 		start /= 8;

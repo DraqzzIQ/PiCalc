@@ -1,6 +1,6 @@
 #pragma once
-#include "Graphics.h"
 #include "constant/Constants.h"
+#include "constant/Graphics.h"
 #include "datastructs/Bitset2D.h"
 
 class Error

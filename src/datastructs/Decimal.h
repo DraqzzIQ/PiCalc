@@ -1,16 +1,12 @@
 #pragma once
+#include "constant/Constants.h"
 #include "constant/Error.h"
 #include "utils/Utils.h"
-#include <cmath>
-#include <string>
-#include <vector>
 
-#define DECIMAL_VALUE_PRECISION 18
-#define DECIMAL_EXP_PRECISION 4
-#define DECIMAL_VALUE_MAX 999999999999999999
-#define DECIMAL_EXP_MAX 9999
-
-using KEY = uint16_t;
+constexpr uint8_t DECIMAL_VALUE_PRECISION = 18;
+constexpr uint8_t DECIMAL_EXP_PRECISION = 4;
+constexpr int64_t DECIMAL_VALUE_MAX = 999999999999999999;
+constexpr int16_t DECIMAL_EXP_MAX = 9999;
 
 /// <summary>
 /// stores either a KEY or a decimal: value = _val * 10 ^ _exp<para/>

@@ -698,13 +698,13 @@ Decimal& Decimal::lcm(Decimal other)
 void Decimal::value_to_key_set(KEY_SET& res) const
 {
 	if (_val == 0) {
-		res.push_back(0);
+		res.push_back(48);
 		return;
 	}
 	int64_t val_copy = std::abs(_val);
 	uint8_t size = res.size();
 	while (val_copy != 0) {
-		res.push_back((KEY)(val_copy % 10));
+		res.push_back((KEY)(val_copy % 10) + 48);
 		val_copy /= 10;
 	}
 	std::reverse(res.begin() + size, res.end());
@@ -713,13 +713,13 @@ void Decimal::value_to_key_set(KEY_SET& res) const
 void Decimal::exp_to_key_set(KEY_SET& res) const
 {
 	if (_exp == 0) {
-		res.push_back(0);
+		res.push_back(48);
 		return;
 	}
 	int64_t exp_copy = std::abs(_exp);
 	auto begin = res.end();
 	while (exp_copy != 0) {
-		res.push_back((KEY)(exp_copy % 10));
+		res.push_back((KEY)(exp_copy % 10) + 48);
 		exp_copy /= 10;
 	}
 	std::reverse(begin, res.end());
@@ -727,6 +727,7 @@ void Decimal::exp_to_key_set(KEY_SET& res) const
 
 KEY_SET Decimal::to_key_set(uint8_t max_size) const
 {
+	// TODO: fix
 	KEY_SET res;
 	maximize_exp();
 	if (_val < 0) max_size--;
@@ -741,35 +742,35 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 	if (_exp + digits > max_size || missing_digits > sci_missing_digits) {
 		// decimal can't be represented without scientific notation while satisfying the max_size and count
 		_exp += digits - 1;
-		if (_exp == 0) res.push_back(0);
+		if (_exp == 0) res.push_back(48);
 		else {
 			int64_t exp_copy = std::abs(_exp);
 			while (exp_copy != 0) {
-				res.push_back((KEY)(exp_copy % 10));
+				res.push_back((KEY)(exp_copy % 10) + 48);
 				exp_copy /= 10;
 			}
-			if (_exp < 0) res.push_back(116);
+			if (_exp < 0) res.push_back(28);
 		}
-		res.push_back(127);
+		res.push_back(171);
 		max_size -= res.size() + 2;
 
 		if (digits > max_size) shift_right(_val, digits - max_size);
-		if (_val < 10) res.push_back((KEY)_val);
+		if (_val < 10) res.push_back((KEY)_val + 48);
 		else {
 			int64_t val_copy = std::abs(_val);
 			while (val_copy != 0) {
-				res.push_back((KEY)(val_copy % 10));
+				res.push_back((KEY)(val_copy % 10) + 48);
 				val_copy /= 10;
 			}
-			res.insert(res.end() - 1, 82);
+			res.insert(res.end() - 1, 44);
 		}
-		if (_val < 0) res.push_back(116);
+		if (_val < 0) res.push_back(28);
 		std::reverse(res.begin(), res.end());
 	} else if (_exp >= 0) {
 		// no comma needed
-		if (_val < 0) res.push_back(116);
+		if (_val < 0) res.push_back(28);
 		value_to_key_set(res);
-		for (uint8_t i = 0; i < _exp; i++) res.push_back(0);
+		for (uint8_t i = 0; i < _exp; i++) res.push_back(48);
 	} else {
 		if (missing_digits > 0) {
 			shift_right(_val, missing_digits);
@@ -780,25 +781,25 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 		if (-_exp < digits) {
 			int64_t val_copy = std::abs(_val);
 			for (uint8_t i = 0; i < -_exp; i++) {
-				res.push_back((KEY)(val_copy % 10));
+				res.push_back((KEY)(val_copy % 10) + 48);
 				val_copy /= 10;
 			}
-			res.push_back(82);
+			res.push_back(44);
 			while (val_copy != 0) {
-				res.push_back((KEY)(val_copy % 10));
+				res.push_back((KEY)(val_copy % 10) + 48);
 				val_copy /= 10;
 			}
 		} else {
 			int64_t val_copy = std::abs(_val);
 			while (val_copy != 0) {
-				res.push_back((KEY)(val_copy % 10));
+				res.push_back((KEY)(val_copy % 10) + 48);
 				val_copy /= 10;
 			}
-			for (uint8_t i = res.size(); i < -_exp; i++) res.push_back(0);
-			res.push_back(82);
-			res.push_back(0);
+			for (uint8_t i = res.size(); i < -_exp; i++) res.push_back(48);
+			res.push_back(44);
+			res.push_back(48);
 		}
-		if (_val < 0) res.push_back(116);
+		if (_val < 0) res.push_back(28);
 		std::reverse(res.begin(), res.end());
 	}
 

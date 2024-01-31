@@ -202,96 +202,96 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.alpha) {
 		switch (keypress.key_raw) {
-		case 167: // up
+		case 3: // up
 			scroll_up();
 			break;
-		case 168: // down
+		case 4: // down
 			scroll_down();
 			break;
-		case 169: // left
+		case 5: // left
 			scroll_left();
 			break;
-		case 170: // right
+		case 6: // right
 			scroll_right();
 			break;
 		}
 	} else if (!keypress.shift) {
 		switch (keypress.key_raw) {
-		case 167: // up
+		case 3: // up
 			if (_cursor_y == _corner_y) scroll_up();
 			if (_cursor_y > 0) _cursor_y--;
 			break;
-		case 168: // down
+		case 4: // down
 			if (_cursor_y == _corner_y + SCREEN_HEIGHT - 1) scroll_down();
 			_cursor_y++;
 			break;
-		case 169: // left
+		case 5: // left
 			if (_cursor_x == _corner_x) scroll_left();
 			if (_cursor_x > 0) _cursor_x--;
 			break;
-		case 170: // right
+		case 6: // right
 			if (_cursor_x == _corner_x + SCREEN_WIDTH - 1) scroll_right();
 			_cursor_x++;
 			break;
-		case 73: // =
+		case '=':
 			set_tool(Tool::PEN);
 			save_to_hist();
 			break;
-		case 1: // 1
+		case '1':
 			if (set_tool(Tool::LINE)) draw_line(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
 			save_to_hist();
 			break;
-		case 2: // 2
+		case '2':
 			if (set_tool(Tool::RECTANGLE)) draw_rectangle(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
 			save_to_hist();
 			break;
-		case 3: // 3
+		case '3':
 			if (set_tool(Tool::CIRCLE)) draw_ellipse(_start_pos_x, _start_pos_y, _cursor_x, _cursor_y, true, _brush_size, _painted);
 			save_to_hist();
 			break;
-		case 4: // 4
+		case '4':
 			if (_tool == Tool::NONE) fill(_cursor_x, _cursor_y, !_erase, _painted);
 			save_to_hist();
 			break;
-		case 126: // AC
+		case 155: // AC
 			_painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
 			save_to_hist();
 			break;
-		case 125: // DEL
+		case 153: // DEL
 			_erase = !_erase;
 			save_to_hist();
 			break;
-		case 0: // 0
+		case '0':
 			_corner_x = 0;
 			_corner_y = 0;
 			break;
-		case 69: // +
+		case '+':
 			if (_brush_size < 5) _brush_size++;
 			break;
-		case 70: // -
+		case '-':
 			if (_brush_size > 1) _brush_size--;
 			break;
-		case 71: // multiply
+		case 215: // multiply
 			if (_current_history_index > 1) {
 				_redo_stack.push(_history[--_current_history_index]);
 				_painted = _history[_current_history_index - 1];
 			}
 			break;
-		case 72: // divide
+		case 247: // divide
 			if (!_redo_stack.empty()) {
 				_history[_current_history_index++] = _redo_stack.top();
 				_painted = _redo_stack.top();
 				_redo_stack.pop();
 			}
 			break;
-		case 128: // ans
+		case 178: // ans
 			_cursor_x = SCREEN_WIDTH / 2 + _corner_x;
 			_cursor_y = SCREEN_HEIGHT / 2 + _corner_y;
 			break;
-		case 121: // RCL
+		case 141: // RCL
 			open_save_menu();
 			break;
-		case 122: // ENG
+		case 143: // ENG
 			open_load_menu();
 			break;
 		}
@@ -330,7 +330,7 @@ void PaintWindow::open_save_menu()
 {
 	InputWindow::input(
 		"Enter Filename:",
-		[this](std::string filename) {
+		[this](std::string& filename) {
 			if (filename.rfind(".bmp") == std::string::npos) {
 				filename += ".bmp";
 			}

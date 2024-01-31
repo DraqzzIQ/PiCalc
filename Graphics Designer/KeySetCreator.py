@@ -1,7 +1,7 @@
 import pyperclip
 
 with open("Keymap.txt", "r") as k:
-    keymap = {line[3:-3].split("\", ")[0]: int(line[3:-3].split("\", ")[1]) for line in k.read().split("\n")}
+    keymap = {(line.split()[1] if len(line.split()) > 1 else ""): int(line.split()[0]) for line in k.read().split("\n")}
 
 while True:
     chars = []

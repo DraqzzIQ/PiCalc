@@ -1,6 +1,7 @@
 #include "Number.h"
 
 // TODO:
+// update chars
 // -output periodic numbers
 // -simplify
 // -only format Decimal to fraction at the end
@@ -22,7 +23,7 @@ Number::Number(int64_t value, int16_t exp, uint8_t periodic)
 	exp += periodic;
 	value -= value / Decimal::powers_of_ten[periodic];
 
-	_value.set_key(72);
+	_value.set_key(247);
 	_children = std::vector<Number*>{
 		new Number(value, exp),
 		new Number(Decimal::powers_of_ten[periodic] - 1, 0)
@@ -75,9 +76,9 @@ Number* Number::add(Number* other)
 		_value += other->_value;
 	} else if (is_key && other->_value.is_key()) {
 	} else {
-		if (is_key && _value.get_key() == 69) {
-		} else if (is_key && _value.get_key() == 72) {
-		} else if (!is_key && other->_value.get_key() != 69 && other->_value.get_key() != 72) {
+		if (is_key && _value.get_key() == 43) {
+		} else if (is_key && _value.get_key() == 247) {
+		} else if (!is_key && other->_value.get_key() != 43 && other->_value.get_key() != 247) {
 			Decimal old_value = _value;
 			_value = other->_value;
 			other->_value = old_value;
@@ -104,26 +105,26 @@ Number* Number::add(Number* other)
 	}
 
 	if (other->_value.is_key()) {
-		if (other->_value.get_key() == 69) {
+		if (other->_value.get_key() == 43) {
 			for (Number* child : other->_children) add(child);
 		} else {
 			_children.push_back(other);
 		}
 	} else {
-		if (_value.get_key() == 69) {
+		if (_value.get_key() == 43) {
 			for (Number* child : _children) {
 				if (!child->_value.is_key()) {
 					child->_value += other->_value;
 					other = nullptr;
 					return this;
-				} else if (child->_value.get_key() == 72 && !child->_children.at(1)->_value.is_key()) {
+				} else if (child->_value.get_key() == 247 && !child->_children.at(1)->_value.is_key()) {
 					child->_children.at(1)->add(other);
 					other = nullptr;
 					return this;
 				}
 			}
 			_children.push_back(other);
-		} else if (_value.get_key() == 72 && !_children.at(1)->_value.is_key()) {
+		} else if (_value.get_key() == 247 && !_children.at(1)->_value.is_key()) {
 			_children.at(1)->add(other);
 		} else {
 			_children.push_back(other);
@@ -144,17 +145,17 @@ Number* Number::multiply(Number* other)
 {
 	if (!_value.is_key() && !other->_value.is_key()) {
 		_value *= other->_value;
-	} else if (_value.get_key() == 71 && other->_value.get_key() == 71) {
+	} else if (_value.get_key() == 215 && other->_value.get_key() == 215) {
 		for (Number* child : other->_children) _children.push_back(child);
-	} else if (_value.get_key() == 71) {
+	} else if (_value.get_key() == 215) {
 		_children.push_back(other);
-	} else if (other->_value.get_key() == 71) {
+	} else if (other->_value.get_key() == 215) {
 		_children = std::vector<Number*>{ clone() };
 		for (Number* child : other->_children) _children.push_back(child);
-		_value.set_key(71);
+		_value.set_key(215);
 	} else {
 		_children = std::vector<Number*>{ clone(), other->clone() };
-		_value.set_key(71);
+		_value.set_key(215);
 	}
 	other = nullptr;
 	return this;
@@ -163,7 +164,7 @@ Number* Number::multiply(Number* other)
 Number* Number::divide(Number* other)
 {
 	_children = std::vector<Number*>{ clone(), other->clone() };
-	_value.set_key(72);
+	_value.set_key(247);
 	other = nullptr;
 	return this;
 }
@@ -439,7 +440,7 @@ bool Number::contains_key() const
 void Number::replace_variables(std::vector<Number*>& variables)
 {
 	if (_value.is_key()) {
-		if (_value.get_key() < 69) {
+		if (_value.get_key() < 43) {
 			operator=(variables.at(_value.get_key()));
 			replace_variables(variables);
 		} else {
@@ -452,15 +453,15 @@ void Number::to_value_no_check()
 {
 	for (Number* child : _children) child->to_value_no_check();
 	switch (_value.get_key()) {
-	case 69:
+	case 43:
 		_value = 0;
 		for (Number* child : _children) _value += child->_value;
 		break;
-	case 71:
+	case 215:
 		_value = 1;
 		for (Number* child : _children) _value *= child->_value;
 		break;
-	case 72:
+	case 247:
 		_value = _children[0]->_value;
 		_value /= _children[1]->_value;
 		break;
@@ -565,8 +566,8 @@ void Number::to_key_set(KEY_SET& result) const
 {
 	if (_value.is_key()) {
 		KEY key = _value.get_key();
-		if (key == 69) result.push_back(74);
-		if (key == 72) {
+		if (key == 43) result.push_back(74);
+		if (key == 247) {
 			result.push_back(110);
 			_children[0]->to_key_set(result);
 			result.push_back(237);
@@ -578,8 +579,8 @@ void Number::to_key_set(KEY_SET& result) const
 				result.push_back(_value.get_key());
 			}
 		}
-		if (key == 69) result.back() = 75;
-		else if (key != 72) result.pop_back();
+		if (key == 43) result.back() = 75;
+		else if (key != 247) result.pop_back();
 	} else {
 		KEY_SET val = _value.to_key_set(16);
 		result.insert(result.end(), val.begin(), val.end());
@@ -593,7 +594,7 @@ std::vector<KEY_SET> Number::get_all_representations(std::vector<Number*>& varia
 	if (_value.is_key()) {
 		KEY_SET result;
 		KEY key = _value.get_key();
-		if (key == 72) {
+		if (key == 247) {
 			result.push_back(110);
 			_children[0]->to_key_set(result);
 			result.push_back(237);

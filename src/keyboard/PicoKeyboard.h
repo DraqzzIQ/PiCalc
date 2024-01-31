@@ -86,9 +86,8 @@ class PicoKeyboard: public IKeyboard
 	/// <returns>keycode</returns>
 	KEY coords_to_key_raw(uint8_t x, uint8_t y);
 	/// <summary>
-	/// prints the name of the key being input, used for debugging
+	/// converts raw keycodes to calculator keycodes using the normal keyboard key-layout
 	/// </summary>
-	/// <param name="key">keycode of the key being printed</param>
-	void print_key(KEY key);
+	KEY raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha);
 };
 #endif

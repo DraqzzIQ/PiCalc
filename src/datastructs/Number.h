@@ -1,12 +1,10 @@
 #pragma once
-#include "constant/Chars.h"
+#include "constant/Constants.h"
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Bitset2D.h"
 #include "datastructs/Decimal.h"
-#include <cmath>
-#include <string>
-#include <vector>
+#include "utils/Utils.h"
 
 class Number
 {

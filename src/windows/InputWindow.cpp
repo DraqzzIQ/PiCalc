@@ -1,7 +1,7 @@
 #include "InputWindow.h"
 
 
-InputWindow::InputWindow(std::string promt, std::function<void(std::string)> callback)
+InputWindow::InputWindow(const std::string& promt, std::function<void(std::string&)> callback)
 {
 	_blink_timer = Utils::us_since_boot();
 	_prompt = promt;
@@ -22,14 +22,13 @@ void InputWindow::update_window()
 
 bool InputWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_keyboard == 250) {
-		// RETURN
+	if (keypress.key_keyboard == '\n') {
 		if (_input.size() > 0) {
 			WindowManager::get_instance()->close_window(false);
 			_callback(_input);
 			delete this;
 		}
-	} else if (keypress.key_keyboard == 125) {
+	} else if (keypress.key_keyboard == 153) {
 		// DEL
 		if (_cursor_index > 0) {
 			_input.pop_back();
@@ -55,7 +54,7 @@ void InputWindow::add_cursor(Bitset2D& bitset)
 	_window.draw_vertical_line(_cursor_index * 6 + 2, 15, 9, true);
 }
 
-void InputWindow::input(std::string promt, std::function<void(std::string)> callback)
+void InputWindow::input(const std::string& promt, std::function<void(std::string&)> callback)
 {
 	WindowManager::get_instance()->add_window(new InputWindow(promt, callback));
 }
