@@ -1,7 +1,7 @@
 #pragma once
-#include "calculator/Equation.h"
 #include "constant/Error.h"
 #include "constant/Graphics.h"
+#include "utils/Utils.h"
 #include "windows/Window.h"
 #include <iostream>
 
@@ -60,6 +60,14 @@ class PongWindow: public Window
 	/// points needed to win the game
 	/// </summary>
 	int16_t _win_points = 0;
+	/// <summary>
+	/// maximum x velocity the ball can move at
+	/// </summary>
+	int16_t _max_ball_vx = 0;
+	/// <summary>
+	/// maximum y velocity the ball can move at
+	/// </summary>
+	int16_t _max_ball_vy = 0;
 
 	/// <summary>
 	/// score of the right player

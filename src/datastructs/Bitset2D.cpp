@@ -273,10 +273,11 @@ void Bitset2D::extend_right(uint32_t length, bool value)
 
 void Bitset2D::extend_down(const Bitset2D& other)
 {
-#ifdef IS_DEBUG_BUILD
-	if (_width != other._width) throw(std::out_of_range("Bitset2D::extend_down"));
-#endif
+	if (_width < other._width) extend_right(other._width - _width, false);
 	for (uint32_t i = 0; i < other._width; i++) { _plane[i].extend(other.at(i)); }
+	if (_width > other._width) {
+		for (uint32_t i = other._width; i < _width; i++) { _plane[i].extend(other._height, false); }
+	}
 	_height += other._height;
 }
 
@@ -346,9 +347,8 @@ std::string Bitset2D::to_string_formatted() const
 	}
 	return s;
 }
-std::vector<uint8_t> Bitset2D::to_bmp()
+void Bitset2D::to_bmp(KEY_SET& bmp)
 {
-	std::vector<uint8_t> bmp;
 	uint32_t width = _width;
 	uint32_t height = _height;
 	uint32_t row_size = (width * 3 + 3) & (~3);
@@ -381,11 +381,9 @@ std::vector<uint8_t> Bitset2D::to_bmp()
 			bmp[index + 2] = _plane[j][i] ? 0 : 255;
 		}
 	}
-
-	return bmp;
 }
 
-void Bitset2D::from_bmp(std::vector<uint8_t> bytes)
+void Bitset2D::from_bmp(const KEY_SET& bytes)
 {
 	if (bytes.empty()) {
 		clear();

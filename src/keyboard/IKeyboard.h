@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Chars.h"
 #include "windows/WindowManager.h"
 
 /// <summary>
@@ -33,6 +34,4 @@ class IKeyboard
 	/// window manager handles the inputs
 	/// </summary>
 	WindowManager* _window_manager;
-
-	private:
 };
