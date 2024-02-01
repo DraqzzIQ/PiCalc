@@ -1,10 +1,10 @@
 #include "Equation.h"
 
 // TODO: TIME, Font aligned bottom
-const KEY_SET Equation::_allowed_calculate_operations = { 11, 12, 43, 45, 177, 215, 247 };
-const KEY_SET Equation::_single_bracket_open_keys = { 24, 26, 40, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 158, 161, 164, 165, 166, 167, 168, 170 };
-const KEY_SET Equation::_values_before_exponent = { 41, 33, 29, 11, 15, 16, 17, 18, 171, 178, 169, 172, 173, 174, 175, 176 };
-const KEY_SET Equation::_symbols = { 11, 15, 16, 17, 18, 21, 22, 23, 25, 27 };
+const KEY_SET Equation::_allowed_calculate_operations = { KEY_MOD, '+', '-', KEY_PLUS_MINUS, KEY_MULTIPLY, KEY_DIVIDE };
+const KEY_SET Equation::_single_bracket_open_keys = { KEY_LOG, KEY_LN, '(', KEY_SIN, KEY_COS, KEY_TAN, KEY_ASIN, KEY_ACOS, KEY_ATAN, KEY_SINH, KEY_COSH, KEY_TANH, KEY_ASINH, KEY_ACOSH, KEY_ATANH, KEY_GCD, KEY_LCM, KEY_POL, KEY_INT, KEY_REC, KEY_INTG, KEY_RND, KEY_RAN_INT };
+const KEY_SET Equation::_values_before_exponent = { ')', '!', KEY_TIME, KEY_SCIENTIFIC_E, KEY_ANS, KEY_RAN, KEY_PI, KEY_EULER, KEY_RADIAN, KEY_GRADIAN, KEY_DEGREE };
+const KEY_SET Equation::_symbols = { KEY_ABS, KEY_LOGN, KEY_FRACTION, KEY_MIXED_FRACTION, KEY_SQRT, KEY_PERIODIC, KEY_POWER, KEY_ROOTN, KEY_POWER10, KEY_EXP };
 
 Equation::Equation()
 {
@@ -112,7 +112,7 @@ void Equation::move_cursor_right()
 
 void Equation::move_cursor_up()
 {
-	// TODO
+	if (_cursor_index == 0) return;
 	for (uint32_t i = _cursor_index - 1; i > 0; i--) {
 		if (_equation.at(i) == KEY_NEXT_VAL) {
 			_cursor_index = i;
@@ -120,9 +120,9 @@ void Equation::move_cursor_up()
 			return;
 		} else if (_equation.at(i) == '\n') {
 			uint32_t new_line_index = i;
-			i--;
-			while (i > 0 && _equation.at(i) != '\n') i--;
+			while (i != 0 && _equation.at(i - 1) != '\n') i--;
 			_cursor_index -= new_line_index;
+			_cursor_index--;
 			if (i + _cursor_index > new_line_index) _cursor_index = new_line_index;
 			else _cursor_index += i;
 			render_equation();
@@ -133,7 +133,6 @@ void Equation::move_cursor_up()
 
 void Equation::move_cursor_down()
 {
-	// TODO
 	for (uint32_t i = _cursor_index; i < _equation.size(); i++) {
 		if (_equation.at(i) == KEY_NEXT_VAL) {
 			_cursor_index = i + 1;
@@ -141,11 +140,16 @@ void Equation::move_cursor_down()
 			return;
 		} else if (_equation.at(i) == '\n') {
 			uint32_t new_line_index = i;
-			i--;
-			while (i < 0 && _equation.at(i) != '\n') i--;
-			_cursor_index -= new_line_index;
-			if (i + _cursor_index > new_line_index) _cursor_index = new_line_index;
-			else _cursor_index += i;
+			i++;
+			while (i < _equation.size() && _equation.at(i) != '\n') i++;
+			uint32_t new_line_end = i;
+			i = _cursor_index;
+			while (i != 0 && _equation.at(i - 1) != '\n') i--;
+			_cursor_index -= i;
+			_cursor_index++;
+			if (new_line_index + _cursor_index > new_line_end) _cursor_index = new_line_end;
+			else _cursor_index += new_line_index;
+			render_equation();
 			return;
 		}
 	}
@@ -246,6 +250,8 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 	bool cursor_inside = false;
 	y_origin = 0;
 	if (type == 1) _render_index++;
+
+	KEY last_rendered = 0;
 
 	for (; _render_index < _equation.size(); _render_index++) {
 		Bitset2D symbol_matrix;
@@ -445,9 +451,14 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 			if (value == KEY_POWER10) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table->at(KEY_POWER10), 0);
 			else if (value == KEY_EXP) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table->at(KEY_EULER), 0);
 			else {
-				KEY last_val = _equation.at(_render_index - 1);
-				if (_render_index == 0 || !(last_val > 47 && last_val < 58 || last_val > 64 && last_val < 91 || last_val > 96 && last_val < 123) && !Utils::in_key_set(last_val, _values_before_exponent)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table->at(KEY_EMPTY), 0);
-				else equation_part.pop_back_x();
+				if (_render_index == 0) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table->at(KEY_EMPTY), 0);
+				else {
+					KEY last_val = _equation.at(_render_index - 1);
+					if (last_val > 47 && last_val < 58 || last_val > 64 && last_val < 91 || last_val > 96 && last_val < 123 ||
+					    last_val == 191 && (last_rendered != KEY_POWER && last_rendered != KEY_POWER10 && last_rendered != KEY_EXP) ||
+					    Utils::in_key_set(last_val, _values_before_exponent)) equation_part.pop_back_x();
+					else extend_bitset_left_and_match_y_origin(equation_part, y_origin, table->at(KEY_EMPTY), 0);
+				}
 			}
 			symbol_matrix = render_equation_part(font_height - 3, new_y_origin, cursor_inside, equation_part.width(), 4, 2);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, symbol_matrix.height() - 4);
@@ -530,6 +541,8 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 
 		// add space after the symbol
 		equation_part.push_back(DynamicBitset(equation_part.height(), false));
+
+		last_rendered = value;
 	}
 	// special case: cursor at the end of the equation
 	if (_render_index == _cursor_index) {
