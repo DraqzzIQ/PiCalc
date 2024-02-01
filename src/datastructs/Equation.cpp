@@ -1,6 +1,6 @@
-#include "calculator/Equation.h"
+#include "Equation.h"
 
-// TIME
+// TODO: TIME, Font changes
 const KEY_SET Equation::_allowed_calculate_operations = { 11, 12, 43, 45, 177, 215, 247 };
 const KEY_SET Equation::_single_bracket_open_keys = { 24, 26, 40, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 159, 161, 164, 165, 166, 167, 168, 170 };
 const KEY_SET Equation::_values_before_exponent = { 41, 33, 29, 11, 15, 16, 17, 18, 171, 178, 169, 172, 173, 174, 175, 176 };
@@ -13,7 +13,7 @@ Equation::Equation()
 	render_equation();
 }
 
-Equation::Equation(KEY_SET& equation)
+Equation::Equation(const KEY_SET& equation)
 {
 	_equation = equation;
 	_cursor_index = 0;
@@ -36,7 +36,7 @@ void Equation::set_cursor_state(bool active)
 	_cursor_active = active;
 }
 
-void Equation::set_key_set(KEY_SET& equation)
+void Equation::set_key_set(const KEY_SET& equation)
 {
 	_equation = equation;
 	_cursor_index = 0;
@@ -56,10 +56,13 @@ Bitset2D Equation::get_rendered_equation(bool complete)
 	else return _show_cursor ? _rendered_equation_cursor_frame : _rendered_equation_frame;
 }
 
-std::string Equation::to_string() const
+const KEY_SET* Equation::get_raw_bytes() const
 {
-	// TODO
-	return "";
+	return &_equation;
+}
+
+void Equation::get_ascii_bytes(KEY_SET& result) const
+{
 }
 
 
@@ -147,10 +150,16 @@ void Equation::move_cursor_down()
 	}
 }
 
-void Equation::add_value(KEY keypress)
+void Equation::handle_key_down(KEY keypress)
 {
 	// TODO: restrictions
 	switch (keypress) {
+	case 3: move_cursor_up(); break;
+	case 4: move_cursor_down(); break;
+	case 5: move_cursor_left(); break;
+	case 6: move_cursor_right(); break;
+	case 153: del(); break;
+	case 155: ac(); break;
 	case 11: add_value_raw(11, 1); break;
 	case 13: add_value_raw(22, 1, false, KEY_SET{ 51 }); break;
 	case 14: add_value_raw(22, 1, false, KEY_SET{ 28, 49 }); break;
@@ -200,7 +209,7 @@ void Equation::render_equation()
 	_cursor_data = { 0, 0, 0 };
 	int32_t y_origin = 0;
 	bool cursor_in_equation = false;
-	_rendered_equation = render_equation_part(Graphics::SYMBOLS_9_HIGH, y_origin, cursor_in_equation, 0, 0, 1, 0);
+	_rendered_equation = render_equation_part(9, y_origin, cursor_in_equation, 0, 0, 1, 0);
 	_rendered_equation.extend_right(1, false);
 
 	// add the cursor to the equation
@@ -218,9 +227,20 @@ void Equation::render_equation()
 	_rendered_equation_cursor.copy(_frame_x, _frame_y, _frame_width, _frame_height, _rendered_equation_cursor_frame);
 }
 
-Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, uint8_t type)
+Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, uint8_t type)
 {
-	uint8_t font_height = table.at('0').height();
+	FONT* table = nullptr;
+	if (font_height < 5) font_height = 5;
+	else if (font_height > 9) font_height = 9;
+
+	switch (font_height) {
+	case 5: table = &Graphics::SYMBOLS_5_HIGH; break;
+	case 6: table = &Graphics::SYMBOLS_6_HIGH; break;
+	case 7: table = &Graphics::SYMBOLS_7_HIGH; break;
+	case 8: table = &Graphics::SYMBOLS_7_HIGH; break;
+	case 9: table = &Graphics::SYMBOLS_9_HIGH; break;
+	}
+
 	Bitset2D equation_part(1, font_height, false);
 	bool cursor_inside = false;
 	y_origin = 0;
@@ -239,7 +259,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			// only render the text before the bracket, then change the value to 40 for the other case to render the actual bracket
 			KEY_SET keys = Graphics::key_text.at(value);
 			for (uint8_t j = 0; j < keys.size(); j++) {
-				symbol_matrix.extend_right(table.at(keys.at(j)));
+				symbol_matrix.extend_right(table->at(keys.at(j)));
 				symbol_matrix.extend_right(1, false);
 			}
 			symbol_matrix.extend_up(y_origin, false);
@@ -253,7 +273,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			// render everything until the closing bracket
 			int32_t new_y_origin = 0;
 			_render_index++;
-			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 5, 0, 0, 2);
+			symbol_matrix = render_equation_part(font_height, new_y_origin, cursor_inside, equation_part.width() + 5, 0, 0, 2);
 			symbol_matrix.pop_back_x();
 
 			// add opening bracket
@@ -306,7 +326,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		// Abs
 		else if (value == 11) {
 			int32_t new_y_origin = 0;
-			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 5);
+			symbol_matrix = render_equation_part(font_height, new_y_origin, cursor_inside, equation_part.width() + 5);
 			symbol_matrix.extend_up(1, false);
 
 			Bitset2D abs_symbol = Bitset2D(5, symbol_matrix.height(), false);
@@ -319,18 +339,18 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 
 		// logn
 		else if (value == 15) {
-			symbol_matrix.extend_right(table.at(51));
+			symbol_matrix.extend_right(table->at(51));
 			symbol_matrix.extend_right(1, false);
-			symbol_matrix.extend_right(table.at(54));
+			symbol_matrix.extend_right(table->at(54));
 			symbol_matrix.extend_right(1, false);
-			symbol_matrix.extend_right(table.at(46));
+			symbol_matrix.extend_right(table->at(46));
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 
 			int32_t new_y_origin = 0;
-			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_inside, equation_part.width(), 5, 1);
+			symbol_matrix = render_equation_part(font_height - 3, new_y_origin, cursor_inside, equation_part.width(), 5, 1);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, -5);
 
-			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 5);
+			symbol_matrix = render_equation_part(font_height, new_y_origin, cursor_inside, equation_part.width() + 5);
 
 			DynamicBitset bracket_raw(symbol_matrix.height() - 4, true);
 			bracket_raw.extend_left(2, false);
@@ -361,13 +381,13 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 			uint8_t fraction_line_height = (font_height == 9) ? 3 : 2;
 			int32_t new_y_origin = 0;
 			if (value == 131) {
-				auto front = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_inside, equation_part.width(), font_height == 9);
+				auto front = render_equation_part(font_height - 3, new_y_origin, cursor_inside, equation_part.width(), font_height == 9);
 				extend_bitset_left_and_match_y_origin(equation_part, y_origin, front, -(font_height == 9));
 			}
 			bool cursor_in_top = false;
 			bool cursor_in_bottom = false;
-			auto top = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_in_top, equation_part.width(), fraction_line_height, 2);
-			auto bottom = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_in_bottom, equation_part.width(), 3 + fraction_line_height, 1);
+			auto top = render_equation_part(font_height - 3, new_y_origin, cursor_in_top, equation_part.width(), fraction_line_height, 2);
+			auto bottom = render_equation_part(font_height - 3, new_y_origin, cursor_in_bottom, equation_part.width(), 3 + fraction_line_height, 1);
 			cursor_inside = cursor_in_top || cursor_in_bottom || cursor_inside;
 
 			// extend the top and bottom to the same width
@@ -397,7 +417,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		// Sqrt
 		else if (value == 18) {
 			int32_t new_y_origin = 0;
-			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + 4);
+			symbol_matrix = render_equation_part(font_height, new_y_origin, cursor_inside, equation_part.width() + 4);
 			symbol_matrix.extend_right(1, false);
 			symbol_matrix.extend_up(1, false);
 			symbol_matrix.extend_up(1, true);
@@ -421,27 +441,27 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		// x^n
 		else if (value == 22 || value == 25 || value == 27) {
 			int32_t new_y_origin = 0;
-			if (value == 25) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(25), 0);
-			else if (value == 27) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(27), 0);
+			if (value == 25) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table->at(25), 0);
+			else if (value == 27) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table->at(27), 0);
 			else {
 				KEY last_val = _equation.at(_render_index - 1);
-				if (_render_index == 0 || !(last_val > 47 && last_val < 58 || last_val > 64 && last_val < 91 || last_val > 96 && last_val < 123) && !Utils::in_key_set(last_val, _values_before_exponent)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table.at(127), 0);
+				if (_render_index == 0 || !(last_val > 47 && last_val < 58 || last_val > 64 && last_val < 91 || last_val > 96 && last_val < 123) && !Utils::in_key_set(last_val, _values_before_exponent)) extend_bitset_left_and_match_y_origin(equation_part, y_origin, table->at(127), 0);
 				else equation_part.pop_back_x();
 			}
-			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_inside, equation_part.width(), 4, 2);
+			symbol_matrix = render_equation_part(font_height - 3, new_y_origin, cursor_inside, equation_part.width(), 4, 2);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, symbol_matrix.height() - 4);
 		}
 
 		// *10^n
 		else if (value == 171) {
-			symbol_matrix = table.at(171);
+			symbol_matrix = table->at(171);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
 		// periodic
 		else if (value == 21) {
 			int32_t new_y_origin = 0;
-			symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width(), 0);
+			symbol_matrix = render_equation_part(font_height, new_y_origin, cursor_inside, equation_part.width(), 0);
 			symbol_matrix.extend_up(1, false);
 			symbol_matrix.extend_up(1, true);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 2);
@@ -450,12 +470,12 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		// rootn
 		else if (value == 23) {
 			int32_t new_y_origin = 0;
-			symbol_matrix = render_equation_part(Graphics::SYMBOLS_6_HIGH, new_y_origin, cursor_inside, equation_part.width(), 2, 2);
+			symbol_matrix = render_equation_part(font_height - 3, new_y_origin, cursor_inside, equation_part.width(), 2, 2);
 			symbol_matrix.extend_down(7, false);
 			symbol_matrix.set_bit(symbol_matrix.width() - 2, symbol_matrix.height() - 3, true);
 			symbol_matrix.set_bit(symbol_matrix.width() - 1, symbol_matrix.height() - 2, true);
 
-			Bitset2D radicant = render_equation_part(table, new_y_origin, cursor_inside, equation_part.width() + symbol_matrix.width() + 2, 0);
+			Bitset2D radicant = render_equation_part(font_height, new_y_origin, cursor_inside, equation_part.width() + symbol_matrix.width() + 2, 0);
 			radicant.extend_right(1, false);
 			radicant.extend_up(1, false);
 			radicant.extend_up(1, true);
@@ -484,17 +504,26 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		// newline
 		else if (value == 10) {
 			if (type == 0) {
+				_render_index++;
 				int32_t new_y_origin = 0;
-				symbol_matrix = render_equation_part(table, new_y_origin, cursor_inside, 0, equation_part.height(), 1, 0);
+				symbol_matrix = render_equation_part(font_height, new_y_origin, cursor_inside, 0, equation_part.height() + 1 - y_origin, 1, 0);
 				equation_part.extend_down(1, false);
 				equation_part.extend_down(symbol_matrix);
 			} else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 		}
 
+		// Fonts
+		else if (value == KEY_FONT_5_HIGH)
+			table = &Graphics::SYMBOLS_5_HIGH;
+		else if (value == KEY_FONT_6_HIGH) table = &Graphics::SYMBOLS_6_HIGH;
+		else if (value == KEY_FONT_7_HIGH) table = &Graphics::SYMBOLS_7_HIGH;
+		else if (value == KEY_FONT_8_HIGH) table = &Graphics::SYMBOLS_7_HIGH;
+		else if (value == KEY_FONT_9_HIGH) table = &Graphics::SYMBOLS_9_HIGH;
+
 		// any other KEY
 		else {
-			if (table.count(value) != 0) symbol_matrix = table.at(value);
-			else symbol_matrix = table.at(63);
+			if (table->count(value) != 0) symbol_matrix = table->at(value);
+			else symbol_matrix = table->at(63);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
@@ -514,7 +543,7 @@ Bitset2D Equation::render_equation_part(FONT& table, int32_t& y_origin, bool& cu
 		else if (cursor_alignment == 2) _cursor_data.y -= equation_part.height() - y_origin;
 	}
 	if (equation_part.width() == 1 && type == 1) {
-		equation_part.extend_right(table.at(127));
+		equation_part.extend_right(table->at(127));
 		equation_part.extend_right(1, false);
 	}
 	return equation_part;

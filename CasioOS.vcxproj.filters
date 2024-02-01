@@ -30,9 +30,6 @@
     <ClInclude Include="src\datastructs\DynamicBitset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\calculator\Equation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\constant\Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -144,25 +141,13 @@
     <ClInclude Include="src\options\CallbackMenuOption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\io\ISerializable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\io\ConfigSerializable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\io\PaintingSerializable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\io\NoteSerializable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\datastructs\Frame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\http\PicoHttpClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\io\SDCardController.h">
+    <ClInclude Include="src\io\IOController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\windows\ContrastWindow.h">
@@ -189,6 +174,12 @@
     <ClInclude Include="src\options\TextMenuOption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\datastructs\Equation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\TextWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp">
@@ -198,9 +189,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\datastructs\DynamicBitset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\calculator\Equation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\constant\Graphics.cpp">
@@ -284,28 +272,22 @@
     <ClCompile Include="src\windows\NotesWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\io\ISerializable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\io\ConfigSerializable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\io\PaintingSerializable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\io\NoteSerializable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\http\PicoHttpClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\io\SDCardController.cpp">
+    <ClCompile Include="src\io\IOController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\ContrastWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\threading\Threading.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\datastructs\Equation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\TextWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

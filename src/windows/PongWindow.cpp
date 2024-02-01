@@ -59,9 +59,11 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		return true;
 	case Menu::DIFFICULTY:
 		if ((keypress.key_raw -= 48) < 10) {
-			_paddle_height = 512 - (keypress.key_raw / 2) * 64;
-			_paddle_speed = 32 + keypress.key_raw * 4;
-			_start_ball_vx = 48 + keypress.key_raw * 4;
+			_paddle_height = 512 - (keypress.key_raw / 3) * 64;
+			_paddle_speed = 32 + keypress.key_raw * 2;
+			_start_ball_vx = 32 + keypress.key_raw * 4;
+			_max_ball_vx = 64 + keypress.key_raw * 2;
+			_max_ball_vy = 32 + keypress.key_raw * 3;
 			start_game();
 			return true;
 		}
@@ -104,6 +106,7 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		} else return false;
 		return true;
 	}
+	return true;
 }
 
 bool PongWindow::handle_key_up(KeyPress keypress)
@@ -191,7 +194,7 @@ void PongWindow::move_ball()
 		_ball_y = -_ball_y;
 		_ball_vy = -_ball_vy;
 	} else if (_ball_y >= SCREEN_HEIGHT * 64) {
-		_ball_y = SCREEN_HEIGHT * 128 - _ball_y;
+		_ball_y = SCREEN_HEIGHT * 128 - _ball_y - 1;
 		_ball_vy = -_ball_vy;
 	}
 
@@ -199,7 +202,7 @@ void PongWindow::move_ball()
 	if (_ball_x < 64) {
 		if (_ball_y >= _lpaddle_pos && _ball_y < _lpaddle_pos + _paddle_height) {
 			_ball_x = -_ball_x;
-			_ball_vx = -_ball_vx + 4;
+			_ball_vx = -_ball_vx + 2;
 			_ball_vy += ((Utils::us_since_boot() % 7) - 2) * 2;
 			_ball_vy += _lpaddle_v * _paddle_speed / 2;
 		} else {
@@ -212,7 +215,7 @@ void PongWindow::move_ball()
 	} else if (_ball_x >= (SCREEN_WIDTH - 1) * 64) {
 		if (_ball_y >= _rpaddle_pos && _ball_y < _rpaddle_pos + _paddle_height) {
 			_ball_x = (SCREEN_WIDTH - 1) * 128 - _ball_x;
-			_ball_vx = -_ball_vx - 4;
+			_ball_vx = -_ball_vx - 2;
 			_ball_vy += ((Utils::us_since_boot() % 7) - 2) * 2;
 			_ball_vy += _rpaddle_v * _paddle_speed / 2;
 		} else {
@@ -223,6 +226,10 @@ void PongWindow::move_ball()
 			_ball_vy = ((Utils::us_since_boot() % 7) - 2) * 8;
 		}
 	}
+	if (_ball_vx > _max_ball_vx) _ball_vx = _max_ball_vx;
+	else if (_ball_vx < -_max_ball_vx) _ball_vx = -_max_ball_vx;
+	if (_ball_vy > _max_ball_vy) _ball_vy = _max_ball_vy;
+	else if (_ball_vy < -_max_ball_vy) _ball_vy = -_max_ball_vy;
 }
 
 void PongWindow::render_game()

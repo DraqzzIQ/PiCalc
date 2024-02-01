@@ -54,12 +54,6 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 			switch (_mode) {
 			case Mode::COMP:
 				switch (keypress.key_calculator) {
-				case 3: _equation_selected->move_cursor_up(); break;
-				case 4: _equation_selected->move_cursor_down(); break;
-				case 5: _equation_selected->move_cursor_left(); break;
-				case 6: _equation_selected->move_cursor_right(); break;
-				case 153: _equation_selected->del(); break;
-				case 155: _equation_selected->ac(); break;
 				case '=':
 					// ERROR: 3(1/4), 3*(1/4)
 					_result = _equation_selected->to_number(_setup);
@@ -104,7 +98,7 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 				case 147: break; // M+
 				case 148: break; // M-
 				case 180: break; // wav=
-				default: _equation_selected->add_value(keypress.key_calculator);
+				default: _equation_selected->handle_key_down(keypress.key_calculator);
 				}
 			}
 		}

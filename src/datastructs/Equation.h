@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Chars.h"
 #include "constant/Constants.h"
 #include "constant/Error.h"
 #include "constant/Graphics.h"
@@ -17,7 +18,7 @@ class Equation
 	/// <summary>
 	/// create a new Equation from a KEY_SET
 	/// </summary>
-	Equation(KEY_SET& equation);
+	Equation(const KEY_SET& equation);
 	/// <summary>
 	/// delete the Equation and clear allocated Memory
 	/// </summary>
@@ -35,16 +36,21 @@ class Equation
 	/// <summary>
 	/// set the equation to the givcen KEY_SET
 	/// </summary>
-	void set_key_set(KEY_SET& equation);
+	void set_key_set(const KEY_SET& equation);
 	/// <summary>
 	/// return the rendered equation
 	/// </summary>
 	/// <param name="complete">if true returns the whole equation, otherwise a bitset of the size set by set_frame_size(), containing the part of the equation that the cursor is in</param>
 	Bitset2D get_rendered_equation(bool complete = false);
 	/// <summary>
-	/// returns the equation formatted as a readable string, for example to be put into Wolfram Alpha
+	/// returns a const reference to the raw bytes (underlying KEY_SET) of the equation, for example for saving Notes<para/>
+	/// IMPORTANT: the result is unuseable after the Equation is deleted
 	/// </summary>
-	std::string to_string() const;
+	const KEY_SET* get_raw_bytes() const;
+	/// <summary>
+	/// sets result to the ascii bytes of the equation, for example for Chatgpt and Wolframalpha
+	/// </summary>
+	void get_ascii_bytes(KEY_SET& result) const;
 
 	/// <summary>
 	/// delete the character before the Cursor
@@ -71,10 +77,9 @@ class Equation
 	/// </summary>
 	void move_cursor_down();
 	/// <summary>
-	/// add a Value to the equation at the current Cursor position
+	/// handle a keypress: up/down/left/right/del/ac: move cursor; any other key: add it to the equation
 	/// </summary>
-	/// <param name="keypress">Char to add</param>
-	void add_value(KEY keypress);
+	void handle_key_down(KEY keypress);
 
 	/// <summary>
 	/// links another variable list to this equation, so that it also can be changed in this equation
@@ -210,7 +215,7 @@ class Equation
 	/// <param name="cursor_alignment">0: in reference to y_origin; 1: in reference to the top; 2: in reference to the bottom</param>
 	/// <param name="type">0: top level; 1: symbol; 2: bracket</param>
 	/// <returns>the rendered subequation</returns>
-	Bitset2D render_equation_part(FONT& table, int32_t& y_origin, bool& cursor_inside, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, uint8_t type = 1);
+	Bitset2D render_equation_part(uint8_t font_height, int32_t& y_origin, bool& cursor_inside, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, uint8_t type = 1);
 	/// <summary>
 	/// appends the second bitset to the first one with their y_origins aligned
 	/// </summary>
