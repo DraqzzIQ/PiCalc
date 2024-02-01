@@ -1,8 +1,12 @@
 #pragma once
 #ifdef PICO
-#include <diskio.h> /// Declarations of disk functions
+///
 #include <f_util.h>
-#include <ff.h>     /// Obtains integer types
+///
+#include <ff.h> /* Obtains integer types */
+///
+#include <diskio.h> /* Declarations of disk functions */
+//
 #include <hw_config.h>
 #else
 #include <filesystem>
@@ -13,13 +17,13 @@
 #include <vector>
 
 #ifdef _WIN32
-#pragma warning(disable: 4996)
+#pragma warning(disable: 4996) // disable warning about fopen
 #endif
 
 /// <summary>
 /// This class is used to read and write files to the sd card.
 /// </summary>
-class SDCardController
+class IOController
 {
 	public:
 	/// <summary>

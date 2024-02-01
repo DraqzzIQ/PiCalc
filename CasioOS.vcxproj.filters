@@ -147,7 +147,7 @@
     <ClInclude Include="src\http\PicoHttpClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\io\SDCardController.h">
+    <ClInclude Include="src\io\IOController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\windows\ContrastWindow.h">
@@ -275,7 +275,7 @@
     <ClCompile Include="src\http\PicoHttpClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\io\SDCardController.cpp">
+    <ClCompile Include="src\io\IOController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\ContrastWindow.cpp">

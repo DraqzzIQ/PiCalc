@@ -1,4 +1,4 @@
-#include "NotesWindow.h"
+#include "windows/NotesWindow.h"
 
 bool NotesWindow::handle_key_down_special(KeyPress keypress)
 {
@@ -14,13 +14,13 @@ void NotesWindow::open_load_menu()
 {
 	std::function<void(std::string)> callback = [this](std::string filename) {
 		KEY_SET bytes;
-		SDCardController::read_file("notes", filename, &bytes);
+		IOController::read_file("notes", filename, &bytes);
 		_text.set_key_set(bytes);
 
 		WindowManager::get_instance()->close_window(false);
 	};
 
-	std::vector<std::string> files = SDCardController::list_dir("notes");
+	std::vector<std::string> files = IOController::list_dir("notes");
 	_load_menu.options.clear();
 	for (int i = 0; i < files.size(); i++) {
 		_load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
@@ -36,6 +36,6 @@ void NotesWindow::open_save_menu()
 		[this](std::string filename) {
 			if (filename.rfind(".txt") == std::string::npos) filename += ".txt";
 			std::replace(filename.begin(), filename.end(), ' ', '_');
-			SDCardController::write_file("notes", filename, _text.get_raw_bytes());
+			IOController::write_file("notes", filename, _text.get_raw_bytes());
 		});
 }

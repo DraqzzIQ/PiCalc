@@ -1,7 +1,7 @@
 #pragma once
 #include "constant/Chars.h"
 #include "datastructs/Equation.h"
-#include "io/SDCardController.h"
+#include "io/IOController.h"
 #include "options/CallbackMenuOption.h"
 #include "utils/Utils.h"
 #include "windows/InputWindow.h"
