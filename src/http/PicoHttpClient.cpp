@@ -1,16 +1,9 @@
 #ifdef PICO
-
-
 #pragma once
 #include "http/PicoHttpClient.h"
 #include "lwip/init.h"
 #include "mbedtls/ssl.h"
 #include <sstream>
-
-#define PICO_WIFI_TIMEOUT 200
-#define PICO_WIFI_SSID "TODO"
-#define PICO_WIFI_PASSWORD "PASSWORD"
-#define PICO_WIFI_AUTH 1337
 
 #define HTTP_METHOD_GET 0
 #define HTTP_METHOD_POST 1
@@ -34,7 +27,11 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 	cyw43_arch_lwip_end();
 
 	this->base_url = baseUrl;
+#ifdef TLS_CERT
+    this->cert = TLS_CERT;
+#else
 	this->cert = get_cert(baseUrl);
+#endif
 
 
 	cyw43_arch_lwip_begin();
@@ -69,6 +66,9 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 	while (!connected)
 		sleep_ms(200);
 
+    if(!bearer_auth_token.empty()){
+        req.headers.insert(std::make_pair("Authorization", "Bearer " + bearer_auth_token));
+    }
 	size_t data_pos = 0;
 	std::string data = serialize(req, uri, method);
 
@@ -110,7 +110,15 @@ std::string PicoHttpClient::serialize(HttpRequest& req, std::string uri, HttpMet
 		method_str = "POST";
 	}
 
-    result << method_str << uri << "HTTP/2" << std::endl;
+    result << method_str << uri;
+    if(result.size() > 0){
+        result << "?";
+        for(auto p : req.params){
+            result << p.first << "=" << p.second << ";";
+        }
+    }
+
+    result << " " << http_version << std::endl;
     for(auto h : req.headers){
         result << h.first << ": " << h.second << std::endl;
     }
@@ -128,37 +136,44 @@ u8_t* PicoHttpClient::get_cert(std::string baseUrl)
 }
 */
 
-/*
+
 HttpResponse PicoHttpClient::deserialize(std::string data)
 {
-    HttpResponse res;
-    u16_t status_code;
-    istringstream data_s(data);
-    std::string l;
-    std::string key, value;
-    std::streamsize lim = std::numeric_limits<std::streamsize>::max();
-
-    data_s >> status_code;
-    data_s.ignore(lim, '\n');
-
-    while (std::getline(data_s, l)) {
-        if (l.empty()) {
+    int status_code;
+    Headers headers;
+    std::string body;
+    std::string error_msg;
+    std::istringstream data_stream(data);
+    std::string line; 
+    
+    data_stream >> this->http_version >> status_code >> error_msg;
+    int delim_pos = 0;
+    line.clear();
+    for(int i = 0; !data_stream.eof(); i++){
+        std::getline(data_stream, line);
+        delim_pos = line.find_first_of(':');
+        if(line == "\n" || delim_pos == std::string::npos){
             break;
         }
-
-        istringstream tmp(l);
-
-        tmp >> key;
-        tmp.ignore(lim, " ");
-        tmp >> value;
-        data_s.ignore(lim, '\n');
+        headers.insert(std::make_pair(line.substr(0, delim_pos), line.substr(delim_pos + 2, line.length() - (delim_pos + 2))));
+        line.clear();
+        delim_pos = 0;
     }
+    
+    while(!data_stream.fail() && !data_stream.eof() && !data_stream.bad()){
+        getline(data_stream, line);
+        body.append(line);
+        line.clear();
+    }
+    
+    HttpResponse result(headers, body, status_code);
 
-    data_s.read(&res.body, std::find(res.headers.begin(), res.headers.end(), "Content-Length").next()))
+    if(status_code < 200 | status_code >= 300)
+        result.error_msg = error_msg;
 
-    return res;
+    return result;
 }
-*/
+
 
 err_t PicoHttpClient::recieve(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 {
@@ -209,6 +224,8 @@ PicoHttpClient::~PicoHttpClient()
 	cyw43_arch_lwip_begin();
 	altcp_shutdown(tls_client, 1, 1);
 	cyw43_arch_lwip_end();
+
+    altcp_tls_free_config(tls_config);
 
 	cyw43_arch_deinit();
 }

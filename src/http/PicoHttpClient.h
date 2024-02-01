@@ -3,6 +3,7 @@
 #include "http/HttpRequest.h"
 #include "http/HttpResponse.h"
 #include "http/IHttpClient.h"
+#include "http/HttpParams.h"
 #include "lwip/altcp.h"
 #include "lwip/altcp_tcp.h"
 #include "lwip/altcp_tls.h"
@@ -34,6 +35,12 @@ class PicoHttpClient: public IHttpClient
 		this->bearer_auth_token = token;
 	};
 
+    /*
+     * These are the functions that initially get called by LWIP.
+     * They need to be static because LWIP is a C library so it cannot
+     * deal with objects and member functions. Therefore the 'arg'
+     * parameter (provided by lwIP) points to the object instance.
+     */
 	static err_t recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 	{
 		return static_cast<PicoHttpClient*>(arg)->recieve(tpcb, p, err);
@@ -102,6 +109,7 @@ class PicoHttpClient: public IHttpClient
 	err_t client_error(err_t err);
 
 
+    std::string http_version = "HTTP/1.1";
     std::string response_raw;
 	int content_l = 0;
 	std::string bearer_auth_token;
