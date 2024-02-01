@@ -7,12 +7,12 @@ ContrastWindow::ContrastWindow()
 
 bool ContrastWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == 6) {
+	if (keypress.key_raw == KEY_RIGHT) {
 		uint8_t contrast = get_contrast();
 		if (contrast > 0) set_contrast(contrast - 1);
 		render();
 		return true;
-	} else if (keypress.key_raw == 5) {
+	} else if (keypress.key_raw == KEY_LEFT) {
 		uint8_t contrast = get_contrast();
 		if (contrast < 30) set_contrast(contrast + 1);
 		render();

@@ -1,3 +1,4 @@
+#include "constant/Chars.h"
 #include "windows/WindowManager.h"
 #include <iostream>
 

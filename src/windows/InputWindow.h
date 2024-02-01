@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Chars.h"
 #include "utils/Utils.h"
 #include "windows/Window.h"
 #include "windows/WindowManager.h"

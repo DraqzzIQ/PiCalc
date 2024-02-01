@@ -28,8 +28,7 @@ bool InputWindow::handle_key_down(KeyPress keypress)
 			_callback(_input);
 			delete this;
 		}
-	} else if (keypress.key_keyboard == 153) {
-		// DEL
+	} else if (keypress.key_keyboard == KEY_DEL) {
 		if (_cursor_index > 0) {
 			_input.pop_back();
 			_cursor_index--;
