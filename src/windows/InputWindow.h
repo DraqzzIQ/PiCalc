@@ -8,12 +8,12 @@
 class InputWindow: public Window
 {
 	public:
-	InputWindow(const std::string&, std::function<void(std::string&)> callback);
+	InputWindow(const std::string& prompt, std::function<void(std::string&)> callback);
 	~InputWindow();
 	void update_window() override;
 	bool handle_key_down(KeyPress keypress) override;
 
-	static void input(const std::string&, std::function<void(std::string&)> callback);
+	static void input(const std::string& prompt, std::function<void(std::string&)> callback);
 
 	private:
 	std::string _prompt;

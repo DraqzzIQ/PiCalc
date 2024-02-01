@@ -22,7 +22,7 @@ void PaintWindow::update_window()
 	_window = _painted;
 
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
-		_blink_timer += 500000;
+		_blink_timer = Utils::us_since_boot();
 		_preview = !_preview;
 	}
 
@@ -304,7 +304,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 }
 void PaintWindow::open_load_menu()
 {
-	std::function<void(std::string)> callback = [this](std::string filename) {
+	FileSelectWindow::select_file("paint", [this](std::string filename) {
 		KEY_SET bytes;
 		IOController::read_file("paint", filename, &bytes);
 		_painted.from_bmp(bytes);
@@ -312,28 +312,16 @@ void PaintWindow::open_load_menu()
 		_corner_y = 0;
 		_cursor_x = SCREEN_WIDTH / 2;
 		_cursor_y = SCREEN_HEIGHT / 2;
-		WindowManager::get_instance()->close_window(false);
-	};
-	{
-		std::vector<std::string> files = IOController::list_dir("paint");
-		_load_menu.options.clear();
-		for (int i = 0; i < files.size(); i++) {
-			_load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
-		}
-		WindowManager::get_instance()->add_window(&_load_menu);
-		_load_menu.create_menu();
-	}
+	});
 }
 
 void PaintWindow::open_save_menu()
 {
-	InputWindow::input(
-		"Enter Filename:",
-		[this](std::string& filename) {
-			if (filename.rfind(".bmp") == std::string::npos) filename += ".bmp";
-			std::replace(filename.begin(), filename.end(), ' ', '_');
-			KEY_SET bytes;
-			_painted.to_bmp(bytes);
-			IOController::write_file("paint", filename, &bytes);
-		});
+	InputWindow::input("Enter Filename:", [this](std::string& filename) {
+		if (filename.rfind(".bmp") == std::string::npos) filename += ".bmp";
+		std::replace(filename.begin(), filename.end(), ' ', '_');
+		KEY_SET bytes;
+		_painted.to_bmp(bytes);
+		IOController::write_file("paint", filename, &bytes);
+	});
 }

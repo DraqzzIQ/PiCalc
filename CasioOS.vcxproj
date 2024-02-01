@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\windows\FileSelectWindow.h" />
     <ClInclude Include="src\datastructs\Equation.h" />
     <ClInclude Include="src\options\TextMenuOption.h" />
     <ClInclude Include="src\windows\BatteryWindow.h" />
