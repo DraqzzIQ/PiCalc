@@ -1,9 +1,4 @@
 #include "windows/ChatGPTWindow.h"
-#ifdef PICO
-#include <http/PicoHttpClient.h>
-#else
-#include <http/DesktopHttpClient.h>
-#endif
 
 ChatGPTWindow::ChatGPTWindow():
 	_client(_base_url)
