@@ -1,7 +1,7 @@
 #include "io/SDCardController.h"
 #ifdef PICO
 
-bool SDCardController::write_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes)
+bool SDCardController::write_file(std::string dir, std::string filename, const std::vector<uint8_t>* bytes)
 {
 	if (!mount() || !set_directory(dir)) return false;
 	FIL file;
