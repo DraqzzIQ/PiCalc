@@ -163,11 +163,16 @@ padding = 0
 fields = []
 
 start_type = input("start type? (1 = single width + height, 2 = import, 3 = multiple): ")
+# start_type = "1"
 
 if start_type == "1":
     name = input("name: ")
-    width = int(input("width: "))
-    height = int(input("height: "))
+    # width = int(input("width: "))
+    # height = int(input("height: "))
+
+    width = 5
+    height = 9
+
     start(width, height)
 
     root.bind("<Escape>", save)
@@ -196,6 +201,7 @@ elif start_type == "3":
     name = int(input("start name: "))
     width = int(input("width: "))
     height = int(input("height: "))
+
     start(width, height)
 
     file = open("result.txt", "w")

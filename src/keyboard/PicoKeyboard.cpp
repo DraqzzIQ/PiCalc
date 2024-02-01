@@ -41,8 +41,8 @@ void PicoKeyboard::check_for_keyboard_presses()
 				_window_manager->handle_key_down(press); // comment to test keys via picoprobe / serial output
 				_pressed_buttons[px][py] = _function_keys_state;
 
-				if (press.key_raw == 1) _function_keys_state = KeyState::SHIFT_ON;
-				else if (press.key_raw == 2) _function_keys_state = KeyState::ALPHA_ON;
+				if (press.key_raw == KEY_SHIFT) _function_keys_state = KeyState::SHIFT_ON;
+				else if (press.key_raw == KEY_ALPHA) _function_keys_state = KeyState::ALPHA_ON;
 				else _function_keys_state = KeyState::ON;
 			} else if (_pressed_buttons[px][py] != KeyState::OFF && !high_pins[py]) {
 				KeyPress release = coords_to_keypress(px, py, _pressed_buttons[px][py]);
@@ -57,55 +57,55 @@ void PicoKeyboard::check_for_keyboard_presses()
 KEY PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
 {
 	switch (10 * x + y) {
-	case 0: return 1;
-	case 1: return 11;
-	case 2: return 16;
-	case 3: return 28;
-	case 4: return 141;
-	case 5: return 55;
-	case 6: return 52;
-	case 7: return 49;
-	case 8: return 48;
-	case 10: return 2;
-	case 11: return 13;
-	case 12: return 18;
-	case 13: return 29;
-	case 14: return 143;
-	case 15: return 56;
-	case 16: return 53;
-	case 17: return 50;
-	case 18: return 44;
-	case 20: return 5;
-	case 21: return 4;
-	case 22: return 20;
-	case 23: return 31;
-	case 24: return 40;
-	case 25: return 57;
-	case 26: return 54;
-	case 27: return 51;
-	case 28: return 171;
-	case 30: return 3;
-	case 31: return 14;
-	case 32: return 22;
-	case 33: return 129;
-	case 34: return 41;
-	case 35: return 153;
-	case 36: return 215;
-	case 37: return 43;
-	case 38: return 178;
-	case 40: return 6;
-	case 41: return 15;
-	case 42: return 24;
-	case 43: return 130;
-	case 44: return 145;
-	case 45: return 155;
-	case 46: return 247;
-	case 47: return 45;
-	case 48: return 61;
-	case 50: return 7;
-	case 52: return 26;
-	case 53: return 131;
-	case 54: return 147;
+	case 0: return KEY_SHIFT;
+	case 1: return KEY_ABS;
+	case 2: return KEY_FRACTION;
+	case 3: return KEY_NEGATE;
+	case 4: return KEY_RCL;
+	case 5: return '7';
+	case 6: return '4';
+	case 7: return '1';
+	case 8: return '0';
+	case 10: return KEY_ALPHA;
+	case 11: return KEY_CUBED;
+	case 12: return KEY_SQRT;
+	case 13: return KEY_TIME;
+	case 14: return KEY_ENG;
+	case 15: return '8';
+	case 16: return '5';
+	case 17: return '2';
+	case 18: return ',';
+	case 20: return KEY_LEFT;
+	case 21: return KEY_DOWN;
+	case 22: return KEY_SQUARED;
+	case 23: return KEY_HYP;
+	case 24: return '(';
+	case 25: return '9';
+	case 26: return '6';
+	case 27: return '3';
+	case 28: return KEY_SCIENTIFIC_E;
+	case 30: return KEY_UP;
+	case 31: return KEY_RECIPROCAL;
+	case 32: return KEY_POWER;
+	case 33: return KEY_SIN;
+	case 34: return ')';
+	case 35: return KEY_DEL;
+	case 36: return KEY_MULTIPLY;
+	case 37: return '+';
+	case 38: return KEY_ANS;
+	case 40: return KEY_RIGHT;
+	case 41: return KEY_LOGN;
+	case 42: return KEY_LOG;
+	case 43: return KEY_COS;
+	case 44: return KEY_S_D;
+	case 45: return KEY_AC;
+	case 46: return KEY_DIVIDE;
+	case 47: return '-';
+	case 48: return '=';
+	case 50: return KEY_MODE;
+	case 52: return KEY_LN;
+	case 53: return KEY_TAN;
+	case 54: return KEY_M_PLUS;
 	default: return 0;
 	}
 }
@@ -172,8 +172,8 @@ KEY PicoKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
 		case 41: return 't';
 		case 145: return 'u';
 		case 147: return 'v';
-		case 153: return 153; // DEL
-		case 155: return 155; // AC
+		case 153: return KEY_DEL;
+		case 155: return KEY_AC;
 		case 215: return 'w';
 		case 247: return 'x';
 		case 43: return 'y';
