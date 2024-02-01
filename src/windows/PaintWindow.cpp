@@ -306,7 +306,7 @@ void PaintWindow::open_load_menu()
 {
 	std::function<void(std::string)> callback = [this](std::string filename) {
 		KEY_SET bytes;
-		SDCardController::read_file("paint", filename, &bytes);
+		IOController::read_file("paint", filename, &bytes);
 		_painted.from_bmp(bytes);
 		_corner_x = 0;
 		_corner_y = 0;
@@ -315,7 +315,7 @@ void PaintWindow::open_load_menu()
 		WindowManager::get_instance()->close_window(false);
 	};
 	{
-		std::vector<std::string> files = SDCardController::list_dir("paint");
+		std::vector<std::string> files = IOController::list_dir("paint");
 		_load_menu.options.clear();
 		for (int i = 0; i < files.size(); i++) {
 			_load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
@@ -334,6 +334,6 @@ void PaintWindow::open_save_menu()
 			std::replace(filename.begin(), filename.end(), ' ', '_');
 			KEY_SET bytes;
 			_painted.to_bmp(bytes);
-			SDCardController::write_file("paint", filename, &bytes);
+			IOController::write_file("paint", filename, &bytes);
 		});
 }

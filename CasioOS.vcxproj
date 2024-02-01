@@ -34,7 +34,7 @@
     <ClInclude Include="src\datastructs\NumberParser.h" />
     <ClInclude Include="src\http\HttpParams.h" />
     <ClInclude Include="src\http\PicoHttpClient.h" />
-    <ClInclude Include="src\io\SDCardController.h" />
+    <ClInclude Include="src\io\IOController.h" />
     <ClInclude Include="src\keyboard\IKeyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
     <ClInclude Include="src\keyboard\PicoKeyboard.h" />
@@ -86,7 +86,7 @@
     <ClCompile Include="src\datastructs\NumberParser.cpp" />
     <ClCompile Include="src\http\IHttpClient.cpp" />
     <ClCompile Include="src\http\PicoHttpClient.cpp" />
-    <ClCompile Include="src\io\SDCardController.cpp" />
+    <ClCompile Include="src\io\IOController.cpp" />
     <ClCompile Include="src\keyboard\IKeyboard.cpp" />
     <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
     <ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
