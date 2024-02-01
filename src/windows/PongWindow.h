@@ -1,6 +1,7 @@
 #pragma once
 #include "constant/Error.h"
 #include "constant/Graphics.h"
+#include "utils/Utils.h"
 #include "windows/Window.h"
 #include <iostream>
 

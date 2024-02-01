@@ -190,12 +190,11 @@ class Bitset2D
 	/// <summary>
 	/// Converts a 2D bitset to a vector of uint8_ts of a bmp file
 	/// </summary>
-	std::vector<uint8_t> to_bmp();
-
+	void to_bmp(KEY_SET& bmp);
 	/// <summary>
 	/// Converts bytes of a bmp file to a 2D bitset
 	/// </summary>
-	void from_bmp(std::vector<uint8_t> bytes);
+	void from_bmp(const KEY_SET& bytes);
 
 	private:
 	/// <summary>

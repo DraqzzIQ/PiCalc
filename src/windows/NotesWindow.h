@@ -1,25 +1,21 @@
 #pragma once
+#include "constant/Chars.h"
 #include "datastructs/Equation.h"
-#include "io/NoteSerializable.h"
+#include "io/SDCardController.h"
 #include "options/CallbackMenuOption.h"
 #include "utils/Utils.h"
 #include "windows/InputWindow.h"
 #include "windows/MenuWindow.h"
+#include "windows/TextWindow.h"
 #include <functional>
 
-class NotesWindow: public Window
+class NotesWindow: public TextWindow
 {
-	public:
-	NotesWindow();
-	void update_window() override;
-	bool handle_key_down(KeyPress keypress) override;
-	bool handle_key_up(KeyPress keypress) override;
+	protected:
+	bool handle_key_down_special(KeyPress keypress) override;
 
 	private:
 	void open_load_menu();
 	void open_save_menu();
-
-	Equation _text;
-
 	MenuWindow _load_menu = MenuWindow();
 };

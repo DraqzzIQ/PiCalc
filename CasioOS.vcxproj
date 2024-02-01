@@ -28,7 +28,6 @@
     <ClInclude Include="src\datastructs\Bitset2D.h" />
     <ClInclude Include="src\datastructs\Decimal.h" />
     <ClInclude Include="src\datastructs\DynamicBitset.h" />
-    <ClInclude Include="src\calculator\Equation.h" />
     <ClInclude Include="src\constant\Graphics.h" />
     <ClInclude Include="src\datastructs\Frame.h" />
     <ClInclude Include="src\datastructs\Number.h" />
@@ -70,13 +69,10 @@
     <ClInclude Include="src\windows\PaintWindow.h" />
     <ClInclude Include="src\windows\NotesWindow.h" />
     <ClInclude Include="src\options\CallbackMenuOption.h" />
-    <ClInclude Include="src\io\ISerializable.h" />
-    <ClInclude Include="src\io\ConfigSerializable.h" />
-    <ClInclude Include="src\io\PaintingSerializable.h" />
-    <ClInclude Include="src\io\NoteSerializable.h" />
     <ClInclude Include="src\threading\Threading.h" />
     <ClInclude Include="src\threading\Thread.h" />
     <ClInclude Include="src\datastructs\ThreadSafeQueue.h" />
+    <ClInclude Include="src\windows\TextWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CasioOS.cpp" />
@@ -84,7 +80,6 @@
     <ClCompile Include="src\datastructs\Bitset2D.cpp" />
     <ClCompile Include="src\datastructs\Decimal.cpp" />
     <ClCompile Include="src\datastructs\DynamicBitset.cpp" />
-    <ClCompile Include="src\calculator\Equation.cpp" />
     <ClCompile Include="src\constant\Graphics.cpp" />
     <ClCompile Include="src\datastructs\Equation.cpp" />
     <ClCompile Include="src\datastructs\Number.cpp" />
@@ -114,11 +109,8 @@
     <ClCompile Include="src\windows\InputWindow.cpp" />
     <ClCompile Include="src\windows\PaintWindow.cpp" />
     <ClCompile Include="src\windows\NotesWindow.cpp" />
-    <ClCompile Include="src\io\ISerializable.cpp" />
-    <ClCompile Include="src\io\ConfigSerializable.cpp" />
-    <ClCompile Include="src\io\PaintingSerializable.cpp" />
-    <ClCompile Include="src\io\NoteSerializable.cpp" />
     <ClCompile Include="src\threading\Threading.cpp" />
+    <ClCompile Include="src\windows\TextWindow.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

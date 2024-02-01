@@ -106,6 +106,7 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		} else return false;
 		return true;
 	}
+	return true;
 }
 
 bool PongWindow::handle_key_up(KeyPress keypress)

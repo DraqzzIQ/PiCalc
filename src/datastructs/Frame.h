@@ -8,8 +8,8 @@ struct Frame {
 	/// </summary>
 	const Bitset2D& pixels;
 	/// <summary>
-	/// represents all 15 usable screen symbols (0-14), 15, 16, 17 (^, v, Disp) are reserved for the battery symbol <para/>
-	/// also, shift & alpha (0 & 1) will be overwrittern
+	/// represents all 15 usable screen symbols (0-14), 15, 16, 17 (^, v, Disp) are reserved for the battery symbol<para/>
+	/// also, shift and alpha (0 and 1) will be overwrittern
 	/// </summary>
 	uint16_t screen_symbols;
 	/// <summary>

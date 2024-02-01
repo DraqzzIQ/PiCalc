@@ -126,7 +126,7 @@ KEY SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 		case SDL_SCANCODE_9: return ']';
 		case SDL_SCANCODE_MINUS: return '\\';
 		case SDL_SCANCODE_Q: return '@';
-		case SDL_SCANCODE_E: return 128;
+		case SDL_SCANCODE_E: return KEY_EURO;
 		case SDL_SCANCODE_RIGHTBRACKET: return '~';
 		default: return 0;
 		}
@@ -182,11 +182,12 @@ KEY SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 		case SDL_SCANCODE_Y: return 'z';
 		case SDL_SCANCODE_Z: return 'y';
 		// everything else
-		case SDL_SCANCODE_LEFT: return 5;
-		case SDL_SCANCODE_RIGHT: return 6;
-		case SDL_SCANCODE_DOWN: return 4;
-		case SDL_SCANCODE_UP: return 3;
-		case SDL_SCANCODE_BACKSPACE: return 153;
+		case SDL_SCANCODE_LEFT: return KEY_LEFT;
+		case SDL_SCANCODE_RIGHT: return KEY_RIGHT;
+		case SDL_SCANCODE_DOWN: return KEY_DOWN;
+		case SDL_SCANCODE_UP: return KEY_UP;
+		case SDL_SCANCODE_BACKSPACE: return KEY_DEL;
+		case SDL_SCANCODE_ESCAPE: return KEY_AC;
 		case SDL_SCANCODE_SPACE: return ' ';
 		case SDL_SCANCODE_RETURN: return '\n';
 		case SDL_SCANCODE_KP_DIVIDE: return '/';
@@ -209,58 +210,58 @@ KEY SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 KEY SDLKeyboard::scancode_to_key_raw(SDL_Event* _event)
 {
 	switch (_event->key.keysym.scancode) {
-	case SDL_SCANCODE_RSHIFT: return 1;
-	case SDL_SCANCODE_LSHIFT: return 1;
-	case SDL_SCANCODE_A: return 11;
-	case SDL_SCANCODE_F: return 16;
-	case SDL_SCANCODE_N: return 28;
-	case SDL_SCANCODE_R: return 141;
+	case SDL_SCANCODE_RSHIFT: return KEY_SHIFT;
+	case SDL_SCANCODE_LSHIFT: return KEY_SHIFT;
+	case SDL_SCANCODE_A: return KEY_ABS;
+	case SDL_SCANCODE_F: return KEY_FRACTION;
+	case SDL_SCANCODE_N: return KEY_NEGATE;
+	case SDL_SCANCODE_R: return KEY_RCL;
 	case SDL_SCANCODE_7: return '7';
 	case SDL_SCANCODE_4: return '4';
 	case SDL_SCANCODE_1: return '1';
 	case SDL_SCANCODE_0: return '0';
-	case SDL_SCANCODE_RALT: return 2;
-	case SDL_SCANCODE_LALT: return 2;
-	case SDL_SCANCODE_F3: return 13;
-	case SDL_SCANCODE_F6: return 18;
-	case SDL_SCANCODE_D: return 29;
-	case SDL_SCANCODE_E: return 143;
+	case SDL_SCANCODE_RALT: return KEY_ALPHA;
+	case SDL_SCANCODE_LALT: return KEY_ALPHA;
+	case SDL_SCANCODE_F3: return KEY_CUBED;
+	case SDL_SCANCODE_F6: return KEY_SQRT;
+	case SDL_SCANCODE_D: return KEY_TIME;
+	case SDL_SCANCODE_E: return KEY_ENG;
 	case SDL_SCANCODE_8: return '8';
 	case SDL_SCANCODE_5: return '5';
 	case SDL_SCANCODE_2: return '2';
 	case SDL_SCANCODE_COMMA: return ',';
-	case SDL_SCANCODE_LEFT: return 5;
-	case SDL_SCANCODE_DOWN: return 4;
-	case SDL_SCANCODE_F2: return 20;
-	case SDL_SCANCODE_H: return 31;
+	case SDL_SCANCODE_LEFT: return KEY_LEFT;
+	case SDL_SCANCODE_DOWN: return KEY_DOWN;
+	case SDL_SCANCODE_F2: return KEY_SQUARED;
+	case SDL_SCANCODE_H: return KEY_HYP;
 	case SDL_SCANCODE_F7: return '(';
 	case SDL_SCANCODE_9: return '9';
 	case SDL_SCANCODE_6: return '6';
 	case SDL_SCANCODE_3: return '3';
-	case SDL_SCANCODE_X: return 171;
-	case SDL_SCANCODE_RIGHT: return 6;
-	case SDL_SCANCODE_F1: return 14;
-	case SDL_SCANCODE_F4: return 22;
-	case SDL_SCANCODE_S: return 129;
+	case SDL_SCANCODE_X: return KEY_SCIENTIFIC_E;
+	case SDL_SCANCODE_RIGHT: return KEY_RIGHT;
+	case SDL_SCANCODE_F1: return KEY_RECIPROCAL;
+	case SDL_SCANCODE_F4: return KEY_POWER;
+	case SDL_SCANCODE_S: return KEY_SIN;
 	case SDL_SCANCODE_F8: return ')';
-	case SDL_SCANCODE_BACKSPACE: return 153;
-	case SDL_SCANCODE_PERIOD: return 215; // multiply: .
+	case SDL_SCANCODE_BACKSPACE: return KEY_DEL;
+	case SDL_SCANCODE_PERIOD: return KEY_MULTIPLY;
 	case SDL_SCANCODE_RIGHTBRACKET: return '+';
-	case SDL_SCANCODE_INSERT: return 178;
-	case SDL_SCANCODE_UP: return 3;
-	case SDL_SCANCODE_F9: return 15;
-	case SDL_SCANCODE_F10: return 24;
-	case SDL_SCANCODE_C: return 130;
-	case SDL_SCANCODE_TAB: return 145;
-	case SDL_SCANCODE_ESCAPE: return 155;
-	case SDL_SCANCODE_BACKSLASH: return 247; // divide: #
+	case SDL_SCANCODE_INSERT: return KEY_ANS;
+	case SDL_SCANCODE_UP: return KEY_UP;
+	case SDL_SCANCODE_F9: return KEY_LOGN;
+	case SDL_SCANCODE_F10: return KEY_LOG;
+	case SDL_SCANCODE_C: return KEY_COS;
+	case SDL_SCANCODE_TAB: return KEY_S_D;
+	case SDL_SCANCODE_ESCAPE: return KEY_AC;
+	case SDL_SCANCODE_BACKSLASH: return KEY_DIVIDE;
 	case SDL_SCANCODE_SLASH: return '-';
 	case SDL_SCANCODE_RETURN: return '=';
-	case SDL_SCANCODE_LCTRL: return 7;
-	case SDL_SCANCODE_RCTRL: return 7;
-	case SDL_SCANCODE_F11: return 26;
-	case SDL_SCANCODE_T: return 131;
-	case SDL_SCANCODE_M: return 147;
+	case SDL_SCANCODE_LCTRL: return KEY_MODE;
+	case SDL_SCANCODE_RCTRL: return KEY_MODE;
+	case SDL_SCANCODE_F11: return KEY_LN;
+	case SDL_SCANCODE_T: return KEY_TAN;
+	case SDL_SCANCODE_M: return KEY_M_PLUS;
 	default: return 0;
 	}
 }

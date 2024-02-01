@@ -1,17 +1,20 @@
 #pragma once
 #ifdef PICO
-///
+#include <diskio.h> /// Declarations of disk functions
 #include <f_util.h>
-///
-#include <ff.h> /* Obtains integer types */
-///
-#include <diskio.h> /* Declarations of disk functions */
-//
+#include <ff.h>     /// Obtains integer types
 #include <hw_config.h>
+#else
+#include <filesystem>
+#endif
 #include <iostream>
 #include <string.h>
 #include <string>
 #include <vector>
+
+#ifdef _WIN32
+#pragma warning(disable: 4996)
+#endif
 
 /// <summary>
 /// This class is used to read and write files to the sd card.
@@ -22,7 +25,7 @@ class SDCardController
 	/// <summary>
 	/// writes the given bytes to the given file in the given directory
 	/// </summary>
-	static bool write_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes);
+	static bool write_file(std::string dir, std::string filename, const std::vector<uint8_t>* bytes);
 	/// <summary>
 	/// reads the given file in the given directory and returns the bytes
 	/// </summary>
@@ -40,6 +43,7 @@ class SDCardController
 	/// </summary>
 	static std::vector<std::string> list_dir(std::string dir);
 
+#ifdef PICO
 	private:
 	/// <summary>
 	/// sets the current directory to the given directory
@@ -53,5 +57,5 @@ class SDCardController
 	/// unmounts the sd card
 	/// </summary>
 	static bool unmount();
-};
 #endif
+};

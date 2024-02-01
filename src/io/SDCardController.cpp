@@ -161,4 +161,51 @@ bool SDCardController::unmount()
 	}
 	return true;
 }
+
+#else
+
+bool SDCardController::write_file(std::string dir, std::string filename, const std::vector<uint8_t>* bytes)
+{
+	// TODO: fix
+	dir = "C:\\calculator\\" + dir;
+	if (!std::filesystem::exists(dir)) std::filesystem::create_directory(dir);
+	FILE* file = fopen((dir + "\\" + filename).c_str(), "wb");
+	fwrite(bytes, sizeof(uint8_t), bytes->size(), file);
+	fclose(file);
+	return true;
+}
+
+bool SDCardController::read_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes)
+{
+	// TODO: fix
+	FILE* file = fopen(("C:\\calculator\\" + dir + "\\" + filename).c_str(), "rb");
+	fseek(file, 0, SEEK_END);
+	size_t size = ftell(file);
+	bytes->resize(size);
+	fseek(file, 0, SEEK_SET);
+	fread(bytes, sizeof(uint8_t), size, file);
+	fclose(file);
+	return true;
+}
+
+bool SDCardController::file_exists(std::string dir, std::string filename)
+{
+	return std::filesystem::exists("C:\\calculator\\" + dir + "\\" + filename);
+}
+
+bool SDCardController::dir_exists(std::string dir)
+{
+	return std::filesystem::exists("C:\\calculator\\" + dir);
+}
+
+std::vector<std::string> SDCardController::list_dir(std::string dir)
+{
+	dir = "C:\\calculator\\" + dir;
+	std::vector<std::string> files;
+	if (std::filesystem::exists(dir))
+		for (const auto& entry : std::filesystem::directory_iterator(dir))
+			files.push_back(entry.path().filename().string());
+	return files;
+}
+
 #endif
