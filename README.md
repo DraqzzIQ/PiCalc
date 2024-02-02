@@ -10,6 +10,8 @@ and add your secrets in the following format:
 ```
 WOLFRAMALPHA_APPID=DEMO
 OPENAI_API_KEY=DEMO
+PICO_WIFI_SSID=DEMO
+PICO_WIFI_PASSWORD=DEMO
 ```
 
 ### JetBrains Fleet or CLion
