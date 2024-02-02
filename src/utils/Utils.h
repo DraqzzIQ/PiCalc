@@ -1,6 +1,7 @@
 #pragma once
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #ifdef PICO
