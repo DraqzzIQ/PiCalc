@@ -1,7 +1,5 @@
-#ifdef PICO
-#pragma once
 #include "http/PicoHttpClient.h"
-
+#ifdef PICO
 
 // I know what ur thinking and yes, all of the
 // lwip calls have to be wrapped in cyw43_arch_lwip_begin()
@@ -9,17 +7,24 @@
 PicoHttpClient::PicoHttpClient(std::string baseUrl):
 	IHttpClient(baseUrl)
 {
-	cyw43_arch_init();
-
+	int code = cyw43_arch_init();
+	if (code != 0) {
+		std::cout << "Error initializing cyw43 code: " << code << std::endl;
+	}
+	std::cout << "Enabling STA mode" << std::endl;
+	cyw43_arch_enable_sta_mode();
 
 	cyw43_arch_lwip_begin();
-	cyw43_arch_wifi_connect_timeout_ms(PICO_WIFI_SSID, PICO_WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, 30 * 1000);
+	code = cyw43_arch_wifi_connect_timeout_ms(PICO_WIFI_SSID, PICO_WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, 30 * 1000);
+	if (code != 0) {
+		std::cout << "Error connecting to wifi " << code << std::endl;
+	}
 	cyw43_arch_lwip_end();
 
 
-	cyw43_arch_lwip_begin();
-	lwip_init();
-	cyw43_arch_lwip_end();
+	// cyw43_arch_lwip_begin();
+	// lwip_init();
+	// cyw43_arch_lwip_end();
 
 	this->base_url = baseUrl;
 #ifdef TLS_CERT
@@ -69,6 +74,7 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 
 	cyw43_arch_lwip_begin();
 	if (data.length() > altcp_sndbuf(this->tls_client)) {
+		std::cout << "sending data" << std::endl;
 		cyw43_arch_lwip_end();
 		for (int i = 0; data_pos < data.length(); i++) {
 			cyw43_arch_lwip_begin();
@@ -80,12 +86,14 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 			cyw43_arch_lwip_end();
 		}
 	} else {
+		std::cout << "sending data" << std::endl;
 		cyw43_arch_lwip_end();
 		cyw43_arch_lwip_begin();
 		altcp_write(tls_client, data.c_str(), data.length(), 0x00);
-
+		std::cout << "sending data" << std::endl;
 		altcp_output(tls_client);
 		cyw43_arch_lwip_end();
+		std::cout << "sending data" << std::endl;
 	}
 
 	while (!this->received)
@@ -183,9 +191,11 @@ err_t PicoHttpClient::recieve(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 		std::string data;
 
 		while (buf->len != buf->tot_len) {
+			std::cout << std::string((char*)buf->payload);
 			data.append(std::string((char*)buf->payload));
 			buf = buf->next;
 		}
+		std::cout << std::string((char*)buf->payload);
 		data.append(std::string((char*)buf->payload));
 
 		cyw43_arch_lwip_begin();
@@ -214,9 +224,8 @@ err_t PicoHttpClient::connected_fn(struct tcp_pcb* tpcb, err_t err)
 
 err_t PicoHttpClient::dn_found(const char* name, const ip_addr_t* addr)
 {
-	cyw43_arch_lwip_begin();
-	return altcp_connect(tls_client, addr, port, (altcp_connected_fn)&connected_callback);
-	cyw43_arch_lwip_end();
+	err_t err = altcp_connect(tls_client, addr, port, (altcp_connected_fn)&connected_callback);
+	return err;
 }
 
 

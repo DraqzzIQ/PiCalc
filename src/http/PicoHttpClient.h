@@ -12,6 +12,7 @@
 #include "mbedtls/ssl.h"
 #include "pico/cyw43_arch.h"
 #include "pico/stdlib.h"
+#include <iostream>
 #include <sstream>
 #include <string>
 

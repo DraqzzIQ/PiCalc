@@ -89,7 +89,7 @@ if(RPI_PICO)
 
     # Add pico_stdlib library which aggregates commonly used features
     # pico_cyw43_arch_none is nessessary for accessing the CYW4343W WiFi chip and it's LED
-    target_link_libraries(${PROJECT_NAME} pico_stdlib pico_cyw43_arch_none hardware_i2c pico_multicore hardware_adc pico_mbedtls pico_cyw43_arch_lwip_threadsafe_background pico_lwip_nosys)
+    target_link_libraries(${PROJECT_NAME} pico_stdlib hardware_i2c pico_multicore hardware_adc pico_lwip pico_lwip_nosys pico_mbedtls pico_cyw43_arch_lwip_threadsafe_background pico_lwip_mbedtls)
 
     # create map/bin/hex/uf2 file in addition to ELF.
     pico_add_extra_outputs(${PROJECT_NAME})
