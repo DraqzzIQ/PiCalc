@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Chars.h"
 #include "datastructs/Number.h"
 
 class NumberParser

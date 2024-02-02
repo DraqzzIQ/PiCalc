@@ -73,24 +73,24 @@ bool PongWindow::handle_key_down(KeyPress keypress)
 		if (_platform_easy) {
 			if (keypress.key_raw == '4') _lpaddle_v = -1;
 			else if (keypress.key_raw == '1') _lpaddle_v = 1;
-			else if (keypress.key_raw == 247) _rpaddle_v = -1;
+			else if (keypress.key_raw == KEY_DIVIDE) _rpaddle_v = -1;
 			else if (keypress.key_raw == '-') _rpaddle_v = 1;
 			else return false;
 		} else {
 			if (keypress.key_raw == '4' || keypress.key_raw == '1') _lpaddle_v *= -1;
-			else if (keypress.key_raw == 247 || keypress.key_raw == '-') _rpaddle_v *= -1;
+			else if (keypress.key_raw == KEY_DIVIDE || keypress.key_raw == '-') _rpaddle_v *= -1;
 			else return false;
 		}
 #else
 		if (_platform_easy) {
 			if (keypress.key_keyboard == 'w') _lpaddle_v = -1;
 			else if (keypress.key_keyboard == 's') _lpaddle_v = 1;
-			else if (keypress.key_keyboard == 3) _rpaddle_v = -1;
-			else if (keypress.key_keyboard == 4) _rpaddle_v = 1;
+			else if (keypress.key_keyboard == KEY_UP) _rpaddle_v = -1;
+			else if (keypress.key_keyboard == KEY_DOWN) _rpaddle_v = 1;
 			else return false;
 		} else {
 			if (keypress.key_keyboard == 'w' || keypress.key_keyboard == 's') _lpaddle_v *= -1;
-			else if (keypress.key_keyboard == 3 || keypress.key_keyboard == 4) _rpaddle_v *= -1;
+			else if (keypress.key_keyboard == KEY_UP || keypress.key_keyboard == KEY_DOWN) _rpaddle_v *= -1;
 			else return false;
 		}
 #endif
@@ -115,11 +115,11 @@ bool PongWindow::handle_key_up(KeyPress keypress)
 		if (!_platform_easy) return true;
 #ifdef PICO
 		if (keypress.key_raw == '4' || keypress.key_raw == '1') _lpaddle_v = 0;
-		else if (keypress.key_raw == 247 || keypress.key_raw == '-') _rpaddle_v = 0;
+		else if (keypress.key_raw == KEY_DIVIDE || keypress.key_raw == '-') _rpaddle_v = 0;
 		else return false;
 #else
 		if (keypress.key_keyboard == 'w' || keypress.key_keyboard == 's') _lpaddle_v = 0;
-		else if (keypress.key_keyboard == 3 || keypress.key_keyboard == 4) _rpaddle_v = 0;
+		else if (keypress.key_keyboard == KEY_UP || keypress.key_keyboard == KEY_DOWN) _rpaddle_v = 0;
 		else return false;
 #endif
 		return true;

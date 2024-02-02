@@ -22,7 +22,7 @@ void PaintWindow::update_window()
 	_window = _painted;
 
 	if (Utils::us_since_boot() > _blink_timer + 500000) {
-		_blink_timer += 500000;
+		_blink_timer = Utils::us_since_boot();
 		_preview = !_preview;
 	}
 
@@ -202,34 +202,34 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.alpha) {
 		switch (keypress.key_raw) {
-		case 3: // up
+		case KEY_UP: // up
 			scroll_up();
 			break;
-		case 4: // down
+		case KEY_DOWN: // down
 			scroll_down();
 			break;
-		case 5: // left
+		case KEY_LEFT: // left
 			scroll_left();
 			break;
-		case 6: // right
+		case KEY_RIGHT: // right
 			scroll_right();
 			break;
 		}
 	} else if (!keypress.shift) {
 		switch (keypress.key_raw) {
-		case 3: // up
+		case KEY_UP: // up
 			if (_cursor_y == _corner_y) scroll_up();
 			if (_cursor_y > 0) _cursor_y--;
 			break;
-		case 4: // down
+		case KEY_DOWN: // down
 			if (_cursor_y == _corner_y + SCREEN_HEIGHT - 1) scroll_down();
 			_cursor_y++;
 			break;
-		case 5: // left
+		case KEY_LEFT: // left
 			if (_cursor_x == _corner_x) scroll_left();
 			if (_cursor_x > 0) _cursor_x--;
 			break;
-		case 6: // right
+		case KEY_RIGHT: // right
 			if (_cursor_x == _corner_x + SCREEN_WIDTH - 1) scroll_right();
 			_cursor_x++;
 			break;
@@ -253,11 +253,11 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 			if (_tool == Tool::NONE) fill(_cursor_x, _cursor_y, !_erase, _painted);
 			save_to_hist();
 			break;
-		case 155: // AC
+		case KEY_AC: // AC
 			_painted = Bitset2D(SCREEN_WIDTH, SCREEN_HEIGHT, false);
 			save_to_hist();
 			break;
-		case 153: // DEL
+		case KEY_DEL: // DEL
 			_erase = !_erase;
 			save_to_hist();
 			break;
@@ -271,27 +271,27 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 		case '-':
 			if (_brush_size > 1) _brush_size--;
 			break;
-		case 215: // multiply
+		case KEY_MULTIPLY: // multiply
 			if (_current_history_index > 1) {
 				_redo_stack.push(_history[--_current_history_index]);
 				_painted = _history[_current_history_index - 1];
 			}
 			break;
-		case 247: // divide
+		case KEY_DIVIDE: // divide
 			if (!_redo_stack.empty()) {
 				_history[_current_history_index++] = _redo_stack.top();
 				_painted = _redo_stack.top();
 				_redo_stack.pop();
 			}
 			break;
-		case 178: // ans
+		case KEY_ANS: // ans
 			_cursor_x = SCREEN_WIDTH / 2 + _corner_x;
 			_cursor_y = SCREEN_HEIGHT / 2 + _corner_y;
 			break;
-		case 141: // RCL
+		case KEY_RCL: // RCL
 			open_save_menu();
 			break;
-		case 143: // ENG
+		case KEY_ENG: // ENG
 			open_load_menu();
 			break;
 		}
@@ -304,7 +304,7 @@ bool PaintWindow::handle_key_down(KeyPress keypress)
 }
 void PaintWindow::open_load_menu()
 {
-	std::function<void(std::string)> callback = [this](std::string filename) {
+	FileSelectWindow::select_file("paint", [this](std::string filename) {
 		KEY_SET bytes;
 		IOController::read_file("paint", filename, &bytes);
 		_painted.from_bmp(bytes);
@@ -312,28 +312,16 @@ void PaintWindow::open_load_menu()
 		_corner_y = 0;
 		_cursor_x = SCREEN_WIDTH / 2;
 		_cursor_y = SCREEN_HEIGHT / 2;
-		WindowManager::get_instance()->close_window(false);
-	};
-	{
-		std::vector<std::string> files = IOController::list_dir("paint");
-		_load_menu.options.clear();
-		for (int i = 0; i < files.size(); i++) {
-			_load_menu.options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], callback));
-		}
-		WindowManager::get_instance()->add_window(&_load_menu);
-		_load_menu.create_menu();
-	}
+	});
 }
 
 void PaintWindow::open_save_menu()
 {
-	InputWindow::input(
-		"Enter Filename:",
-		[this](std::string& filename) {
-			if (filename.rfind(".bmp") == std::string::npos) filename += ".bmp";
-			std::replace(filename.begin(), filename.end(), ' ', '_');
-			KEY_SET bytes;
-			_painted.to_bmp(bytes);
-			IOController::write_file("paint", filename, &bytes);
-		});
+	InputWindow::input("Enter Filename:", [this](std::string& filename) {
+		if (filename.rfind(".bmp") == std::string::npos) filename += ".bmp";
+		std::replace(filename.begin(), filename.end(), ' ', '_');
+		KEY_SET bytes;
+		_painted.to_bmp(bytes);
+		IOController::write_file("paint", filename, &bytes);
+	});
 }

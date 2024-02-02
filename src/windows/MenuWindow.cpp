@@ -4,7 +4,7 @@ MenuWindow::MenuWindow(FONT& font, bool count):
 	_font(font)
 {
 	_count = count;
-	_line_height = _font.at('0').height() + 2;
+	_line_height = _font.at(0).height() + 2;
 	_lines_per_page = (SCREEN_HEIGHT + 2) / _line_height;
 }
 
@@ -12,7 +12,7 @@ MenuWindow::MenuWindow(bool count):
 	_font(Graphics::SYMBOLS_6_HIGH)
 {
 	_count = count;
-	_line_height = _font.at('0').height() + 2;
+	_line_height = _font.at(0).height() + 2;
 	_lines_per_page = (SCREEN_HEIGHT + 2) / _line_height;
 }
 
@@ -24,11 +24,11 @@ MenuWindow::~MenuWindow()
 
 bool MenuWindow::handle_key_down(KeyPress keypress)
 {
-	if (keypress.key_raw == 3) scroll_up();
-	else if (keypress.key_raw == 4) scroll_down();
-	else if (keypress.key_raw == 5) {
+	if (keypress.key_raw == KEY_UP) scroll_up();
+	else if (keypress.key_raw == KEY_DOWN) scroll_down();
+	else if (keypress.key_raw == KEY_LEFT) {
 		if (_frame.corner_x > 12) _frame.corner_x -= 13;
-	} else if (keypress.key_raw == 6) _frame.corner_x += 13;
+	} else if (keypress.key_raw == KEY_RIGHT) _frame.corner_x += 13;
 	else if ((keypress.key_raw -= 48) < 10 && keypress.key_raw < options.size() && keypress.shift) options[keypress.key_raw]->on_shift_select();
 	else if (keypress.key_raw < 10 && keypress.key_raw < options.size()) options[keypress.key_raw]->on_select();
 	else return false;

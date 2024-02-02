@@ -4,6 +4,7 @@
 #include "io/IOController.h"
 #include "options/CallbackMenuOption.h"
 #include "utils/Utils.h"
+#include "windows/FileSelectWindow.h"
 #include "windows/InputWindow.h"
 #include "windows/MenuWindow.h"
 #include "windows/TextWindow.h"

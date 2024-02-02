@@ -56,13 +56,13 @@ void WindowManager::handle_key_down(KeyPress keypress)
 {
 	_shift = keypress.shift;
 	_alpha = keypress.alpha;
-	if (keypress.shift && keypress.key_raw == 155) {
+	if (keypress.shift && keypress.key_raw == KEY_AC) {
 #ifdef PICO
 		gpio_put(28, 0);
 #endif
-	} else if (keypress.alpha && keypress.key_raw == 153) {
+	} else if (keypress.alpha && keypress.key_raw == KEY_DEL) {
 		if (_windows.size() > 0) minimize_window();
-	} else if (keypress.shift && keypress.key_raw == 153) {
+	} else if (keypress.shift && keypress.key_raw == KEY_DEL) {
 		if (_windows.size() > 1) close_window();
 	} else if (_windows.size() > 0) _windows.top()->handle_key_down(keypress);
 }

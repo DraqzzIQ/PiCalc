@@ -69,46 +69,46 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 						calculated = true;
 					}
 					break;
-				case 0: break; // unknown
-				case 1: break; // SHIFT
-				case 2: break; // ALPHA
-				case 145:      // S<>D
+				case KEY_UNKNOWN: break; // unknown
+				case KEY_SHIFT: break;   // SHIFT
+				case KEY_ALPHA: break;   // ALPHA
+				case KEY_S_D:            // S<>D
 					if (!calculated) break;
 					_result_selected++;
 					if (_result_selected == _result_key_sets.size()) _result_selected = 0;
 					_result_equation.set_key_set(_result_key_sets.at(_result_selected));
 					_result_rendered = _result_equation.get_rendered_equation();
 					break;
-				case 142: break; // STO
-				case 141: break; // RCL
-				case 149: break; // CONST
-				case 162: break; // STAT/DIST
+				case KEY_STO: break;        // STO
+				case KEY_RCL: break;        // RCL
+				case KEY_CONST: break;      // CONST
+				case KEY_STAT_DIST: break;  // STAT/DIST
 				case ':': break;
-				case 30: break;  // FACT
-				case 143: break; // ENG
-				case 144: break; // <-
-				case 150: break; // SHIFT_CONV
-				case 151: break; // ALPHA_CONV
-				case 31: break;  // hyp
-				case 152: break; // CLR
-				case 157: break; // VERIFY
-				case 163: break; // BASE
-				case 154: break; // INS
-				case 179: break; // DRG
-				case 147: break; // M+
-				case 148: break; // M-
-				case 180: break; // wav=
+				case KEY_FACT: break;       // FACT
+				case KEY_ENG: break;        // ENG
+				case KEY_BACK_ENG: break;   // <-
+				case KEY_SHIFT_CONV: break; // SHIFT_CONV
+				case KEY_ALPHA_CONV: break; // ALPHA_CONV
+				case KEY_HYP: break;        // hyp
+				case KEY_CLR: break;        // CLR
+				case KEY_VERIFY: break;     // VERIFY
+				case KEY_BASE: break;       // BASE
+				case KEY_INS: break;        // INS
+				case KEY_DRG: break;        // DRG
+				case KEY_M_PLUS: break;     // M+
+				case KEY_M_MINUS: break;    // M-
+				case KEY_WAVY_EQUAL: break; // wav=
 				default: _equation_selected->handle_key_down(keypress.key_calculator);
 				}
 			}
 		}
 		break;
 	case Menu::Error:
-		if (keypress.key_calculator == 155) {
+		if (keypress.key_calculator == KEY_AC) {
 			_menu = Menu::None;
 			calculated = false;
 			_equation_selected->ac();
-		} else if (keypress.key_calculator == 5 || keypress.key_calculator == 6) {
+		} else if (keypress.key_calculator == KEY_LEFT || keypress.key_calculator == KEY_RIGHT) {
 			_menu = Menu::None;
 			calculated = false;
 		}
@@ -162,7 +162,7 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 		// TODO
 		break;
 	case Menu::Setup_Pg1:
-		if (keypress.key_calculator == 155) {
+		if (keypress.key_calculator == KEY_AC) {
 			set_menu(Menu::None);
 			calculated = false;
 		}
@@ -200,7 +200,7 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 		}
 		break;
 	case Menu::Setup_Pg2:
-		if (keypress.key_calculator == 155) {
+		if (keypress.key_calculator == KEY_AC) {
 			set_menu(Menu::None);
 			calculated = false;
 		}

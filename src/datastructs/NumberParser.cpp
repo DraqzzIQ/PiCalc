@@ -29,7 +29,7 @@ bool NumberParser::add_digit(KEY digit)
 				_state++;
 				_val = _val * 10 + (digit - 48);
 			}
-		} else if (digit == 191) {
+		} else if (digit == KEY_SYMBOL_END) {
 			if (!(_state & 0b00011111)) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			_state ^= 0b00100000;
 		} else Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
@@ -58,18 +58,18 @@ bool NumberParser::add_digit(KEY digit)
 					if (_exp == DECIMAL_EXP_MAX) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 				}
 			}
-		} else if (digit == 43) {                // key is +
+		} else if (digit == '+') {                        // key is +
 			if (!(_state & 0b10000000) || _value_cnt & 0b10000000) return false;
-		} else if (digit == 28 || digit == 45) { // key is -
+		} else if (digit == '-' || digit == KEY_NEGATE) { // key is -
 			if (_state & 0b10000000 && !(_value_cnt & 0b10000000)) _value_cnt ^= 0b01000000;
 			else return false;
-		} else if (digit == 44) { // key is comma
+		} else if (digit == ',') { // key is comma
 			if (_state & 0b11000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			_state |= 0b01000000;
-		} else if (digit == 171) { // key is *10^n
+		} else if (digit == KEY_SCIENTIFIC_E) { // key is *10^n
 			if (_state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			_state |= 0b10000000;
-		} else if (digit == 21) { // key is periodic
+		} else if (digit == KEY_PERIODIC) { // key is periodic
 			if (!(_state & 0b01000000) || _state & 0b10000000) Error::throw_error(Error::ErrorType::SYNTAX_ERROR);
 			else _state |= 0b00100000;
 		} else {

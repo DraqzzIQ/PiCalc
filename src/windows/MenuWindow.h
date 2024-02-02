@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Chars.h"
 #include "constant/Constants.h"
 #include "constant/Graphics.h"
 #include "options/MenuOptionBase.h"
