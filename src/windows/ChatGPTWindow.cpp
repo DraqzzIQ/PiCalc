@@ -13,8 +13,6 @@ void ChatGPTWindow::request(std::string query)
 {
 	HttpResponse res = _client.post(_endpoint, HttpRequest(_default_headers, _body1 + _input + _body2));
 
-	std::cout << _body1 + _input + _body2 << std::endl;
-
 	if (res.error()) {
 		add_text("\nerror: " + res.error_msg);
 		return;
