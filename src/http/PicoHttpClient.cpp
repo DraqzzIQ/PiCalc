@@ -37,7 +37,10 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 		std::cout << "error: lwIP error code " << dns_error << " during dns lookup" << std::endl;
 	}
 	cyw43_arch_lwip_end();
+<<<<<<< HEAD
 
+=======
+>>>>>>> fe98128 (tls client is now per request instead of per PicoHttpClient instance)
 }
 
 HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, HttpMethod method)
@@ -48,7 +51,7 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 	this->response_raw.clear();
 	err_t write_err;
 
-    create_tls_client();
+	create_tls_client();
 
 	err_t conn_err = altcp_connect(tls_client, ip_addr, port, (altcp_connected_fn)&connected_callback);
 	while (conn_err == ERR_ALREADY || conn_err == ERR_INPROGRESS) {
@@ -132,7 +135,13 @@ std::string PicoHttpClient::serialize(HttpRequest& req, std::string uri, HttpMet
 	return result.str();
 }
 
-void create_tls_client(){
+<<<<<<< HEAD
+void create_tls_client()
+{
+=======
+void create_tls_client()
+{
+>>>>>>> fe98128 (tls client is now per request instead of per PicoHttpClient instance)
 	cyw43_arch_lwip_begin();
 	this->tls_client = altcp_tls_new(tls_config, IPADDR_TYPE_ANY);
 	cyw43_arch_lwip_end();
@@ -233,7 +242,11 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 {
 	if (p == nullptr) {
 		received = true;
-        altcp_close(this->tls_client);
+<<<<<<< HEAD
+		altcp_close(this->tls_client);
+=======
+		altcp_close(this->tls_client);
+>>>>>>> fe98128 (tls client is now per request instead of per PicoHttpClient instance)
 		return ERR_OK;
 	}
 
@@ -250,8 +263,13 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 
 	if (p->tot_len == p->len) {
 		received = true;
-        altcp_close(this->tls_client);
-        this->tls_client = NULL;
+<<<<<<< HEAD
+		altcp_close(this->tls_client);
+		this->tls_client = NULL;
+=======
+		altcp_close(this->tls_client);
+		this->tls_client = NULL;
+>>>>>>> fe98128 (tls client is now per request instead of per PicoHttpClient instance)
 	}
 
 	pbuf_free(p);
