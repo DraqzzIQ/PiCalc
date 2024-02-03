@@ -12,6 +12,7 @@
 #include "mbedtls/ssl.h"
 #include "pico/cyw43_arch.h"
 #include "pico/stdlib.h"
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -114,13 +115,14 @@ class PicoHttpClient: public IHttpClient
 	///</sumamry>
 	err_t client_error(err_t err);
 
+	std::string url_encode(const std::string& value);
 
 	std::string http_version = "HTTP/1.0";
 	std::string response_raw;
 	int content_l = 0;
 	std::string bearer_auth_token;
 	std::string base_url;
-    std::ostringstream error_msg;
+	std::ostringstream error_msg;
 	u8_t* cert;
 	bool received = false;
 	bool connected = false;
