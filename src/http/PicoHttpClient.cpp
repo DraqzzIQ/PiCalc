@@ -131,7 +131,7 @@ std::string PicoHttpClient::serialize(HttpRequest& req, std::string uri, HttpMet
 	return result.str();
 }
 
-void create_tls_client()
+void PicoHttpClient::create_tls_client()
 {
 	cyw43_arch_lwip_begin();
 	this->tls_client = altcp_tls_new(tls_config, IPADDR_TYPE_ANY);
