@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Chars.h"
 #include "renderers/DisplayRenderer.h"
 #include "renderers/IRenderer.h"
 #include "windows/Window.h"

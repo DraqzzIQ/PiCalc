@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Chars.h"
 #include "constant/Graphics.h"
 #include "keyboard/KeyPress.h"
 #include "renderers/IRenderer.h"

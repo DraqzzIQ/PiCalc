@@ -17,7 +17,6 @@ class CallbackMenuOption: public MenuOptionBase
 	void on_select() override
 	{
 		_callback(_value);
-		delete this;
 	}
 
 	void on_shift_select() override

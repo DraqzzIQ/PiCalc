@@ -4,9 +4,8 @@ name: build master in release mode
 
 on:
   push:
-    branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    types: [opened, reopened, synchronize]
   workflow_dispatch:
     inputs:
       prerelease:
@@ -123,7 +122,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
 
-    if: ${{ always() && contains(join(needs.*.result, ','), 'success')  && github.event_name != 'pull_request' }}
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success')  && github.event_name != 'pull_request' && github.ref != 'refs/heads/master'}}
     needs: [linux-build, pico-build, windows-build]
 
     steps:

@@ -1,4 +1,5 @@
 #pragma once
+#include "constant/Chars.h"
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "utils/Utils.h"

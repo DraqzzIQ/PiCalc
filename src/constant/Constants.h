@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdint>
+#include "constant/Chars.h"
 #include <map>
 #include <string>
 #include <vector>

@@ -113,8 +113,8 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, KEY_SET
 	uint32_t x = coord_x;
 	uint32_t y = coord_y;
 	for (uint32_t i = 0; i < text.size(); i++) {
-		if (text[i] == 10) {
-			y += font.at('0').height();
+		if (text[i] == '\n') {
+			y += font.at(0).height();
 			if (y >= _height) {
 				if (resize_if_needed) extend_down(y - _height + 1, false);
 				else return;
@@ -134,7 +134,7 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, const s
 	uint32_t x = coord_x;
 	uint32_t y = coord_y;
 	for (uint32_t i = 0; i < text.size(); i++) {
-		if (text[i] == 10) {
+		if (text[i] == '\n') {
 			y += font.at(0).height();
 			if (y >= _height) {
 				if (resize_if_needed) extend_down(y - _height + 1, false);
@@ -160,11 +160,12 @@ void Bitset2D::put_number_aligned_right(uint32_t coord_x, uint32_t coord_y, FONT
 		return;
 	}
 
+	uint8_t width = font.at('0').width();
 	while (number > 0) {
 		set(coord_x, coord_y, font.at((number % 10) + 48), false);
 		number /= 10;
-		if (coord_x < 6) return;
-		coord_x -= 6;
+		if (coord_x < width) return;
+		coord_x -= width;
 	}
 }
 
