@@ -42,6 +42,8 @@ class PicoHttpClient: public IHttpClient
 		this->bearer_auth_token = token;
 	};
 
+    void create_tls_client();
+
 	/*
 	 * These are the functions that initially get called by LWIP.
 	 * They need to be static because LWIP is a C library so it cannot

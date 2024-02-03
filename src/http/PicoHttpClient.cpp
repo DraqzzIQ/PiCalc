@@ -30,13 +30,6 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 	tls_config = altcp_tls_create_config_client(cert, sizeof(*cert));
 	cyw43_arch_lwip_end();
 
-	cyw43_arch_lwip_begin();
-	this->tls_client = altcp_tls_new(tls_config, IPADDR_TYPE_ANY);
-	cyw43_arch_lwip_end();
-
-	cyw43_arch_lwip_begin();
-	altcp_arg(this->tls_client, this);
-	cyw43_arch_lwip_end();
 
 	cyw43_arch_lwip_begin();
 	err_t dns_error = dns_gethostbyname(baseUrl.c_str(), this->ip_addr, (dns_found_callback)&dns_callback, this);
@@ -45,13 +38,6 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 	}
 	cyw43_arch_lwip_end();
 
-	cyw43_arch_lwip_begin();
-	altcp_err(this->tls_client, (altcp_err_fn)&err_callback);
-	cyw43_arch_lwip_end();
-
-	cyw43_arch_lwip_begin();
-	altcp_recv(this->tls_client, (altcp_recv_fn)&recv_callback);
-	cyw43_arch_lwip_end();
 }
 
 HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, HttpMethod method)
@@ -61,6 +47,8 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 	this->received = false;
 	this->response_raw.clear();
 	err_t write_err;
+
+    create_tls_client();
 
 	err_t conn_err = altcp_connect(tls_client, ip_addr, port, (altcp_connected_fn)&connected_callback);
 	while (conn_err == ERR_ALREADY || conn_err == ERR_INPROGRESS) {
@@ -142,6 +130,24 @@ std::string PicoHttpClient::serialize(HttpRequest& req, std::string uri, HttpMet
 		result << req.body << "\r\n";
 
 	return result.str();
+}
+
+void create_tls_client(){
+	cyw43_arch_lwip_begin();
+	this->tls_client = altcp_tls_new(tls_config, IPADDR_TYPE_ANY);
+	cyw43_arch_lwip_end();
+
+	cyw43_arch_lwip_begin();
+	altcp_arg(this->tls_client, this);
+	cyw43_arch_lwip_end();
+
+	cyw43_arch_lwip_begin();
+	altcp_err(this->tls_client, (altcp_err_fn)&err_callback);
+	cyw43_arch_lwip_end();
+
+	cyw43_arch_lwip_begin();
+	altcp_recv(this->tls_client, (altcp_recv_fn)&recv_callback);
+	cyw43_arch_lwip_end();
 }
 
 std::string PicoHttpClient::url_encode(const std::string& value)
@@ -227,6 +233,7 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 {
 	if (p == nullptr) {
 		received = true;
+        altcp_close(this->tls_client);
 		return ERR_OK;
 	}
 
@@ -243,6 +250,8 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 
 	if (p->tot_len == p->len) {
 		received = true;
+        altcp_close(this->tls_client);
+        this->tls_client = NULL;
 	}
 
 	pbuf_free(p);
