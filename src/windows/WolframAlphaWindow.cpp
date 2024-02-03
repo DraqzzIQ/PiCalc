@@ -1,4 +1,4 @@
-#include "WolframAlphaWindow.h"
+#include "windows/WolframAlphaWindow.h"
 
 WolframAlphaWindow::WolframAlphaWindow():
 	_client(_base_url)
