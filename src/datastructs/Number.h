@@ -39,6 +39,10 @@ class Number
 	/// </summary>
 	Number* operator=(const Number* other);
 	/// <summary>
+	/// swaps this and other
+	/// </summary>
+	// Number* swap(Number* other);
+	/// <summary>
 	/// create a Number from a KEY
 	/// </summary>
 	static Number* from_key(KEY key);

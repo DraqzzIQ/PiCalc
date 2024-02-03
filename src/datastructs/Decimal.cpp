@@ -1,5 +1,7 @@
 #include "datastructs/Decimal.h"
 
+// TODO
+
 const int64_t Decimal::powers_of_ten[] = {
 	1,
 	10,
@@ -78,7 +80,7 @@ bool Decimal::is_key() const
 
 KEY Decimal::get_key() const
 {
-	if (_val != 0x7fffffffffffffff) return 95;
+	if (_val != 0x7fffffffffffffff) return 0;
 	return (KEY)_exp;
 }
 
@@ -501,7 +503,7 @@ Decimal& Decimal::exp()
 
 Decimal& Decimal::sqrt()
 {
-	// optimize
+	// TODO: optimize
 	operator^=(Decimal(5, -1));
 	return *this;
 }
@@ -534,6 +536,8 @@ Decimal& Decimal::sin()
 
 Decimal& Decimal::cos()
 {
+	operator+=(90);
+	sin();
 	return *this;
 }
 
@@ -727,51 +731,21 @@ void Decimal::exp_to_key_set(KEY_SET& res) const
 
 KEY_SET Decimal::to_key_set(uint8_t max_size) const
 {
-	// TODO: fix
+	// TODO: test if fixed
 	KEY_SET res;
+	res.reserve(max_size);
 	maximize_exp();
 	if (_val < 0) max_size--;
 	uint8_t digits = count_digits(_val);
 	// number of digits that would be lost if it was converted without scientific notation
-	int16_t missing_digits = digits > -_exp ? (digits > max_size ? digits - max_size + 1 : 0) : -_exp - max_size - 2;
-	// number of digits that would be lost if it was converted with scientific notation
-	int16_t sci_missing_digits = 1000;
-	// int16_t sci_missing_digits = max_size - (exp_count_digits() + (_exp < 0) + 3);
-	//  TODO: sometimes scientific notation shows less digits than normal notation, both show less than count
+	int16_t missing_digits = digits > -_exp ? (digits >= max_size ? digits - max_size + 1 : 0) : -_exp - max_size + 2;
 
-	if (_exp + digits > max_size || missing_digits > sci_missing_digits) {
-		// decimal can't be represented without scientific notation while satisfying the max_size and count
-		_exp += digits - 1;
-		if (_exp == 0) res.push_back(48);
-		else {
-			int64_t exp_copy = std::abs(_exp);
-			while (exp_copy != 0) {
-				res.push_back((KEY)(exp_copy % 10) + 48);
-				exp_copy /= 10;
-			}
-			if (_exp < 0) res.push_back(28);
-		}
-		res.push_back(171);
-		max_size -= res.size() + 2;
-
-		if (digits > max_size) shift_right(_val, digits - max_size);
-		if (_val < 10) res.push_back((KEY)_val + 48);
-		else {
-			int64_t val_copy = std::abs(_val);
-			while (val_copy != 0) {
-				res.push_back((KEY)(val_copy % 10) + 48);
-				val_copy /= 10;
-			}
-			res.insert(res.end() - 1, 44);
-		}
-		if (_val < 0) res.push_back(28);
-		std::reverse(res.begin(), res.end());
-	} else if (_exp >= 0) {
+	if (_exp >= 0 && _exp + digits <= max_size) {
 		// no comma needed
-		if (_val < 0) res.push_back(28);
+		if (_val < 0) res.push_back(KEY_NEGATE);
 		value_to_key_set(res);
-		for (uint8_t i = 0; i < _exp; i++) res.push_back(48);
-	} else {
+		for (uint8_t i = 0; i < _exp; i++) res.push_back('0');
+	} else if (_exp < 0 && missing_digits <= exp_count_digits() + (_exp < 0) + 3) {
 		if (missing_digits > 0) {
 			shift_right(_val, missing_digits);
 			_exp += missing_digits;
@@ -796,10 +770,37 @@ KEY_SET Decimal::to_key_set(uint8_t max_size) const
 				val_copy /= 10;
 			}
 			for (uint8_t i = res.size(); i < -_exp; i++) res.push_back(48);
-			res.push_back(44);
-			res.push_back(48);
+			res.push_back(',');
+			res.push_back('0');
 		}
-		if (_val < 0) res.push_back(28);
+		if (_val < 0) res.push_back(KEY_NEGATE);
+		std::reverse(res.begin(), res.end());
+	} else {
+		// decimal can't be represented without scientific notation while satisfying the max_size
+		_exp += digits - 1;
+		if (_exp == 0) res.push_back('0');
+		else {
+			int64_t exp_copy = std::abs(_exp);
+			while (exp_copy != 0) {
+				res.push_back((KEY)(exp_copy % 10) + 48);
+				exp_copy /= 10;
+			}
+			if (_exp < 0) res.push_back(KEY_NEGATE);
+		}
+		res.push_back(KEY_SCIENTIFIC_E);
+		max_size -= res.size() + 2;
+
+		if (digits > max_size) shift_right(_val, digits - max_size);
+		if (_val < 10) res.push_back((KEY)_val + 48);
+		else {
+			int64_t val_copy = std::abs(_val);
+			while (val_copy != 0) {
+				res.push_back((KEY)(val_copy % 10) + 48);
+				val_copy /= 10;
+			}
+			res.insert(res.end() - 1, ',');
+		}
+		if (_val < 0) res.push_back(KEY_NEGATE);
 		std::reverse(res.begin(), res.end());
 	}
 

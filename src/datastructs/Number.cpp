@@ -1,10 +1,13 @@
 #include "Number.h"
 
 // TODO:
-// update chars
+// -update chars
 // -output periodic numbers
 // -simplify
 // -only format Decimal to fraction at the end
+// -sin/cos/tan
+
+// used KEYs: PLUS, MULTIPLY, DIVIDE, MOD, LOGN, POWER, SQRT, ROOTN, LN, EXP, FACT, SIN, COS, TAN, ASIN, ACOS, ATAN, SINH, COSH, TANH, ASINH, ACOSH, ATANH, POL, REC, GCD, LCM, TO_INT, FLOOR, RAN_INT, EULER, PI
 
 Number::Number()
 {
@@ -23,7 +26,7 @@ Number::Number(int64_t value, int16_t exp, uint8_t periodic)
 	exp += periodic;
 	value -= value / Decimal::powers_of_ten[periodic];
 
-	_value.set_key(247);
+	_value.set_key(KEY_DIVIDE);
 	_children = std::vector<Number*>{
 		new Number(value, exp),
 		new Number(Decimal::powers_of_ten[periodic] - 1, 0)
@@ -71,13 +74,18 @@ Number* Number::ran()
 
 Number* Number::add(Number* other)
 {
-	bool is_key = _value.is_key();
-	if (!is_key && !other->_value.is_key()) {
+	KEY this_key = _value.get_key();
+	KEY other_key = other->_value.get_key();
+	if (this_key && !other_key) {
 		_value += other->_value;
-	} else if (is_key && other->_value.is_key()) {
+	} else if (this_key && other_key) {
 	} else {
-		if (is_key && _value.get_key() == 43) {
-		} else if (is_key && _value.get_key() == 247) {
+		if (this_key == '+' || other_key == KEY_DIVIDE) {
+			;
+			// swap
+		} else if (other_key == KEY_DIVIDE) {
+			// swap
+			;
 		} else if (!is_key && other->_value.get_key() != 43 && other->_value.get_key() != 247) {
 			Decimal old_value = _value;
 			_value = other->_value;
@@ -164,16 +172,18 @@ Number* Number::multiply(Number* other)
 Number* Number::divide(Number* other)
 {
 	_children = std::vector<Number*>{ clone(), other->clone() };
-	_value.set_key(247);
+	_value.set_key(KEY_DIVIDE);
 	other = nullptr;
 	return this;
 }
 
 Number* Number::mod(Number* other)
 {
-	to_value();
-	other->to_value();
-	_value %= other->_value;
+	if (to_value() && other->to_value()) _value %= other->_value;
+	else {
+		_children = std::vector<Number*>{ clone(), other->clone() };
+		_value.set_key(KEY_MOD);
+	}
 	delete other;
 	return this;
 }
@@ -181,45 +191,63 @@ Number* Number::mod(Number* other)
 
 Number* Number::ln()
 {
-	_children = std::vector<Number*>{ Number::from_key(165), clone() };
-	_value.set_key(209);
+	if (to_value()) _value.ln();
+	else {
+		_children = std::vector<Number*>{ Number::from_key(KEY_EULER), clone() };
+		_value.set_key(KEY_LOGN);
+	}
 	return this;
 }
 
 Number* Number::log()
 {
-	_children = std::vector<Number*>{ new Number(1, 1), clone() };
-	_value.set_key(209);
+	if (to_value()) _value.log(10);
+	else {
+		_children = std::vector<Number*>{ new Number(10, 0), clone() };
+		_value.set_key(KEY_LOGN);
+	}
 	return this;
 }
 
 Number* Number::log(Number* other)
 {
-	_children = std::vector<Number*>{ other, clone() };
-	_value.set_key(209);
-	other = nullptr;
+	if (to_value() && other->to_value()) _value.log(other->_value);
+	else {
+		_children = std::vector<Number*>{ other->clone(), clone() };
+		_value.set_key(KEY_LOGN);
+	}
+	delete other;
 	return this;
 }
 
 Number* Number::exp()
 {
-	_children = std::vector<Number*>{ clone(), Number::from_key(165) };
-	_value.set_key(113);
+	if (to_value()) _value.exp();
+	else {
+		_children = std::vector<Number*>{ Number::from_key(KEY_EULER), clone() };
+		_value.set_key(KEY_POWER);
+	}
 	return this;
 }
 
 Number* Number::pow10()
 {
-	_children = std::vector<Number*>{ clone(), new Number(1, 1) };
-	_value.set_key(113);
+	if (to_value()) _value = Decimal(10) ^ _value;
+	else {
+		_children = std::vector<Number*>{ new Number(10, 0), clone() };
+		_value.set_key(KEY_POWER);
+	}
 	return this;
 }
 
 Number* Number::pow(Number* other)
 {
-	_children = std::vector<Number*>{ clone(), other };
-	_value.set_key(113);
-	other = nullptr;
+	if (to_value()) _value ^= other->_value;
+	else {
+		_children = std::vector<Number*>{ clone(), other->clone() };
+		_value.set_key(KEY_POWER);
+	}
+	delete other;
 	return this;
 }
 
