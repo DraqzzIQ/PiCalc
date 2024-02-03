@@ -49,7 +49,7 @@ class PicoHttpClient: public IHttpClient
 	 */
 	static err_t recv_callback(void* arg, struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 	{
-		return static_cast<PicoHttpClient*>(arg)->recieve(tpcb, p, err);
+		return static_cast<PicoHttpClient*>(arg)->receive(tpcb, p, err);
 	}
 
 	static err_t err_callback(void* arg, err_t err)
@@ -97,7 +97,7 @@ class PicoHttpClient: public IHttpClient
 	///< summary>
 	/// altcp receive callback, look at the altcp doc for more info
 	///</summary>
-	err_t recieve(struct tcp_pcb* tpcb, struct pbuf* p, err_t err);
+	err_t receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err);
 
 	///< summary>
 	/// altcp connection callback
@@ -120,6 +120,7 @@ class PicoHttpClient: public IHttpClient
 	int content_l = 0;
 	std::string bearer_auth_token;
 	std::string base_url;
+    std::ostringstream error_msg;
 	u8_t* cert;
 	bool received = false;
 	bool connected = false;
