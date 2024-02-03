@@ -37,10 +37,6 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 		std::cout << "error: lwIP error code " << dns_error << " during dns lookup" << std::endl;
 	}
 	cyw43_arch_lwip_end();
-<<<<<<< HEAD
-
-=======
->>>>>>> fe98128 (tls client is now per request instead of per PicoHttpClient instance)
 }
 
 HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, HttpMethod method)
@@ -135,13 +131,8 @@ std::string PicoHttpClient::serialize(HttpRequest& req, std::string uri, HttpMet
 	return result.str();
 }
 
-<<<<<<< HEAD
 void create_tls_client()
 {
-=======
-void create_tls_client()
-{
->>>>>>> fe98128 (tls client is now per request instead of per PicoHttpClient instance)
 	cyw43_arch_lwip_begin();
 	this->tls_client = altcp_tls_new(tls_config, IPADDR_TYPE_ANY);
 	cyw43_arch_lwip_end();
@@ -242,11 +233,7 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 {
 	if (p == nullptr) {
 		received = true;
-<<<<<<< HEAD
 		altcp_close(this->tls_client);
-=======
-		altcp_close(this->tls_client);
->>>>>>> fe98128 (tls client is now per request instead of per PicoHttpClient instance)
 		return ERR_OK;
 	}
 
@@ -263,13 +250,8 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 
 	if (p->tot_len == p->len) {
 		received = true;
-<<<<<<< HEAD
 		altcp_close(this->tls_client);
 		this->tls_client = NULL;
-=======
-		altcp_close(this->tls_client);
-		this->tls_client = NULL;
->>>>>>> fe98128 (tls client is now per request instead of per PicoHttpClient instance)
 	}
 
 	pbuf_free(p);
