@@ -115,13 +115,13 @@ class PicoHttpClient: public IHttpClient
 	err_t client_error(err_t err);
 
 
-	std::string http_version = "HTTP/1.1";
+	std::string http_version = "HTTP/1.0";
 	std::string response_raw;
 	int content_l = 0;
 	std::string bearer_auth_token;
 	std::string base_url;
 	u8_t* cert;
-	int received = 0;
+	bool received = false;
 	bool connected = false;
 	ip_addr_t* ip_addr;
 	u16_t port = 443;

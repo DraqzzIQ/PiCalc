@@ -41,7 +41,7 @@ Bitset2D::~Bitset2D() {}
 
 const DynamicBitset& Bitset2D::operator[](uint32_t index) const
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (index >= _width) throw(std::out_of_range("Bitset2D::operator[]"));
 #endif
 	return _plane.at(index);
@@ -70,7 +70,7 @@ Bitset2D& Bitset2D::operator=(const Bitset2D& other)
 
 const DynamicBitset& Bitset2D::at(uint32_t index) const
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (index >= _width) throw(std::out_of_range("Bitset2D::at"));
 #endif
 	return _plane.at(index);
@@ -88,7 +88,7 @@ uint32_t Bitset2D::height() const
 
 bool Bitset2D::get_bit(uint32_t coord_x, uint32_t coord_y) const
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (coord_x >= _width || coord_y >= _height) throw(std::out_of_range("Bitset2D::get_bit"));
 #endif
 	return _plane.at(coord_x).at(coord_y);
@@ -176,7 +176,7 @@ void Bitset2D::draw_vertical_line(uint32_t coord_x, uint32_t coord_y, uint32_t l
 
 void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bool resize_if_needed)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if ((coord_x + other._width > _width || coord_y + other._height > _height) && !resize_if_needed) throw(std::out_of_range("Bitset2D::set"));
 #endif
 	if (resize_if_needed) {
@@ -189,7 +189,7 @@ void Bitset2D::set(uint32_t coord_x, uint32_t coord_y, const Bitset2D& other, bo
 
 void Bitset2D::set_column(uint32_t coord_x, const DynamicBitset& other)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (coord_x >= _width || other.size() != _height) throw(std::out_of_range("Bitset2D::set_column"));
 #endif
 	_plane[coord_x] = other;
@@ -197,7 +197,7 @@ void Bitset2D::set_column(uint32_t coord_x, const DynamicBitset& other)
 
 void Bitset2D::set_bit(uint32_t coord_x, uint32_t coord_y, bool value)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (coord_x >= _width || coord_y >= _height) throw(std::out_of_range("Bitset2D::set_bit"));
 #endif
 	_plane[coord_x].set(coord_y, value);
@@ -205,7 +205,7 @@ void Bitset2D::set_bit(uint32_t coord_x, uint32_t coord_y, bool value)
 
 void Bitset2D::erase_x(uint32_t coord_x)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (coord_x >= _width) throw(std::out_of_range("Bitset2D::erase_x"));
 #endif
 	_plane.erase(_plane.begin() + coord_x);
@@ -214,7 +214,7 @@ void Bitset2D::erase_x(uint32_t coord_x)
 
 void Bitset2D::erase_y(uint32_t coord_y)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (coord_y >= _height) throw(std::out_of_range("Bitset2D::erase_y"));
 #endif
 	for (uint32_t i = 0; i < _width; i++) { _plane[i].erase(coord_y); }
@@ -238,7 +238,7 @@ void Bitset2D::clear()
 void Bitset2D::push_back(const DynamicBitset& other)
 {
 	if (_height == 0) { _height = other.size(); }
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (other.size() != _height) throw(std::out_of_range("Bitset2D::push_back"));
 #endif
 	_plane.push_back(other);
@@ -248,7 +248,7 @@ void Bitset2D::push_back(const DynamicBitset& other)
 void Bitset2D::push_front(const DynamicBitset& other)
 {
 	if (_height == 0) { _height = other.size(); }
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (other.size() != _height) throw(std::out_of_range("Bitset2D::push_back"));
 #endif
 	_plane.insert(_plane.begin(), other);
@@ -258,7 +258,7 @@ void Bitset2D::push_front(const DynamicBitset& other)
 void Bitset2D::extend_right(const Bitset2D& other)
 {
 	if (_height == 0) { _height = other._height; }
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (_height != other._height) throw(std::out_of_range("Bitset2D::extend_right"));
 #endif
 	_plane.insert(_plane.end(), other._plane.begin(), other._plane.end());
@@ -290,7 +290,7 @@ void Bitset2D::extend_down(uint32_t length, bool value)
 
 void Bitset2D::extend_left(const Bitset2D& other)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (_height != other._height) throw(std::out_of_range("Bitset2D::extend_left"));
 #endif
 	_plane.insert(_plane.begin(), other._plane.begin(), other._plane.end());
@@ -305,7 +305,7 @@ void Bitset2D::extend_left(uint32_t length, bool value)
 
 void Bitset2D::extend_up(const Bitset2D& other)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (_width != other._width) throw(std::out_of_range("Bitset2D::extend_down"));
 #endif
 	for (uint32_t i = 0; i < other._width; i++) { _plane[i].extend_left(other.at(i)); }

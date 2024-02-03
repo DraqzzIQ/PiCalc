@@ -11,20 +11,12 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 	if (code != 0) {
 		std::cout << "Error initializing cyw43 code: " << code << std::endl;
 	}
-	std::cout << "Enabling STA mode" << std::endl;
 	cyw43_arch_enable_sta_mode();
 
-	cyw43_arch_lwip_begin();
 	code = cyw43_arch_wifi_connect_timeout_ms(PICO_WIFI_SSID, PICO_WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, 30 * 1000);
 	if (code != 0) {
 		std::cout << "Error connecting to wifi " << code << std::endl;
 	}
-	cyw43_arch_lwip_end();
-
-
-	// cyw43_arch_lwip_begin();
-	// lwip_init();
-	// cyw43_arch_lwip_end();
 
 	this->base_url = baseUrl;
 #ifdef TLS_CERT
@@ -62,19 +54,21 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, HttpMethod method)
 {
 	this->content_l = 0;
-	this->received = 0;
+	this->received = false;
+	this->response_raw.clear();
 	while (!connected)
 		sleep_ms(200);
 
 	if (!bearer_auth_token.empty()) {
 		req.headers.insert(std::make_pair("Authorization", "Bearer " + bearer_auth_token));
 	}
+	req.headers.insert(std::make_pair("Host", this->base_url));
+	req.headers.insert(std::make_pair("Accept", "text/html"));
 	size_t data_pos = 0;
 	std::string data = serialize(req, uri, method);
 
 	cyw43_arch_lwip_begin();
 	if (data.length() > altcp_sndbuf(this->tls_client)) {
-		std::cout << "sending data" << std::endl;
 		cyw43_arch_lwip_end();
 		for (int i = 0; data_pos < data.length(); i++) {
 			cyw43_arch_lwip_begin();
@@ -82,18 +76,14 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 
 			altcp_write(tls_client, data.substr(data_pos, altcp_sndbuf(this->tls_client)).c_str(), altcp_sndbuf(this->tls_client), 0x00);
 
-			altcp_output(tls_client);
 			cyw43_arch_lwip_end();
 		}
 	} else {
-		std::cout << "sending data" << std::endl;
 		cyw43_arch_lwip_end();
 		cyw43_arch_lwip_begin();
-		altcp_write(tls_client, data.c_str(), data.length(), 0x00);
-		std::cout << "sending data" << std::endl;
-		altcp_output(tls_client);
+		altcp_write(tls_client, data.c_str(), data.length(), TCP_WRITE_FLAG_COPY);
+		// altcp_output(tls_client);
 		cyw43_arch_lwip_end();
-		std::cout << "sending data" << std::endl;
 	}
 
 	while (!this->received)
@@ -113,21 +103,22 @@ std::string PicoHttpClient::serialize(HttpRequest& req, std::string uri, HttpMet
 		method_str = "POST";
 	}
 
-	result << method_str << uri;
+	result << method_str << " " << uri;
 	if (req.params.size() > 0) {
 		result << "?";
 		for (auto p : req.params) {
-			result << p.first << "=" << p.second << ";";
+			result << p.first << "=" << p.second << "&";
 		}
 	}
 
-	result << " " << http_version << std::endl;
+	result << " " << http_version << "\r\n";
 	for (auto h : req.headers) {
-		result << h.first << ": " << h.second << std::endl;
+		result << h.first << ": " << h.second << "\r\n";
 	}
+	result << "\r\n";
 
-	result << std::endl;
-	result << req.body << std::endl;
+	if (method == HttpMethod::Post)
+		result << req.body << "\r\n";
 
 	return result.str();
 }
@@ -155,13 +146,16 @@ HttpResponse PicoHttpClient::deserialize(std::string data)
 	std::istringstream data_stream(data);
 	std::string line;
 
-	data_stream >> this->http_version >> status_code >> error_msg;
+	data_stream >> this->http_version >> status_code;
+	std::getline(data_stream, line);
+	error_msg = line.substr(1, line.length() - 1);
 	int delim_pos = 0;
+
 	line.clear();
 	for (int i = 0; !data_stream.eof(); i++) {
 		std::getline(data_stream, line);
 		delim_pos = line.find_first_of(':');
-		if (line == "\n" || delim_pos == std::string::npos) {
+		if (line == "\r\n" || delim_pos == std::string::npos) {
 			break;
 		}
 		headers.insert(std::make_pair(line.substr(0, delim_pos), line.substr(delim_pos + 2, line.length() - (delim_pos + 2))));
@@ -172,12 +166,13 @@ HttpResponse PicoHttpClient::deserialize(std::string data)
 	while (!data_stream.fail() && !data_stream.eof() && !data_stream.bad()) {
 		getline(data_stream, line);
 		body.append(line);
-		line.clear();
+		if (!data_stream.eof() && !data_stream.fail() && !data_stream.bad())
+			body.append("\n");
 	}
 
 	HttpResponse result(headers, body, status_code);
 
-	if (status_code < 200 | status_code >= 300)
+	if (status_code < 200 || status_code >= 300)
 		result.error_msg = error_msg;
 
 	return result;
@@ -186,26 +181,27 @@ HttpResponse PicoHttpClient::deserialize(std::string data)
 
 err_t PicoHttpClient::recieve(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 {
-	struct pbuf* buf = p;
-	if (err == ERR_OK) {
-		std::string data;
-
-		while (buf->len != buf->tot_len) {
-			std::cout << std::string((char*)buf->payload);
-			data.append(std::string((char*)buf->payload));
-			buf = buf->next;
-		}
-		std::cout << std::string((char*)buf->payload);
-		data.append(std::string((char*)buf->payload));
-
-		cyw43_arch_lwip_begin();
-		altcp_recved(tls_client, buf->tot_len);
-		cyw43_arch_lwip_end();
-		this->received += buf->tot_len;
-		this->response_raw = data;
+	if (p == nullptr) {
+		altcp_close(tls_client);
+		received = true;
+		return ERR_OK;
 	}
 
-	pbuf_free(buf);
+	if (err == ERR_OK && p->tot_len > 0) {
+		char buffer[p->tot_len + 1];
+		pbuf_copy_partial(p, buffer, p->tot_len, 0);
+		buffer[p->tot_len] = 0;
+
+		altcp_recved(tls_client, p->tot_len);
+		this->response_raw += std::string(buffer);
+	}
+
+	if (p->tot_len == p->len) {
+		altcp_close(tls_client);
+		received = true;
+	}
+
+	pbuf_free(p);
 	return err;
 }
 

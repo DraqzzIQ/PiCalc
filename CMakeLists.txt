@@ -11,6 +11,9 @@ set(PROJECT_NAME "CasioOS")
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
 
+set(CMAKE_CXX_FLAGS_RELEASE "-Os")
+
+
 # # Set a default build type if it's not specified
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
@@ -23,7 +26,6 @@ endif()
 
 # Pico
 if(RPI_PICO)
-    set(PICO_CXX_ENABLE_EXCEPTIONS 1)
     set(PICO_CXX_ENABLE_RTTI 1)
     include(pico_sdk_import.cmake) # must be included before project()
 endif()
@@ -100,4 +102,5 @@ if(RPI_PICO)
 
     # preprocessor macro
     target_compile_definitions(${PROJECT_NAME} PRIVATE PICO)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-unused-result)
 endif()
