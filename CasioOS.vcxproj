@@ -69,6 +69,7 @@
     <ClInclude Include="src\windows\InputWindow.h" />
     <ClInclude Include="src\windows\PaintWindow.h" />
     <ClInclude Include="src\windows\NotesWindow.h" />
+    <ClInclude Include="src\windows\TetrisWindow.h" />
     <ClInclude Include="src\options\CallbackMenuOption.h" />
     <ClInclude Include="src\threading\Threading.h" />
     <ClInclude Include="src\threading\Thread.h" />
@@ -110,6 +111,7 @@
     <ClCompile Include="src\windows\InputWindow.cpp" />
     <ClCompile Include="src\windows\PaintWindow.cpp" />
     <ClCompile Include="src\windows\NotesWindow.cpp" />
+    <ClCompile Include="src\windows\TetrisWindow.cpp" />
     <ClCompile Include="src\threading\Threading.cpp" />
     <ClCompile Include="src\windows\TextWindow.cpp" />
   </ItemGroup>
