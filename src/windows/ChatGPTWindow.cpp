@@ -26,7 +26,8 @@ void ChatGPTWindow::request(std::string query)
 
 void ChatGPTWindow::on_return_key()
 {
-	Threading::get_instance()->enqueue_thread({ std::bind(&ChatGPTWindow::request, this, _input) });
+	request(_input);
+	// Threading::get_instance()->enqueue_thread({ std::bind(&ChatGPTWindow::request, this, _input) });
 }
 
 
