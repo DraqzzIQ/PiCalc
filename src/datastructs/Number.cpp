@@ -184,6 +184,7 @@ Number* Number::multiply(Number* other)
 
 Number* Number::divide(Number* other)
 {
+	// TODO: reduce
 	_children = std::vector<Number*>{ clone(), other->clone() };
 	_value.set_key(KEY_DIVIDE);
 	other = nullptr;
