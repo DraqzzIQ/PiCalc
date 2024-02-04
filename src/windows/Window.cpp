@@ -1,5 +1,4 @@
 #include "windows/Window.h"
-#include "Window.h"
 
 Window::Window():
 	_frame(Frame(_window))

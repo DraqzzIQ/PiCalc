@@ -11,6 +11,7 @@
 #include <vector>
 
 #ifdef PICO
+#include "http/PicoHttpClient.h"
 #include "keyboard/PicoKeyboard.h"
 #include "pico/stdlib.h"
 #include "renderers/DisplayRenderer.h"
@@ -20,9 +21,9 @@
 #include "keyboard/SDLKeyboard.h"
 #endif
 
-IKeyboard* keyboard;
-WindowManager* window_manager;
-MenuWindow* main_menu;
+IKeyboard* keyboard = nullptr;
+WindowManager* window_manager = nullptr;
+MenuWindow* main_menu = nullptr;
 
 /// <summary>
 /// starts a thread that will update and render the window manager
@@ -69,7 +70,7 @@ int main(int argc, char* argv[])
 	gpio_init(27);
 	gpio_set_dir(27, GPIO_IN);
 
-	// Enable UART so status output can be printed
+	// 	// Enable UART so status output can be printed
 	stdio_init_all();
 	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl;
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
@@ -94,6 +95,7 @@ int main(int argc, char* argv[])
 #endif
 
 	window_manager->add_window(main_menu);
+
 
 	// start main thread
 	start_main_thread();

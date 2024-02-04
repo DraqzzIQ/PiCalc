@@ -1,4 +1,4 @@
-#include "ContrastWindow.h"
+#include "windows/ContrastWindow.h"
 
 ContrastWindow::ContrastWindow()
 {

@@ -1,6 +1,6 @@
 #pragma once
-#include "Window.h"
 #include "datastructs/Equation.h"
+#include "windows/Window.h"
 
 
 class TextWindow: public Window

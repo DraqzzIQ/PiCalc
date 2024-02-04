@@ -21,7 +21,7 @@ class WolframAlphaWindow: public ChatWindow
 	private:
 	void on_return_key() override;
 	void request(std::string query);
-	const std::string _base_url = "https://api.wolframalpha.com";
+	const std::string _base_url = "api.wolframalpha.com";
 	const std::string _endpoint = "/v1/result";
 	const std::string _app_id = WOLFRAMALPHA_APPID;
 	const Params _default_params{
