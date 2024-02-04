@@ -57,7 +57,7 @@ DynamicBitset DynamicBitset::from_bits(uint8_t bits, uint32_t count)
 
 bool DynamicBitset::operator[](uint32_t i) const
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (i >= _bit_count) { throw std::out_of_range("DynamicBitset::operator[]"); }
 #endif
 	return (_bits[i / 8] & (1 << (7 - (i % 8)))) != 0;
@@ -152,7 +152,7 @@ DynamicBitset DynamicBitset::copy_unsafe(uint32_t start, uint32_t width) const
 
 void DynamicBitset::set(uint32_t index, bool value)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (index >= _bit_count) { throw std::out_of_range("DynamicBitset::set"); }
 #endif
 	if (value) _bits[index / 8] |= (1 << (7 - (index % 8)));
@@ -161,7 +161,7 @@ void DynamicBitset::set(uint32_t index, bool value)
 
 void DynamicBitset::set(uint32_t index, const DynamicBitset& other)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (index + other._bit_count > _bit_count) { throw std::out_of_range("DynamicBitset::set"); }
 #endif
 	uint32_t len = other._bit_count < _bit_count - index ? other._bit_count : _bit_count - index;
@@ -170,7 +170,7 @@ void DynamicBitset::set(uint32_t index, const DynamicBitset& other)
 
 void DynamicBitset::set(uint32_t index, uint32_t count, bool value)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (index + count > _bit_count) { throw std::out_of_range("DynamicBitset::set"); }
 #endif
 	count += index;
@@ -179,7 +179,7 @@ void DynamicBitset::set(uint32_t index, uint32_t count, bool value)
 
 void DynamicBitset::insert(uint32_t index, bool bit)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (index > _bit_count) { throw std::out_of_range("DynamicBitset::insert"); }
 #endif
 	// If the last byte is full, add a new one
@@ -199,7 +199,7 @@ void DynamicBitset::insert(uint32_t index, bool bit)
 
 void DynamicBitset::insert(uint32_t index, const DynamicBitset& bits)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (index > _bit_count) { throw std::out_of_range("DynamicBitset::insert"); }
 #endif
 	for (uint32_t i = 0; i < bits.size(); i++) { insert(index + i, bits[i]); }
@@ -207,7 +207,7 @@ void DynamicBitset::insert(uint32_t index, const DynamicBitset& bits)
 
 void DynamicBitset::erase(uint32_t index)
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (index >= _bit_count) { throw std::out_of_range("DynamicBitset::erase"); }
 #endif
 	// Shift all bits after i one to the left
@@ -254,7 +254,7 @@ void DynamicBitset::push_front(bool bit)
 
 void DynamicBitset::pop_back()
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (_bit_count == 0) { throw std::out_of_range("DynamicBitset::pop_back"); }
 #endif
 	_bit_count--;
@@ -264,7 +264,7 @@ void DynamicBitset::pop_back()
 
 void DynamicBitset::pop_front()
 {
-#ifdef IS_DEBUG_BUILD
+#if defined IS_DEBUG_BUILD && !defined PICO
 	if (_bit_count == 0) { throw std::out_of_range("DynamicBitset::pop_front"); }
 #endif
 	// Shift all bits one to the left

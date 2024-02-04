@@ -23,7 +23,7 @@ class ChatGPTWindow: public ChatWindow
 	void on_return_key() override;
 	void request(std::string query);
 	std::string extract_answer(std::string);
-	const std::string _base_url = "https://api.openai.com";
+	const std::string _base_url = "api.openai.com";
 	const std::string _endpoint = "/v1/chat/completions";
 	const std::string _model = "gpt-4-1106-preview";
 	const std::string _body1 = R"({

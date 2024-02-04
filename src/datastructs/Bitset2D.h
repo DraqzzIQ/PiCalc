@@ -58,7 +58,7 @@ class Bitset2D
 	// Bitset2D operator+(const Bitset2D& other);
 
 	/// <summary>
-	/// Returns the bit at index.
+	/// Returns the Bitset at index.
 	/// </summary>
 	const DynamicBitset& at(uint32_t index) const;
 	/// <summary>

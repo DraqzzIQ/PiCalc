@@ -1,9 +1,4 @@
 #include "windows/ChatGPTWindow.h"
-#ifdef PICO
-#include <http/PicoHttpClient.h>
-#else
-#include <http/DesktopHttpClient.h>
-#endif
 
 ChatGPTWindow::ChatGPTWindow():
 	_client(_base_url)
@@ -18,8 +13,6 @@ void ChatGPTWindow::request(std::string query)
 {
 	HttpResponse res = _client.post(_endpoint, HttpRequest(_default_headers, _body1 + _input + _body2));
 
-	std::cout << _body1 + _input + _body2 << std::endl;
-
 	if (res.error()) {
 		add_text("\nerror: " + res.error_msg);
 		return;
@@ -31,7 +24,8 @@ void ChatGPTWindow::request(std::string query)
 
 void ChatGPTWindow::on_return_key()
 {
-	Threading::get_instance()->enqueue_thread({ std::bind(&ChatGPTWindow::request, this, _input) });
+	request(_input);
+	// Threading::get_instance()->enqueue_thread({ std::bind(&ChatGPTWindow::request, this, _input) });
 }
 
 

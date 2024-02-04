@@ -1,4 +1,4 @@
-#include "WolframAlphaWindow.h"
+#include "windows/WolframAlphaWindow.h"
 
 WolframAlphaWindow::WolframAlphaWindow():
 	_client(_base_url)
@@ -26,5 +26,6 @@ void WolframAlphaWindow::request(std::string query)
 
 void WolframAlphaWindow::on_return_key()
 {
-	Threading::get_instance()->enqueue_thread({ std::bind(&WolframAlphaWindow::request, this, _input) });
+	request(_input);
+	// Threading::get_instance()->enqueue_thread({ std::bind(&WolframAlphaWindow::request, this, _input) });
 }
