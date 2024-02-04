@@ -26,6 +26,5 @@ void WolframAlphaWindow::request(std::string query)
 
 void WolframAlphaWindow::on_return_key()
 {
-	request(_input);
-	// Threading::get_instance()->enqueue_thread({ std::bind(&WolframAlphaWindow::request, this, _input) });
+	Threading::get_instance()->enqueue_thread({ [this] { this->request(this->_input); } });
 }

@@ -13,7 +13,7 @@ Threading* Threading::get_instance()
 Threading::Threading()
 {
 #ifdef PICO
-	queue_init(&_queue, sizeof(Thread), 5);
+	queue_init(&_queue, sizeof(Thread), PICO_THREAD_QUEUE_SIZE);
 #endif
 }
 

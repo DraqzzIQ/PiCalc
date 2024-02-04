@@ -20,14 +20,16 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 
 	this->_base_url = baseUrl;
 #ifdef TLS_CERT
-	this->_cert = TLS_CERT;
+	this->_cert = (u8_t*)TLS_CERT;
 #else
 	this->_cert = get_cert(baseUrl);
 #endif
 
 
 	cyw43_arch_lwip_begin();
-	this->_tls_config = altcp_tls_create_config_client(this->_cert, sizeof(*this->_cert));
+	size_t cert_len = strlen((char*)this->_cert) + 1;
+	this->_tls_config = altcp_tls_create_config_client(this->_cert, cert_len);
+
 	cyw43_arch_lwip_end();
 
 
@@ -234,6 +236,7 @@ HttpResponse PicoHttpClient::deserialize(std::string data)
 err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 {
 	if (p == nullptr) {
+		altcp_close(this->_tls_client);
 		this->_received = true;
 		this->_tls_client = nullptr;
 		return ERR_OK;
@@ -251,6 +254,7 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 	}
 
 	if (p->tot_len == p->len) {
+		altcp_close(this->_tls_client);
 		this->_received = true;
 		this->_tls_client = nullptr;
 	}
