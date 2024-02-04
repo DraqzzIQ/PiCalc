@@ -39,7 +39,9 @@ Simulates the firmware of a CASIO fx-87DE PLUS (2nd edition) on a Raspberry Pi P
 ```
 
 ## How To Start
-- Clone and open repo with an editor of your choice
+```
+git clone --recursive https://github.com/DraqzzIQ/PiCalc
+```
 
 ### Secrets
 Create a file called `secrets` in the project root folder
