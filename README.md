@@ -1,5 +1,5 @@
 # PiCalc
-Simulates the firmware of a CASIO fx-87DE PLUS (2nd edition) with some additional features
+Simulates the firmware of a CASIO fx-87DE PLUS (2nd edition) on a Raspberry Pi Pico with some additional features
 
 ```
 ###################################################################################################################################################################################################
