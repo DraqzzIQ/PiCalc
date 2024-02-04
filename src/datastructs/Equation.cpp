@@ -144,15 +144,20 @@ void Equation::del()
 	KEY val = _equation.at(--_cursor_index);
 	if (Utils::in_key_set(val, _symbols)) {
 		_equation.erase(_equation.begin() + _cursor_index);
-		while (true) {
+		uint8_t depth = 0;
+		while (_cursor_index < _equation.size()) {
 			val = _equation.at(_cursor_index);
-			if (val == KEY_NEXT_VAL) _equation.erase(_equation.begin() + _cursor_index);
-			else if (val == KEY_SYMBOL_END) {
+			if (val == KEY_NEXT_VAL && depth == 0) {
 				_equation.erase(_equation.begin() + _cursor_index);
-				break;
-			} else if (Utils::in_key_set(val, _symbols)) {
-				while (_equation.at(_cursor_index) != KEY_SYMBOL_END) _cursor_index++;
-			} else _cursor_index++;
+				continue;
+			} else if (val == KEY_SYMBOL_END) {
+				if (depth == 0) {
+					_equation.erase(_equation.begin() + _cursor_index);
+					break;
+				}
+				depth--;
+			} else if (Utils::in_key_set(val, _symbols)) depth++;
+			_cursor_index++;
 		}
 	} else if (val != KEY_NEXT_VAL && val != KEY_SYMBOL_END) {
 		_equation.erase(_equation.begin() + _cursor_index);
@@ -237,20 +242,20 @@ void Equation::handle_key_down(KEY keypress)
 	case KEY_RIGHT: move_cursor_right(); break;
 	case KEY_DEL: del(); break;
 	case KEY_AC: ac(); break;
-	case KEY_ABS: add_value_raw(KEY_ABS, 1); break;
-	case KEY_CUBED: add_value_raw(KEY_POWER, 1, false, false, KEY_SET{ '3' }); break;
-	case KEY_RECIPROCAL: add_value_raw(KEY_POWER, 1, false, false, KEY_SET{ KEY_NEGATE, '1' }); break;
-	case KEY_LOGN: add_value_raw(KEY_LOGN, 2); break;
-	case KEY_FRACTION: add_value_raw(KEY_FRACTION, 2, true, true); break;
+	case KEY_ABS: add_value_raw(KEY_ABS, 0); break;
+	case KEY_CUBED: add_value_raw(KEY_POWER, 2, KEY_SET{ '3' }); break;
+	case KEY_RECIPROCAL: add_value_raw(KEY_POWER, 2, KEY_SET{ KEY_NEGATE, '1' }); break;
+	case KEY_LOGN: add_value_raw(KEY_LOGN, 3); break;
+	case KEY_FRACTION: add_value_raw(KEY_FRACTION, 4); break;
 	case KEY_SQRT: add_value_raw(KEY_SQRT, 1); break;
-	case KEY_SQUARED: add_value_raw(KEY_POWER, 1, false, false, KEY_SET{ '2' }); break;
-	case KEY_POWER: add_value_raw(KEY_POWER, 1, false, true); break;
-	case KEY_MIXED_FRACTION: add_value_raw(KEY_MIXED_FRACTION, 3, true, true); break;
-	case KEY_ROOT3: add_value_raw(KEY_ROOTN, 2, false, false, KEY_SET{ '3' }); break;
-	case KEY_PERIODIC: add_value_raw(KEY_PERIODIC, 1, false, true); break;
-	case KEY_ROOTN: add_value_raw(KEY_ROOTN, 2, true); break;
-	case KEY_POWER10: add_value_raw(KEY_POWER10, 1, false, true); break;
-	case KEY_EXP: add_value_raw(KEY_EXP, 1, false, true); break;
+	case KEY_SQUARED: add_value_raw(KEY_POWER, 2, KEY_SET{ '2' }); break;
+	case KEY_POWER: add_value_raw(KEY_POWER, 1); break;
+	case KEY_MIXED_FRACTION: add_value_raw(KEY_MIXED_FRACTION, 6); break;
+	case KEY_ROOT3: add_value_raw(KEY_ROOTN, 5, KEY_SET{ '3' }); break;
+	case KEY_PERIODIC: add_value_raw(KEY_PERIODIC, 1); break;
+	case KEY_ROOTN: add_value_raw(KEY_ROOTN, 4); break;
+	case KEY_POWER10: add_value_raw(KEY_POWER10, 1); break;
+	case KEY_EXP: add_value_raw(KEY_EXP, 1); break;
 	default: _equation.insert(_equation.begin() + _cursor_index++, keypress); break;
 	}
 	render_equation();
@@ -694,7 +699,7 @@ Bitset2D Equation::render_restricted(uint8_t font_height, FONT* table, bool& cur
 			_cursor_data = { cursor_offset_x + symbol_matrix.width(), cursor_offset_y, font_height };
 			cursor_inside = true;
 		}
-		if (key > 47 && key < 58 || mixed_fraction && (key == ',' && decimal == 0 && (decimal = 1) || key == KEY_SCIENTIFIC_E && decimal != 0 && (decimal = 2))) {
+		if (key > 47 && key < 58 || mixed_fraction && (key == ',' && decimal == 0 && (decimal = 1) || key == KEY_SCIENTIFIC_E && decimal != 0 && (decimal = 2) || key == '-' || key == KEY_NEGATE)) {
 			symbol_matrix.extend_right(table->at(key));
 			symbol_matrix.extend_right(1, false);
 			_render_index++;
@@ -742,35 +747,35 @@ std::string Equation::to_string_simple() const
 }
 
 
-void Equation::add_value_raw(KEY value, uint8_t child_cnt, bool add_left_value, bool add_right_value, KEY_SET first_child)
+void Equation::add_value_raw(KEY value, uint8_t mode, KEY_SET first_child)
 {
-	// TODO: test
-	if (add_left_value) {
-		uint32_t i = get_value_end_left(_cursor_index);
-		if (i == _cursor_index) {
-			add_left_value = false;
-			_equation.insert(_equation.begin() + _cursor_index++, value);
-		} else _equation.insert(_equation.begin() + i, value);
-	} else if (add_right_value && child_cnt == 1) {
+	// TODO: improve
+	if (mode == 0 || mode == 3) {
+		_equation.insert(_equation.begin() + _cursor_index++, value);
+		_equation.insert(_equation.begin() + _cursor_index, KEY_SYMBOL_END);
+		if (mode == 3) _equation.insert(_equation.begin() + _cursor_index, KEY_NEXT_VAL);
+	} else if (mode == 1) {
 		_equation.insert(_equation.begin() + _cursor_index++, value);
 		_equation.insert(_equation.begin() + get_value_end_right(_cursor_index), KEY_SYMBOL_END);
-		return;
-	} else {
+	} else if (mode == 2 || mode == 5) {
 		_equation.insert(_equation.begin() + _cursor_index++, value);
 		_equation.insert(_equation.begin() + _cursor_index, first_child.begin(), first_child.end());
 		_cursor_index += first_child.size();
+		if (mode == 2) _equation.insert(_equation.begin() + _cursor_index, KEY_SYMBOL_END);
+		else {
+			_equation.insert(_equation.begin() + _cursor_index, KEY_NEXT_VAL);
+			_equation.insert(_equation.begin() + get_value_end_right(_cursor_index), KEY_SYMBOL_END);
+		}
+	} else if (mode == 4 || mode == 6) {
+		_equation.insert(_equation.begin() + get_value_end_left(_cursor_index++, mode == 6), value);
+		_equation.insert(_equation.begin() + _cursor_index++, KEY_NEXT_VAL);
+		uint32_t i = get_value_end_right(_cursor_index);
+		_equation.insert(_equation.begin() + i, KEY_SYMBOL_END);
+		if (mode == 6) _equation.insert(_equation.begin() + i, KEY_NEXT_VAL);
 	}
-	if (add_right_value) {
-		_equation.insert(_equation.begin() + get_value_end_right(_cursor_index), KEY_NEXT_VAL);
-		_cursor_index++;
-		child_cnt--;
-	}
-	_equation.insert(_equation.begin() + _cursor_index, KEY_SYMBOL_END);
-	for (; child_cnt > 1; child_cnt--) _equation.insert(_equation.begin() + _cursor_index, KEY_NEXT_VAL);
-	if (add_left_value || !first_child.empty()) _cursor_index++;
 }
 
-uint32_t Equation::get_value_end_left(uint32_t index)
+uint32_t Equation::get_value_end_left(uint32_t index, bool only_decimal)
 {
 	if (index == 0) return 0;
 	index--;
@@ -778,15 +783,17 @@ uint32_t Equation::get_value_end_left(uint32_t index)
 	if (val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E) {
 		for (; index > 0; index--) {
 			val = _equation.at(index);
-			if (!(val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E)) return ++index;
+			if (!(val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E || val == '-' || val == KEY_NEGATE)) return ++index;
 		}
+	} else if (only_decimal) {
+		return ++index;
 	} else if (val == ')') {
 		uint8_t depth = 0;
 		for (; index > 0; index--) {
 			val = _equation.at(index);
 			if (val == ')') depth++;
 			else if (Utils::in_key_set(val, _bracket_keys)) {
-				if (depth == 0) return ++index;
+				if (depth == 1) break;
 				depth--;
 			}
 		}
@@ -796,16 +803,17 @@ uint32_t Equation::get_value_end_left(uint32_t index)
 			val = _equation.at(index);
 			if (val == KEY_SYMBOL_END) depth++;
 			else if (Utils::in_key_set(val, _symbols)) {
-				if (depth == 0) return ++index;
+				if (depth == 1) break;
 				depth--;
 			}
 		}
-	}
-	return 0;
+	} else return ++index;
+	return index;
 }
 
 uint32_t Equation::get_value_end_right(uint32_t index)
 {
+	if (index == _equation.size()) return index;
 	KEY val = _equation.at(index);
 	if (val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E) {
 		for (; index < _equation.size(); index++) {
@@ -819,7 +827,7 @@ uint32_t Equation::get_value_end_right(uint32_t index)
 			val = _equation.at(index);
 			if (Utils::in_key_set(val, _bracket_keys)) depth++;
 			else if (val == ')') {
-				if (depth == 0) break;
+				if (depth == 0) return ++index;
 				depth--;
 			}
 		}
@@ -830,7 +838,7 @@ uint32_t Equation::get_value_end_right(uint32_t index)
 			val = _equation.at(index);
 			if (Utils::in_key_set(val, _symbols)) depth++;
 			else if (val == KEY_SYMBOL_END) {
-				if (depth == 0) break;
+				if (depth == 0) return ++index;
 				depth--;
 			}
 		}

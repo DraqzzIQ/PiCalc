@@ -244,12 +244,21 @@ class Equation
 	/// <summary>
 	/// add a new child with the given amount of children to the equation at the cursor position
 	/// with the option to either add the value before the cursor to the first child, specify tht value of the first child or add the value after the cursor to the 2nd child / 1st child if there is no 2nd child
+	/// <param name="mode">
+	/// 0: one value, no adding<para/>
+	/// 1: one value, add right<para/>
+	/// 2: one value, add first_child<para/>
+	/// 3: two values, no adding<para/>
+	/// 4: two values, add both<para/>
+	/// 5: two values, add first_child and right<para/>
+	/// 6: three values, add both
+	/// </param>
 	/// </summary>
-	void add_value_raw(KEY value, uint8_t child_cnt, bool add_left_value = false, bool add_right_value = false, KEY_SET first_child = {});
+	void add_value_raw(KEY value, uint8_t mode, KEY_SET first_child = {});
 	/// <summary>
 	/// returns the smallest index of the equation that is included in a value starting from the given index - 1 going to the left
 	/// </summary>
-	uint32_t get_value_end_left(uint32_t index);
+	uint32_t get_value_end_left(uint32_t index, bool only_decimal);
 	/// <summary>
 	/// returns the smallest index of the equation that is not included in a value starting from the given index going to the right
 	/// </summary>
