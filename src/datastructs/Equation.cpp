@@ -110,7 +110,8 @@ std::string Equation::get_ascii_bytes(bool english) const
 		} else if (Utils::in_key_set(key, _bracket_keys)) {
 			for (KEY symbol : _bracket_keys_text.at(key)) result.push_back(symbol);
 			result.push_back('(');
-		} else if (Utils::in_key_set(key, _allowed_calculate_operations)) {
+		} else if (key == KEY_MOD) result.append(" mod ");
+		else if (Utils::in_key_set(key, _allowed_calculate_operations)) {
 			result.push_back(' ');
 			result.push_back(key);
 			result.push_back(' ');
@@ -133,6 +134,7 @@ std::string Equation::get_ascii_bytes(bool english) const
 			result.push_back(' ');
 		} else result.push_back(key);
 	}
+	return result;
 }
 
 
@@ -228,7 +230,6 @@ void Equation::move_cursor_down()
 
 void Equation::handle_key_down(KEY keypress)
 {
-	// TODO: add second value
 	switch (keypress) {
 	case KEY_UP: move_cursor_up(); break;
 	case KEY_DOWN: move_cursor_down(); break;
@@ -243,7 +244,7 @@ void Equation::handle_key_down(KEY keypress)
 	case KEY_FRACTION: add_value_raw(KEY_FRACTION, 2, true, true); break;
 	case KEY_SQRT: add_value_raw(KEY_SQRT, 1); break;
 	case KEY_SQUARED: add_value_raw(KEY_POWER, 1, false, false, KEY_SET{ '2' }); break;
-	case KEY_POWER: add_value_raw(KEY_POWER, 1, true); break;
+	case KEY_POWER: add_value_raw(KEY_POWER, 1, false, true); break;
 	case KEY_MIXED_FRACTION: add_value_raw(KEY_MIXED_FRACTION, 3, true, true); break;
 	case KEY_ROOT3: add_value_raw(KEY_ROOTN, 2, false, false, KEY_SET{ '3' }); break;
 	case KEY_PERIODIC: add_value_raw(KEY_PERIODIC, 1, false, true); break;
@@ -554,6 +555,8 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 		// *10^n
 		else if (value == KEY_SCIENTIFIC_E) {
 			symbol_matrix = table->at(KEY_SCIENTIFIC_E);
+			symbol_matrix.extend_right(1, false);
+			symbol_matrix.extend_right(table->at(KEY_POWER10));
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 0);
 		}
 
@@ -741,35 +744,98 @@ std::string Equation::to_string_simple() const
 
 void Equation::add_value_raw(KEY value, uint8_t child_cnt, bool add_left_value, bool add_right_value, KEY_SET first_child)
 {
-	// TODO: add second value
-	// if (add_right_value) {
-	//	if (child_cnt == 1) {
-	//		_equation.insert(_equation.begin() + _cursor_index, value);
-	//		uint32_t i = _cursor_index++;
-	//		for (; _cursor_index < _equation.size(); i++) {
-	//			KEY val = _equation.at(i - 1);
-	//			if (!(val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E)) break;
-	//			add_left_value = true;
-	//		}
-	//	} else _equation.insert(_equation.begin() + _cursor_index++, KEY_NEXT_VAL);
-	//}
+	// TODO: test
 	if (add_left_value) {
-		add_left_value = false;
-		uint32_t i = _cursor_index++;
-		for (; i > 0; i--) {
-			KEY val = _equation.at(i - 1);
-			if (!(val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E)) break;
-			add_left_value = true;
-		}
-		_equation.insert(_equation.begin() + i, value);
+		uint32_t i = get_value_end_left(_cursor_index);
+		if (i == _cursor_index) {
+			add_left_value = false;
+			_equation.insert(_equation.begin() + _cursor_index++, value);
+		} else _equation.insert(_equation.begin() + i, value);
+	} else if (add_right_value && child_cnt == 1) {
+		_equation.insert(_equation.begin() + _cursor_index++, value);
+		_equation.insert(_equation.begin() + get_value_end_right(_cursor_index), KEY_SYMBOL_END);
+		return;
 	} else {
 		_equation.insert(_equation.begin() + _cursor_index++, value);
 		_equation.insert(_equation.begin() + _cursor_index, first_child.begin(), first_child.end());
 		_cursor_index += first_child.size();
 	}
+	if (add_right_value) {
+		_equation.insert(_equation.begin() + get_value_end_right(_cursor_index), KEY_NEXT_VAL);
+		_cursor_index++;
+		child_cnt--;
+	}
 	_equation.insert(_equation.begin() + _cursor_index, KEY_SYMBOL_END);
 	for (; child_cnt > 1; child_cnt--) _equation.insert(_equation.begin() + _cursor_index, KEY_NEXT_VAL);
 	if (add_left_value || !first_child.empty()) _cursor_index++;
+}
+
+uint32_t Equation::get_value_end_left(uint32_t index)
+{
+	if (index == 0) return 0;
+	index--;
+	KEY val = _equation.at(index);
+	if (val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E) {
+		for (; index > 0; index--) {
+			val = _equation.at(index);
+			if (!(val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E)) return ++index;
+		}
+	} else if (val == ')') {
+		uint8_t depth = 0;
+		for (; index > 0; index--) {
+			val = _equation.at(index);
+			if (val == ')') depth++;
+			else if (Utils::in_key_set(val, _bracket_keys)) {
+				if (depth == 0) return ++index;
+				depth--;
+			}
+		}
+	} else if (val == KEY_SYMBOL_END) {
+		uint8_t depth = 0;
+		for (; index > 0; index--) {
+			val = _equation.at(index);
+			if (val == KEY_SYMBOL_END) depth++;
+			else if (Utils::in_key_set(val, _symbols)) {
+				if (depth == 0) return ++index;
+				depth--;
+			}
+		}
+	}
+	return 0;
+}
+
+uint32_t Equation::get_value_end_right(uint32_t index)
+{
+	KEY val = _equation.at(index);
+	if (val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E) {
+		for (; index < _equation.size(); index++) {
+			val = _equation.at(index);
+			if (!(val > 47 && val < 58 || val == ',' || val == KEY_SCIENTIFIC_E)) break;
+		}
+	} else if (Utils::in_key_set(val, _bracket_keys)) {
+		uint8_t depth = 0;
+		index++;
+		for (; index < _equation.size(); index++) {
+			val = _equation.at(index);
+			if (Utils::in_key_set(val, _bracket_keys)) depth++;
+			else if (val == ')') {
+				if (depth == 0) break;
+				depth--;
+			}
+		}
+	} else if (Utils::in_key_set(val, _symbols)) {
+		uint8_t depth = 0;
+		index++;
+		for (; index < _equation.size(); index++) {
+			val = _equation.at(index);
+			if (Utils::in_key_set(val, _symbols)) depth++;
+			else if (val == KEY_SYMBOL_END) {
+				if (depth == 0) break;
+				depth--;
+			}
+		}
+	}
+	return index;
 }
 
 

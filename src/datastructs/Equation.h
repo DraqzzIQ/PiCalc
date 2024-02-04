@@ -246,6 +246,14 @@ class Equation
 	/// with the option to either add the value before the cursor to the first child, specify tht value of the first child or add the value after the cursor to the 2nd child / 1st child if there is no 2nd child
 	/// </summary>
 	void add_value_raw(KEY value, uint8_t child_cnt, bool add_left_value = false, bool add_right_value = false, KEY_SET first_child = {});
+	/// <summary>
+	/// returns the smallest index of the equation that is included in a value starting from the given index - 1 going to the left
+	/// </summary>
+	uint32_t get_value_end_left(uint32_t index);
+	/// <summary>
+	/// returns the smallest index of the equation that is not included in a value starting from the given index going to the right
+	/// </summary>
+	uint32_t get_value_end_right(uint32_t index);
 
 	/// <summary>
 	/// converts a part of the equation to a number, starting at _calculate_index, stopping at a closed bracket, a next value char or an end symbol char, uses _calculate_index as counter
