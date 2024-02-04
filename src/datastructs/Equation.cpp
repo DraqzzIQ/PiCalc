@@ -602,6 +602,17 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 
 		// symbol keys
 		else if (value == KEY_NEXT_VAL || value == KEY_SYMBOL_END) {
+			if (type == 2) {
+				_render_index--;
+				if (cursor_inside) {
+					cursor_inside_ref = true;
+					_cursor_data.x += cursor_offset_x;
+					_cursor_data.y += cursor_offset_y;
+					if (cursor_alignment == 1) _cursor_data.y += y_origin;
+					else if (cursor_alignment == 2) _cursor_data.y -= equation_part.height() - y_origin;
+				}
+				return equation_part;
+			}
 			break;
 		}
 

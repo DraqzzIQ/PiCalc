@@ -1,6 +1,6 @@
 #include "windows/TextWindow.h"
 
-// TODO: marking/copying/pasting text
+// TODO: marking/copying/pasting text, fix line error at the bottom of the display (only on pico)
 
 TextWindow::TextWindow()
 {
