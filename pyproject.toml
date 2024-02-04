@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "casio os"
+name = "pi calc"
 version = "0.1.0"
 description = ""
 authors = [""]

@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Build Debug CasioOS",
+            "name": "Build Debug PiCalc",
             "type": "command",
             "workingDir": "$PROJECT_DIR$",
             "program": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
@@ -9,12 +9,12 @@
                 "-maxcpucount",
                 "/property:Configuration=Debug",
                 "/property:Platform=x64",
-                "/t:CasioOS",
-                "$PROJECT_DIR$\\CasioOS.sln"
+                "/t:PiCalc",
+                "$PROJECT_DIR$\\PiCalc.sln"
             ]
         },
         {
-            "name": "Build Release CasioOS",
+            "name": "Build Release PiCalc",
             "type": "command",
             "workingDir": "$PROJECT_DIR$",
             "program": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
@@ -22,22 +22,22 @@
                 "-maxcpucount",
                 "/property:Configuration=Release",
                 "/property:Platform=x64",
-                "/t:CasioOS",
-                "$PROJECT_DIR$/CasioOS.sln"
+                "/t:PiCalc",
+                "$PROJECT_DIR$/PiCalc.sln"
             ]
         },
         {
-            "name": "Run CasioOS",
+            "name": "Run PiCalc",
             "type": "command",
             "workingDir": "$PROJECT_DIR$",
             "program": "cmd.exe",
             "args": [
                 "@cmd",
                 "/k",
-                "$PROJECT_DIR$/x64/Release/CasioOS.exe"
+                "$PROJECT_DIR$/x64/Release/PiCalc.exe"
             ],
             "dependsOn": [
-                "Build Release CasioOS"
+                "Build Release PiCalc"
             ]
         },
         {

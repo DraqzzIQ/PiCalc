@@ -20,7 +20,7 @@ env:
   BUILD_TYPE: Release
   
   # Path to the solution file relative to the root of the project.
-  SOLUTION_FILE_PATH: CasioOS.sln
+  SOLUTION_FILE_PATH: PiCalc.sln
 
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
@@ -58,7 +58,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: builds
-        path: ${{github.workspace}}/build/CasioOS
+        path: ${{github.workspace}}/build/PiCalc
       
   pico-build:
     runs-on: ubuntu-latest
@@ -97,7 +97,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: builds
-        path: ${{github.workspace}}/build/CasioOS.uf2
+        path: ${{github.workspace}}/build/PiCalc.uf2
 
   windows-build:
     runs-on: windows-latest
@@ -118,7 +118,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: builds
-        path: ${{github.workspace}}/x64/Release/CasioOS.exe
+        path: ${{github.workspace}}/x64/Release/PiCalc.exe
 
   create-release:
     runs-on: ubuntu-latest
@@ -143,9 +143,9 @@ jobs:
 
     - name: Rename builds
       run: |
-        mv ${{github.workspace}}/builds/CasioOS ${{github.workspace}}/builds/CasioOS-linux-x64
-        mv ${{github.workspace}}/builds/CasioOS.uf2 ${{github.workspace}}/builds/CasioOS-pico.uf2
-        mv ${{github.workspace}}/builds/CasioOS.exe ${{github.workspace}}/builds/CasioOS-win-x64.exe
+        mv ${{github.workspace}}/builds/PiCalc ${{github.workspace}}/builds/PiCalc-linux-x64
+        mv ${{github.workspace}}/builds/PiCalc.uf2 ${{github.workspace}}/builds/PiCalc-pico.uf2
+        mv ${{github.workspace}}/builds/PiCalc.exe ${{github.workspace}}/builds/PiCalc-win-x64.exe
 
     - name: Bump version and push tag
       id: release_tag
@@ -161,9 +161,9 @@ jobs:
       uses: marvinpinto/action-automatic-releases@latest
       with:
         files: |
-          ${{github.workspace}}/builds/CasioOS-linux-x64
-          ${{github.workspace}}/builds/CasioOS-pico.uf2
-          ${{github.workspace}}/builds/CasioOS-win-x64.exe
+          ${{github.workspace}}/builds/PiCalc-linux-x64
+          ${{github.workspace}}/builds/PiCalc-pico.uf2
+          ${{github.workspace}}/builds/PiCalc-win-x64.exe
         prerelease: ${{env.PRERELEASE}}
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         automatic_release_tag: ${{steps.release_tag.outputs.new_tag}}

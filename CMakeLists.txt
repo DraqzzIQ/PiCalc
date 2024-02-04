@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 option(RPI_PICO "use rpi pico" ON)
 
 set(PICO_BOARD pico_w)
-set(PROJECT_NAME "CasioOS")
+set(PROJECT_NAME "PiCalc")
 
 # Set compiler flags for profiling
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")

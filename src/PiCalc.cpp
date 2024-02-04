@@ -1,4 +1,4 @@
-// CasioOS.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// PiCalc.cpp : This file contains the 'main' function. Program execution begins and ends there.
 #include "keyboard/IKeyboard.h"
 #include "renderers/ConsoleRenderer.h"
 #include "renderers/IRenderer.h"

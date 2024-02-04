@@ -185,7 +185,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CasioOS.cpp">
+    <ClCompile Include="src\PiCalc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\datastructs\Bitset2D.cpp">

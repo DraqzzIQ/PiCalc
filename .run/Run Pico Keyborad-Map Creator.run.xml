@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Pico Keyborad-Map Creator" type="PythonConfigurationType" factoryName="Python">
-    <module name="CasioOS" />
+    <module name="PiCalc" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>

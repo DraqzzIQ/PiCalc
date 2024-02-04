@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run CasioOS (Debug)" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="C:\\&quot;Program Files&quot;\\&quot;Microsoft Visual Studio&quot;\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe -maxcpucount /property:Configuration=Debug /property:Platform=x64 /t:CasioOS CasioOS.sln; clear; ./x64/Debug/CasioOS.exe" />
+  <configuration default="false" name="Run PiCalc (Release)" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="C:\\&quot;Program Files&quot;\\&quot;Microsoft Visual Studio&quot;\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe -maxcpucount /property:Configuration=Release /property:Platform=x64 /t:PiCalc PiCalc.sln; clear; ./x64/Release/PiCalc.exe" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

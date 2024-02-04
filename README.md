@@ -1,4 +1,4 @@
-# CasioOS
+# PiCalc
 Simulates the firmware of a CASIO fx-87DE PLUS (2nd edition) with some additional features
 
 ```
@@ -52,7 +52,7 @@ PICO_WIFI_PASSWORD=DEMO
 ```
 
 ### JetBrains Fleet or CLion
-- Select Run config (e.g.: "Run CasioOS")
+- Select Run config (e.g.: "Run PiCalc")
 - Click on the Start button
 
 ## Dependencies
