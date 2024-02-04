@@ -37,6 +37,7 @@ Simulates the firmware of a CASIO fx-87DE PLUS (2nd edition) on a Raspberry Pi P
 #                                                                                                                                                                                                 #
 ###################################################################################################################################################################################################
 ```
+![Image of Hardware](https://github.com/DraqzzIQ/PiCalc/blob/master/Hardware.jpg)
 
 ## How To Start
 ```
