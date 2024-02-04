@@ -383,3 +383,6 @@ poetry.lock
 
 secrets
 Graphics Designer/result.txt
+
+# persistent data
+persistent/
