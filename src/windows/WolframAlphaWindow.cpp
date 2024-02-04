@@ -11,7 +11,7 @@ WolframAlphaWindow::~WolframAlphaWindow()
 
 void WolframAlphaWindow::request(std::string query)
 {
-	Params params = _default_params;
+	HttpParams params = _default_params;
 	params.emplace("i", query);
 	HttpResponse res = _client.get(_endpoint, HttpRequest(params));
 
@@ -26,6 +26,7 @@ void WolframAlphaWindow::request(std::string query)
 
 void WolframAlphaWindow::on_return_key()
 {
+	Threading::get_instance()->enqueue_thread({ [this] { this->request(this->_input); } });
 	request(_text.get_ascii_bytes(true));
 	// Threading::get_instance()->enqueue_thread({ std::bind(&WolframAlphaWindow::request, this, _input) });
 }

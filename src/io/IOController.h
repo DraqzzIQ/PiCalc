@@ -21,7 +21,7 @@
 #endif
 
 /// <summary>
-/// This class is used to read and write files to the sd card.
+/// This class is used to read and write files to sd card or filesystem
 /// </summary>
 class IOController
 {
@@ -62,4 +62,5 @@ class IOController
 	/// </summary>
 	static bool unmount();
 #endif
+	static const std::string _root_dir;
 };

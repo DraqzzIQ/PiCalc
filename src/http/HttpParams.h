@@ -2,4 +2,4 @@
 #include <map>
 #include <string>
 
-using Params = std::multimap<std::string, std::string>;
+using HttpParams = std::multimap<std::string, std::string>;

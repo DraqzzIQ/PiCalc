@@ -26,6 +26,7 @@ void ChatGPTWindow::on_return_key()
 {
 	request(_text.get_ascii_bytes(true));
 	// Threading::get_instance()->enqueue_thread({ std::bind(&ChatGPTWindow::request, this, _input) });
+	Threading::get_instance()->enqueue_thread({ [this] { this->request(this->_input); } });
 }
 
 

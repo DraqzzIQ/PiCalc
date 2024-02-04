@@ -12,7 +12,12 @@
 
 /// <summary>
 /// provides a queue on which tasks can be executed on a second core / thread
+/// NOTE: don't use std::bind t, use lambdas instead
+/// because that shit crashes the pico for some reason
+/// pico will also crash if there is not enough space in queue
 /// </summary>
+
+#define PICO_THREAD_QUEUE_SIZE 6
 class Threading
 {
 	public:

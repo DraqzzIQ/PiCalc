@@ -24,7 +24,7 @@ class WolframAlphaWindow: public ChatWindow
 	const std::string _base_url = "api.wolframalpha.com";
 	const std::string _endpoint = "/v1/result";
 	const std::string _app_id = WOLFRAMALPHA_APPID;
-	const Params _default_params{
+	const HttpParams _default_params{
 		{ "appid", _app_id },
 		{ "units", "metric" }
 	};
