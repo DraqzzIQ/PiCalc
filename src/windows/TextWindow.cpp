@@ -5,6 +5,11 @@
 TextWindow::TextWindow()
 {
 	_frame.corner_y = 0;
+	for (uint8_t i = 0; i < 22; i++) {
+		if (i != '=') {
+			_text.handle_key_down(i);
+		}
+	}
 }
 
 void TextWindow::update_window()

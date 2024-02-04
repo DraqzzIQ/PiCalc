@@ -6,8 +6,61 @@ CalculatorWindow::CalculatorWindow()
 	equations = std::vector<Equation>(1);
 	_equation_selected = &equations[0];
 
-	_variables = std::vector<Number*>(9);
-	_equation_selected->set_variable_list(_variables);
+	_variables = std::map<KEY, Number*>{
+		{ 'A', new Number(0, 0) },
+		{ 'B', new Number(0, 0) },
+		{ 'C', new Number(0, 0) },
+		{ 'D', new Number(0, 0) },
+		{ 'E', new Number(0, 0) },
+		{ 'F', new Number(0, 0) },
+		{ 'G', new Number(0, 0) },
+		{ 'H', new Number(0, 0) },
+		{ 'I', new Number(0, 0) },
+		{ 'J', new Number(0, 0) },
+		{ 'K', new Number(0, 0) },
+		{ 'L', new Number(0, 0) },
+		{ 'M', new Number(0, 0) },
+		{ 'N', new Number(0, 0) },
+		{ 'O', new Number(0, 0) },
+		{ 'P', new Number(0, 0) },
+		{ 'Q', new Number(0, 0) },
+		{ 'R', new Number(0, 0) },
+		{ 'S', new Number(0, 0) },
+		{ 'T', new Number(0, 0) },
+		{ 'U', new Number(0, 0) },
+		{ 'V', new Number(0, 0) },
+		{ 'W', new Number(0, 0) },
+		{ 'X', new Number(0, 0) },
+		{ 'Y', new Number(0, 0) },
+		{ 'Z', new Number(0, 0) },
+		{ 'a', new Number(0, 0) },
+		{ 'b', new Number(0, 0) },
+		{ 'c', new Number(0, 0) },
+		{ 'd', new Number(0, 0) },
+		{ 'e', new Number(0, 0) },
+		{ 'f', new Number(0, 0) },
+		{ 'g', new Number(0, 0) },
+		{ 'h', new Number(0, 0) },
+		{ 'i', new Number(0, 0) },
+		{ 'j', new Number(0, 0) },
+		{ 'k', new Number(0, 0) },
+		{ 'l', new Number(0, 0) },
+		{ 'm', new Number(0, 0) },
+		{ 'n', new Number(0, 0) },
+		{ 'o', new Number(0, 0) },
+		{ 'p', new Number(0, 0) },
+		{ 'q', new Number(0, 0) },
+		{ 'r', new Number(0, 0) },
+		{ 's', new Number(0, 0) },
+		{ 't', new Number(0, 0) },
+		{ 'u', new Number(0, 0) },
+		{ 'v', new Number(0, 0) },
+		{ 'w', new Number(0, 0) },
+		{ 'x', new Number(0, 0) },
+		{ 'y', new Number(0, 0) },
+		{ 'z', new Number(0, 0) },
+	};
+	_equation_selected->set_variable_list(&_variables);
 	_result_selected = 0;
 
 	_result_equation.set_cursor_state(false);

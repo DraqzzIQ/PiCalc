@@ -50,7 +50,7 @@ class Equation
 	/// <summary>
 	/// sets result to the ascii bytes of the equation, for example for Chatgpt and Wolframalpha
 	/// </summary>
-	void get_ascii_bytes(KEY_SET& result) const;
+	void get_ascii_bytes(KEY_SET& result, bool english) const;
 
 	/// <summary>
 	/// delete the character before the Cursor
@@ -85,7 +85,7 @@ class Equation
 	/// links another variable list to this equation, so that it also can be changed in this equation
 	/// </summary>
 	/// <param name="variables"></param>
-	void set_variable_list(std::vector<Number*> variables);
+	void set_variable_list(std::map<KEY, Number*>* variables);
 	/// <summary>
 	/// calculate the equation
 	/// </summary>
@@ -100,7 +100,7 @@ class Equation
 	/// <summary>
 	/// all keys that have an opening breacket at the end (which is not automatically closed like logn, including a raw opening bracket)
 	/// </summary>
-	static const KEY_SET _single_bracket_open_keys;
+	static const KEY_SET _bracket_keys;
 	/// <summary>
 	/// when these values are in front of an exponent, no empty-value is added
 	/// </summary>
@@ -109,6 +109,14 @@ class Equation
 	/// all Symbols that need to be ended by SYMBOL_END
 	/// </summary>
 	static const KEY_SET _symbols;
+	/// <summary>
+	/// text representation of the symbols
+	/// </summary>
+	static const std::map<KEY, std::string> _symbols_text;
+	/// <summary>
+	/// text representation of the bracket keys
+	/// </summary>
+	static const std::map<KEY, std::string> _bracket_keys_text;
 
 	/// <summary>
 	/// a KEY_SET (vector of Keys) storing the equation
@@ -186,7 +194,7 @@ class Equation
 	/// <summary>
 	/// pointer to the list of variables used in the equation
 	/// </summary>
-	std::vector<Number*> _variables;
+	std::map<KEY, Number*>* _variables;
 	/// <summary>
 	/// settings variable
 	/// </summary>
@@ -226,10 +234,10 @@ class Equation
 	std::string to_string_simple() const;
 
 	/// <summary>
-	/// add a new child with the given value and amount of children to the equation at the cursor position
-	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child
+	/// add a new child with the given amount of children to the equation at the cursor position
+	/// with the option to either add the value before the cursor to the first child, specify tht value of the first child or add the value after the cursor to the 2nd child / 1st child if there is no 2nd child
 	/// </summary>
-	void add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_first_child = false, KEY_SET first_child = {});
+	void add_value_raw(KEY value, uint8_t child_cnt, bool add_left_value = false, bool add_right_value = false, KEY_SET first_child = {});
 
 	/// <summary>
 	/// converts a part of the equation to a number, starting at _calculate_index, stopping at a closed bracket, a next value char or an end symbol char, uses _calculate_index as counter

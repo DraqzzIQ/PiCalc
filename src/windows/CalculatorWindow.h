@@ -72,7 +72,7 @@ class CalculatorWindow: public Window
 	uint8_t _result_selected;
 	Number _ans;
 	Number _prev_ans;
-	std::vector<Number*> _variables;
+	std::map<KEY, Number*> _variables;
 
 	Number _result;
 	std::vector<KEY_SET> _result_key_sets;

@@ -41,7 +41,7 @@ Bitset2D Error::render_error()
 		break;
 	}
 	error_rendered.put_chars(1, 16, Graphics::SYMBOLS_6_HIGH, "[AC]  :Abbruch", false);
-	error_rendered.put_chars(37, 16, Graphics::SYMBOLS_6_HIGH, "[\272][\273]:Weiter", false);
+	error_rendered.put_chars(0, 24, Graphics::SYMBOLS_6_HIGH, "[\272][\273]:Weiter", false);
 	return error_rendered;
 }
 

@@ -1,6 +1,6 @@
 #include "datastructs/Decimal.h"
 
-// TODO
+// TODO ad sin, cos, tan
 
 const int64_t Decimal::powers_of_ten[] = {
 	1,
@@ -95,39 +95,39 @@ int16_t Decimal::get_exp() const
 }
 
 
-bool Decimal::operator==(Decimal other) const
+bool Decimal::operator==(const Decimal& other) const
 {
 	maximize_exp();
 	other.maximize_exp();
 	return _val == other._val && _exp == other._exp;
 }
 
-bool Decimal::operator!=(Decimal other) const
+bool Decimal::operator!=(const Decimal& other) const
 {
 	maximize_exp();
 	other.maximize_exp();
 	return _val != other._val || _exp != other._exp;
 }
 
-bool Decimal::operator<(Decimal other) const
+bool Decimal::operator<(const Decimal& other) const
 {
 	Decimal res = operator-(other);
 	return res._val < 0;
 }
 
-bool Decimal::operator>(Decimal other) const
+bool Decimal::operator>(const Decimal& other) const
 {
 	Decimal res = operator-(other);
 	return res._val > 0;
 }
 
-bool Decimal::operator<=(Decimal other) const
+bool Decimal::operator<=(const Decimal& other) const
 {
 	Decimal res = operator-(other);
 	return res._val <= 0;
 }
 
-bool Decimal::operator>=(Decimal other) const
+bool Decimal::operator>=(const Decimal& other) const
 {
 	Decimal res = operator-(other);
 	return res._val >= 0;
@@ -138,7 +138,7 @@ Decimal Decimal::operator-() const
 	return Decimal(-_val, _exp);
 }
 
-Decimal& Decimal::operator=(Decimal other)
+Decimal& Decimal::operator=(const Decimal& other)
 {
 	_val = other._val;
 	_exp = other._exp;
@@ -172,21 +172,21 @@ Decimal Decimal::operator*(Decimal other) const
 	return other;
 }
 
-Decimal Decimal::operator/(Decimal other) const
+Decimal Decimal::operator/(const Decimal& other) const
 {
 	Decimal res = *this;
 	res /= other;
 	return res;
 }
 
-Decimal Decimal::operator%(Decimal other) const
+Decimal Decimal::operator%(const Decimal& other) const
 {
 	Decimal res = *this;
 	res %= other;
 	return res;
 }
 
-Decimal Decimal::operator^(Decimal other) const
+Decimal Decimal::operator^(const Decimal& other) const
 {
 	Decimal res = *this;
 	res ^= other;
@@ -438,7 +438,7 @@ Decimal& Decimal::operator%=(Decimal other)
 	return *this;
 }
 
-Decimal& Decimal::operator^=(Decimal other)
+Decimal& Decimal::operator^=(const Decimal& other)
 {
 	ln();
 	operator*=(other);
@@ -508,7 +508,7 @@ Decimal& Decimal::sqrt()
 	return *this;
 }
 
-Decimal& Decimal::root(Decimal other)
+Decimal& Decimal::root(const Decimal& other)
 {
 	operator^=(Decimal(1) / other);
 	return *this;

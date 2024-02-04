@@ -112,6 +112,7 @@ FONT Graphics::SYMBOLS_9_HIGH = {
 	// unknown (can be used to get height of font)
 	{ KEY_UNKNOWN, Bitset2D(5, 9, { { 0b01100000, 0b00000000 }, { 0b10000000, 0b00000000 }, { 0b10000110, 0b10000000 }, { 0b10001000, 0b00000000 }, { 0b01110000, 0b00000000 } }) },
 	// other
+	// TODO: MOD, fix Arrows
 	{ KEY_CUBED, Bitset2D(5, 9, { { 0b01001000, 0b00000000 }, { 0b10000100, 0b00000000 }, { 0b10100100, 0b00000000 }, { 0b10100100, 0b00000000 }, { 0b01011000, 0b00000000 } }) }, //?
 	{ KEY_RECIPROCAL, Bitset2D(5, 9, { { 0b00100000, 0b00000000 }, { 0b00100000, 0b00000000 }, { 0b00100000, 0b00000000 }, { 0b10000000, 0b00000000 }, { 0b11111100, 0b00000000 } }) },
 	{ KEY_SQUARED, Bitset2D(5, 9, { { 0b01000100, 0b00000000 }, { 0b10001100, 0b00000000 }, { 0b10010100, 0b00000000 }, { 0b10100100, 0b00000000 }, { 0b01000100, 0b00000000 } }) },
@@ -417,6 +418,7 @@ FONT Graphics::SYMBOLS_6_HIGH = {
 	{ '|', Bitset2D(5, 6, { { 0b00000000 }, { 0b00000000 }, { 0b11111100 }, { 0b00000000 }, { 0b00000000 } }) },
 	{ '}', Bitset2D(5, 6, { { 0b00000000 }, { 0b10000100 }, { 0b11001100 }, { 0b00110000 }, { 0b00000000 } }) }, //?
 	{ '~', Bitset2D(5, 6, { { 0b00010000 }, { 0b00111000 }, { 0b01111100 }, { 0b01111100 }, { 0b00000000 } }) },
+	// TODO: shift somewhere
 	{ KEY_EMPTY, Bitset2D(5, 6, { { 0b11111100 }, { 0b10000100 }, { 0b10000100 }, { 0b10000100 }, { 0b11111100 } }) },
 	{ KEY_EURO, Bitset2D(5, 6, { { 0b00110000 }, { 0b01111000 }, { 0b10110100 }, { 0b10000100 }, { 0b01001000 } }) }, //?
 	{ KEY_NPR, Bitset2D(5, 6, { { 0b01111000 }, { 0b11111100 }, { 0b10000100 }, { 0b10000100 }, { 0b01001000 } }) },
@@ -494,34 +496,6 @@ FONT Graphics::SYMBOLS_5_HIGH{
 	{ KEY_UE, Bitset2D(3, 5, { { 0b10110000 }, { 0b00001000 }, { 0b10110000 } }) }, //?
 	{ KEY_OE, Bitset2D(3, 5, { { 0b10110000 }, { 0b01001000 }, { 0b10110000 } }) }, //?
 	{ KEY_SS, Bitset2D(3, 5, { { 0b01111000 }, { 0b10100000 }, { 0b01010000 } }) }, //?
-};
-
-const std::map<KEY, KEY_SET> Graphics::key_text{
-	{ '(', {} },
-	{ KEY_LOGN, { 'l', 'o', 'g' } },
-	{ KEY_LOG, { 'l', 'o', 'g' } },
-	{ KEY_LN, { 'l', 'n' } },
-	{ KEY_SIN, { 's', 'i', 'n' } },
-	{ KEY_COS, { 'c', 'o', 's' } },
-	{ KEY_TAN, { 't', 'a', 'n' } },
-	{ KEY_ASIN, { 's', 'i', 'n', KEY_RECIPROCAL } },
-	{ KEY_ACOS, { 'c', 'o', 's', KEY_RECIPROCAL } },
-	{ KEY_ATAN, { 't', 'a', 'n', KEY_RECIPROCAL } },
-	{ KEY_SINH, { 's', 'i', 'n', 'h' } },
-	{ KEY_COSH, { 'c', 'o', 's', 'h' } },
-	{ KEY_TANH, { 't', 'a', 'n', 'h' } },
-	{ KEY_ASINH, { 's', 'i', 'n', 'h', KEY_RECIPROCAL } },
-	{ KEY_ACOSH, { 'c', 'o', 's', 'h', KEY_RECIPROCAL } },
-	{ KEY_ATANH, { 't', 'a', 'n', 'h', KEY_RECIPROCAL } },
-	{ KEY_GCD, { 'G', 'C', 'D' } },
-	{ KEY_LCM, { 'L', 'C', 'M' } },
-	{ KEY_POL, { 'P', 'o', 'l' } },
-	{ KEY_INT, { 'I', 'n', 't' } },
-	{ KEY_REC, { 'R', 'e', 'c' } },
-	{ KEY_INTG, { 'I', 'n', 't', 'g' } },
-	{ KEY_RND, { 'R', 'n', 'd' } },
-	{ KEY_RAN, { 'R', 'a', 'n', '#' } },
-	{ KEY_RAN_INT, { 'R', 'a', 'n', 'I', 'n', 't' } },
 };
 
 

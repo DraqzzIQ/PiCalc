@@ -41,6 +41,4 @@ class Graphics
 	static FONT SYMBOLS_6_HIGH;
 
 	static FONT SYMBOLS_5_HIGH;
-
-	static const std::map<KEY, KEY_SET> key_text;
 };
