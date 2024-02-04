@@ -49,11 +49,14 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 
 	create_tls_client();
 
-	err_t conn_err = altcp_connect(tls_client, ip_addr, port, (altcp_connected_fn)&connected_callback);
-	while (conn_err == ERR_ALREADY || conn_err == ERR_INPROGRESS) {
-		sleep_ms(100);
+	while (!this->dns_done) {
+		sleep_ms(10);
 	}
-
+	err_t conn_err = altcp_connect(this->tls_client, this->ip_addr, this->port, (altcp_connected_fn)&connected_callback);
+	while (!this->connected) {
+		sleep_ms(10);
+	}
+	connected = false;
 	if (!bearer_auth_token.empty()) {
 		req.headers.insert(std::make_pair("Authorization", "Bearer " + bearer_auth_token));
 	}
@@ -63,7 +66,6 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 	std::string data = serialize(req, uri, method);
 
 	cyw43_arch_lwip_begin();
-	std::cout << "altcp_sndbuf: " << altcp_sndbuf(this->tls_client) << std::endl;
 	if (data.length() > altcp_sndbuf(this->tls_client)) {
 		cyw43_arch_lwip_end();
 		for (int i = 0; data_pos < data.length(); i++) {
@@ -94,10 +96,9 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 	}
 
 	while (!this->received)
-		sleep_ms(100);
+		sleep_ms(10);
 
 	HttpResponse response = deserialize(this->response_raw);
-	std::cout << error_msg.str() << std::endl;
 	return response;
 }
 
@@ -195,8 +196,9 @@ HttpResponse PicoHttpClient::deserialize(std::string data)
 	std::string http_error_msg;
 	std::istringstream data_stream(data);
 	std::string line;
+	std::string response_http_version;
 
-	data_stream >> this->http_version >> status_code;
+	data_stream >> response_http_version >> status_code;
 	std::getline(data_stream, line);
 	http_error_msg = line.substr(1, line.length() - 1);
 	int delim_pos = 0;
@@ -233,7 +235,7 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 {
 	if (p == nullptr) {
 		received = true;
-		altcp_close(this->tls_client);
+		this->tls_client = nullptr;
 		return ERR_OK;
 	}
 
@@ -250,8 +252,7 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 
 	if (p->tot_len == p->len) {
 		received = true;
-		altcp_close(this->tls_client);
-		this->tls_client = NULL;
+		this->tls_client = nullptr;
 	}
 
 	pbuf_free(p);
@@ -269,7 +270,7 @@ err_t PicoHttpClient::connected_fn(struct tcp_pcb* tpcb, err_t err)
 {
 	if (err == ERR_TIMEOUT) {
 		error_msg << "error: timeout when connecting, try again." << std::endl;
-	} else if (err != ERR_OK || err != ERR_ISCONN) {
+	} else if (err != ERR_OK && err != ERR_ISCONN) {
 		error_msg << "error: lwIP error code " << err << " while connecting" << std::endl;
 	}
 	connected = true;
@@ -279,6 +280,7 @@ err_t PicoHttpClient::connected_fn(struct tcp_pcb* tpcb, err_t err)
 err_t PicoHttpClient::dn_found(const char* name, const ip_addr_t* addr)
 {
 	this->ip_addr = (ip_addr_t*)addr;
+	dns_done = true;
 	return ERR_OK;
 }
 

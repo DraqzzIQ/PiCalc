@@ -42,7 +42,7 @@ class PicoHttpClient: public IHttpClient
 		this->bearer_auth_token = token;
 	};
 
-    void create_tls_client();
+	void create_tls_client();
 
 	/*
 	 * These are the functions that initially get called by LWIP.
@@ -128,7 +128,8 @@ class PicoHttpClient: public IHttpClient
 	u8_t* cert;
 	bool received = false;
 	bool connected = false;
-	ip_addr_t* ip_addr;
+	bool dns_done = false;
+	ip_addr_t* ip_addr = new ip_addr_t();
 	u16_t port = 443;
 	struct altcp_tls_config* tls_config = NULL;
 	struct altcp_pcb* tls_client = NULL;
