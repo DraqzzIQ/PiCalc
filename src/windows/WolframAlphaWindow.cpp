@@ -26,5 +26,5 @@ void WolframAlphaWindow::request(std::string query)
 
 void WolframAlphaWindow::on_return_key()
 {
-	Threading::get_instance()->enqueue_thread({ [this] { this->request(this->_input); } });
+	Threading::get_instance()->enqueue_thread({ [this] { this->request(this->_text.get_ascii_bytes(true)); } });
 }

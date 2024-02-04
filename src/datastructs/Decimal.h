@@ -28,36 +28,36 @@ class Decimal
 	int64_t get_value() const;
 	int16_t get_exp() const;
 
-	bool operator==(Decimal other) const;
-	bool operator!=(Decimal other) const;
-	bool operator<(Decimal other) const;
-	bool operator>(Decimal other) const;
-	bool operator<=(Decimal other) const;
-	bool operator>=(Decimal other) const;
+	bool operator==(const Decimal& other) const;
+	bool operator!=(const Decimal& other) const;
+	bool operator<(const Decimal& other) const;
+	bool operator>(const Decimal& other) const;
+	bool operator<=(const Decimal& other) const;
+	bool operator>=(const Decimal& other) const;
 
 	Decimal operator-() const;
-	Decimal& operator=(Decimal other);
+	Decimal& operator=(const Decimal& other);
 	Decimal& operator=(int64_t other);
 
 	Decimal operator+(Decimal other) const;
 	Decimal operator-(Decimal other) const;
 	Decimal operator*(Decimal other) const;
-	Decimal operator/(Decimal other) const;
-	Decimal operator%(Decimal other) const;
-	Decimal operator^(Decimal other) const;
+	Decimal operator/(const Decimal& other) const;
+	Decimal operator%(const Decimal& other) const;
+	Decimal operator^(const Decimal& other) const;
 
 	Decimal& operator+=(Decimal other);
 	Decimal& operator-=(Decimal other);
 	Decimal& operator*=(Decimal other);
 	Decimal& operator/=(Decimal other);
 	Decimal& operator%=(Decimal other);
-	Decimal& operator^=(Decimal other);
+	Decimal& operator^=(const Decimal& other);
 
 	Decimal& ln();
 	Decimal& log(Decimal other);
 	Decimal& exp();
 	Decimal& sqrt();
-	Decimal& root(Decimal other);
+	Decimal& root(const Decimal& other);
 	Decimal& factorial();
 
 	Decimal& sin();

@@ -11,9 +11,8 @@ ChatWindow::~ChatWindow()
 bool ChatWindow::handle_key_down_special(KeyPress keypress)
 {
 	if (keypress.key_raw == KEY_EQUAL) {
-		add_text("...");
 		on_return_key();
-		_input = "";
+		add_text("...");
 		return true;
 	}
 	return false;

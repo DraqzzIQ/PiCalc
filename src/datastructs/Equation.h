@@ -50,7 +50,7 @@ class Equation
 	/// <summary>
 	/// sets result to the ascii bytes of the equation, for example for Chatgpt and Wolframalpha
 	/// </summary>
-	void get_ascii_bytes(KEY_SET& result) const;
+	std::string get_ascii_bytes(bool english) const;
 
 	/// <summary>
 	/// delete the character before the Cursor
@@ -85,7 +85,7 @@ class Equation
 	/// links another variable list to this equation, so that it also can be changed in this equation
 	/// </summary>
 	/// <param name="variables"></param>
-	void set_variable_list(std::vector<Number*> variables);
+	void set_variable_list(std::map<KEY, Number*>* variables);
 	/// <summary>
 	/// calculate the equation
 	/// </summary>
@@ -100,7 +100,7 @@ class Equation
 	/// <summary>
 	/// all keys that have an opening breacket at the end (which is not automatically closed like logn, including a raw opening bracket)
 	/// </summary>
-	static const KEY_SET _single_bracket_open_keys;
+	static const KEY_SET _bracket_keys;
 	/// <summary>
 	/// when these values are in front of an exponent, no empty-value is added
 	/// </summary>
@@ -109,6 +109,14 @@ class Equation
 	/// all Symbols that need to be ended by SYMBOL_END
 	/// </summary>
 	static const KEY_SET _symbols;
+	/// <summary>
+	/// text representation of the symbols
+	/// </summary>
+	static const std::map<KEY, std::string> _symbols_text;
+	/// <summary>
+	/// text representation of the bracket keys
+	/// </summary>
+	static const std::map<KEY, std::string> _bracket_keys_text;
 
 	/// <summary>
 	/// a KEY_SET (vector of Keys) storing the equation
@@ -186,7 +194,7 @@ class Equation
 	/// <summary>
 	/// pointer to the list of variables used in the equation
 	/// </summary>
-	std::vector<Number*> _variables;
+	std::map<KEY, Number*>* _variables;
 	/// <summary>
 	/// settings variable
 	/// </summary>
@@ -213,9 +221,17 @@ class Equation
 	/// <param name="cursor_offset_x">x offset applied to the cursor, if it's in this subequation</param>
 	/// <param name="cursor_offset_y">y offset applied to the cursor, if it's in this subequation</param>
 	/// <param name="cursor_alignment">0: in reference to y_origin; 1: in reference to the top; 2: in reference to the bottom</param>
-	/// <param name="type">0: top level; 1: symbol; 2: bracket</param>
+	/// <param name="type">0: top level; 1: symbol; 2: bracket;</param>
 	/// <returns>the rendered subequation</returns>
-	Bitset2D render_equation_part(uint8_t font_height, int32_t& y_origin, bool& cursor_inside, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, uint8_t type = 1);
+	Bitset2D render_equation_part(uint8_t font_height, int32_t& y_origin, bool& cursor_inside, int32_t cursor_offset_x = 0, int32_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, uint8_t type = 1);
+	/// <summary>
+	/// renders a subequation with a leading and trailing free column, starting at _render_index, stopping at an end symbol char / next value char (if mixed_fraction), uses _render_index as counter
+	/// </summary>
+	/// <param name="cursor_inside"></param>
+	/// <param name="cursor_offset_x"></param>
+	/// <param name="mixed_fraction"></param>
+	/// <returns></returns>
+	Bitset2D render_restricted(uint8_t font_height, FONT* table, bool& cursor_inside, int32_t cursor_offset_x, int8_t cursor_offset_y, bool mixed_fraction);
 	/// <summary>
 	/// appends the second bitset to the first one with their y_origins aligned
 	/// </summary>
@@ -226,10 +242,27 @@ class Equation
 	std::string to_string_simple() const;
 
 	/// <summary>
-	/// add a new child with the given value and amount of children to the equation at the cursor position
-	/// with the option to either add the value before the cursor to the first child or specify tht value of the first child
+	/// add a new child with the given amount of children to the equation at the cursor position
+	/// with the option to either add the value before the cursor to the first child, specify tht value of the first child or add the value after the cursor to the 2nd child / 1st child if there is no 2nd child
+	/// <param name="mode">
+	/// 0: one value, no adding<para/>
+	/// 1: one value, add right<para/>
+	/// 2: one value, add first_child<para/>
+	/// 3: two values, no adding<para/>
+	/// 4: two values, add both<para/>
+	/// 5: two values, add first_child and right<para/>
+	/// 6: three values, add both
+	/// </param>
 	/// </summary>
-	void add_value_raw(KEY value, uint8_t child_cnt, bool add_value_to_first_child = false, KEY_SET first_child = {});
+	void add_value_raw(KEY value, uint8_t mode, KEY_SET first_child = {});
+	/// <summary>
+	/// returns the smallest index of the equation that is included in a value starting from the given index - 1 going to the left
+	/// </summary>
+	uint32_t get_value_end_left(uint32_t index, bool only_decimal);
+	/// <summary>
+	/// returns the smallest index of the equation that is not included in a value starting from the given index going to the right
+	/// </summary>
+	uint32_t get_value_end_right(uint32_t index);
 
 	/// <summary>
 	/// converts a part of the equation to a number, starting at _calculate_index, stopping at a closed bracket, a next value char or an end symbol char, uses _calculate_index as counter

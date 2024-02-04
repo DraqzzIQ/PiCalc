@@ -22,7 +22,8 @@ class Number
 	/// </summary>
 	Number(int64_t value, int16_t exp, uint8_t periodic);
 	/// <summary>
-	/// create a Number by copying another
+	/// create a Number by copying another<para/>
+	/// IMPORTANT: Number(0) results in an error as 0 is interpreted as nullptr
 	/// </summary>
 	Number(const Number* other);
 	/// <summary>
@@ -38,6 +39,10 @@ class Number
 	/// copy other to this
 	/// </summary>
 	Number* operator=(const Number* other);
+	/// <summary>
+	/// swaps this and other
+	/// </summary>
+	// Number* swap(Number* other);
 	/// <summary>
 	/// create a Number from a KEY
 	/// </summary>
@@ -79,10 +84,6 @@ class Number
 	/// </summary>
 	Number* ln();
 	/// <summary>
-	/// logarithm base 10 of this
-	/// </summary>
-	Number* log();
-	/// <summary>
 	/// logarithm base other of this
 	/// </summary>
 	Number* log(Number* other);
@@ -90,10 +91,6 @@ class Number
 	/// raises e to the power of this
 	/// </summary>
 	Number* exp();
-	/// <summary>
-	/// raises 10 to the power of this
-	/// </summary>
-	Number* pow10();
 	/// <summary>
 	/// raises this to the power of other
 	/// </summary>
@@ -192,10 +189,6 @@ class Number
 	/// changes the sign of this
 	/// </summary>
 	Number* negate();
-	/// <summary>
-	/// divides this by 100
-	/// </summary>
-	Number* percent();
 
 	/// <summary>
 	/// rectangular to polar coordinates (this = x, other = y)
@@ -219,24 +212,34 @@ class Number
 	Number* ran_int(Number* other);
 
 	/// <summary>
-	/// simplyfiy this as much as possible without losing any precision
-	/// </summary>
-	void simplify();
-	/// <summary>
 	/// return a single decimal representing this (often looses precision)
 	/// </summary>
 	bool to_value();
-	void to_value(std::vector<Number*>& variables);
+	/// <summary>
+	/// return a decimal representing this while replacing all variables with their corresponding values
+	/// </summary>
+	/// <param name="variables"></param>
+	void to_value(std::map<KEY, Number*>& variables);
 	void to_key_set(KEY_SET& result) const;
 	/// <summary>
 	/// returns all possible representations of this as a KEY_SET
 	/// </summary>
-	std::vector<KEY_SET> get_all_representations(std::vector<Number*>& variables);
+	std::vector<KEY_SET> get_all_representations(std::map<KEY, Number*>& variables);
 
 	private:
-	bool contains_key() const;
+	/// <summary>
+	/// returns whether this contains a variable
+	/// </summary>
+	/// <returns></returns>
+	bool contains_var() const;
+	/// <summary>
+	/// converts this to a single Decimal, assuming there are no variables, IMPORTANT: this is unusable after this operation
+	/// </summary>
 	void to_value_no_check();
-	void replace_variables(std::vector<Number*>& variables);
+	/// <summary>
+	/// replaces all variables in this with their corresponding values
+	/// </summary>
+	void replace_variables(std::map<KEY, Number*>& variables);
 	/// <summary>
 	/// clones this number without cloning its children (only adresses of Numbers in children are copied)
 	/// </summary>
@@ -245,7 +248,26 @@ class Number
 	/// clone this Number recursively
 	/// </summary>
 	Number* deep_clone() const;
+	/// <summary>
+	/// reduces this number, assumes it is a fraction, else ERROR
+	/// </summary>
+	void reduce();
+	/// <summary>
+	/// if this can be converted to a value, return true, else performs this operation on the Number
+	/// </summary>
+	bool operation_one_val(KEY operation);
+	/// <summary>
+	/// if this and other can be converted to values, return true, else performs this operation on the Numbers<para/>
+	/// IMPORTANT: does not clone => other is unusable after this operation
+	/// </summary>
+	bool operation_two_val(KEY operation, Number* other);
 
+	/// <summary>
+	/// Decimal value of this Number or key if this is not a value
+	/// </summary>
 	Decimal _value;
+	/// <summary>
+	/// children if this is a operation
+	/// </summary>
 	std::vector<Number*> _children;
 };
