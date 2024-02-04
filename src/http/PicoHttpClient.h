@@ -39,7 +39,7 @@ class PicoHttpClient: public IHttpClient
 	}
 	void set_bearer_auth_token(std::string token)
 	{
-		this->bearer_auth_token = token;
+		this->_bearer_auth_token = token;
 	};
 
 	void create_tls_client();
@@ -119,19 +119,19 @@ class PicoHttpClient: public IHttpClient
 
 	std::string url_encode(const std::string& value);
 
-	std::string http_version = "HTTP/1.0";
-	std::string response_raw;
-	int content_l = 0;
-	std::string bearer_auth_token;
-	std::string base_url;
-	std::ostringstream error_msg;
-	u8_t* cert;
-	bool received = false;
-	bool connected = false;
-	bool dns_done = false;
-	ip_addr_t* ip_addr = new ip_addr_t();
-	u16_t port = 443;
-	struct altcp_tls_config* tls_config = NULL;
-	struct altcp_pcb* tls_client = NULL;
+	std::string _http_version = "HTTP/1.0";
+	std::string _response_raw;
+	int _content_l = 0;
+	std::string _bearer_auth_token;
+	std::string _base_url;
+	std::ostringstream _error_msg;
+	u8_t* _cert;
+	bool _received = false;
+	bool _connected = false;
+	bool _dns_done = false;
+	ip_addr_t* _ip_addr = new ip_addr_t();
+	u16_t _port = 443;
+	struct altcp_tls_config* _tls_config = NULL;
+	struct altcp_pcb* _tls_client = NULL;
 };
 #endif

@@ -30,7 +30,7 @@ if(RPI_PICO)
     include(pico_sdk_import.cmake) # must be included before project()
 endif()
 
-project(${PROJECT_NAME} CXX C )
+project(${PROJECT_NAME} CXX C)
 
 
 add_executable(${PROJECT_NAME})

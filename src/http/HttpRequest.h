@@ -4,11 +4,11 @@
 #include <string>
 
 struct HttpRequest {
-	Params params;
+	HttpParams params;
 	Headers headers;
 	std::string body;
 
-	HttpRequest(Params params, Headers headers, std::string body)
+	HttpRequest(HttpParams params, Headers headers, std::string body)
 	{
 		this->params = params;
 		this->headers = headers;
@@ -21,13 +21,13 @@ struct HttpRequest {
 		this->body = body;
 	}
 
-	HttpRequest(Params params, Headers headers)
+	HttpRequest(HttpParams params, Headers headers)
 	{
 		this->params = params;
 		this->headers = headers;
 	}
 
-	HttpRequest(Params params)
+	HttpRequest(HttpParams params)
 	{
 		this->params = params;
 	}

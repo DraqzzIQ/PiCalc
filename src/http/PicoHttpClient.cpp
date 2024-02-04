@@ -18,21 +18,21 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 		std::cout << "Error connecting to wifi " << code << std::endl;
 	}
 
-	this->base_url = baseUrl;
+	this->_base_url = baseUrl;
 #ifdef TLS_CERT
-	this->cert = TLS_CERT;
+	this->_cert = TLS_CERT;
 #else
-	this->cert = get_cert(baseUrl);
+	this->_cert = get_cert(baseUrl);
 #endif
 
 
 	cyw43_arch_lwip_begin();
-	tls_config = altcp_tls_create_config_client(cert, sizeof(*cert));
+	this->_tls_config = altcp_tls_create_config_client(this->_cert, sizeof(*this->_cert));
 	cyw43_arch_lwip_end();
 
 
 	cyw43_arch_lwip_begin();
-	err_t dns_error = dns_gethostbyname(baseUrl.c_str(), this->ip_addr, (dns_found_callback)&dns_callback, this);
+	err_t dns_error = dns_gethostbyname(baseUrl.c_str(), this->_ip_addr, (dns_found_callback)&dns_callback, this);
 	if (dns_error != ERR_OK && dns_error != ERR_INPROGRESS) {
 		std::cout << "error: lwIP error code " << dns_error << " during dns lookup" << std::endl;
 	}
@@ -41,42 +41,42 @@ PicoHttpClient::PicoHttpClient(std::string baseUrl):
 
 HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, HttpMethod method)
 {
-	this->error_msg.clear();
-	this->content_l = 0;
-	this->received = false;
-	this->response_raw.clear();
+	this->_error_msg.clear();
+	this->_content_l = 0;
+	this->_received = false;
+	this->_response_raw.clear();
 	err_t write_err;
 
 	create_tls_client();
 
-	while (!this->dns_done) {
+	while (!this->_dns_done) {
 		sleep_ms(10);
 	}
-	err_t conn_err = altcp_connect(this->tls_client, this->ip_addr, this->port, (altcp_connected_fn)&connected_callback);
-	while (!this->connected) {
+	err_t conn_err = altcp_connect(this->_tls_client, this->_ip_addr, this->_port, (altcp_connected_fn)&connected_callback);
+	while (!this->_connected) {
 		sleep_ms(10);
 	}
-	connected = false;
-	if (!bearer_auth_token.empty()) {
-		req.headers.insert(std::make_pair("Authorization", "Bearer " + bearer_auth_token));
+	this->_connected = false;
+	if (!this->_bearer_auth_token.empty()) {
+		req.headers.insert(std::make_pair("Authorization", "Bearer " + this->_bearer_auth_token));
 	}
-	req.headers.insert(std::make_pair("Host", this->base_url));
+	req.headers.insert(std::make_pair("Host", this->_base_url));
 	req.headers.insert(std::make_pair("Accept", "*/*"));
 	size_t data_pos = 0;
 	std::string data = serialize(req, uri, method);
 
 	cyw43_arch_lwip_begin();
-	if (data.length() > altcp_sndbuf(this->tls_client)) {
+	if (data.length() > altcp_sndbuf(this->_tls_client)) {
 		cyw43_arch_lwip_end();
 		for (int i = 0; data_pos < data.length(); i++) {
 			cyw43_arch_lwip_begin();
-			data_pos += altcp_sndbuf(this->tls_client);
+			data_pos += altcp_sndbuf(this->_tls_client);
 
-			write_err = altcp_write(tls_client, data.substr(data_pos, altcp_sndbuf(this->tls_client)).c_str(), altcp_sndbuf(this->tls_client), 0x00);
+			write_err = altcp_write(this->_tls_client, data.substr(data_pos, altcp_sndbuf(this->_tls_client)).c_str(), altcp_sndbuf(this->_tls_client), 0x00);
 			if (write_err == ERR_CLSD || write_err == ERR_ABRT || write_err == ERR_CONN) {
-				error_msg << "error: connection error while sending data, try again" << std::endl;
+				this->_error_msg << "error: connection error while sending data, try again" << std::endl;
 			} else if (write_err != ERR_OK && write_err != ERR_INPROGRESS) {
-				error_msg << "error: lwIP error code " << write_err << " while sending data" << std::endl;
+				this->_error_msg << "error: lwIP error code " << write_err << " while sending data" << std::endl;
 			}
 
 			cyw43_arch_lwip_end();
@@ -84,21 +84,21 @@ HttpResponse PicoHttpClient::send_request(HttpRequest req, std::string uri, Http
 	} else {
 		cyw43_arch_lwip_end();
 		cyw43_arch_lwip_begin();
-		write_err = altcp_write(tls_client, data.c_str(), data.length(), TCP_WRITE_FLAG_COPY);
+		write_err = altcp_write(this->_tls_client, data.c_str(), data.length(), TCP_WRITE_FLAG_COPY);
 		if (write_err == ERR_CLSD || write_err == ERR_ABRT || write_err == ERR_CONN) {
-			error_msg << "error: connection error while sending data, try again" << std::endl;
+			this->_error_msg << "error: connection error while sending data, try again" << std::endl;
 		} else if (write_err != ERR_OK) {
-			this->error_msg << "error: lwIP error code \n"
-							<< write_err << " while sending data" << std::endl;
+			this->_error_msg << "error: lwIP error code \n"
+							 << write_err << " while sending data" << std::endl;
 		}
 		// altcp_output(tls_client);
 		cyw43_arch_lwip_end();
 	}
 
-	while (!this->received)
+	while (!this->_received)
 		sleep_ms(10);
 
-	HttpResponse response = deserialize(this->response_raw);
+	HttpResponse response = deserialize(this->_response_raw);
 	return response;
 }
 
@@ -120,7 +120,7 @@ std::string PicoHttpClient::serialize(HttpRequest& req, std::string uri, HttpMet
 		}
 	}
 
-	result << " " << http_version << "\r\n";
+	result << " " << this->_http_version << "\r\n";
 	for (auto h : req.headers) {
 		result << h.first << ": " << h.second << "\r\n";
 	}
@@ -135,19 +135,19 @@ std::string PicoHttpClient::serialize(HttpRequest& req, std::string uri, HttpMet
 void PicoHttpClient::create_tls_client()
 {
 	cyw43_arch_lwip_begin();
-	this->tls_client = altcp_tls_new(tls_config, IPADDR_TYPE_ANY);
+	this->_tls_client = altcp_tls_new(this->_tls_config, IPADDR_TYPE_ANY);
 	cyw43_arch_lwip_end();
 
 	cyw43_arch_lwip_begin();
-	altcp_arg(this->tls_client, this);
+	altcp_arg(this->_tls_client, this);
 	cyw43_arch_lwip_end();
 
 	cyw43_arch_lwip_begin();
-	altcp_err(this->tls_client, (altcp_err_fn)&err_callback);
+	altcp_err(this->_tls_client, (altcp_err_fn)&err_callback);
 	cyw43_arch_lwip_end();
 
 	cyw43_arch_lwip_begin();
-	altcp_recv(this->tls_client, (altcp_recv_fn)&recv_callback);
+	altcp_recv(this->_tls_client, (altcp_recv_fn)&recv_callback);
 	cyw43_arch_lwip_end();
 }
 
@@ -225,7 +225,7 @@ HttpResponse PicoHttpClient::deserialize(std::string data)
 	HttpResponse result(headers, body, status_code);
 
 	if (status_code < 200 || status_code >= 300)
-		result.error_msg = error_msg.str() + "error: http code " + std::to_string(status_code) + http_error_msg + "\n";
+		result.error_msg = this->_error_msg.str() + "error: http code " + std::to_string(status_code) + http_error_msg + "\n";
 
 	return result;
 }
@@ -234,8 +234,8 @@ HttpResponse PicoHttpClient::deserialize(std::string data)
 err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 {
 	if (p == nullptr) {
-		received = true;
-		this->tls_client = nullptr;
+		this->_received = true;
+		this->_tls_client = nullptr;
 		return ERR_OK;
 	}
 
@@ -244,15 +244,15 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 		pbuf_copy_partial(p, buffer, p->tot_len, 0);
 		buffer[p->tot_len] = 0;
 
-		altcp_recved(tls_client, p->tot_len);
-		this->response_raw += std::string(buffer);
+		altcp_recved(this->_tls_client, p->tot_len);
+		this->_response_raw += std::string(buffer);
 	} else {
-		error_msg << "error: lwIP error code " << err << " while receiving data" << std::endl;
+		this->_error_msg << "error: lwIP error code " << err << " while receiving data" << std::endl;
 	}
 
 	if (p->tot_len == p->len) {
-		received = true;
-		this->tls_client = nullptr;
+		this->_received = true;
+		this->_tls_client = nullptr;
 	}
 
 	pbuf_free(p);
@@ -262,25 +262,25 @@ err_t PicoHttpClient::receive(struct tcp_pcb* tpcb, struct pbuf* p, err_t err)
 
 err_t PicoHttpClient::client_error(err_t err)
 {
-	error_msg << "error: lwIP client error " << err << std::endl;
+	this->_error_msg << "error: lwIP client error " << err << std::endl;
 	return err;
 }
 
 err_t PicoHttpClient::connected_fn(struct tcp_pcb* tpcb, err_t err)
 {
 	if (err == ERR_TIMEOUT) {
-		error_msg << "error: timeout when connecting, try again." << std::endl;
+		this->_error_msg << "error: timeout when connecting, try again." << std::endl;
 	} else if (err != ERR_OK && err != ERR_ISCONN) {
-		error_msg << "error: lwIP error code " << err << " while connecting" << std::endl;
+		this->_error_msg << "error: lwIP error code " << err << " while connecting" << std::endl;
 	}
-	connected = true;
+	this->_connected = true;
 	return err;
 }
 
 err_t PicoHttpClient::dn_found(const char* name, const ip_addr_t* addr)
 {
-	this->ip_addr = (ip_addr_t*)addr;
-	dns_done = true;
+	this->_ip_addr = (ip_addr_t*)addr;
+	this->_dns_done = true;
 	return ERR_OK;
 }
 
@@ -288,10 +288,10 @@ err_t PicoHttpClient::dn_found(const char* name, const ip_addr_t* addr)
 PicoHttpClient::~PicoHttpClient()
 {
 	cyw43_arch_lwip_begin();
-	altcp_shutdown(tls_client, 1, 1);
+	altcp_shutdown(this->_tls_client, 1, 1);
 	cyw43_arch_lwip_end();
 
-	altcp_tls_free_config(tls_config);
+	altcp_tls_free_config(this->_tls_config);
 
 	cyw43_arch_deinit();
 }

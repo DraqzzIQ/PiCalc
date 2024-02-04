@@ -11,7 +11,7 @@ WolframAlphaWindow::~WolframAlphaWindow()
 
 void WolframAlphaWindow::request(std::string query)
 {
-	Params params = _default_params;
+	HttpParams params = _default_params;
 	params.emplace("i", query);
 	HttpResponse res = _client.get(_endpoint, HttpRequest(params));
 
