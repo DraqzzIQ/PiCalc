@@ -50,7 +50,7 @@ class Equation
 	/// <summary>
 	/// sets result to the ascii bytes of the equation, for example for Chatgpt and Wolframalpha
 	/// </summary>
-	void get_ascii_bytes(KEY_SET& result, bool english) const;
+	std::string get_ascii_bytes(bool english) const;
 
 	/// <summary>
 	/// delete the character before the Cursor

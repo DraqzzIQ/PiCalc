@@ -11,7 +11,7 @@ ChatGPTWindow::~ChatGPTWindow()
 
 void ChatGPTWindow::request(std::string query)
 {
-	HttpResponse res = _client.post(_endpoint, HttpRequest(_default_headers, _body1 + _input + _body2));
+	HttpResponse res = _client.post(_endpoint, HttpRequest(_default_headers, _body1 + query + _body2));
 
 	if (res.error()) {
 		add_text("\nerror: " + res.error_msg);
@@ -24,7 +24,7 @@ void ChatGPTWindow::request(std::string query)
 
 void ChatGPTWindow::on_return_key()
 {
-	request(_input);
+	request(_text.get_ascii_bytes(true));
 	// Threading::get_instance()->enqueue_thread({ std::bind(&ChatGPTWindow::request, this, _input) });
 }
 

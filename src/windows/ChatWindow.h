@@ -12,6 +12,5 @@ class ChatWindow: public TextWindow
 	void add_text(std::string text);
 
 	protected:
-	std::string _input;
 	virtual void on_return_key();
 };

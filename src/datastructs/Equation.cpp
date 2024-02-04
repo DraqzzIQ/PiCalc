@@ -98,9 +98,10 @@ const KEY_SET* Equation::get_raw_bytes() const
 	return &_equation;
 }
 
-void Equation::get_ascii_bytes(KEY_SET& result, bool english) const
+std::string Equation::get_ascii_bytes(bool english) const
 {
 	// TODO: check if works
+	std::string result;
 	result.reserve(_equation.size());
 	std::vector<KEY> current_symbols;
 	for (KEY key : _equation) {
@@ -114,21 +115,11 @@ void Equation::get_ascii_bytes(KEY_SET& result, bool english) const
 			result.push_back(key);
 			result.push_back(' ');
 		} else if (key == KEY_NEXT_VAL) {
-			if (current_symbols.back() == KEY_FRACTION) {
-				result.push_back(')');
-				result.push_back('/');
-				result.push_back('(');
-			} else if (current_symbols.back() == KEY_MIXED_FRACTION) {
-				result.push_back(' ');
-				result.push_back('+');
-				result.push_back(' ');
-				result.push_back('(');
+			if (current_symbols.back() == KEY_MIXED_FRACTION) {
+				result.append(" + (");
 				current_symbols.back() = KEY_FRACTION;
-			} else {
-				result.push_back(' ');
-				result.push_back(',');
-				result.push_back(' ');
-			}
+			} else if (current_symbols.back() == KEY_FRACTION) result.append(") / (");
+			else result.append(", ");
 		} else if (key == KEY_SYMBOL_END) {
 			if (current_symbols.back() == KEY_FRACTION) result.push_back(')');
 			if (current_symbols.back() != KEY_PERIODIC) result.push_back(')');
