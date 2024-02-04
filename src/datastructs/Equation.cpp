@@ -252,10 +252,10 @@ void Equation::handle_key_down(KEY keypress)
 	case KEY_FRACTION: add_value_raw(KEY_FRACTION, 2, true, true); break;
 	case KEY_SQRT: add_value_raw(KEY_SQRT, 1); break;
 	case KEY_SQUARED: add_value_raw(KEY_POWER, 1, false, false, KEY_SET{ '2' }); break;
-	case KEY_POWER: add_value_raw(KEY_POWER, 1, true); break; // first value: only Decimal
+	case KEY_POWER: add_value_raw(KEY_POWER, 1, true); break;
 	case KEY_MIXED_FRACTION: add_value_raw(KEY_MIXED_FRACTION, 3, true, true); break;
 	case KEY_ROOT3: add_value_raw(KEY_ROOTN, 2, false, false, KEY_SET{ '3' }); break;
-	case KEY_PERIODIC: add_value_raw(KEY_PERIODIC, 1, false, true); break; // only digits
+	case KEY_PERIODIC: add_value_raw(KEY_PERIODIC, 1, false, true); break;
 	case KEY_ROOTN: add_value_raw(KEY_ROOTN, 2, true); break;
 	case KEY_POWER10: add_value_raw(KEY_POWER10, 1, false, true); break;
 	case KEY_EXP: add_value_raw(KEY_EXP, 1, false, true); break;
@@ -287,7 +287,7 @@ void Equation::render_equation()
 	_show_cursor = true;
 
 	// print the equation below the screen to the console for debugging
-	// std::cout << to_string_simple();
+	std::cout << to_string_simple();
 
 	// render the equation without the cursor
 	_render_index = 0;
@@ -313,7 +313,7 @@ void Equation::render_equation()
 	_rendered_equation_cursor.copy(_frame_x, _frame_y, _frame_width, _frame_height, _rendered_equation_cursor_frame);
 }
 
-Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, bool& cursor_inside_ref, int8_t cursor_offset_x, int8_t cursor_offset_y, uint8_t cursor_alignment, uint8_t type)
+Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, bool& cursor_inside_ref, int32_t cursor_offset_x, int32_t cursor_offset_y, uint8_t cursor_alignment, uint8_t type)
 {
 	// TODO: smaller Fonts
 	FONT* table = nullptr;
@@ -336,8 +336,10 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 	KEY last_rendered = 0;
 
 	for (; _render_index < _equation.size(); _render_index++) {
-		Bitset2D symbol_matrix;
 		KEY value = _equation.at(_render_index);
+
+		Bitset2D symbol_matrix;
+
 		if (_render_index == _cursor_index) {
 			_cursor_data = { equation_part.width() - 1, 0, font_height };
 			cursor_inside = true;
@@ -476,13 +478,15 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 
 		// fraction or mixedfraction
 		else if (value == KEY_FRACTION || value == KEY_MIXED_FRACTION) {
+			// render front
+			if (value == KEY_MIXED_FRACTION) {
+				Bitset2D front = render_restricted(6, &Graphics::SYMBOLS_6_HIGH, cursor_inside, equation_part.width() - 1, font_height == 9, true);
+				extend_bitset_left_and_match_y_origin(equation_part, y_origin, front, -(font_height == 9));
+			}
+
 			// render top and bottom
 			uint8_t fraction_line_height = (font_height == 9) ? 3 : 2;
 			int32_t new_y_origin = 0;
-			if (value == KEY_MIXED_FRACTION) {
-				auto front = render_equation_part(6, new_y_origin, cursor_inside, equation_part.width(), font_height == 9);
-				extend_bitset_left_and_match_y_origin(equation_part, y_origin, front, -(font_height == 9) + new_y_origin);
-			}
 			bool cursor_in_top = false;
 			bool cursor_in_bottom = false;
 			auto top = render_equation_part(6, new_y_origin, cursor_in_top, equation_part.width(), fraction_line_height, 2);
@@ -564,8 +568,7 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 
 		// periodic
 		else if (value == KEY_PERIODIC) {
-			int32_t new_y_origin = 0;
-			symbol_matrix = render_equation_part(font_height, new_y_origin, cursor_inside, equation_part.width(), 0);
+			symbol_matrix = render_restricted(font_height, table, cursor_inside, equation_part.width() - 1, 0, false);
 			symbol_matrix.extend_up(1, false);
 			symbol_matrix.extend_up(1, true);
 			extend_bitset_left_and_match_y_origin(equation_part, y_origin, symbol_matrix, 2);
@@ -628,12 +631,23 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 		}
 
 		// Fonts
-		else if (value == KEY_FONT_5_HIGH)
+		// TODO: Font 8
+		else if (value == KEY_FONT_5_HIGH) {
 			table = &Graphics::SYMBOLS_5_HIGH;
-		else if (value == KEY_FONT_6_HIGH) table = &Graphics::SYMBOLS_6_HIGH;
-		else if (value == KEY_FONT_7_HIGH) table = &Graphics::SYMBOLS_7_HIGH;
-		else if (value == KEY_FONT_8_HIGH) table = &Graphics::SYMBOLS_7_HIGH;
-		else if (value == KEY_FONT_9_HIGH) table = &Graphics::SYMBOLS_9_HIGH;
+			font_height = 5;
+		} else if (value == KEY_FONT_6_HIGH) {
+			table = &Graphics::SYMBOLS_6_HIGH;
+			font_height = 6;
+		} else if (value == KEY_FONT_7_HIGH) {
+			table = &Graphics::SYMBOLS_7_HIGH;
+			font_height = 7;
+		} else if (value == KEY_FONT_8_HIGH) {
+			table = &Graphics::SYMBOLS_7_HIGH;
+			font_height = 7;
+		} else if (value == KEY_FONT_9_HIGH) {
+			table = &Graphics::SYMBOLS_9_HIGH;
+			font_height = 9;
+		}
 
 		// Ran#
 		else if (value == KEY_RAN) {
@@ -672,6 +686,43 @@ Bitset2D Equation::render_equation_part(uint8_t font_height, int32_t& y_origin, 
 		equation_part.extend_right(1, false);
 	}
 	return equation_part;
+}
+
+Bitset2D Equation::render_restricted(uint8_t font_height, FONT* table, bool& cursor_inside, int32_t cursor_offset_x, int8_t cursor_offset_y, bool mixed_fraction)
+{
+	Bitset2D symbol_matrix = Bitset2D(1, font_height, false);
+	uint8_t depth = 0;
+	uint8_t decimal = 0;
+	_render_index++;
+	while (_render_index < _equation.size()) {
+		KEY key = _equation.at(_render_index);
+		if (_render_index == _cursor_index) {
+			_cursor_data = { cursor_offset_x + symbol_matrix.width(), cursor_offset_y, font_height };
+			cursor_inside = true;
+		}
+		if (key > 47 && key < 58 || mixed_fraction && (key == ',' && decimal == 0 && (decimal = 1) || key == KEY_SCIENTIFIC_E && decimal != 0 && (decimal = 2))) {
+			symbol_matrix.extend_right(table->at(key));
+			symbol_matrix.extend_right(1, false);
+			_render_index++;
+			continue;
+		} else if (key == KEY_SYMBOL_END) {
+			if (depth == 0 && !mixed_fraction) break;
+			depth--;
+		} else if (mixed_fraction && key == KEY_NEXT_VAL && depth == 0) {
+			break;
+		} else if (Utils::in_key_set(key, _symbols)) {
+			depth++;
+		}
+		_equation.erase(_equation.begin() + _render_index);
+		if (_cursor_index > _render_index) _cursor_index--;
+	}
+
+	if (symbol_matrix.width() == 1) {
+		symbol_matrix.extend_right(table->at(KEY_EMPTY));
+		symbol_matrix.extend_right(1, false);
+	}
+
+	return symbol_matrix;
 }
 
 void Equation::extend_bitset_left_and_match_y_origin(Bitset2D& bitset, int32_t& y_origin, const Bitset2D& bitset_new, int32_t y_origin_new)

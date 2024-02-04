@@ -221,9 +221,17 @@ class Equation
 	/// <param name="cursor_offset_x">x offset applied to the cursor, if it's in this subequation</param>
 	/// <param name="cursor_offset_y">y offset applied to the cursor, if it's in this subequation</param>
 	/// <param name="cursor_alignment">0: in reference to y_origin; 1: in reference to the top; 2: in reference to the bottom</param>
-	/// <param name="type">0: top level; 1: symbol; 2: bracket</param>
+	/// <param name="type">0: top level; 1: symbol; 2: bracket;</param>
 	/// <returns>the rendered subequation</returns>
-	Bitset2D render_equation_part(uint8_t font_height, int32_t& y_origin, bool& cursor_inside, int8_t cursor_offset_x = 0, int8_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, uint8_t type = 1);
+	Bitset2D render_equation_part(uint8_t font_height, int32_t& y_origin, bool& cursor_inside, int32_t cursor_offset_x = 0, int32_t cursor_offset_y = 0, uint8_t cursor_alignment = 0, uint8_t type = 1);
+	/// <summary>
+	/// renders a subequation with a leading and trailing free column, starting at _render_index, stopping at an end symbol char / next value char (if mixed_fraction), uses _render_index as counter
+	/// </summary>
+	/// <param name="cursor_inside"></param>
+	/// <param name="cursor_offset_x"></param>
+	/// <param name="mixed_fraction"></param>
+	/// <returns></returns>
+	Bitset2D render_restricted(uint8_t font_height, FONT* table, bool& cursor_inside, int32_t cursor_offset_x, int8_t cursor_offset_y, bool mixed_fraction);
 	/// <summary>
 	/// appends the second bitset to the first one with their y_origins aligned
 	/// </summary>
