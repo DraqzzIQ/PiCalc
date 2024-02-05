@@ -1,5 +1,4 @@
 #include "keyboard/SDLKeyboard.h"
-#include "SDLKeyboard.h"
 #ifndef PICO
 
 SDLKeyboard::SDLKeyboard():

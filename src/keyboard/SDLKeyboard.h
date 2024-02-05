@@ -3,7 +3,11 @@
 #include "utils/Utils.h"
 #include "keyboard/IKeyboard.h"
 #include "windows/WindowManager.h"
+#ifdef _WIN32
+#include <SDL2/SDL.h>
+#else
 #include <SDL.h>
+#endif
 #include <iostream>
 
 /// <summary>
