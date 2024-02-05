@@ -183,6 +183,9 @@
     <ClInclude Include="src\windows\TextWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\windows\FileSelectWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PiCalc.cpp">
@@ -284,7 +287,7 @@
     <ClCompile Include="src\windows\ContrastWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-     <ClCompile Include="src\windows\TetrisWindow.cpp">
+    <ClCompile Include="src\windows\TetrisWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\threading\Threading.cpp">

@@ -168,12 +168,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>lib\SDL2\include;lib\openssh\include\openssl;$(IncludePath)</IncludePath>
-    <LibraryPath>lib\SDL2\lib\x64;lib\openssh;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SDL)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SDL)\lib\x64;$(LibraryPath);$(OPENSSH)\lib\VC\x64\MDd</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>lib\SDL2\include;lib\openssh\include\openssl;$(IncludePath)</IncludePath>
-    <LibraryPath>lib\SDL2\lib\x64;lib\openssh;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SDL)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SDL)\lib\x64;$(LibraryPath);$(OPENSSH)\lib\VC\x64\MDd</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -212,7 +212,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\cpp-httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -236,7 +236,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>src;lib\httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;lib\cpp-httplib;lib\openssh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
