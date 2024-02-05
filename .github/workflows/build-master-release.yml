@@ -124,7 +124,7 @@ jobs:
     runs-on: ubuntu-latest
 
     if: ${{ always() && contains(join(needs.*.result, ','), 'success')  && github.event_name != 'pull_request' }}
-    needs: [linux-build, pico-build, windows-build]
+    needs: [linux-build, pico-build]
 
     steps:
     - uses: actions/checkout@v3
