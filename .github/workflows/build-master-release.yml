@@ -151,7 +151,6 @@ jobs:
       run: |
         mv ${{github.workspace}}/builds/PiCalc ${{github.workspace}}/builds/PiCalc-linux-x64
         mv ${{github.workspace}}/builds/PiCalc.uf2 ${{github.workspace}}/builds/PiCalc-pico.uf2
-        mv ${{github.workspace}}/builds/PiCalc.exe ${{github.workspace}}/builds/PiCalc-win-x64.exe
 
     - name: Bump version and push tag
       id: release_tag
@@ -169,7 +168,6 @@ jobs:
         files: |
           ${{github.workspace}}/builds/PiCalc-linux-x64
           ${{github.workspace}}/builds/PiCalc-pico.uf2
-          ${{github.workspace}}/builds/PiCalc-win-x64.exe
         prerelease: ${{env.PRERELEASE}}
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         automatic_release_tag: ${{steps.release_tag.outputs.new_tag}}
