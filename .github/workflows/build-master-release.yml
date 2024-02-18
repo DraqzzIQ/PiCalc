@@ -46,7 +46,7 @@ jobs:
       run: git submodule update --init
 
     - name: Install SDL2
-      run: sudo apt install libsdl2-dev -y
+      run: sudo apt update && sudo apt install libsdl2-dev -y
 
     - name: Check for SDL Headers
       run: ls /usr/include/SDL2
