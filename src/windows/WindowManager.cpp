@@ -56,8 +56,9 @@ void WindowManager::handle_key_down(KeyPress keypress)
 {
 	_shift = keypress.shift;
 	_alpha = keypress.alpha;
-	if (keypress.shift && keypress.key_raw == KEY_AC) {
+	if (keypress.shift && keypress.key_raw == KEY_AC && !Utils::charging) {
 #ifdef PICO
+		// TODO: renove check for charging in new design
 		gpio_put(28, 0);
 #endif
 	} else if (keypress.alpha && keypress.key_raw == KEY_DEL) {

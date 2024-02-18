@@ -3,6 +3,7 @@
 #include "constant/Graphics.h"
 #include "keyboard/KeyPress.h"
 #include "renderers/IRenderer.h"
+#include "utils/Utils.h"
 #include "windows/Window.h"
 #ifdef PICO
 #include "pico/stdlib.h"

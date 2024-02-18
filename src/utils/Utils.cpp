@@ -89,6 +89,6 @@ void Utils::update_voltage()
 {
 #ifdef PICO
 	voltage = 115 * adc_read();
-	charging = gpio_get(27);
+	charging = gpio_get(24);
 #endif
 }

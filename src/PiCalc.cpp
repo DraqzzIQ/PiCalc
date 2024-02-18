@@ -41,12 +41,20 @@ void start_main_thread()
 	t.detach();
 #endif
 	uint64_t last_time = 0;
+	uint8_t frame = 0;
 	while (1) {
 		keyboard->check_for_keyboard_presses();
 		window_manager->update();
 		// simple frame rate cap on 30fps
-		if (Utils::us_since_boot() - last_time < 1000000 / FPS) Utils::sleep_for_us(1000000 / FPS - (Utils::us_since_boot() - last_time));
+		if (Utils::us_since_boot() - last_time < 1000000 / FPS) {
+			Utils::sleep_for_us(1000000 / FPS - (Utils::us_since_boot() - last_time));
+		}
 		last_time = Utils::us_since_boot();
+		frame++;
+		if (frame == FPS) {
+			frame = 0;
+			Utils::update_voltage();
+		}
 	}
 }
 
@@ -67,8 +75,8 @@ int main(int argc, char* argv[])
 	adc_select_input(0);
 
 	// set up the charging indication pin (GPIO 27)
-	gpio_init(27);
-	gpio_set_dir(27, GPIO_IN);
+	gpio_init(24);
+	gpio_set_dir(24, GPIO_IN);
 
 	// 	// Enable UART so status output can be printed
 	stdio_init_all();
