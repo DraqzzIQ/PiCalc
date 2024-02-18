@@ -20,8 +20,8 @@ class SysInfoWindow: public MenuWindow
 
 	void update_window() override
 	{
-		options[1] = new TextMenuOption("Total Heap: " + std::to_string(Utils::get_total_heap()));
-		options[2] = new TextMenuOption("Free Heap: " + std::to_string(Utils::get_free_heap()));
+		options[1]->display_name = "Total Heap: " + std::to_string(Utils::get_total_heap());
+		options[2]->display_name = "Free Heap: " + std::to_string(Utils::get_free_heap());
 		create_menu();
 	}
 };
