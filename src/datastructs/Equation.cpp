@@ -83,6 +83,8 @@ void Equation::set_key_set(const KEY_SET& equation)
 Bitset2D Equation::get_rendered_equation(bool complete)
 {
 	// change _show_cursor every 500ms if cursor is active
+	// TODO: fix dumb error of _last_blink_time not being 0
+	// std::cout << _last_blink_time << " " << Utils::us_since_boot() << std::endl;
 	if (!_cursor_active) _show_cursor = false;
 	else if (Utils::us_since_boot() > _last_blink_time + 500000) {
 		_last_blink_time = Utils::us_since_boot();

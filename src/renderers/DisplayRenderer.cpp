@@ -9,10 +9,9 @@ void DisplayRenderer::init()
 {
 	Utils::sleep_for_ms(1);
 	clear();
-	set_contrast(_contrast);
 }
 
-void DisplayRenderer::render(const Frame& frame, bool force_rerender)
+void DisplayRenderer::render(const Frame& frame)
 {
 	if (_timer + 500000 > Utils::us_since_boot()) {
 		_timer = Utils::us_since_boot();
@@ -21,7 +20,7 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 		else if (Utils::voltage > 320000) _battery_symbols = 0b10;
 		else if (_battery_symbols == 0b00) _battery_symbols = 0b11;
 		else _battery_symbols = 0b00;
-	} else if (!force_rerender && already_rendered(frame)) return;
+	}
 
 	// 3 commands + 4 bytes per column
 	uint8_t command[387];

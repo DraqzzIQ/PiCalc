@@ -10,6 +10,9 @@ void I2CUtils::init_i2c()
 	gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
 	gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
 	gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+	if (!device_availible(LCD_DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
+	if (!device_availible(POT_DEVICE_ADDRESS)) std::cout << "Digital Potentiometer not found" << std::endl;
+	set_contrast(_contrast);
 }
 
 bool I2CUtils::device_availible(uint8_t addr)

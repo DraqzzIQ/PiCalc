@@ -1,9 +1,5 @@
 #include "renderers/ConsoleRenderer.h"
 
-Bitset2D ConsoleRenderer::_rendered_pixels = Bitset2D();
-uint16_t ConsoleRenderer::_rendered_screen_symbols = 0;
-uint32_t ConsoleRenderer::_rendered_corner_x = 0;
-uint32_t ConsoleRenderer::_rendered_corner_y = 0;
 const std::vector<std::string> ConsoleRenderer::SCREEN_SYMBOLS = { "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT", "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp" };
 
 void ConsoleRenderer::init()
@@ -24,10 +20,8 @@ void ConsoleRenderer::init()
 #endif
 }
 
-void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
+void ConsoleRenderer::render(const Frame& frame)
 {
-	if (!force_rerender && already_rendered(frame)) return;
-
 	set_cursor_top_left();
 
 	std::string out = "";
@@ -61,18 +55,6 @@ void ConsoleRenderer::render(const Frame& frame, bool force_rerender)
 	out += get_display_border();
 
 	std::cout << out << std::endl;
-}
-
-bool ConsoleRenderer::already_rendered(const Frame& frame)
-{
-	if (frame.pixels != _rendered_pixels || frame.screen_symbols != _rendered_screen_symbols || frame.corner_x != _rendered_corner_x || frame.corner_y != _rendered_corner_y) {
-		_rendered_pixels = frame.pixels;
-		_rendered_screen_symbols = frame.screen_symbols;
-		_rendered_corner_x = frame.corner_x;
-		_rendered_corner_y = frame.corner_y;
-		return false;
-	}
-	return true;
 }
 
 std::string ConsoleRenderer::get_display_border()

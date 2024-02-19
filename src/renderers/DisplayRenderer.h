@@ -22,7 +22,7 @@ class DisplayRenderer
 	/// renders the given frame to the display
 	/// </summary>
 	/// <param name="frame">frame to render</param>
-	static void render(const Frame& frame, bool force_rerender);
+	static void render(const Frame& frame);
 
 	private:
 	/// <summary>

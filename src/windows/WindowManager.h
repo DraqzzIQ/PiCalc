@@ -1,6 +1,7 @@
 #pragma once
 #include "constant/Chars.h"
 #include "constant/Graphics.h"
+#include "datastructs/Frame.h"
 #include "keyboard/KeyPress.h"
 #include "renderers/ConsoleRenderer.h"
 #include "utils/Utils.h"
@@ -71,6 +72,12 @@ class WindowManager
 	/// </summary>
 	/// <param name="key">key that got released</param>
 	static void handle_key_up(KeyPress keypress);
+	/// <summary>
+	/// checks if frame to render is the same as currently rendered
+	/// </summary>
+	/// <param name="frame">frame to check</param>
+	/// <returns>true if same else false</returns>
+	static bool already_rendered(const Frame& frame);
 
 	private:
 #ifdef PICO
@@ -98,6 +105,12 @@ class WindowManager
 	/// stores, which key was pressed last
 	/// </summary>
 	static KEY _last_key;
+
+	static Bitset2D _rendered_pixels;
+	static uint16_t _rendered_screen_symbols;
+	static uint32_t _rendered_corner_x;
+	static uint32_t _rendered_corner_y;
+
 	/// <summary>
 	/// the window stack
 	/// </summary>

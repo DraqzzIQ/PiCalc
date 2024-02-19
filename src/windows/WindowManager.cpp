@@ -9,6 +9,10 @@ bool WindowManager::_alpha = false;
 bool WindowManager::_panic_mode = true;
 Window* WindowManager::_panic_window = new CalculatorWindow(true);
 KEY WindowManager::_last_key = 0;
+Bitset2D WindowManager::_rendered_pixels = Bitset2D();
+uint16_t WindowManager::_rendered_screen_symbols = 0;
+uint32_t WindowManager::_rendered_corner_x = 0;
+uint32_t WindowManager::_rendered_corner_y = 0;
 std::stack<Window*> WindowManager::_windows;
 std::unordered_map<const std::type_info*, std::vector<Window*>> WindowManager::_window_instances;
 
@@ -53,9 +57,11 @@ void WindowManager::update(bool force_rerender)
 	Frame& frame = _windows.top()->update_and_get_frame();
 	frame.set_screen_symbol(0, _shift);
 	frame.set_screen_symbol(1, _alpha);
-	console_renderer.render(frame, force_rerender);
+	if (!force_rerender && already_rendered(frame)) return;
+
+	console_renderer.render(frame);
 #ifdef PICO
-	display_renderer.render(frame, force_rerender);
+	display_renderer.render(frame);
 #endif
 }
 
@@ -94,4 +100,16 @@ void WindowManager::handle_key_up(KeyPress keypress)
 	_shift = keypress.shift;
 	_alpha = keypress.alpha;
 	if (_windows.size() > 0) _windows.top()->handle_key_up(keypress);
+}
+
+bool WindowManager::already_rendered(const Frame& frame)
+{
+	if (frame.pixels != _rendered_pixels || frame.screen_symbols != _rendered_screen_symbols || frame.corner_x != _rendered_corner_x || frame.corner_y != _rendered_corner_y) {
+		_rendered_pixels = frame.pixels;
+		_rendered_screen_symbols = frame.screen_symbols;
+		_rendered_corner_x = frame.corner_x;
+		_rendered_corner_y = frame.corner_y;
+		return false;
+	}
+	return true;
 }

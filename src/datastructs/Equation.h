@@ -170,7 +170,7 @@ class Equation
 	/// <summary>
 	/// time since boot at which the cursor last changed its state
 	/// </summary>
-	uint64_t _last_blink_time;
+	uint64_t _last_blink_time = 0;
 	/// <summary>
 	/// x coordinate of the top left corner of the frame the equation is rendered in
 	/// </summary>

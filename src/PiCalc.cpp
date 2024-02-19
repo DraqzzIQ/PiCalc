@@ -81,8 +81,6 @@ int main(int argc, char* argv[])
 	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl;
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
-	if (!I2CUtils::device_availible(LCD_DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
-	if (!I2CUtils::device_availible(POT_DEVICE_ADDRESS)) std::cout << "Digital Potentiometer not found" << std::endl;
 	keyboard = new PicoKeyboard();
 #else
 	Utils::set_time_start_point();
