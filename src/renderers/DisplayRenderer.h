@@ -54,6 +54,6 @@ class DisplayRenderer
 	static uint64_t _timer;
 	static uint8_t _battery_symbols;
 
-	static constexpr std::vector<uint8_t> screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
+	static constexpr std::vector<uint8_t> screen_symbol_positions;
 };
 #endif
