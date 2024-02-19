@@ -1,7 +1,9 @@
 #pragma once
 #ifdef PICO
+#include "constant/LCDConstants.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
+#include <iostream>
 
 /// <summary>
 /// provides functionality for I2C
