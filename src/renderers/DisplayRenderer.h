@@ -29,10 +29,6 @@ class DisplayRenderer
 	/// </summary>
 	static void clear();
 	/// <summary>
-	/// sub_addresses for the display chips
-	/// </summary>
-	static uint8_t sub_devices[3] = { A_SUB_ADDRESS_0, A_SUB_ADDRESS_1, A_SUB_ADDRESS_2 };
-	/// <summary>
 	/// sets the mode of the display
 	/// </summary>
 	static uint8_t set_mode(uint8_t mode, uint8_t status, uint8_t mux_mode, uint8_t command_following);
@@ -58,6 +54,6 @@ class DisplayRenderer
 	static uint64_t _timer;
 	static uint8_t _battery_symbols;
 
-	static const std::vector<uint8_t> screen_symbol_positions;
+	static constexpr std::vector<uint8_t> screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
 };
 #endif
