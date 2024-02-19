@@ -66,7 +66,7 @@ void WindowManager::handle_key_down(KeyPress keypress)
 	if (keypress.shift && keypress.key_raw == KEY_AC && !Utils::charging) {
 #ifdef PICO
 		// TODO: renove check for charging in new design
-		IRenderer::Renderers.at(i)->render(Frame(_panic_mode ? Graphics::ORIGINAL_LOGO : Graphics::PICALC_LOGO, 0xFFFF)
+		DisplayRenderer::render(Frame(_panic_mode ? Graphics::ORIGINAL_LOGO : Graphics::PICALC_LOGO, 0xFFFF)
 		gpio_put(28, 0);
 #endif
 	} else if (!_panic_mode && keypress.alpha && keypress.key_raw == KEY_DEL) minimize_window();

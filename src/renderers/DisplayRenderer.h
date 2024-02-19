@@ -4,7 +4,6 @@
 #include "constant/LCDConstants.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
-#include "renderers/IRenderer.h"
 #include "utils/Utils.h"
 #include <algorithm>
 #include <cmath>
@@ -13,7 +12,7 @@
 /// <summary>
 /// provides functionality to render to the display
 /// </summary>
-class DisplayRenderer: public IRenderer
+class DisplayRenderer:
 {
 	public:
 	static void init();
@@ -22,7 +21,7 @@ class DisplayRenderer: public IRenderer
 	/// renders the given frame to the display
 	/// </summary>
 	/// <param name="frame">frame to render</param>
-	static void render(const Frame& frame, bool force_rerender) override;
+	static void render(const Frame& frame, bool force_rerender);
 
 	private:
 	/// <summary>
