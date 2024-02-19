@@ -31,7 +31,7 @@ void I2CUtils::set_contrast(uint8_t value)
 	i2c_write_blocking(i2c_default, POT_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
 }
 
-uint8_t DisplayRenderer::get_contrast()
+uint8_t I2CUtils::get_contrast()
 {
 	return _contrast;
 }
