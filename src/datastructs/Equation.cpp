@@ -284,7 +284,7 @@ void Equation::render_equation()
 	_show_cursor = true;
 
 	// print the equation below the screen to the console for debugging
-	std::cout << to_string_simple();
+	// std::cout << to_string_simple();
 
 	// render the equation without the cursor
 	_render_index = 0;

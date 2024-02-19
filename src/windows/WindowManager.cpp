@@ -48,7 +48,7 @@ void WindowManager::update(bool force_rerender)
 			frame.set_screen_symbol(0, _shift);
 			frame.set_screen_symbol(1, _alpha);
 			IRenderer::Renderers.at(i)->render(frame, force_rerender);
-		} else IRenderer::Renderers.at(i)->render(Frame(Graphics::LOGO_SCREEN, 0xFFFF), force_rerender);
+		} else IRenderer::Renderers.at(i)->render(Frame(Graphics::ORIGINAL_LOGO, 0xFFFF), force_rerender);
 	}
 }
 
