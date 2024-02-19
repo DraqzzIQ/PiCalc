@@ -9,7 +9,7 @@
 class CalculatorWindow: public Window
 {
 	public:
-	CalculatorWindow();
+	CalculatorWindow(bool panic_mode = false);
 	~CalculatorWindow();
 	void update_window() override;
 	bool handle_key_down(KeyPress keypress) override;
@@ -51,6 +51,11 @@ class CalculatorWindow: public Window
 	/// 15: PerD (Peridoic, round)
 	/// </summary>
 	uint16_t _setup = 0;
+	/// <summary>
+	/// whether the calculator is in panic mode
+	/// TODO
+	/// </summary>
+	bool _panic_mode;
 
 	void set_menu(Menu menu);
 

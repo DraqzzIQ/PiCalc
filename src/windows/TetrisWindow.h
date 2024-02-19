@@ -3,6 +3,7 @@
 #include "utils/Utils.h"
 #include "windows/Window.h"
 
+// TODO: Add highscore system
 class TetrisWindow: public Window
 {
 	public:

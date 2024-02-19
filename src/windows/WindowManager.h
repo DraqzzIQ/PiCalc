@@ -4,6 +4,8 @@
 #include "keyboard/KeyPress.h"
 #include "renderers/IRenderer.h"
 #include "utils/Utils.h"
+#include "windows/CalculatorWindow.h"
+#include "windows/MainMenuWindow.h"
 #include "windows/Window.h"
 #ifdef PICO
 #include "pico/stdlib.h"
@@ -86,7 +88,6 @@ class WindowManager
 	/// private copy constructor and assignmnt operator to prevent copying
 	/// </summary>
 	WindowManager(const WindowManager&);
-	WindowManager& operator=(const WindowManager&);
 	/// <summary>
 	/// tracks if shift is pressed
 	/// </summary>
@@ -96,9 +97,22 @@ class WindowManager
 	/// </summary>
 	bool _alpha = false;
 	/// <summary>
+	/// whether PiCalc is locked in the Calculator app to behave exactly like the original
+	/// To escape: MODE -> SHIFT -> =
+	/// </summary>
+	bool _panic_mode = true;
+	/// <summary>
 	/// the instance
 	/// </summary>
 	static WindowManager* _instance;
+	/// <summary>
+	/// the Window to be shown in Panic mode
+	/// </summary>
+	Window* _panic_window;
+	/// <summary>
+	/// stores, which key was pressed last
+	/// </summary>
+	KEY _last_key = 0;
 	/// <summary>
 	/// the window stack
 	/// </summary>

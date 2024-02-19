@@ -23,7 +23,6 @@
 
 IKeyboard* keyboard = nullptr;
 WindowManager* window_manager = nullptr;
-MenuWindow* main_menu = nullptr;
 
 /// <summary>
 /// starts a thread that will update and render the window manager
@@ -70,48 +69,39 @@ int main(int argc, char* argv[])
 	gpio_put(28, 1);
 
 	// set up the battery voltage measuring pin (GPIO 26)
+	// Not working yet
 	adc_init();
 	adc_gpio_init(26);
 	adc_select_input(0);
 
-	// set up the charging indication pin (GPIO 27)
+	// set up the VBus voltage measurement pin (GPIO 24)
+	// Not working yet
 	gpio_init(24);
 	gpio_set_dir(24, GPIO_IN);
 
-	// 	// Enable UART so status output can be printed
+	// Enable UART so status output can be printed
 	stdio_init_all();
 	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl;
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
 	if (!I2CUtils::device_availible(LCD_DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
+	else if (!I2CUtils::device_availible(POT_DEVICE_ADRESS)) std::cout << "Digital Potentiometer not found" << std::endl;
 	else new DisplayRenderer();
+	keyboard = new PicoKeyboard();
 #else
+	Utils::set_time_start_point();
 	new ConsoleRenderer();
+	keyboard = new SDLKeyboard();
 #endif
 	window_manager = WindowManager::get_instance();
 	window_manager->update();
-
-	Utils::sleep_for_ms(1000);
-
-	main_menu = new MainMenuWindow();
-
-#ifdef PICO
-	keyboard = new PicoKeyboard();
-#else
-	keyboard = new SDLKeyboard();
-	Utils::set_time_start_point();
-#endif
-
-	window_manager->add_window(main_menu);
-
-
 	// start main thread
 	start_main_thread();
 
 	return 0;
 }
 
-// adding a new WIndow:
+// adding a new Window:
 // 1. create a new class that inherits from Window
 // 2. add a new MenuOption to MainMenuWindow.cpp and change size of options vector
 // 3. add all needed virtual functions to the new class
