@@ -12,7 +12,7 @@
 /// <summary>
 /// provides functionality to render to the display
 /// </summary>
-class DisplayRenderer:
+class DisplayRenderer
 {
 	public:
 	static void init();
@@ -55,9 +55,9 @@ class DisplayRenderer:
 	/// <summary>
 	/// current contrast of the display
 	/// </summary>
-	static uint64_t _timer = 0;
-	static uint8_t _battery_symbols = 0b11;
+	static uint64_t _timer;
+	static uint8_t _battery_symbols;
 
-	static const std::vector<uint8_t> screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
+	static const std::vector<uint8_t> screen_symbol_positions;
 };
 #endif

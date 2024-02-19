@@ -21,13 +21,13 @@ class I2CUtils
 	/// sets the contrast of the lcd
 	/// </summary>
 	/// <param name="value">0-127</param>
-	static void set_contrast(uint8_t value) override;
+	static void set_contrast(uint8_t value);
 	/// <summary>
 	/// get the current contrast of the lcd
 	/// </summary>
-	static uint8_t get_contrast() override;
+	static uint8_t get_contrast();
 
 	private:
-	static uint8_t _contrast = 14;
+	static uint8_t _contrast;
 };
 #endif

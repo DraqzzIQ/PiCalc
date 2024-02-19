@@ -1,6 +1,8 @@
 #include "utils/I2CUtils.h"
 #ifdef PICO
 
+uint8_t I2CUtils::_contrast = 14;
+
 void I2CUtils::init_i2c()
 {
 	i2c_init(i2c_default, 100000);
@@ -17,11 +19,6 @@ bool I2CUtils::device_availible(uint8_t addr)
 	return status < 0 ? false : true;
 }
 
-uint8_t DisplayRenderer::get_contrast()
-{
-	return _contrast;
-}
-
 void I2CUtils::set_contrast(uint8_t value)
 {
 	_contrast = value;
@@ -29,5 +26,10 @@ void I2CUtils::set_contrast(uint8_t value)
 	command[0] = POT_REGISTER_ADDRESS;
 	command[1] = value;
 	i2c_write_blocking(i2c_default, POT_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
+}
+
+uint8_t DisplayRenderer::get_contrast()
+{
+	return _contrast;
 }
 #endif
