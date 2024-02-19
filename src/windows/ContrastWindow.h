@@ -2,7 +2,7 @@
 #include "constant/Chars.h"
 #include "windows/Window.h"
 #ifdef PICO
-#include "Utils/I2CUtils.h"
+#include "utils/I2CUtils.h"
 #endif
 
 class ContrastWindow: public Window
