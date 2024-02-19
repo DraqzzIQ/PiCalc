@@ -17,10 +17,6 @@ Threading::Threading()
 #endif
 }
 
-Threading::~Threading()
-{
-}
-
 void Threading::run()
 {
 	while (true) {

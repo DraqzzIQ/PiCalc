@@ -22,7 +22,7 @@ class Threading
 {
 	public:
 	/// <summary>
-	/// returns instance of singleton WindowManager
+	/// returns instance of singleton
 	/// </summary>
 	static Threading* get_instance();
 	void run();
@@ -43,12 +43,12 @@ class Threading
 	/// </summary>
 	~Threading();
 	/// <summary>
-	/// private copy constructor and assignmnt operator to prevent copying
-	/// </summary>
-	/// <summary>
-	/// private copy constructor and assignmnt operator to prevent copying
+	/// private copy constructor to prevent copying
 	/// </summary>
 	Threading(const Threading&);
+	/// <summary>
+	/// private assignment operator to prevent copying
+	/// </summary>
 	Threading& operator=(const Threading&);
 	/// <summary>
 	/// the instance

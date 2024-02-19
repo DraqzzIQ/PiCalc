@@ -8,8 +8,6 @@
 class IKeyboard
 {
 	public:
-	IKeyboard();
-	virtual ~IKeyboard(){};
 	/// <summary>
 	/// checks for keyboard presses
 	/// </summary>

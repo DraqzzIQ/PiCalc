@@ -1,8 +1,9 @@
 #pragma once
 #include "constant/Chars.h"
-#include "renderers/DisplayRenderer.h"
-#include "renderers/IRenderer.h"
 #include "windows/Window.h"
+#ifdef PICO
+#include "Utils/I2CUtils.h"
+#endif
 
 class ContrastWindow: public Window
 {

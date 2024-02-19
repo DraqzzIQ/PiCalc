@@ -45,7 +45,6 @@
     <ClInclude Include="src\options\MenuOptionBase.h" />
     <ClInclude Include="src\renderers\ConsoleRenderer.h" />
     <ClInclude Include="src\renderers\DisplayRenderer.h" />
-    <ClInclude Include="src\renderers\IRenderer.h" />
     <ClInclude Include="src\utils\I2CUtils.h" />
     <ClInclude Include="src\utils\Utils.h" />
     <ClInclude Include="src\windows\CalculatorWindow.h" />
@@ -94,7 +93,6 @@
     <ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp" />
     <ClCompile Include="src\renderers\DisplayRenderer.cpp" />
-    <ClCompile Include="src\renderers\IRenderer.cpp" />
     <ClCompile Include="src\utils\I2CUtils.cpp" />
     <ClCompile Include="src\utils\Utils.cpp" />
     <ClCompile Include="src\windows\CalculatorWindow.cpp" />

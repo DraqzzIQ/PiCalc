@@ -1,7 +1,7 @@
 #include "renderers/DisplayRenderer.h"
 #ifdef PICO
 
-DisplayRenderer::DisplayRenderer()
+void DisplayRenderer::init()
 {
 	Utils::sleep_for_ms(1);
 	clear();
@@ -34,7 +34,7 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 		if (x < frame.pixels.width()) bytes = frame.pixels.at(x).get_bytes(frame.corner_y);
 
 		if (x < 82) {
-			if(x == screen_symbol_positions[screen_symbol_index] && frame.get_screen_symbol(screen_symbol_index++)) bytes[0] |= 0x80;
+			if (x == screen_symbol_positions[screen_symbol_index] && frame.get_screen_symbol(screen_symbol_index++)) bytes[0] |= 0x80;
 		} else if (x == 88) {
 			if (_battery_symbols & 0b10) bytes[0] |= 0x80;
 		} else if (x == 89) {
@@ -46,20 +46,6 @@ void DisplayRenderer::render(const Frame& frame, bool force_rerender)
 		}
 	}
 	i2c_write_blocking(i2c_default, LCD_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
-}
-
-void DisplayRenderer::set_contrast(uint8_t value)
-{
-	_contrast = value;
-	uint8_t command[2];
-	command[0] = POT_REGISTER_ADDRESS;
-	command[1] = value;
-	i2c_write_blocking(i2c_default, POT_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
-}
-
-uint8_t DisplayRenderer::get_contrast()
-{
-	return _contrast;
 }
 
 uint8_t DisplayRenderer::reverse_byte(uint8_t b)

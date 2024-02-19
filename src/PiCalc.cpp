@@ -1,7 +1,6 @@
 // PiCalc.cpp : This file contains the 'main' function. Program execution begins and ends there.
 #include "keyboard/IKeyboard.h"
 #include "renderers/ConsoleRenderer.h"
-#include "renderers/IRenderer.h"
 #include "threading/Threading.h"
 #include "utils/Utils.h"
 #include "windows/BatteryWindow.h"
@@ -22,7 +21,6 @@
 #endif
 
 IKeyboard* keyboard = nullptr;
-WindowManager* window_manager = nullptr;
 
 /// <summary>
 /// starts a thread that will update and render the window manager
@@ -43,8 +41,7 @@ void start_main_thread()
 	uint8_t frame = 0;
 	while (1) {
 		keyboard->check_for_keyboard_presses();
-		window_manager->update();
-		// simple frame rate cap on 30fps
+		WindowManager::update();
 		if (Utils::us_since_boot() - last_time < 1000000 / FPS) {
 			Utils::sleep_for_us(1000000 / FPS - (Utils::us_since_boot() - last_time));
 		}
@@ -85,17 +82,13 @@ int main(int argc, char* argv[])
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
 	if (!I2CUtils::device_availible(LCD_DEVICE_ADDRESS)) std::cout << "Display not found" << std::endl;
-	else if (!I2CUtils::device_availible(POT_DEVICE_ADRESS)) std::cout << "Digital Potentiometer not found" << std::endl;
-	else new DisplayRenderer();
+	if (!I2CUtils::device_availible(POT_DEVICE_ADRESS)) std::cout << "Digital Potentiometer not found" << std::endl;
 	keyboard = new PicoKeyboard();
 #else
 	Utils::set_time_start_point();
-	new ConsoleRenderer();
 	keyboard = new SDLKeyboard();
 #endif
-	window_manager = WindowManager::get_instance();
-	window_manager->update();
-	// start main thread
+	WindowManager::init(new MainMenuWindow());
 	start_main_thread();
 
 	return 0;

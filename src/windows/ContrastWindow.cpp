@@ -44,18 +44,15 @@ void ContrastWindow::render()
 
 uint8_t ContrastWindow::get_contrast()
 {
-	uint8_t contrast = 255;
-	for (auto renderer : IRenderer::Renderers) {
-		contrast = renderer->get_contrast();
-		if (contrast != 255) break;
-	}
-	if (contrast == 255) return 14;
-	return contrast;
+#ifdef PICO
+	return I2CUtils::get_contrast();
+#endif
+	return 14;
 }
 
 void ContrastWindow::set_contrast(uint8_t contrast)
 {
-	for (auto renderer : IRenderer::Renderers) {
-		renderer->set_contrast(contrast);
-	}
+#ifdef PICO
+	I2CUtils::set_contrast(contrast);
+#endif
 }

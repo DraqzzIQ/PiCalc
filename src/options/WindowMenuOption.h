@@ -18,7 +18,6 @@ class WindowMenuOption: public MenuOptionBase
 	WindowMenuOption(const std::string& name)
 	{
 		display_name = name;
-		_window_manager = WindowManager::get_instance();
 	}
 	/// <summary>
 	/// called when option is selected

@@ -1,10 +1,5 @@
 #include "windows/InstanceSelectionWindow.h"
 
-InstanceSelectionWindow::InstanceSelectionWindow()
-{
-	_window_manager = WindowManager::get_instance();
-}
-
 bool InstanceSelectionWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_raw == KEY_UP) scroll_up();

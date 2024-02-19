@@ -5,7 +5,6 @@
 class InstanceSelectionWindow: public Window
 {
 	public:
-	InstanceSelectionWindow();
 	bool handle_key_down(KeyPress keypress) override;
 	void setup(const std::vector<Window*>& instances);
 

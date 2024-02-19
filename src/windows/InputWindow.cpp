@@ -24,7 +24,7 @@ bool InputWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_keyboard == '\n') {
 		if (_input.size() > 0) {
-			WindowManager::get_instance()->close_window(false);
+			WindowManager::close_window(false);
 			_callback(_input);
 			delete this;
 		}
@@ -57,5 +57,5 @@ void InputWindow::add_cursor(Bitset2D& bitset)
 
 void InputWindow::input(const std::string& promt, std::function<void(std::string&)> callback)
 {
-	WindowManager::get_instance()->add_window(new InputWindow(promt, callback));
+	WindowManager::add_window(new InputWindow(promt, callback));
 }

@@ -17,5 +17,17 @@ class I2CUtils
 	/// checks if a device is availible at the given address
 	/// </summary>
 	static bool device_availible(uint8_t addr);
+	/// <summary>
+	/// sets the contrast of the lcd
+	/// </summary>
+	/// <param name="value">0-127</param>
+	static void set_contrast(uint8_t value) override;
+	/// <summary>
+	/// get the current contrast of the lcd
+	/// </summary>
+	static uint8_t get_contrast() override;
+
+	private:
+	static uint8_t _contrast = 14;
 };
 #endif

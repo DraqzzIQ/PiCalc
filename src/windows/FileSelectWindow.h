@@ -16,7 +16,7 @@ class FileSelectWindow: public MenuWindow
 		options.clear();
 		for (int i = 0; i < files.size(); i++) {
 			options.push_back(new CallbackMenuOption<std::string>(files[i], files[i], [this](std::string filename) {
-				WindowManager::get_instance()->close_window(false);
+				WindowManager::close_window(false);
 				_callback(filename);
 				delete this;
 			}));
@@ -26,7 +26,7 @@ class FileSelectWindow: public MenuWindow
 
 	static void select_file(const std::string& dir, std::function<void(std::string&)> callback)
 	{
-		WindowManager::get_instance()->add_window(new FileSelectWindow(dir, callback));
+		WindowManager::add_window(new FileSelectWindow(dir, callback));
 	}
 
 	private:

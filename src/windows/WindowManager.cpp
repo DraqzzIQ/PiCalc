@@ -1,20 +1,25 @@
 #include "windows/WindowManager.h"
 
-WindowManager* WindowManager::_instance = nullptr;
+#ifdef PICO
+DisplayRenderer WindowManager::display_renderer = DisplayRenderer();
+#endif
+ConsoleRenderer WindowManager::console_renderer = ConsoleRenderer();
+bool WindowManager::_shift = false;
+bool WindowManager::_alpha = false;
+bool WindowManager::_panic_mode = true;
+Window* WindowManager::_panic_window = new CalculatorWindow(true);
+KEY WindowManager::_last_key = 0;
+std::stack<Window*> WindowManager::_windows;
+std::unordered_map<const std::type_info*, std::vector<Window*>> WindowManager::_window_instances;
 
-WindowManager* WindowManager::get_instance()
+void WindowManager::init(Window* main_menu_window)
 {
-	if (!_instance) {
-		_instance = new WindowManager();
-		_instance->add_window(new MainMenuWindow());
-		_instance->_panic_window = new CalculatorWindow(true);
-		_instance->add_window(_instance->_panic_window);
-	}
-	return _instance;
-}
-
-WindowManager::WindowManager()
-{
+	ConsoleRenderer::init();
+#ifdef PICO
+	DisplayRenderer::init();
+#endif
+	_windows.push(main_menu_window);
+	_windows.push(_panic_window);
 }
 
 void WindowManager::add_window(Window* window)
@@ -45,12 +50,13 @@ void WindowManager::close_window(bool dispose)
 
 void WindowManager::update(bool force_rerender)
 {
-	for (size_t i = 0; i < IRenderer::Renderers.size(); i++) {
-		Frame& frame = _windows.top()->update_and_get_frame();
-		frame.set_screen_symbol(0, _shift);
-		frame.set_screen_symbol(1, _alpha);
-		IRenderer::Renderers.at(i)->render(frame, force_rerender);
-	}
+	Frame& frame = _windows.top()->update_and_get_frame();
+	frame.set_screen_symbol(0, _shift);
+	frame.set_screen_symbol(1, _alpha);
+	console_renderer.render(frame, force_rerender);
+#ifdef PICO
+	display_renderer.render(frame, force_rerender);
+#endif
 }
 
 void WindowManager::handle_key_down(KeyPress keypress)
@@ -71,11 +77,11 @@ void WindowManager::handle_key_down(KeyPress keypress)
 		if (keypress.key_raw == KEY_MODE) _last_key = keypress.key_raw;
 		break;
 	case KEY_MODE:
-		if (keypress.key_raw == KEY_ABS) _last_key = keypress.key_raw;
+		if (keypress.key_raw == KEY_SHIFT) _last_key = keypress.key_raw;
 		else _last_key = 0;
 		break;
-	case KEY_ABS:
-		if (keypress.key_raw == KEY_LOGN) {
+	case KEY_SHIFT:
+		if (keypress.key_raw == '=') {
 			_panic_mode = false;
 			_windows.pop();
 		}

@@ -1,10 +1,5 @@
 #include "keyboard/IKeyboard.h"
 
-IKeyboard::IKeyboard()
-{
-	_window_manager = WindowManager::get_instance();
-}
-
 KEY IKeyboard::raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha)
 {
 	if (shift) {
