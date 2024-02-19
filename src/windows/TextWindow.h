@@ -14,6 +14,5 @@ class TextWindow: public Window
 	protected:
 	virtual bool handle_key_down_special(KeyPress keypress);
 	bool _calculator_keyboard = false;
-	uint8_t i = 0;
 	Equation _text;
 };
