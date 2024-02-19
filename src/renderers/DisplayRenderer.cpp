@@ -3,7 +3,7 @@
 
 uint64_t DisplayRenderer::_timer = 0;
 uint8_t DisplayRenderer::_battery_symbols = 0b11;
-std::vector<uint8_t> DisplayRenderer::screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
+const std::vector<uint8_t> DisplayRenderer::screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
 
 void DisplayRenderer::init()
 {

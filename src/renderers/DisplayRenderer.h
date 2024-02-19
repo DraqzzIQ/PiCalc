@@ -2,6 +2,7 @@
 // TODO: make this work and make battery level showing work
 #ifdef PICO
 #include "constant/LCDConstants.h"
+#include "datastructs/Frame.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
 #include "utils/Utils.h"
