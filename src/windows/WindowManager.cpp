@@ -77,6 +77,7 @@ void WindowManager::handle_key_down(KeyPress keypress)
 		// TODO: renove check for charging in new design
 		DisplayRenderer::render(Frame(_panic_mode ? Graphics::ORIGINAL_LOGO : Graphics::PICALC_LOGO, 0xFFFF));
 		gpio_put(28, 0);
+		Utils::sleep_for_ms(10000);
 #endif
 	} else if (!_panic_mode && keypress.alpha && keypress.key_raw == KEY_DEL) minimize_window();
 	else if (!_panic_mode && keypress.shift && keypress.key_raw == KEY_DEL) close_window();
