@@ -7,7 +7,7 @@ ConsoleRenderer WindowManager::console_renderer = ConsoleRenderer();
 bool WindowManager::_shift = false;
 bool WindowManager::_alpha = false;
 bool WindowManager::_panic_mode = true;
-Window* WindowManager::_panic_window = new CalculatorWindow(true);
+Window* WindowManager::_panic_window;
 KEY WindowManager::_last_key = 0;
 Bitset2D WindowManager::_rendered_pixels = Bitset2D();
 uint16_t WindowManager::_rendered_screen_symbols = 0;
@@ -23,6 +23,7 @@ void WindowManager::init(Window* main_menu_window)
 	DisplayRenderer::init();
 #endif
 	_windows.push(main_menu_window);
+	_panic_window = new CalculatorWindow(true);
 	_windows.push(_panic_window);
 }
 
