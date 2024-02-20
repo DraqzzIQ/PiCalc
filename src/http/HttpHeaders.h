@@ -18,6 +18,7 @@ struct ci {
 } // namespace detail
 } // namespace httplib
 #else
+#define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
 #endif
 

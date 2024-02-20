@@ -1,6 +1,7 @@
 #pragma once
 #ifndef PICO
 #include "http/IHttpClient.h"
+#define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
 
 class DesktopHttpClient: public IHttpClient
