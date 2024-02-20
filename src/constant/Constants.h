@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 using KEY = uint8_t;
 using KEY_SET = std::vector<KEY>;
