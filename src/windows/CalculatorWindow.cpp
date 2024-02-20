@@ -152,10 +152,12 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 			set_menu(Menu::None);
 			break;
 		case '7':
+			if (_panic_mode) break;
 			_mode = Mode::EQ_SOLV;
 			set_menu(Menu::None);
 			break;
 		case '8':
+			if (_panic_mode) break;
 			_mode = Mode::GRAPH;
 			set_menu(Menu::None);
 			break;
@@ -251,8 +253,10 @@ void CalculatorWindow::set_menu(Menu menu)
 		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, "\311DIST", false);
 		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, "\312VERIF", false);
 		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, "\313BASE-N", false);
-		_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, "\314EQ-SLV", false);
-		_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, "\315GRAPH", false);
+		if (!_panic_mode) {
+			_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, "\314EQ-SLV", false);
+			_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, "\315GRAPH", false);
+		}
 		break;
 	case Menu::Mode_Stat:
 		// TODO

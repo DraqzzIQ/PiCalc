@@ -80,11 +80,7 @@ void WindowManager::handle_key_down(KeyPress keypress)
 #endif
 	} else if (!_panic_mode && keypress.alpha && keypress.key_raw == KEY_DEL) minimize_window();
 	else if (!_panic_mode && keypress.shift && keypress.key_raw == KEY_DEL) close_window();
-	// TODO:
-	// else if (_panic_mode && keypress.key_raw == KEY_ON) {
-	// 	_panic_mode = true;
-	// 	_windows.push(_panic_window);
-	// }
+	// TODO: add way to get into panic mode in new PCB version
 	else if (_windows.size() > 0) _windows.top()->handle_key_down(keypress);
 	switch (_last_key) {
 	case 0:
