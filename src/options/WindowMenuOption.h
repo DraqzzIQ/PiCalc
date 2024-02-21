@@ -14,24 +14,24 @@ class WindowMenuOption: public MenuOptionBase
 	/// creates a new WindowMenuOption
 	/// </summary>
 	/// <param name="display_name">name of that option</param>
-	/// <param name="window_manager">window_manager to add windows to</param>
-	WindowMenuOption(const std::string& name)
+	WindowMenuOption(const std::string& display_name, KEY select_key = 0)
 	{
-		display_name = name;
+		this->display_name = display_name;
+		this->select_key = select_key;
 	}
 	/// <summary>
 	/// called when option is selected
 	/// </summary>
 	void on_select() override
 	{
-		if (!open_window()) _window_manager->add_window(new T());
+		if (!open_window()) WindowManager::add_window(new T());
 	}
 	/// <summary>
 	/// called when option is selected with shift active
 	/// </summary>
 	void on_shift_select() override
 	{
-		_window_manager->add_window(new T());
+		WindowManager::add_window(new T());
 	}
 	/// <summary>
 	/// opens a window of type T if there is only one instance of it,
@@ -40,21 +40,18 @@ class WindowMenuOption: public MenuOptionBase
 	/// </summary>
 	bool open_window()
 	{
-		if (!_window_manager->has_window<T>()) return false;
+		if (!WindowManager::has_window<T>()) return false;
 
-		std::vector<Window*> instances = _window_manager->get_windows<T>();
-		if (instances.size() == 1) _window_manager->add_window(instances[0]);
+		std::vector<Window*> instances = WindowManager::get_windows<T>();
+		if (instances.size() == 1) WindowManager::add_window(instances[0]);
 		else {
 			InstanceSelectionWindow* instance_selection_window;
-			if (_window_manager->has_window<InstanceSelectionWindow>()) instance_selection_window = dynamic_cast<InstanceSelectionWindow*>(_window_manager->get_windows<InstanceSelectionWindow>()[0]);
+			if (WindowManager::has_window<InstanceSelectionWindow>()) instance_selection_window = dynamic_cast<InstanceSelectionWindow*>(WindowManager::get_windows<InstanceSelectionWindow>()[0]);
 			else instance_selection_window = new InstanceSelectionWindow();
 
 			instance_selection_window->setup(instances);
-			_window_manager->add_window(instance_selection_window);
+			WindowManager::add_window(instance_selection_window);
 		}
 		return true;
 	}
-
-	private:
-	WindowManager* _window_manager;
 };

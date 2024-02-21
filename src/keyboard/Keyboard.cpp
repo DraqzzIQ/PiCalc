@@ -1,10 +1,10 @@
-#include "keyboard/IKeyboard.h"
+#include "Keyboard.h"
 
-KEY IKeyboard::raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha)
+KEY Keyboard::raw_key_to_calculator_key(KEY raw_key, bool shift, bool alpha)
 {
 	if (shift) {
 		switch (raw_key) {
-		case KEY_SETUP: return KEY_MODE;
+		case KEY_MODE: return KEY_SETUP;
 		case KEY_ABS: return KEY_MOD;
 		case KEY_RECIPROCAL: return '!';
 		case KEY_FRACTION: return KEY_MIXED_FRACTION;

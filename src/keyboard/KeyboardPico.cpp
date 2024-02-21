@@ -1,5 +1,5 @@
-#include "keyboard/PicoKeyboard.h"
 #ifdef PICO
+#include "Keyboard.h"
 
 PicoKeyboard::PicoKeyboard():
 	IKeyboard()
@@ -38,7 +38,7 @@ void PicoKeyboard::check_for_keyboard_presses()
 			if (_pressed_buttons[px][py] == KeyState::OFF && high_pins[py]) {
 				KeyPress press = coords_to_keypress(px, py, _function_keys_state);
 				// std::cout << "\nKey pressed: " << unsigned(press.key_calculator) << std::endl; // uncomment to test keys via picoprobe / serial output
-				_window_manager->handle_key_down(press); // comment to test keys via picoprobe / serial output
+				WindowManager::handle_key_down(press); // comment to test keys via picoprobe / serial output
 				_pressed_buttons[px][py] = _function_keys_state;
 
 				if (press.key_raw == KEY_SHIFT) _function_keys_state = KeyState::SHIFT_ON;
@@ -47,7 +47,7 @@ void PicoKeyboard::check_for_keyboard_presses()
 			} else if (_pressed_buttons[px][py] != KeyState::OFF && !high_pins[py]) {
 				KeyPress release = coords_to_keypress(px, py, _pressed_buttons[px][py]);
 				// std::cout << "\nKey released: " << unsigned(release.key_calculator) << std::endl; // uncomment to test keys via picoprobe / serial output
-				_window_manager->handle_key_up(release); // comment to test keys via picoprobe / serial output
+				WindowManager::handle_key_up(release); // comment to test keys via picoprobe / serial output
 				_pressed_buttons[px][py] = KeyState::OFF;
 			}
 		}
@@ -215,4 +215,5 @@ std::vector<bool> PicoKeyboard::get_pins()
 	for (auto& pin : _inputs) { ret.push_back(gpio_get(pin)); }
 	return ret;
 }
+
 #endif

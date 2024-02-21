@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\windows\FileOptionsMenu.h" />
     <ClInclude Include="src\windows\FileSelectWindow.h" />
     <ClInclude Include="src\datastructs\Equation.h" />
     <ClInclude Include="src\options\TextMenuOption.h" />
@@ -36,15 +37,12 @@
     <ClInclude Include="src\http\HttpParams.h" />
     <ClInclude Include="src\http\PicoHttpClient.h" />
     <ClInclude Include="src\io\IOController.h" />
-    <ClInclude Include="src\keyboard\IKeyboard.h" />
+    <ClInclude Include="src\keyboard\Keyboard.h" />
     <ClInclude Include="src\keyboard\KeyPress.h" />
-    <ClInclude Include="src\keyboard\PicoKeyboard.h" />
-    <ClInclude Include="src\keyboard\SDLKeyboard.h" />
     <ClInclude Include="src\constant\LCDConstants.h" />
     <ClInclude Include="src\options\WindowMenuOption.h" />
     <ClInclude Include="src\options\MenuOptionBase.h" />
-    <ClInclude Include="src\renderers\ConsoleRenderer.h" />
-    <ClInclude Include="src\renderers\DisplayRenderer.h" />
+    <ClInclude Include="src\renderers\Renderer.h" />
     <ClInclude Include="src\utils\I2CUtils.h" />
     <ClInclude Include="src\utils\Utils.h" />
     <ClInclude Include="src\windows\CalculatorWindow.h" />
@@ -76,6 +74,9 @@
     <ClInclude Include="src\windows\TextWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\io\IOControllerPico.cpp" />
+    <ClCompile Include="src\keyboard\KeyboardPC.cpp" />
+    <ClCompile Include="src\keyboard\KeyboardPico.cpp" />
     <ClCompile Include="src\PiCalc.cpp" />
     <ClCompile Include="src\constant\Error.cpp" />
     <ClCompile Include="src\datastructs\Bitset2D.cpp" />
@@ -87,10 +88,8 @@
     <ClCompile Include="src\datastructs\NumberParser.cpp" />
     <ClCompile Include="src\http\IHttpClient.cpp" />
     <ClCompile Include="src\http\PicoHttpClient.cpp" />
-    <ClCompile Include="src\io\IOController.cpp" />
-    <ClCompile Include="src\keyboard\IKeyboard.cpp" />
-    <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
-    <ClCompile Include="src\keyboard\SDLKeyboard.cpp" />
+    <ClCompile Include="src\io\IOControllerPC.cpp" />
+    <ClCompile Include="src\keyboard\Keyboard.cpp" />
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp" />
     <ClCompile Include="src\renderers\DisplayRenderer.cpp" />
     <ClCompile Include="src\utils\I2CUtils.cpp" />
@@ -166,11 +165,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SDL)\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SDL)\include;$(OPENSSH)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SDL)\lib\x64;$(LibraryPath);$(OPENSSH)\lib\VC\x64\MDd</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SDL)\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SDL)\include;$(OPENSSH)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SDL)\lib\x64;$(LibraryPath);$(OPENSSH)\lib\VC\x64\MDd</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

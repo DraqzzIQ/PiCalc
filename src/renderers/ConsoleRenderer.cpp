@@ -1,8 +1,9 @@
-#include "renderers/ConsoleRenderer.h"
+#ifndef PICO
+#include "Renderer.h "
 
-const std::vector<std::string> ConsoleRenderer::SCREEN_SYMBOLS = { "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT", "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp" };
+const std::vector<std::string> Renderer::SCREEN_SYMBOLS = { "S", "A", "M", "STO", "RCL", "STAT", "CMPLX", "MAT", "VCT", "D", "R", "G", "FIX", "SCI", "Math", ">", "<", "Disp" };
 
-void ConsoleRenderer::init()
+void Renderer::init()
 {
 #ifdef _WIN32
 	HWND console = GetConsoleWindow();
@@ -20,7 +21,7 @@ void ConsoleRenderer::init()
 #endif
 }
 
-void ConsoleRenderer::render(const Frame& frame)
+void Renderer::render(const Frame& frame)
 {
 	set_cursor_top_left();
 
@@ -57,7 +58,7 @@ void ConsoleRenderer::render(const Frame& frame)
 	std::cout << out << std::endl;
 }
 
-std::string ConsoleRenderer::get_display_border()
+std::string Renderer::get_display_border()
 {
 	std::string border = "";
 
@@ -65,7 +66,9 @@ std::string ConsoleRenderer::get_display_border()
 	return border;
 }
 
-void ConsoleRenderer::set_cursor_top_left()
+void Renderer::set_cursor_top_left()
 {
 	std::cout << "\x1B[H";
 }
+
+#endif

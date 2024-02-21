@@ -11,4 +11,5 @@ class MenuOptionBase
 	virtual void on_select(){};
 	virtual void on_shift_select(){};
 	std::string display_name;
+	KEY select_key;
 };

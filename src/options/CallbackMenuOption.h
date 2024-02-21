@@ -7,9 +7,10 @@ template <typename T>
 class CallbackMenuOption: public MenuOptionBase
 {
 	public:
-	CallbackMenuOption(const std::string& name, T value, std::function<void(T)> callback)
+	CallbackMenuOption(const std::string& name, T value, std::function<void(T)> callback, KEY select_key = 0)
 	{
 		this->display_name = name;
+		this->select_key = select_key;
 		this->_value = value;
 		this->_callback = callback;
 	}

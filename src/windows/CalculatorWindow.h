@@ -2,6 +2,7 @@
 #include "constant/Error.h"
 #include "constant/Graphics.h"
 #include "datastructs/Equation.h"
+#include "windows/WindowManager.h"
 // #include "datastructs/Number.h"
 #include "windows/Window.h"
 #include <iostream>
@@ -72,14 +73,13 @@ class CalculatorWindow: public Window
 
 	Mode _mode = Mode::COMP;
 
-	std::vector<Equation> equations;
-	Equation* _equation_selected;
-	uint8_t _result_selected;
+	Equation _equation;
+	Number _result;
 	Number _ans;
 	Number _prev_ans;
-	std::map<KEY, Number*> _variables;
 
-	Number _result;
+	uint8_t _result_selected = 0;
+	std::map<KEY, Number*> _variables;
 	std::vector<KEY_SET> _result_key_sets;
 	Equation _result_equation;
 	Bitset2D _result_rendered;

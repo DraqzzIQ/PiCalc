@@ -1,6 +1,6 @@
 // PiCalc.cpp : This file contains the 'main' function. Program execution begins and ends there.
-#include "keyboard/IKeyboard.h"
-#include "renderers/ConsoleRenderer.h"
+#include "keyboard/Keyboard.h"
+#include "renderers/Renderer.h"
 #include "threading/Threading.h"
 #include "utils/Utils.h"
 #include "windows/BatteryWindow.h"
@@ -11,16 +11,10 @@
 
 #ifdef PICO
 #include "http/PicoHttpClient.h"
-#include "keyboard/PicoKeyboard.h"
 #include "pico/stdlib.h"
-#include "renderers/DisplayRenderer.h"
 #include "utils/I2CUtils.h"
 #include <malloc.h>
-#else
-#include "keyboard/SDLKeyboard.h"
 #endif
-
-IKeyboard* keyboard = nullptr;
 
 /// <summary>
 /// starts a thread that will update and render the window manager
@@ -40,7 +34,7 @@ void start_main_thread()
 	uint64_t last_time = 0;
 	uint8_t frame = 0;
 	while (1) {
-		keyboard->check_for_keyboard_presses();
+		Keyboard::check_for_keyboard_presses();
 		WindowManager::update();
 		if (Utils::us_since_boot() - last_time < 1000000 / FPS) {
 			Utils::sleep_for_us(1000000 / FPS - (Utils::us_since_boot() - last_time));
@@ -81,12 +75,13 @@ int main(int argc, char* argv[])
 	std::cout << "Total Heap: " << Utils::get_total_heap() << std::endl;
 	std::cout << "Free Heap: " << Utils::get_free_heap() << std::endl;
 	I2CUtils::init_i2c();
-	keyboard = new PicoKeyboard();
 #else
 	Utils::set_time_start_point();
-	keyboard = new SDLKeyboard();
 #endif
-	WindowManager::init(new MainMenuWindow());
+	Keyboard::init();
+	Renderer::init();
+	WindowManager::init(new MainMenuWindow(), new CalculatorWindow(true));
+
 	start_main_thread();
 
 	return 0;

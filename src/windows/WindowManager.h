@@ -3,13 +3,11 @@
 #include "constant/Graphics.h"
 #include "datastructs/Frame.h"
 #include "keyboard/KeyPress.h"
-#include "renderers/ConsoleRenderer.h"
+#include "renderers/Renderer.h"
 #include "utils/Utils.h"
-#include "windows/CalculatorWindow.h"
 #include "windows/Window.h"
 #ifdef PICO
 #include "pico/stdlib.h"
-#include "renderers/DisplayRenderer.h"
 #endif
 #include <stack>
 #include <typeinfo>
@@ -22,7 +20,7 @@
 class WindowManager
 {
 	public:
-	static void init(Window* main_menu_window);
+	static void init(Window* main_menu_window, Window* panic_window);
 	/// <summary>
 	/// adds a window to the window stack
 	/// </summary>
@@ -78,12 +76,33 @@ class WindowManager
 	/// <param name="frame">frame to check</param>
 	/// <returns>true if same else false</returns>
 	static bool already_rendered(const Frame& frame);
+	/// <summary>
+	/// exits panic mode
+	/// </summary>
+	static void exit_panic_mode();
+	/// <summary>
+	/// enters panic mode
+	/// </summary>
+	static void panic_mode();
 
 	private:
-#ifdef PICO
-	static DisplayRenderer display_renderer;
-#endif
-	static ConsoleRenderer console_renderer;
+	/// <summary>
+	/// last rendered pixels
+	/// </summary>
+	static Bitset2D _rendered_pixels;
+	/// <summary>
+	/// last rendered screen symbols
+	/// </summary>
+	static uint16_t _rendered_screen_symbols;
+	/// <summary>
+	/// last rendered corner x
+	/// </summary>
+	static uint32_t _rendered_corner_x;
+	/// <summary>
+	/// last rendered corner y
+	/// </summary>
+	static uint32_t _rendered_corner_y;
+
 	/// <summary>
 	/// tracks if shift is pressed
 	/// </summary>
@@ -97,20 +116,11 @@ class WindowManager
 	/// To escape: MODE -> SHIFT -> =
 	/// </summary>
 	static bool _panic_mode;
+
 	/// <summary>
 	/// the Window to be shown in Panic mode
 	/// </summary>
 	static Window* _panic_window;
-	/// <summary>
-	/// stores, which key was pressed last
-	/// </summary>
-	static KEY _last_key;
-
-	static Bitset2D _rendered_pixels;
-	static uint16_t _rendered_screen_symbols;
-	static uint32_t _rendered_corner_x;
-	static uint32_t _rendered_corner_y;
-
 	/// <summary>
 	/// the window stack
 	/// </summary>

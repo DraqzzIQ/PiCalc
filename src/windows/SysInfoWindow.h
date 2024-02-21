@@ -7,7 +7,7 @@ class SysInfoWindow: public MenuWindow
 {
 	public:
 	SysInfoWindow():
-		MenuWindow(false)
+		MenuWindow(CountType::NONE)
 	{
 		options = std::vector<MenuOptionBase*>(3);
 		options[0] = new TextMenuOption("OS Version: " + OS_VERSION);

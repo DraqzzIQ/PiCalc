@@ -33,16 +33,10 @@
     <ClInclude Include="src\constant\Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\keyboard\IKeyboard.h">
+    <ClInclude Include="src\keyboard\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\keyboard\KeyPress.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\keyboard\PicoKeyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\keyboard\SDLKeyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\constant\LCDConstants.h">
@@ -54,10 +48,7 @@
     <ClInclude Include="src\options\MenuOptionBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderers\ConsoleRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderers\DisplayRenderer.h">
+    <ClInclude Include="src\renderers\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\I2CUtils.h">
@@ -183,6 +174,9 @@
     <ClInclude Include="src\windows\FileSelectWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\windows\FileOptionsMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PiCalc.cpp">
@@ -197,13 +191,7 @@
     <ClCompile Include="src\constant\Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\keyboard\IKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\keyboard\PicoKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\keyboard\SDLKeyboard.cpp">
+    <ClCompile Include="src\keyboard\Keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp">
@@ -275,7 +263,7 @@
     <ClCompile Include="src\http\PicoHttpClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\io\IOController.cpp">
+    <ClCompile Include="src\io\IOControllerPC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\ContrastWindow.cpp">
@@ -291,6 +279,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\TextWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\IOControllerPico.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\keyboard\KeyboardPico.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\keyboard\KeyboardPC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,11 +1,13 @@
-#include "io/IOController.h"
 #ifdef PICO
+#include "io/IOController.h"
 
-bool IOController::write_file(std::string dir, std::string filename, const std::vector<uint8_t>* bytes)
+// TODO: implement rename, delete, duplicate, make strings const references
+bool IOController::write_file(std::string dir, std::string filename, const std::vector<uint8_t>* bytes, bool append)
 {
+	// TODO: test append
 	if (!mount() || !set_directory(dir)) return false;
 	FIL file;
-	FRESULT fr = f_open(&file, filename.c_str(), FA_CREATE_ALWAYS | FA_WRITE);
+	FRESULT fr = f_open(&file, filename.c_str(), (append ? FA_OPEN_APPEND : FA_CREATE_ALWAYS) | FA_WRITE);
 	if (FR_OK != fr) {
 		std::cout << "f_open error: " << FRESULT_str(fr) << " (" << fr << ")" << std::endl;
 		unmount();
@@ -161,58 +163,4 @@ bool IOController::unmount()
 	}
 	return true;
 }
-
-#else
-
-const std::string IOController::_root_dir = "persistence";
-
-bool IOController::write_file(std::string dir, std::string filename, const std::vector<uint8_t>* bytes)
-{
-	dir = _root_dir + "/" + dir;
-
-	if (!std::filesystem::exists(dir))
-		std::filesystem::create_directories(dir);
-	FILE* file = fopen((dir + "/" + filename).c_str(), "wb");
-	if (!file) return false;
-	fwrite(bytes->data(), sizeof(uint8_t), bytes->size(), file);
-	fclose(file);
-	return true;
-}
-
-bool IOController::read_file(std::string dir, std::string filename, std::vector<uint8_t>* bytes)
-{
-	dir = _root_dir + "/" + dir;
-
-	FILE* file = fopen((dir + "/" + filename).c_str(), "rb");
-	if (!file) return false;
-	fseek(file, 0, SEEK_END);
-	size_t size = ftell(file);
-	bytes->resize(size);
-	fseek(file, 0, SEEK_SET);
-	fread(bytes->data(), sizeof(uint8_t), size, file);
-	fclose(file);
-	return true;
-}
-
-bool IOController::file_exists(std::string dir, std::string filename)
-{
-	return std::filesystem::exists(_root_dir + "/" + dir + "/" + filename);
-}
-
-bool IOController::dir_exists(std::string dir)
-{
-	return std::filesystem::exists(_root_dir + "/" + dir);
-}
-
-std::vector<std::string> IOController::list_dir(std::string dir)
-{
-	dir = _root_dir + "/" + dir;
-	std::vector<std::string> files;
-	if (!std::filesystem::exists(dir)) return files;
-
-	for (const auto& entry : std::filesystem::directory_iterator(dir))
-		files.push_back(entry.path().filename().string());
-	return files;
-}
-
 #endif

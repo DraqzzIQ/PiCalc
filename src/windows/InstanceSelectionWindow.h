@@ -10,7 +10,6 @@ class InstanceSelectionWindow: public Window
 
 	private:
 	std::vector<Window*> _instances;
-	WindowManager* _window_manager;
 	uint8_t _current_page = 0;
 	void scroll_up();
 	void scroll_down();

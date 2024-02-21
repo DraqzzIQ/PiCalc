@@ -14,8 +14,14 @@
 class MenuWindow: public Window
 {
 	public:
-	MenuWindow(FONT& font, bool count = true);
-	MenuWindow(bool count = true);
+	enum class CountType {
+		CONTINUOUS,
+		REPEATING,
+		CUSTOM,
+		NONE
+	};
+	MenuWindow(FONT& font, CountType count = CountType::CONTINUOUS);
+	MenuWindow(CountType count = CountType::CONTINUOUS);
 	~MenuWindow();
 	/// <summary>
 	/// handles key presses
@@ -56,7 +62,7 @@ class MenuWindow: public Window
 	/// </summary>
 	uint8_t _page = 0;
 	/// <summary>
-	/// whether to count the lines
+	/// how to count the lines
 	/// </summary>
-	bool _count;
+	CountType _count_type;
 };

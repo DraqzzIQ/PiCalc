@@ -4,8 +4,7 @@ CalculatorWindow::CalculatorWindow(bool panic_mode)
 {
 	_panic_mode = panic_mode;
 	calculated = false;
-	equations = std::vector<Equation>(1);
-	_equation_selected = &equations[0];
+	_equation = Equation();
 
 	_variables = std::map<KEY, Number*>{
 		{ 'A', new Number(0, 0) },
@@ -19,9 +18,7 @@ CalculatorWindow::CalculatorWindow(bool panic_mode)
 		{ 'Y', new Number(0, 0) },
 		{ 'Z', new Number(0, 0) },
 	};
-	_equation_selected->set_variable_list(&_variables);
-	_result_selected = 0;
-
+	_equation.set_variable_list(&_variables);
 	_result_equation.set_cursor_state(false);
 }
 
@@ -34,7 +31,7 @@ void CalculatorWindow::update_window()
 	switch (_mode) {
 	case Mode::COMP:
 		clear_window();
-		_window.set(0, 1, _equation_selected->get_rendered_equation(), false);
+		_window.set(0, 1, _equation.get_rendered_equation(), false);
 		if (calculated) _window.set(SCREEN_WIDTH - _result_rendered.width(), SCREEN_HEIGHT - _result_rendered.height() + 1, _result_rendered, false);
 		return;
 	case Mode::STAT:
@@ -51,8 +48,6 @@ void CalculatorWindow::update_window()
 		return;
 	case Mode::GRAPH:
 		return;
-	default:
-		return;
 	}
 }
 
@@ -60,15 +55,15 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 {
 	switch (_menu) {
 	case Menu::None:
-		if (keypress.key_calculator == 8) set_menu(Menu::Setup_Pg1);
-		else if (keypress.key_calculator == 7) set_menu(Menu::Mode);
+		if (keypress.key_calculator == KEY_SETUP) set_menu(Menu::Setup_Pg1);
+		else if (keypress.key_calculator == KEY_MODE) set_menu(Menu::Mode);
 		else {
 			switch (_mode) {
 			case Mode::COMP:
 				switch (keypress.key_calculator) {
 				case '=':
 					// ERROR: 3(1/4), 3*(1/4)
-					_result = _equation_selected->to_number(_setup);
+					_result = _equation.to_number(_setup);
 					if (Error::error_thrown()) {
 						set_menu(Menu::Error);
 						Error::error_handled();
@@ -78,6 +73,7 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 						_result_key_sets = _result.get_all_representations(_variables);
 						_result_equation.set_key_set(_result_key_sets.at(0));
 						_result_rendered = _result_equation.get_rendered_equation();
+						// TODO: use file as history
 						calculated = true;
 					}
 					break;
@@ -110,19 +106,17 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 				case KEY_M_PLUS: break;     // M+
 				case KEY_M_MINUS: break;    // M-
 				case KEY_WAVY_EQUAL: break; // wav=
-				default: _equation_selected->handle_key_down(keypress.key_calculator);
+				default: _equation.handle_key_down(keypress.key_calculator);
 				}
 			}
 		}
 		break;
 	case Menu::Error:
 		if (keypress.key_calculator == KEY_AC) {
-			_menu = Menu::None;
-			calculated = false;
-			_equation_selected->ac();
+			set_menu(Menu::None);
+			_equation.ac();
 		} else if (keypress.key_calculator == KEY_LEFT || keypress.key_calculator == KEY_RIGHT) {
-			_menu = Menu::None;
-			calculated = false;
+			set_menu(Menu::None);
 		}
 		break;
 	case Menu::Mode:
@@ -161,25 +155,27 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 			_mode = Mode::GRAPH;
 			set_menu(Menu::None);
 			break;
+		case KEY_AC:
+			set_menu(Menu::None);
+			break;
+		default:
+			if (_panic_mode && keypress.alpha && keypress.key_raw == '=') {
+				set_menu(Menu::None);
+				WindowManager::exit_panic_mode();
+			}
 		}
 		break;
 	case Menu::Mode_Stat:
 		_mode = Mode::COMP;
 		set_menu(Menu::None);
-		calculated = false;
 		// TODO
 		break;
 	case Menu::Mode_Dist:
 		_mode = Mode::COMP;
 		set_menu(Menu::None);
-		calculated = false;
 		// TODO
 		break;
 	case Menu::Setup_Pg1:
-		if (keypress.key_calculator == KEY_AC) {
-			set_menu(Menu::None);
-			calculated = false;
-		}
 		switch (keypress.key_calculator) {
 		case '1':
 			set_menu(Menu::Setup_Input);
@@ -211,13 +207,15 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 		case '8':
 			set_menu(Menu::Setup_Norm);
 			break;
+		case KEY_DOWN:
+			set_menu(Menu::Setup_Pg2);
+			break;
+		case KEY_AC:
+			set_menu(Menu::None);
+			break;
 		}
 		break;
 	case Menu::Setup_Pg2:
-		if (keypress.key_calculator == KEY_AC) {
-			set_menu(Menu::None);
-			calculated = false;
-		}
 		switch (keypress.key_calculator) {
 		case '1':
 			_setup |= 1 << 13;
@@ -231,6 +229,12 @@ bool CalculatorWindow::handle_key_down(KeyPress keypress)
 		case '4':
 			set_menu(Menu::Setup_PerD);
 			break;
+		case KEY_UP:
+			set_menu(Menu::Setup_Pg1);
+			break;
+		case KEY_AC:
+			set_menu(Menu::None);
+			break;
 		}
 		break;
 	}
@@ -243,18 +247,21 @@ void CalculatorWindow::set_menu(Menu menu)
 	_menu = menu;
 	clear_window();
 	switch (menu) {
+	case Menu::None:
+		calculated = false;
+		break;
 	case Menu::Error:
 		_window = Error::render_error();
 		break;
 	case Menu::Mode:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_7_HIGH, "\306COMP", false);
+		_window.put_chars(0, 1, Graphics::SYMBOLS_7_HIGH, "\306COMP", false);
 		_window.put_chars(48, 1, Graphics::SYMBOLS_7_HIGH, "\307STAT", false);
-		_window.put_chars(1, 9, Graphics::SYMBOLS_7_HIGH, "\310TABLE", false);
+		_window.put_chars(0, 9, Graphics::SYMBOLS_7_HIGH, "\310TABLE", false);
 		_window.put_chars(48, 9, Graphics::SYMBOLS_7_HIGH, "\311DIST", false);
-		_window.put_chars(1, 17, Graphics::SYMBOLS_7_HIGH, "\312VERIF", false);
+		_window.put_chars(0, 17, Graphics::SYMBOLS_7_HIGH, "\312VERIF", false);
 		_window.put_chars(48, 17, Graphics::SYMBOLS_7_HIGH, "\313BASE-N", false);
 		if (!_panic_mode) {
-			_window.put_chars(1, 25, Graphics::SYMBOLS_7_HIGH, "\314EQ-SLV", false);
+			_window.put_chars(0, 25, Graphics::SYMBOLS_7_HIGH, "\314EQ-SLV", false);
 			_window.put_chars(48, 25, Graphics::SYMBOLS_7_HIGH, "\315GRAPH", false);
 		}
 		break;
@@ -265,25 +272,25 @@ void CalculatorWindow::set_menu(Menu menu)
 		// TODO
 		break;
 	case Menu::Setup_Pg1:
-		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:Input", false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:Output", false);
+		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:Mth2D", false);
+		_window.put_chars(49, 1, Graphics::SYMBOLS_6_HIGH, "2:Linear", false);
 		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:Deg", false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:Rad", false);
+		_window.put_chars(49, 9, Graphics::SYMBOLS_6_HIGH, "4:Rad", false);
 		_window.put_chars(1, 17, Graphics::SYMBOLS_6_HIGH, "5:Gra", false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "6:Fix", false);
+		_window.put_chars(49, 17, Graphics::SYMBOLS_6_HIGH, "6:Fix", false);
 		_window.put_chars(1, 25, Graphics::SYMBOLS_6_HIGH, "7:Sci", false);
-		_window.put_chars(48, 25, Graphics::SYMBOLS_6_HIGH, "8:Norm", false);
+		_window.put_chars(49, 25, Graphics::SYMBOLS_6_HIGH, "8:Norm", false);
 		break;
 	case Menu::Setup_Pg2:
 		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:ab/c", false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:d/c", false);
+		_window.put_chars(49, 1, Graphics::SYMBOLS_6_HIGH, "2:d/c", false);
 		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:STAT", false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:PerD", false);
+		_window.put_chars(49, 9, Graphics::SYMBOLS_6_HIGH, "4:PerD", false);
 		break;
 	case Menu::Setup_Input:
 	case Menu::Setup_Output:
 		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:Mth2D", false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:Linear", false);
+		_window.put_chars(49, 1, Graphics::SYMBOLS_6_HIGH, "2:Linear", false);
 		break;
 	case Menu::Setup_Fix:
 		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "Fix 0~9", false);
@@ -297,28 +304,28 @@ void CalculatorWindow::set_menu(Menu menu)
 	case Menu::Setup_Stat:
 		_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Häufigkeit?", false);
 		_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "1:EIN", false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "2:AUS", false);
+		_window.put_chars(49, 9, Graphics::SYMBOLS_6_HIGH, "2:AUS", false);
 		break;
 	case Menu::Setup_PerD:
 		_window.put_chars(0, 1, Graphics::SYMBOLS_6_HIGH, "Period. Darst.?", false);
 		_window.put_chars(0, 9, Graphics::SYMBOLS_6_HIGH, "1:EIN", false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "2:AUS", false);
+		_window.put_chars(49, 9, Graphics::SYMBOLS_6_HIGH, "2:AUS", false);
 		break;
 	case Menu::Hyp:
 		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:sinh", false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:cosh", false);
+		_window.put_chars(49, 1, Graphics::SYMBOLS_6_HIGH, "2:cosh", false);
 		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:tanh", false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:sinh\16", false);
+		_window.put_chars(49, 9, Graphics::SYMBOLS_6_HIGH, "4:sinh\16", false);
 		_window.put_chars(1, 17, Graphics::SYMBOLS_6_HIGH, "5:cosh\16", false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "6:tanh\16", false);
+		_window.put_chars(49, 17, Graphics::SYMBOLS_6_HIGH, "6:tanh\16", false);
 		break;
 	case Menu::Verify:
 		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:=", false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:\266", false);
+		_window.put_chars(49, 1, Graphics::SYMBOLS_6_HIGH, "2:\266", false);
 		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:>", false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:<", false);
+		_window.put_chars(49, 9, Graphics::SYMBOLS_6_HIGH, "4:<", false);
 		_window.put_chars(1, 17, Graphics::SYMBOLS_6_HIGH, "5:\267", false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "6:\270", false);
+		_window.put_chars(49, 17, Graphics::SYMBOLS_6_HIGH, "6:\270", false);
 		break;
 	case Menu::Stat:
 		// TODO
@@ -329,15 +336,15 @@ void CalculatorWindow::set_menu(Menu menu)
 	case Menu::Base:
 		// TODO: Page 2
 		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:and", false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:or", false);
+		_window.put_chars(49, 1, Graphics::SYMBOLS_6_HIGH, "2:or", false);
 		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:xor", false);
-		_window.put_chars(48, 9, Graphics::SYMBOLS_6_HIGH, "4:xnor", false);
+		_window.put_chars(49, 9, Graphics::SYMBOLS_6_HIGH, "4:xnor", false);
 		_window.put_chars(1, 17, Graphics::SYMBOLS_6_HIGH, "5:Not", false);
-		_window.put_chars(48, 17, Graphics::SYMBOLS_6_HIGH, "6:Neg", false);
+		_window.put_chars(49, 17, Graphics::SYMBOLS_6_HIGH, "6:Neg", false);
 		break;
 	case Menu::Drg:
 		_window.put_chars(1, 1, Graphics::SYMBOLS_6_HIGH, "1:°", false);
-		_window.put_chars(48, 1, Graphics::SYMBOLS_6_HIGH, "2:\256", false);
+		_window.put_chars(49, 1, Graphics::SYMBOLS_6_HIGH, "2:\256", false);
 		_window.put_chars(1, 9, Graphics::SYMBOLS_6_HIGH, "3:\257", false);
 		break;
 	default:

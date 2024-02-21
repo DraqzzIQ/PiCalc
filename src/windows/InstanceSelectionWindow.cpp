@@ -5,8 +5,8 @@ bool InstanceSelectionWindow::handle_key_down(KeyPress keypress)
 	if (keypress.key_raw == KEY_UP) scroll_up();
 	else if (keypress.key_raw == KEY_DOWN) scroll_down();
 	else if ((keypress.key_raw -= 48) < 10 && keypress.key_raw < _instances.size()) {
-		_window_manager->minimize_window();
-		_window_manager->add_window(_instances[keypress.key_raw]);
+		WindowManager::minimize_window();
+		WindowManager::add_window(_instances[keypress.key_raw]);
 	} else return false;
 
 	return true;

@@ -1,5 +1,6 @@
-#include "renderers/DisplayRenderer.h"
 #ifdef PICO
+#include "Renderer.h"
+// TODO: make this work and make battery level showing work
 
 uint64_t DisplayRenderer::_timer = 0;
 uint8_t DisplayRenderer::_battery_symbols = 0b11;

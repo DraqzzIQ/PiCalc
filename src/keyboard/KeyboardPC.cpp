@@ -1,13 +1,10 @@
-#include "keyboard/SDLKeyboard.h"
 #ifndef PICO
+#include "Keyboard.h"
 
-SDLKeyboard::SDLKeyboard():
-	IKeyboard()
-{
-	sdl_init();
-}
+SDL_Window* Keyboard::_window;
+SDL_Event Keyboard::_event;
 
-void SDLKeyboard::sdl_init()
+void Keyboard::init()
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	_window = SDL_CreateWindow("keyboard input, NEEDS TO BE IN FOCUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 400, 200, SDL_WINDOW_ALLOW_HIGHDPI);
@@ -19,22 +16,22 @@ void SDLKeyboard::sdl_init()
 	SDL_RenderPresent(renderer);
 }
 
-bool SDLKeyboard::is_shift_active()
+bool Keyboard::is_shift_active()
 {
 	return SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] || SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RSHIFT];
 }
 
-bool SDLKeyboard::is_alpha_active()
+bool Keyboard::is_alpha_active()
 {
 	return SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LALT];
 }
 
-bool SDLKeyboard::is_ralt_active()
+bool Keyboard::is_ralt_active()
 {
 	return SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RALT];
 }
 
-void SDLKeyboard::check_for_keyboard_presses()
+void Keyboard::check_for_keyboard_presses()
 {
 	if (SDL_PollEvent(&_event)) {
 		if (_event.type == SDL_QUIT) {
@@ -42,14 +39,14 @@ void SDLKeyboard::check_for_keyboard_presses()
 			SDL_Quit();
 			exit(0);
 		} else if (_event.type == SDL_KEYDOWN) {
-			_window_manager->handle_key_down(sdl_event_to_keypress(&_event));
+			WindowManager::handle_key_down(sdl_event_to_keypress(&_event));
 		} else if (_event.type == SDL_KEYUP) {
-			_window_manager->handle_key_up(sdl_event_to_keypress(&_event));
+			WindowManager::handle_key_up(sdl_event_to_keypress(&_event));
 		}
 	}
 }
 
-KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event)
+KeyPress Keyboard::sdl_event_to_keypress(SDL_Event* _event)
 {
 	KeyPress keypress = KeyPress();
 	keypress.shift = is_shift_active();
@@ -64,7 +61,7 @@ KeyPress SDLKeyboard::sdl_event_to_keypress(SDL_Event* _event)
 	return keypress;
 }
 
-KEY SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
+KEY Keyboard::scancode_to_key_keyboard(SDL_Event* _event)
 {
 	if (is_shift_active()) {
 		switch (_event->key.keysym.scancode) {
@@ -206,7 +203,7 @@ KEY SDLKeyboard::scancode_to_key_keyboard(SDL_Event* _event)
 	}
 }
 
-KEY SDLKeyboard::scancode_to_key_raw(SDL_Event* _event)
+KEY Keyboard::scancode_to_key_raw(SDL_Event* _event)
 {
 	switch (_event->key.keysym.scancode) {
 	case SDL_SCANCODE_RSHIFT: return KEY_SHIFT;
