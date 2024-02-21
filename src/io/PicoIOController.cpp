@@ -70,6 +70,27 @@ bool IOController::read_file(std::string dir, std::string filename, std::vector<
 	return true;
 }
 
+bool IOController::rename_file(std::string dir, std::string filename, std::string new_filename)
+{
+	// TODO
+	if (!mount() || !set_directory(dir)) return false;
+	return true;
+}
+
+bool IOController::delete_file(std::string dir, std::string filename)
+{
+	// TODO
+	if (!mount() || !set_directory(dir)) return false;
+	return true;
+}
+
+bool IOController::duplicate_file(std::string dir, std::string filename)
+{
+	// TODO
+	if (!mount() || !set_directory(dir)) return false;
+	return true;
+}
+
 bool IOController::file_exists(std::string dir, std::string filename)
 {
 	if (!mount() || !set_directory(dir)) return false;

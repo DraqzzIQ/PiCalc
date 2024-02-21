@@ -3,14 +3,13 @@
 #include "renderers/Renderer.h"
 #include "threading/Threading.h"
 #include "utils/Utils.h"
-#include "windows/BatteryWindow.h"
 #include "windows/MainMenuWindow.h"
+#include "windows/CalculatorWindow.h"
 #include "windows/WindowManager.h"
 #include <iostream>
 #include <vector>
 
 #ifdef PICO
-#include "http/PicoHttpClient.h"
 #include "pico/stdlib.h"
 #include "utils/I2CUtils.h"
 #include <malloc.h>
@@ -22,13 +21,9 @@
 void start_main_thread()
 {
 #ifdef PICO
-	multicore_launch_core1([]() {
-		Threading::get_instance()->run();
-	});
+	multicore_launch_core1([]() { Threading::get_instance()->run(); });
 #else
-	std::thread t([]() {
-		Threading::get_instance()->run();
-	});
+	std::thread t([]() { Threading::get_instance()->run(); });
 	t.detach();
 #endif
 	uint64_t last_time = 0;

@@ -2,17 +2,17 @@
 #include "Renderer.h"
 // TODO: make this work and make battery level showing work
 
-uint64_t DisplayRenderer::_timer = 0;
-uint8_t DisplayRenderer::_battery_symbols = 0b11;
-const std::vector<uint8_t> DisplayRenderer::screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
+uint64_t Renderer::_timer = 0;
+uint8_t Renderer::_battery_symbols = 0b11;
+const std::vector<uint8_t> Renderer::screen_symbol_positions{ 3, 5, 7, 14, 17, 25, 32, 41, 46, 56, 62, 67, 71, 74, 81, 88, 89, 93 };
 
-void DisplayRenderer::init()
+void Renderer::init()
 {
 	Utils::sleep_for_ms(1);
 	clear();
 }
 
-void DisplayRenderer::render(const Frame& frame)
+void Renderer::render(const Frame& frame)
 {
 	if (_timer + 500000 > Utils::us_since_boot()) {
 		_timer = Utils::us_since_boot();
@@ -52,7 +52,7 @@ void DisplayRenderer::render(const Frame& frame)
 	i2c_write_blocking(i2c_default, LCD_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
 }
 
-uint8_t DisplayRenderer::reverse_byte(uint8_t b)
+uint8_t Renderer::reverse_byte(uint8_t b)
 {
 	b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
 	b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
@@ -60,25 +60,25 @@ uint8_t DisplayRenderer::reverse_byte(uint8_t b)
 	return b;
 }
 
-void DisplayRenderer::clear()
+void Renderer::clear()
 {
 	uint8_t command[1] = { set_mode(T_ROW_MODE, E_NORMAL_STATUS, M_1_32_MULTIPLEX, C_LAST_COMMAND) };
 	i2c_write_blocking(i2c_default, LCD_DEVICE_ADDRESS, command, sizeof(command), C_LAST_COMMAND);
 }
 
-uint8_t DisplayRenderer::set_mode(uint8_t mode, uint8_t status, uint8_t mux_mode, uint8_t command_following)
+uint8_t Renderer::set_mode(uint8_t mode, uint8_t status, uint8_t mux_mode, uint8_t command_following)
 {
 	return command_following + SET_MODE + mode + status + mux_mode;
 }
-uint8_t DisplayRenderer::select_device(uint8_t addr, uint8_t command_following)
+uint8_t Renderer::select_device(uint8_t addr, uint8_t command_following)
 {
 	return command_following + DEVICE_SELECT + addr;
 }
-uint8_t DisplayRenderer::ram_access(uint8_t access_mode, uint8_t row_address, uint8_t command_following)
+uint8_t Renderer::ram_access(uint8_t access_mode, uint8_t row_address, uint8_t command_following)
 {
 	return command_following + RAM_ACCESS + access_mode + row_address;
 }
-uint8_t DisplayRenderer::load_x_address(uint8_t column_address, uint8_t command_following)
+uint8_t Renderer::load_x_address(uint8_t column_address, uint8_t command_following)
 {
 	return command_following + LOAD_X_ADDRESS + column_address;
 }

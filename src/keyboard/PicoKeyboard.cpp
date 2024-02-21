@@ -1,8 +1,12 @@
 #ifdef PICO
 #include "Keyboard.h"
 
-PicoKeyboard::PicoKeyboard():
-	IKeyboard()
+Keyboard::KeyState Keyboard::_function_keys_state = Keyboard::KeyState::ON;
+const std::vector<uint8_t> Keyboard::_inputs{ 2, 3, 6, 7, 8, 9, 10, 11, 12 };
+const std::vector<uint8_t> Keyboard::_outputs{ 13, 14, 15, 20, 21, 22 };
+std::vector<std::vector<Keyboard::KeyState>> Keyboard::_pressed_buttons = std::vector<std::vector<KeyState>>(_outputs.size(), std::vector<Keyboard::KeyState>(_inputs.size(), Keyboard::KeyState::OFF));
+
+void Keyboard::init()
 {
 	stdio_init_all();
 
@@ -18,17 +22,17 @@ PicoKeyboard::PicoKeyboard():
 	}
 }
 
-bool PicoKeyboard::is_shift_active()
+bool Keyboard::is_shift_active()
 {
 	return _function_keys_state == KeyState::SHIFT_ON;
 }
 
-bool PicoKeyboard::is_alpha_active()
+bool Keyboard::is_alpha_active()
 {
 	return _function_keys_state == KeyState::ALPHA_ON;
 }
 
-void PicoKeyboard::check_for_keyboard_presses()
+void Keyboard::check_for_keyboard_presses()
 {
 	for (uint8_t px = 0; px < _outputs.size(); px++) {
 		set_pin(px);
@@ -54,7 +58,7 @@ void PicoKeyboard::check_for_keyboard_presses()
 	}
 }
 
-KEY PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
+KEY Keyboard::coords_to_key_raw(uint8_t x, uint8_t y)
 {
 	switch (10 * x + y) {
 	case 0: return KEY_SHIFT;
@@ -110,7 +114,7 @@ KEY PicoKeyboard::coords_to_key_raw(uint8_t x, uint8_t y)
 	}
 }
 
-KEY PicoKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
+KEY Keyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
 {
 	if (shift) {
 		if (raw_key > 47 && raw_key < 58) return raw_key;
@@ -188,7 +192,7 @@ KEY PicoKeyboard::raw_key_to_keyboard_key(KEY raw_key, bool shift, bool alpha)
 }
 
 
-KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state)
+KeyPress Keyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state)
 {
 	KeyPress keypress = KeyPress();
 	keypress.shift = is_shift_active();
@@ -200,7 +204,7 @@ KeyPress PicoKeyboard::coords_to_keypress(uint8_t x, uint8_t y, KeyState state)
 }
 
 
-void PicoKeyboard::set_pin(uint8_t pin)
+void Keyboard::set_pin(uint8_t pin)
 {
 	for (uint8_t i = 0; i < _outputs.size(); i++) {
 		if (i == pin) gpio_set_dir(_outputs[i], GPIO_OUT);
@@ -209,7 +213,7 @@ void PicoKeyboard::set_pin(uint8_t pin)
 	}
 }
 
-std::vector<bool> PicoKeyboard::get_pins()
+std::vector<bool> Keyboard::get_pins()
 {
 	std::vector<bool> ret = std::vector<bool>();
 	for (auto& pin : _inputs) { ret.push_back(gpio_get(pin)); }

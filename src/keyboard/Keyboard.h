@@ -62,19 +62,19 @@ class Keyboard
 	/// <summary>
 	/// keeps track which function key (shift / alpha) is activated using the KeyState enumerator
 	/// </summary>
-	static KeyState _function_keys_state = KeyState::ON;
+	static KeyState _function_keys_state;
 	/// <summary>
 	/// the GPIO numbers to be used as input for the button matrix
 	/// </summary>
-	static const std::vector<uint8_t> _inputs{ 2, 3, 6, 7, 8, 9, 10, 11, 12 };
+	static const std::vector<uint8_t> _inputs;
 	/// <summary>
 	/// the GPIO numbers to be used as output for the button matrix
 	/// </summary>
-	static const std::vector<uint8_t> _outputs{ 13, 14, 15, 20, 21, 22 };
+	static const std::vector<uint8_t> _outputs;
 	/// <summary>
 	/// Saves, which key is currently pressed and how it was pressed (shift / alpha / none) using the KeyState enumerator
 	/// </summary>
-	static std::vector<std::vector<KeyState>> _pressed_buttons = std::vector<std::vector<KeyState>>(_outputs.size(), std::vector<KeyState>(_inputs.size(), KeyState::OFF));
+	static std::vector<std::vector<KeyState>> _pressed_buttons;
 	/// <summary>
 	/// sets all pins in the outputs vector to low except the one selected, used for the button matrix
 	/// </summary>
