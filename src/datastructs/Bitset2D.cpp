@@ -114,7 +114,7 @@ void Bitset2D::put_chars(uint32_t coord_x, uint32_t coord_y, FONT& font, KEY_SET
 	uint32_t y = coord_y;
 	for (uint32_t i = 0; i < text.size(); i++) {
 		if (text[i] == '\n') {
-			y += font.at(0).height();
+			y += font.at(0).height() + 1;
 			if (y >= _height) {
 				if (resize_if_needed) extend_down(y - _height + 1, false);
 				else return;

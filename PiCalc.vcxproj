@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\http\IHttpClient.h" />
-    <ClInclude Include="src\windows\FileOptionsMenu.h" />
+    <ClInclude Include="src\windows\FileOptionsMenuWindow.h" />
     <ClInclude Include="src\windows\FileSelectWindow.h" />
     <ClInclude Include="src\datastructs\Equation.h" />
     <ClInclude Include="src\options\TextMenuOption.h" />
@@ -107,7 +107,6 @@
     <ClCompile Include="src\windows\ChatWindow.cpp" />
     <ClCompile Include="src\windows\InputWindow.cpp" />
     <ClCompile Include="src\windows\PaintWindow.cpp" />
-    <ClCompile Include="src\windows\NotesWindow.cpp" />
     <ClCompile Include="src\windows\TetrisWindow.cpp" />
     <ClCompile Include="src\threading\Threading.cpp" />
     <ClCompile Include="src\windows\TextWindow.cpp" />

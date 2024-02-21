@@ -171,7 +171,7 @@
     <ClInclude Include="src\windows\FileSelectWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\windows\FileOptionsMenu.h">
+    <ClInclude Include="src\windows\FileOptionsMenuWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\http\IHttpClient.h">
@@ -252,9 +252,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\InputWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\windows\NotesWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\http\PicoHttpClient.cpp">

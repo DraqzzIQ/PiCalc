@@ -3,8 +3,8 @@
 #include "renderers/Renderer.h"
 #include "threading/Threading.h"
 #include "utils/Utils.h"
-#include "windows/MainMenuWindow.h"
 #include "windows/CalculatorWindow.h"
+#include "windows/MainMenuWindow.h"
 #include "windows/WindowManager.h"
 #include <iostream>
 #include <vector>

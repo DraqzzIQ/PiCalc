@@ -1,11 +1,12 @@
 #include "InputWindow.h"
 
 
-InputWindow::InputWindow(const std::string& promt, std::function<void(std::string&)> callback)
+InputWindow::InputWindow(const std::string& promt, std::function<void(std::string&)> callback, bool allow_empty)
 {
 	_blink_timer = Utils::us_since_boot();
 	_prompt = promt;
 	_callback = callback;
+	_allow_empty = allow_empty;
 }
 
 InputWindow::~InputWindow()
@@ -16,14 +17,14 @@ void InputWindow::update_window()
 {
 	clear_window();
 	_window.put_chars(1, 1, Graphics::SYMBOLS_9_HIGH, _prompt, false);
-	_window.put_chars(1, 15, Graphics::SYMBOLS_9_HIGH, _input, false);
+	_window.put_chars(1, 22, Graphics::SYMBOLS_9_HIGH, _input, false);
 	add_cursor(_window);
 }
 
 bool InputWindow::handle_key_down(KeyPress keypress)
 {
 	if (keypress.key_keyboard == '\n') {
-		if (_input.size() > 0) {
+		if (_allow_empty || _input.size() > 0) {
 			WindowManager::close_window(false);
 			_callback(_input);
 			delete this;
@@ -51,11 +52,11 @@ void InputWindow::add_cursor(Bitset2D& bitset)
 		_cursor_on = !_cursor_on;
 	}
 	if (!_cursor_on || _cursor_index > 15) return;
-	_window.draw_vertical_line(_cursor_index * 6, 15, 9, true);
-	_window.draw_vertical_line(_cursor_index * 6 + 1, 15, 9, true);
+	_window.draw_vertical_line(_cursor_index * 6, 22, 9, true);
+	_window.draw_vertical_line(_cursor_index * 6 + 1, 22, 9, true);
 }
 
-void InputWindow::input(const std::string& promt, std::function<void(std::string&)> callback)
+void InputWindow::input(const std::string& promt, std::function<void(std::string&)> callback, bool allow_empty)
 {
-	WindowManager::add_window(new InputWindow(promt, callback));
+	WindowManager::add_window(new InputWindow(promt, callback, allow_empty));
 }
