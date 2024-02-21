@@ -176,6 +176,7 @@ void Equation::ac()
 
 void Equation::move_cursor_left()
 {
+	// TODO: show as much as possible on the screen
 	if (_cursor_index == 0) _cursor_index = _equation.size();
 	else _cursor_index--;
 	render_equation();

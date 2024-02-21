@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\http\IHttpClient.h" />
     <ClInclude Include="src\windows\FileOptionsMenu.h" />
     <ClInclude Include="src\windows\FileSelectWindow.h" />
     <ClInclude Include="src\datastructs\Equation.h" />
@@ -55,7 +56,6 @@
     <ClInclude Include="src\windows\SysInfoWindow.h" />
     <ClInclude Include="src\windows\Window.h" />
     <ClInclude Include="src\windows\WindowManager.h" />
-    <ClInclude Include="src\http\IHttpClient.h" />
     <ClInclude Include="src\http\DesktopHttpClient.h" />
     <ClInclude Include="src\http\HttpHeaders.h" />
     <ClInclude Include="src\http\HttpRequest.h" />
@@ -74,9 +74,10 @@
     <ClInclude Include="src\windows\TextWindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\io\IOControllerPico.cpp" />
-    <ClCompile Include="src\keyboard\KeyboardPC.cpp" />
-    <ClCompile Include="src\keyboard\KeyboardPico.cpp" />
+    <ClCompile Include="src\http\IHttpClient.cpp" />
+    <ClCompile Include="src\io\PicoIOController.cpp" />
+    <ClCompile Include="src\keyboard\DesktopKeyboard.cpp" />
+    <ClCompile Include="src\keyboard\PicoKeyboard.cpp" />
     <ClCompile Include="src\PiCalc.cpp" />
     <ClCompile Include="src\constant\Error.cpp" />
     <ClCompile Include="src\datastructs\Bitset2D.cpp" />
@@ -86,9 +87,8 @@
     <ClCompile Include="src\datastructs\Equation.cpp" />
     <ClCompile Include="src\datastructs\Number.cpp" />
     <ClCompile Include="src\datastructs\NumberParser.cpp" />
-    <ClCompile Include="src\http\IHttpClient.cpp" />
     <ClCompile Include="src\http\PicoHttpClient.cpp" />
-    <ClCompile Include="src\io\IOControllerPC.cpp" />
+    <ClCompile Include="src\io\DesktopIOController.cpp" />
     <ClCompile Include="src\keyboard\Keyboard.cpp" />
     <ClCompile Include="src\renderers\ConsoleRenderer.cpp" />
     <ClCompile Include="src\renderers\DisplayRenderer.cpp" />

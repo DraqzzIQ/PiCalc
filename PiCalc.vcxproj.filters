@@ -96,9 +96,6 @@
     <ClInclude Include="src\http\HttpResponse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\http\IHttpClient.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\windows\WolframAlphaWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -177,6 +174,9 @@
     <ClInclude Include="src\windows\FileOptionsMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\http\IHttpClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PiCalc.cpp">
@@ -233,9 +233,6 @@
     <ClCompile Include="src\http\DesktopHttpClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\http\IHttpClient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\windows\WolframAlphaWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -263,7 +260,7 @@
     <ClCompile Include="src\http\PicoHttpClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\io\IOControllerPC.cpp">
+    <ClCompile Include="src\io\DesktopIOController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\windows\ContrastWindow.cpp">
@@ -281,13 +278,16 @@
     <ClCompile Include="src\windows\TextWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\io\IOControllerPico.cpp">
+    <ClCompile Include="src\io\PicoIOController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\keyboard\KeyboardPico.cpp">
+    <ClCompile Include="src\keyboard\PicoKeyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\keyboard\KeyboardPC.cpp">
+    <ClCompile Include="src\keyboard\DesktopKeyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http\IHttpClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
